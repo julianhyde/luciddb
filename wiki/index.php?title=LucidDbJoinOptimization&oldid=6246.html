@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbJoinOptimization - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbJoinOptimization", "wgTitle": "LucidDbJoinOptimization", "wgCurRevisionId": 6246, "wgArticleId": 1617, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbJoinOptimization action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbJoinOptimization</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 23:00, 21 July 2009 by <a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Zfong (page does not exist)">Zfong</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User talk:Zfong (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Zfong" title="Special:Contributions/Zfong">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;diff=prev&amp;oldid=6246" title="LucidDbJoinOptimization">diff</a>) <a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;direction=prev&amp;oldid=6246" title="LucidDbJoinOptimization">← Older revision</a> | Latest revision (diff) | Newer revision → (diff)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Filters"><span class="tocnumber">2</span> <span class="toctext">Filters</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Projections"><span class="tocnumber">3</span> <span class="toctext">Projections</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Push_Down"><span class="tocnumber">3.1</span> <span class="toctext">Push Down</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Pull_Up"><span class="tocnumber">3.2</span> <span class="toctext">Pull Up</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Star_Joins"><span class="tocnumber">4</span> <span class="toctext">Star Joins</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Semijoins"><span class="tocnumber">4.1</span> <span class="toctext">Semijoins</span></a>
+<ul>
+<li class="toclevel-3 tocsection-8"><a href="#Multiple_Dimension_Tables"><span class="tocnumber">4.1.1</span> <span class="toctext">Multiple Dimension Tables</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="#Semijoins_and_Table_Filters"><span class="tocnumber">4.1.2</span> <span class="toctext">Semijoins and Table Filters</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="#Chained_Semijoins"><span class="tocnumber">4.1.3</span> <span class="toctext">Chained Semijoins</span></a></li>
+<li class="toclevel-3 tocsection-11"><a href="#IN_Filters"><span class="tocnumber">4.1.4</span> <span class="toctext">IN Filters</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-12"><a href="#How_the_Optimizer_Decides_Which_Semijoins_To_Use"><span class="tocnumber">4.2</span> <span class="toctext">How the Optimizer Decides Which Semijoins To Use</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Identifying_Semijoins_in_EXPLAIN_PLAN"><span class="tocnumber">4.3</span> <span class="toctext">Identifying Semijoins in EXPLAIN PLAN</span></a>
+<ul>
+<li class="toclevel-3 tocsection-14"><a href="#Basics"><span class="tocnumber">4.3.1</span> <span class="toctext">Basics</span></a></li>
+<li class="toclevel-3 tocsection-15"><a href="#Other_Examples"><span class="tocnumber">4.3.2</span> <span class="toctext">Other Examples</span></a>
+<ul>
+<li class="toclevel-4 tocsection-16"><a href="#Multiple_Dimension_Tables_Example"><span class="tocnumber">4.3.2.1</span> <span class="toctext">Multiple Dimension Tables Example</span></a></li>
+<li class="toclevel-4 tocsection-17"><a href="#Semijoin_and_Table_Filter_Example"><span class="tocnumber">4.3.2.2</span> <span class="toctext">Semijoin and Table Filter Example</span></a></li>
+<li class="toclevel-4 tocsection-18"><a href="#Chained_Semijoin_Example"><span class="tocnumber">4.3.2.3</span> <span class="toctext">Chained Semijoin Example</span></a></li>
+<li class="toclevel-4 tocsection-19"><a href="#IN_Filter_Examples"><span class="tocnumber">4.3.2.4</span> <span class="toctext">IN Filter Examples</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-20"><a href="#Cost-Based_Join_Ordering_Selection"><span class="tocnumber">5</span> <span class="toctext">Cost-Based Join Ordering Selection</span></a></li>
+<li class="toclevel-1 tocsection-21"><a href="#Cost_Functions"><span class="tocnumber">6</span> <span class="toctext">Cost Functions</span></a></li>
+<li class="toclevel-1 tocsection-22"><a href="#Outer_Joins"><span class="tocnumber">7</span> <span class="toctext">Outer Joins</span></a>
+<ul>
+<li class="toclevel-2 tocsection-23"><a href="#Null_Generating_Inputs"><span class="tocnumber">7.1</span> <span class="toctext">Null Generating Inputs</span></a></li>
+<li class="toclevel-2 tocsection-24"><a href="#Outer_Join_Dependencies"><span class="tocnumber">7.2</span> <span class="toctext">Outer Join Dependencies</span></a></li>
+<li class="toclevel-2 tocsection-25"><a href="#Swapping_Inputs"><span class="tocnumber">7.3</span> <span class="toctext">Swapping Inputs</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-26"><a href="#Redundant_Join_Removal"><span class="tocnumber">8</span> <span class="toctext">Redundant Join Removal</span></a>
+<ul>
+<li class="toclevel-2 tocsection-27"><a href="#Redundant_Outer_Joins"><span class="tocnumber">8.1</span> <span class="toctext">Redundant Outer Joins</span></a></li>
+<li class="toclevel-2 tocsection-28"><a href="#Joins_That_Become_Redundant_Because_of_Semijoins"><span class="tocnumber">8.2</span> <span class="toctext">Joins That Become Redundant Because of Semijoins</span></a></li>
+<li class="toclevel-2 tocsection-29"><a href="#Self-Joins"><span class="tocnumber">8.3</span> <span class="toctext">Self-Joins</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-30"><a href="#Limitations"><span class="tocnumber">9</span> <span class="toctext">Limitations</span></a>
+<ul>
+<li class="toclevel-2 tocsection-31"><a href="#Statistics_For_UDX.27s_and_Foreign_Tables"><span class="tocnumber">9.1</span> <span class="toctext">Statistics For UDX's and Foreign Tables</span></a></li>
+<li class="toclevel-2 tocsection-32"><a href="#Pull_Up_of_Aggregates"><span class="tocnumber">9.2</span> <span class="toctext">Pull Up of Aggregates</span></a></li>
+<li class="toclevel-2 tocsection-33"><a href="#Converting_Outer_Joins_To_Inner_Joins"><span class="tocnumber">9.3</span> <span class="toctext">Converting Outer Joins To Inner Joins</span></a></li>
+<li class="toclevel-2 tocsection-34"><a href="#Removing_Redundant_Joins_When_Primary.2FForeign_Key_Relationships_Exist"><span class="tocnumber">9.4</span> <span class="toctext">Removing Redundant Joins When Primary/Foreign Key Relationships Exist</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction">Introduction</span></h1>
+<p>This document provides an architectural overview of how LucidDB join queries are optimized.  The goal of query optimization is to generate a query plan where operations are performed as early as possible in order to minimize the amount of data that needs to be processed during later phases of the plan.  This document describes the techniques used to achieve that goal.  Specifically, the following topics are discussed:
+</p>
+<ul><li> How filters are pushed to minimize rows processed
+</li><li> How projections are pushed in a query to minimize columns read
+</li><li> How star joins are optimized
+</li><li> How join ordering is determined
+</li><li> How outer joins are optimized
+</li><li> How redundant joins are removed
+</li></ul>
+<p>Determining whether star joins should be used and the optimal join ordering are cost-based decisions.  All other aspects of join optimization are determined using heuristics.  The cost-based components utilize data statistics.  This document will also describe how those statistics are used.
+</p>
+<h1> <span class="mw-headline" id="Filters">Filters</span></h1>
+<p>Filters can be specified in a query either in the WHERE or ON clause.  The goal of the optimizer is to push these filters so they're closest to the node that they apply to.  In other words, filters that reference only a single table should be pushed down to the table the filter references.  Likewise, filters that reference multiple tables, i.e., join filters, should be pushed down to the join node that encompasses only the tables referenced in the join filter.  This way, the input sizes are reduced as you continue processing further up in the query tree.
+</p><p>In order to push filters, the LucidDB optimizer first needs to decompose the filters into a list of sub-filters that can be AND'd together.  That way, each sub-filter can be pushed independent of the other sub-filters in the list.
+</p><p>In the case where the sub-filter originates from an ON clause, the sub-filter either:
+</p>
+<ul><li> Gets pushed into the left join input
+</li><li> Gets pushed into the right join input
+</li><li> Remains in the join node where the filter originated
+</li></ul>
+<p>If the sub-filter originates from the WHERE clause, then with respect to the join node directly beneath the WHERE clause, the sub-filter is either:
+</p>
+<ul><li> Gets pushed into the left join input
+</li><li> Gets pushed into the right join input
+</li><li> Gets pushed into the join node
+</li><li> Remains in the WHERE clause
+</li></ul>
+<p>Whether a filter can be pushed depends on where the filter originated, and whether the join input is null generating.  The right input in a LEFT OUTER JOIN is null-generating, whereas for a RIGHT OUTER JOIN, it's the left input.  For a FULL OUTER join, both inputs are null-generating.
+</p><p>The following table describes the push-down rules.  These rules ensure correct query semantics.
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> Filter Pushing Rules
+</caption>
+<tr>
+<th width="100"> Filter Source
+</th>
+<th width="200"> Push To Left Join Input
+</th>
+<th width="200"> Push To Right Join Input
+</th>
+<th width="200"> Push To Join
+</th>
+<th width="200"> Filter Stays Where It Is
+</th></tr>
+<tr>
+<td> WHERE clause </td>
+<td> Left input is not null-generating, and filter only references tables in the left input </td>
+<td> Right input is not null-generating, and filter only references tables in the right input </td>
+<td> Filter cannot be pushed to either left or right input, and the join is an INNER join </td>
+<td> None of the other conditions apply
+</td></tr>
+<tr>
+<td> ON clause </td>
+<td> Right input is not null-generating, and filter only references tables in the left input </td>
+<td> Left input is not null-generating, and filter only references tables in the right input </td>
+<td>  Same as <i>"Filter Stays Where It Is"</i> </td>
+<td> None of the other conditions apply
+</td></tr></table>
+<p><br />
+As filters get pushed down in the query tree, these rules are recursively applied until no further pushing is possible.
+</p>
+<h1> <span class="mw-headline" id="Projections">Projections</span></h1>
+<h2> <span class="mw-headline" id="Push_Down">Push Down</span></h2>
+<p>There are actually two goals the optimizer attempts to achieve with respect to projections.  The obvious one is it is desirable to push projections so only the columns actually referenced in a query are read during table scans.  This entails pushing projects past the following operations:
+</p>
+<ul><li> unions
+</li><li> intersects
+</li><li> except
+</li><li> joins
+</li><li> filters
+</li></ul>
+<p>Pushing projections entails examining all expressions referenced in either the projection list or filters in the query, and extracting all the individual columns referenced within the expressions.  Each of those column references is then pushed down to the table that the column originates from.  As a result, the only columns read from each table are either those that appear in the final projection list of the query, or those that are referenced in filters applied after the table scan.  Likewise, once a join has been processed, then we can further project the result of the join to exclude columns that are no longer referenced in subsequent joins or the final projection list.
+</p>
+<h2> <span class="mw-headline" id="Pull_Up">Pull Up</span></h2>
+<p>The other goal of optimization, with respect to projections, is to pull up projections so queries referencing views and subqueries in the FROM clause can be optimized as a single N-way join, instead of multiple M-way joins, where M &lt; N.  This allows the optimizer to consider a wider range of join orderings.  A view definition always contains a projection.  Therefore, once the view reference in the query is unfolded, the query tree contains a projection in the middle of the tree.  By pulling up that projection, the joins referenced in the view can be combined with the joins in the rest of the query.
+</p><p>The following diagram illustrates this.  By pulling up the projection that results after unfolding the view, the optimizer can now determine the optimal join ordering for a single 3-way join, instead two 2-way joins.  In other words, T2 and T3 do not need to be joined before either is joined with T1.
+</p>
+<pre>   Project           Project                  Project
+     |                 |                        |
+    Join              Join                     Join
+   /    \    ==&gt;     /    \          ==&gt;      /    \
+  T1     V          T1   Project             T1   Join
+                            |                    /    \
+                          Join                  T2    T3
+                         /    \
+                        T2    T3
+</pre>
+<p>The same idea applies to subqueries in the FROM clause.  The projection list in the subquery can also be pulled up.
+</p><p>Pulling up projections is also beneficial because it means that if there is a complex expression in one of these nested projections, the evaluation of those complex projection expressions can be deferred until the final result row is constructed.
+</p>
+<pre>     Join                         Project(references from X, F(C1,C2))
+    /    \                  ==&gt;         |
+   X   Project(F(C1,C2))               Join
+          |                           /    \
+          Y                          X   Project(C1,C2)
+                                            |
+                                            Y
+</pre>
+<p>There is one case, however, where projections aren't pulled up, which is when the projection originates from a null-generating input in an outer join.  For example, none of the following projections can be pulled up:
+</p>
+<pre>   Left Outer Join        Right Outer Join        Full Outer Join
+      /     \                 /      \               /      \
+     X    Project          Project    Y          Project   Project
+             |                |                     |         |
+             Y                X                     X         Y
+</pre>
+<p>Otherwise, if these projections contain expressions involving the columns originating from the null input, then by deferring evaluation of an expression involving the null value, an incorrect query result can be returned.
+</p><p>Note that by pulling up projection expressions in the case where the projection expression is later referenced in a join filter, that results in the expression being evaluated twice.  In the example below, by pulling up the projection expression <b>b*10</b>, that expression is evaluated twice, once in the join filter and then again in the final projection.
+</p>
+<pre>  select a, bb, c from A, (select b*10 as bb, c from B, C where b = c)
+      where a = bb;
+</pre>
+<pre>           Project(a,b*10,c)                   Project(a,bb,c)
+                   |                                 |
+              Join(a=b*10)                       Join(a=bb)
+              /         \                       /          \
+      Project(a)  Join(b=c)                 Project(a)  Project(b*10,c)
+          |       /       \                     |               |  
+          A   Project(b)  Project(c)            A           Join(b=c)
+                 |          |                               /       \
+                 B          C                         Project(b)   Project(c)
+                                                          |            |
+                                                          B            C
+         <b>Query Tree With Pull Up</b>             <b>Query Tree Without Pull Up</b>
+</pre>
+<p>We need to do the pull up in these cases because otherwise, as noted earlier, the join combinations available to the optimizer are limited and can possibly result in cartesian product joins.  Consider the following example:
+</p>
+<pre>  select aa, b, c from (select a*10 as aa from A), B, C
+      where aa = c and b = c;
+</pre>
+<pre>           Project(a*10,b,c)                   Project(aa,b,c)
+                   |                                 |
+           Join(a*10=c,b=c)                    Join(aa=c,b=c)
+           /         \                          /          \
+        Join          C                  Project(a*10,b) Project(c)
+       /    \                                  |            |
+Project(a) Project(b)                        Join           C
+   |          |                             /    \
+   A          B                     Project(a)  Project(b)
+                                       |           |
+                                       A           B
+                                                        
+ <b>Query Tree With Pull Up</b>                 <b>Query Tree Without Pull Up</b>
+</pre>
+<p>By not pulling up the projection containing the expression <b>a*10</b>, the optimizer is forced to join tables A and B together before joining with C.  Since there are no join filters between A and B, the join between those two tables ends up being a cartesian join.
+</p>
+<h1> <span class="mw-headline" id="Star_Joins">Star Joins</span></h1>
+<h2> <span class="mw-headline" id="Semijoins">Semijoins</span></h2>
+<p>LucidDB optimizes star joins by utilizing semijoins.  The idea here is if you have a join between a fact table and a dimension table, and the dimension table is filtered, then you need not read the entire fact table.  Instead, you only need to read the subset of the fact table that will join with the filtered subset from the dimension table.  The reduced subset of the fact table, which is the result of the semijoin, can then be joined with the dimension table to retrieve the necessary columns from that table.
+</p><p>For example, if <i>sales</i> is the fact table and <i>product</i> is the dimension table,
+</p>
+<pre>  SELECT * from sales s, product p
+     WHERE s.product_id = p.id and p.size = 'S';
+</pre>
+<p>then using a semijoin on the above query would result in reading only those rows from the <i>sales</i> table that join with <i>product</i> that are small in size.
+</p><p>LucidDB processes semijoins by doing a series of bitmap index lookups.  Therefore, there must be a bitmap index defined on the columns in the fact table that join with the dimension table.  The unique set of dimension columns that join with the fact table serve as lookup keys into the index scan.  In other words, one bitmap index lookup is done for each set of dimension column join values.  The rids returned from these lookups are then merged together, forming the list of reduced rids from the fact table.
+</p><p>The stream of lookup keys from the dimension table that feed into the fact table's index scan are created as follows:
+</p>
+<ol><li> First, the columns corresponding to the dimension join keys are projected from the result of the filtered dimension table scan.  In doing so, if necessary, the dimension columns are cast so their types match the types of the fact table join columns.
+</li><li> Furthermore, any null keys are filtered out.  Otherwise, the index lookup will match on null keys in the fact table.  If the columns are non-nullable, then filtering is not required.
+</li><li> Then, duplicate key values are removed to avoid redundant lookups.  This can be skipped if the keys correspond to either the primary key or a non-null unique constraint defined on the dimension table.
+</li><li> Finally, the keys are sorted.  That way, the index lookups are localized.
+</li></ol>
+<p>Note that semijoins are also only used when you have an INNER equality join between two inputs.  In general, neither the fact or dimension tables in a semijoin can be null generating inputs from any outer join within the query.  The one exception is if the dimension table is the result of a full outer join.
+</p>
+<h3> <span class="mw-headline" id="Multiple_Dimension_Tables">Multiple Dimension Tables</span></h3>
+<p>If a fact table joins with multiple dimension tables, then it's possible to use each of those dimensions to filter the fact table.  In the example below, the semijoin limits the rows scanned from <i>sales</i> to the rows that join with <i>product</i> that are small in size and <i>salepersons</i> that are older than 30.
+</p>
+<pre>  SELECT * FROM sales s, product p, salesperson sp
+     WHERE
+        s.product_id = p.id AND
+        s.salesperson_id = sp.id AND
+        p.size = 'S' AND sp.age &gt;=30;
+</pre>
+<p>Bitmap indexes must exist on <i>sales.product_id</i> and <i>sales.salesperson_id</i>.  The intersection of the rids returned from each of those index lookups is the subset of qualifying rows from <i>sales</i>.
+</p>
+<h3> <span class="mw-headline" id="Semijoins_and_Table_Filters">Semijoins and Table Filters</span></h3>
+<p>It's also possible to combine the lookup used to process a semijoin with other index lookups on the fact table, by taking the intersection of the rids returned from the semijoin lookups with the rids returned from the regular index lookups.  In the example below, if there's also an index on <i>sales.id</i>, the index lookup used to filter that column can be intersected with the index lookup for the semijoin with <i>product</i>.
+</p>
+<pre>  SELECT * FROM sales s, product p
+     WHERE s.product_id = p.id AND p.size = 'S'
+     AND s.id &lt; 100;
+</pre>
+<h3> <span class="mw-headline" id="Chained_Semijoins">Chained Semijoins</span></h3>
+<p>Semijoins can also be used to process snowflake joins.  Here's the scenario.  Dimension table, dimA, joins with a filtered dimension table, dimB, and dimA joins with the fact table.  A semijoin can be used to filter both the fact table and dimA.  In the example below, <i>customer</i> is dimA, <i>state</i> is dimB, and <i>sales</i> is the fact table.
+</p>
+<pre>  SELECT * FROM sales s, state st, customer c
+     WHERE s.customer_id = c.customer_id AND c.city = st.city
+        AND st.state = 'New York';
+</pre>
+<p>The filtered scan from <i>state</i> feeds into an index scan on <i>customer.city</i>.  That constitutes the first semijoin.  The result of that semijoin is then chained into a second semijoin that does an index scan on <i>sales.customer_id</i>.
+</p>
+<h3> <span class="mw-headline" id="IN_Filters">IN Filters</span></h3>
+<p>Semijoins can also be used to process IN filters.  If your query contains an IN filter with more than 20 elements, LucidDB converts the query into an equivalent join query.  By converting the large IN list into a join, LucidDB avoids any internal limits in the expression evaluator.
+</p><p>Provided the appropriate index is available, the join query can be then processed using a semijoin.  The elements in the IN list are aggregated to remove duplicates, sorted for locality of reference, and then fed into an index scan on the filtering column.
+</p><p>Similarly, if a query contains a "&lt;columm&gt; IN &lt;subquery&gt;" filter, then that filter can also be processed using a semijoin.  The result of the subquery is aggregated, sorted, and fed into an index scan on the filtering column.
+</p>
+<h2> <span class="mw-headline" id="How_the_Optimizer_Decides_Which_Semijoins_To_Use">How the Optimizer Decides Which Semijoins To Use</span></h2>
+<p>As described in the section on <a href="#Chained_Semijoins"> chained semijoins</a>, it is possible to apply a sequence of semijoins on a single table.  The LucidDB optimizer uses a mix of a cost-based and heuristic algorithm to limit the semijoin chains it considers.  The algorithm is as follows:
+</p>
+<ol><li> Sort the tables by the cost of scanning each table
+</li><li> Iterate through each table in descending cost order
+</li><li> Look for the best semijoin available to filter that table
+</li><li> If none exists, move to the next table
+</li><li> If a semijoin is available, assign the semijoin to the table, go back to step 1, and recompute the costs of scanning each table.  The cost should now take into consideration the semijoin that was just chosen, as well as previous ones chosen.  Note that the addition of semijoins can significantly reduce the cost of scanning large tables, resulting in those tables appearing earlier in the new sorted list.
+</li></ol>
+<p>The outer loop iterates a maximum of 10 times, so the longest chain that would ever be produced by the optimizer is of length 10.  
+</p><p>When trying to decide if a semijoin should be used on a particular fact table, the optimizer decides this based on whether the semijoin reduces the size of the fact table sufficiently enough to outweigh the additional cost of scanning the dimension table.  It assigns a score to each candidate semijoin.  The score is the ratio of the number of rows from the fact table that don't need to be read (due to use of the semijoin) over the cost of scanning the dimension table.  If the score exceeds a fixed threshold value, then the semijoin is a viable candidate.  Therefore, if the fact table isn't sufficiently filtered, or the cost of the dimension scan is too high, then the semijoin is not considered.  The semijoin with the largest score is the one that's chosen for that table.
+</p><p>The consequence of these algorithms is that the following semijoins are considered:
+</p>
+<ul><li> Small table (with constraints) filters medium table (without constraints), which filters big table
+</li><li> Small table (with constraints) filters big table (without constraints), which filters medium table
+</li></ul>
+<p>But the following likely won't be:
+</p>
+<ul><li> Big table (with constraints) filters small table (without constraints), which filters medium table
+</li></ul>
+<p>because the cost of scanning the big table will be large and the savings for the small table will be low. This results in a low score that likely is below the fixed threshold.  Given that the first semijoin (big filters small) isn't considered, the second one (big filters small, which filters medium) doesn't even come into the picture.
+</p>
+<h2> <span class="mw-headline" id="Identifying_Semijoins_in_EXPLAIN_PLAN">Identifying Semijoins in EXPLAIN PLAN</span></h2>
+<h3> <span class="mw-headline" id="Basics">Basics</span></h3>
+<p>The goal of this section is not to understand every detail of the <a href="/wiki/LucidDbExplainPlan" title="LucidDbExplainPlan">EXPLAIN PLAN</a> output for a semijoin, but rather to describe enough so you can use EXPLAIN PLAN to verify whether or not your query is using semijoins.  The easiest way to describe this is through an example.  If you're not familiar with some of the basic constructs in the EXPLAIN PLAN output, see <a href="/wiki/Diagnosing_Slow_Queries_Using_Explain_Plan#Run_EXPLAIN_PLAN_and_Interpret_the_Output" title="Diagnosing Slow Queries Using Explain Plan" class="mw-redirect">Diagnosing Slow Queries Using Explain Plan#Run EXPLAIN PLAN and Interpret the Output</a>.
+</p><p>Consider the following query:
+</p>
+<pre>   EXPLAIN PLAN FOR
+   SELECT * from sales s, product p
+    WHERE s.product_id = p.id and p.size = 'S';
+</pre>
+<p>This is what the explain output looks like.  Note that the right-hand side is truncated for readability.
+</p>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 5, 6, 7, 8&#93;&#93;, outputRowType=&#91;RecordType(INTEGER SID, ...
+'    LhxJoinRel(leftKeys=&#91;&#91;1&#93;&#93;, rightKeys=&#91;&#91;4&#93;&#93;, joinType=&#91;INNER&#91;)'
+'      <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, projection=&#91;*&#91;, clustered indexes ...
+'        <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'          <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, index=&#91;I_SALES_PID&#93;, projection=&#91;*&#93;, ...
+'            <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'              <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ID) NOT NULL&#93;)'
+'                <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>PRODUCT</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                  <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>PRODUCT</b>&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, ... 
+'                    <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, ...
+'        LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'          LcsIndexSearchRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, projection=&#91;*&#93;, ...
+'            FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'
+</pre>
+<p>The operations (or RelNodes) relevant to the semijoin are highlighted in bold. Note that <i>product.id</i> is a primary key.
+</p><p>Working bottom-up, here's what each of the RelNodes corresponds to.  The first three RelNodes execute the filtered scan on the dimension table, <i>product</i>, projecting out the <i>id</i> column.
+</p>
+<ul><li> <b>FennelValuesRel</b> - Passes in the value 'S' for the <i>size</i> filter that used for the index search
+</li><li> <b>LcsIndexSearchRel</b> on <b>PRODUCT</b> - Index lookup to process the <i>size</i> filter
+</li><li> <b>LcsRowScanRel</b> on <b>PRODUCT</b> - Reads the rows filtered by the index lookup, returning only the <b>PRODUCT_ID</b> column.  Note that the projection is done as part of this row scan rather than post-row scan in the <b>FennelReshapeRel</b> that follows.
+</li><li> <b>FennelReshapeRel</b> - Casts the <i>product.id</i> column from not nullable to nullable.  This is needed because <i>sales.product_id</i> happens to be nullable, whereas <i>product.id</i> is not nullable.  Because <i>product.id</i> is not nullable, there's no need to do additional filtering to ignore rows where <i>product.id</i> is null.
+</li><li> <b>FennelSortRel</b> - Sorts the <i>product.id</i> column.  Since the column is a primary key, there's no need to remove duplicates.  Otherwise, there would have been a <b>LhxAggRel</b> feeding into the sort.
+</li><li> <b>LcsIndexSearchRel</b> on <b>SALES</b> - Performs the index lookup on <i>sales.product_id</i> using the <i>product.id</i> values.
+</li><li> <b>LcsIndexMergeRel</b> - Combines the individual lookups from the index scans on the <i>sales</i> index into a single list of rid values.  This corresponds to the subset of the <i>sales</i> table that needs to be read.
+</li><li> <b>LcsRowScanRel</b> on <b>SALES</b> - Reads the filtered subset of rows from the fact table
+</li></ul>
+<h3> <span class="mw-headline" id="Other_Examples">Other Examples</span></h3>
+<p>Now that you understand the basics, here are some more complex examples.
+</p>
+<h4> <span class="mw-headline" id="Multiple_Dimension_Tables_Example">Multiple Dimension Tables Example</span></h4>
+<p>In this example, two separate semijoins are intersected together, as described <a href="#Multiple_Dimension_Tables">above</a>.
+</p>
+<pre>  EXPLAIN PLAN FOR
+  SELECT * FROM sales s, product p, salesperson sp
+    WHERE
+       s.product_id = p.id AND
+       s.salesperson_id = sp.id AND
+       p.size = 'S' AND sp.age &gt;=30;
+</pre>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11&#93;&#93;, ...
+'    LhxJoinRel(leftKeys=&#91;&#91;2&#93;&#93;, rightKeys=&#91;&#91;3&#93;&#93;, joinType=&#91;INNER&#93;)'
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 5, 6, 7, 8&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ...
+'        LhxJoinRel(leftKeys=&#91;&#91;1&#93;&#93;, rightKeys=&#91;&#91;4&#93;&#93;, joinType=&#91;INNER&#93;)'
+'          LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'            <b>LcsIndexIntersectRel</b>(startRidParamId=&#91;2&#93;, rowLimitParamId=&#91;3&#93;)'
+'              <span style="color:#FF0000"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;2&#93;, segmentLimitParamId=&#91;3&#93;, ridLimitParamId=&#91;1&#93;)'
+'                <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_SP&#93;, projection=&#91;*&#93;, ...
+'                  <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                    <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ID) ...
+'                      <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALESPERSON</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                        <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 30, '+', null }&#93;&#93;)'</span>
+'              <span style="color:#3333FF"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;2&#93;, segmentLimitParamId=&#91;3&#93;, ridLimitParamId=&#91;4&#93;)'
+'                <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_PID&#93;, projection=&#91;*&#93;, ...
+'                  <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                    <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ID) ...
+'                      <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>PRODUCT</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                        <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, ...
+'                          <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'</span>
+'          FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, ...
+'            LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, projection=&#91;*&amp;#93, clustered indexes ...
+'              LcsIndexSearchRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, ...
+'                FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, ...
+'        LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, SALESPERSON&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'          FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 30, '+', null }&#93;&#93;)'
+</pre>
+<p>The portion in red corresponds to the semijoin on <i>salesperson</i>, whereas the portion in blue corresponds to the semijoin on <i>product</i>.  The <b>LcsIndexIntersectRel</b> is the RelNode that intersects the index scans from the two semijoins.
+</p><p>Note that an index is not used to process the <i>age</i> filter on <i>salesperson</i>.  The filter is applied as part of the table scan.
+</p>
+<h4> <span class="mw-headline" id="Semijoin_and_Table_Filter_Example">Semijoin and Table Filter Example</span></h4>
+<p>In this example, two index lookups are used -- one for a semijoin and the second for filtering.  See <a href="#Semijoins_and_Table_Filters">Semijoins and Table Filters</a> for details.
+</p>
+<pre>  EXPLAIN PLAN FOR
+  SELECT * FROM sales s, product p
+    WHERE s.product_id = p.id AND
+       p.size = 'S' and s.id &lt; 100;
+</pre>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 5, 6, 7, 8&#93;&#93;, outputRowType=&#91;RecordType(INTEGER SID, ...
+'    LhxJoinRel(leftKeys=&#91;&#91;1&#93;&#93;, rightKeys=&#91;&#91;4&#93;&#93;, joinType=&#91;INNER&#93;)'
+'      LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'        <b>LcsIndexIntersectRel</b>(startRidParamId=&#91;2&#93;, rowLimitParamId=&#91;3&#93;)'
+'          <span style="color:#FF0000"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;2&#93;, segmentLimitParamId=&#91;3&#93;, ridLimitParamId=&#91;1&#93;)'
+'            <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_PID&#93;, projection=&#91;*&#93;, ...
+'              <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ID) NOT NULL&#93;)'
+'                  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>PRODUCT</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                    <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, ...
+'                      <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'</span>
+'          <span style="color:#3333FF"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;2&#93;, segmentLimitParamId=&#91;3&#93;, ridLimitParamId=&#91;4&#93;)'
+'            <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, index=&#91;I_SALES_ID&#93;, projection=&#91;*&#93;, ...
+'              <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '(', null, ')', 100 }&#93;&#93;)'</span>
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, ...
+'        LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'          LcsIndexSearchRel(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, index=&#91;I_PRODUCT_SIZE&#93;, projection=&#91;*&#93;, ...
+'            FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 'S', '&#93;', 'S' }&#93;&#93;)'
+</pre>
+<p>The portion in red corresponds to the semijoin with <i>product</i>, whereas the portion in blue corresponds to the index lookup on <i>sales.id</i>.  The <b>LcsIndexIntersectRel</b> intersects the two index scans.
+</p>
+<h4> <span class="mw-headline" id="Chained_Semijoin_Example">Chained Semijoin Example</span></h4>
+<p>See the section <a href="#Chained_Semijoins">above</a> for a discussion of how chained semijoins work.  Using that example, here's what the explain output for a chained semijoin looks like.
+</p>
+<pre>  EXPLAIN PLAN FOR
+  SELECT * FROM sales s, state st, customer c
+    WHERE s.customer_id = c.customer_id AND c.city = st.city
+       AND st.state = 'New York';
+</pre>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 8, 9, 5, 6, 7&#93;&#93;, outputRowType=&#91;RecordType(INTEGER SID, ...
+'    LhxJoinRel(leftKeys=&#91;&#91;3&#93;&#93;, rightKeys=&#91;&#91;5&#93;&#93;, joinType=&#91;INNER&#93;)'
+'      LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'        <span style="color:#FF0000"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;2&#93;)'
+'          <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, index=&#91;I_SALES_CUST&#93;, projection=&#91;*&#93;, ...
+'            <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'              <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER CUSTOMER_ID) NOT NULL&#93;)'
+'                <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>CUSTOMER</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...</span>
+'                  <span style="color:#3333FF"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ...
+'                    <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>CUSTOMER</b>&#93;&#93;, index=&#91;I_CUSTOMER_CITY&#93;, ...
+'                      <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                        <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>STATE</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                          <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'</span>
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, ...
+'        LhxJoinRel(leftKeys=&#91;&#91;2&#93;&#93;, rightKeys=&#91;&#91;0&#93;&#93;, joinType=&#91;INNER&#93;)'
+'          LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'            <span style="color:#3333FF"><b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'              <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>CUSTOMER</b>&#93;&#93;, index=&#91;I_CUSTOMER_CITY&#93;, ...
+'                <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>STATE</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes ...
+'                    <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'</span>
+'          LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, STATE&#93;&#93;, projection=&#91;*&#93;, clustered indexes ...
+'            FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'
+</pre>
+<p>The portions in blue represent the semijoin between <i>customer</i> and <i>state</i>.  The portion in red represents the chained semijoin on <i>sales</i>.  Notice that the blue semijoin is done twice -- once to filter the <i>customer</i> table by itself, and then a second time to filter the <i>customer</i> table when it's used to filter the <i>sales</i> table.  Although not shown in this example, LucidDB does support <a href="/wiki/LucidDbCommonRelationalSubExpressionMaterialization" title="LucidDbCommonRelationalSubExpressionMaterialization">temporary materialization of query sub-results</a>.  So, if it makes sense from a cost perspective, it will avoid the second execution and simply read the result of the row scan on <i>customer</i> from a temporary buffer.
+</p><p>Notice also that the portion in blue does not include a <b>FennelReshapeRel</b>.  That's because both <b>CUSTOMER.CITY</b> and <b>STATE.CITY</b> have the same type, and both happen to be non-nullable.
+</p>
+<h4> <span class="mw-headline" id="IN_Filter_Examples">IN Filter Examples</span></h4>
+<p>Here's what an IN filter with a large number of elements in the IN list looks like, when it's processed using a semijoin.
+</p>
+<pre> EXPLAIN PLAN FOR
+ SELECT * FROM sales WHERE customer_id IN (1, 2, 3, ..., 100, 200, 300);
+</pre>
+<pre>'FennelToIteratorConverter'
+'  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, projection=&#91;*&#91;, clustered indexes= ...
+'    <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'      <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_CUST&#93;, projection=&#91;*&#93;, ...
+'        <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'          <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ROW_VALUE) NOT NULL&#93;)'
+'            <b>LhxAggRel</b>(groupCount=&#91;1&#93;)'
+'              <b>FennelValuesRel</b>(tuples=&#91;&#91;{ 1 }, { 2 }, { 3 }, { 4 }, { 5 }, { 6 }, { 7 }, { 8 }, { 9 }, { 10 }, ...
+</pre>
+<p>In this case, the <b>FennelValuesRel</b> is used to pass along the elements in the IN list, and then the <b>LhxAggRel</b> is used to remove duplicates.  The rest of the plan highlighted in bold follows the same pattern seen in the earlier examples, where the list of distinct IN list elements become the key values used in the index lookups on <b>SALES</b>.
+</p><p>Here's what the plan looks like when the filter is an IN &lt;subquery&gt; filter.
+</p>
+<pre> EXPLAIN PLAN FOR
+ SELECT * FROM sales WHERE customer_id IN (SELECT id FROM customer WHERE id &lt; 10);
+</pre>
+<pre>'FennelToIteratorConverter'
+'  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>SALES</b>&#93;&#93;, projection=&#91;*&#93;, clustered indexes= ...
+'    <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'      <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_CUST&#93;, projection=&#91;*&#93;, ...
+'        <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'          <b>FennelReshapeRel</b>(projection=&#91;&#91;0&#93;&#93;, outputRowType=[RecordType(INTEGER ID) NOT NULL])'
+'            <b>LhxAggRel</b>(groupCount=&#91;1&#93;)'
+'              <span style="color:#FF0000"><b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, <b>CUSTOMER</b>&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes= ...
+'                <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;2&#93;)'
+'                  <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, index= ...
+'                    <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '-', null, ')', 10 }&#93;&#93;)'</span>
+</pre>
+<p>The portion in red represents processing of the subquery.  That result then becomes the key values used to filter <b>SALES</b>.
+</p>
+<h1> <span class="mw-headline" id="Cost-Based_Join_Ordering_Selection">Cost-Based Join Ordering Selection</span></h1>
+<p>Having decided which semijoins to use, the next phase in join optimization is to determine the optimal join ordering.  The most simplistic approach here would be to generate all possible join combinations.  For an N-way join, this would be N-factorial possible combinations.  This is expensive if N is large, and results in the optimizer wasting cycles generating join combinations that are clearly non-optimal, e.g., combinations involving cartesian joins.
+</p><p>The LucidDB optimizer uses a more pragmatic algorithm.  The general idea is N different join orderings are generated.  Each of the N join orderings consists of one of the tables in the join appearing as the first table in the ordering (subject to outer join and semijoin restrictions to be described in later sections). The order of the remaining tables is determined by finding the best table to add from the remaining tables that haven't been joined yet.  Preference is given to tables that have an equality join with the tables that are already in the ordering.  If there are multiple tables with equality join filters, then the table that contains the join keys with the highest cardinality is chosen first.  This is repeated until all tables have been added into the join ordering.  By first considering join combinations where there exists a join condition between tables, cartesian join combinations are only considered as a last resort.
+</p><p>When adding a new table to a join ordering, the optimizer has the option of either adding the table to the end of the ordering or in the middle, depending on which yields a lower cost plan.  Adding the table to the end of the ordering means that the new table is being joined with the result of the current ordering.  In the example below, C has been added to the end of the current join ordering, (A join B).
+</p>
+<pre>         Join                              Join
+         /  \                             /    \
+        A    B                          Join    C
+                                        /  \
+                                       A    B
+<b>Current Join Ordering</b>    <b>C Added to the End of the Current Join Ordering</b>
+</pre>
+<p>When adding a table to the end of an ordering, if the new table has more rows than the number of rows in the current join ordering, then the new table becomes the left input in the new ordering, and the current join ordering becomes the right input.  This way, if a hash join is used to process the join, the smaller input is the build side of the hash join.  Or if a nested loop join is used, the temporary index is built on the smaller input.
+</p><p>So, in the example above, if C is larger than the result of the join between A and B, then the new join ordering is the one below, rather than the one shown above.
+</p>
+<pre>         Join
+        /    \
+       C    Join
+            /  \
+           A    B
+</pre>
+<p>It may be beneficial to push a table into the middle of a join if one of the inputs in the current join ordering contains all of the tables that the new table joins with.  That way, that particular join will be done earlier in the ordering.  If the new table doesn't join with any of the tables in the current join ordering, then the optimizer arbitrarily pushes the table into the left input.  Pushing the new table into a join input, X, is done recursively.  In other words, the optimizer now has a choice between adding the new table at the end of the join ordering corresponding to input X, or in the middle of that join.  For example, if the current join ordering is the one shown below, and table D joins with table C, then the optimizer will consider pushing table D into the right input of JoinX.
+</p>
+<pre>       JoinX
+       /   \
+      A   JoinY
+          /   \
+         B     C
+</pre>
+<p>Table D can then either be added to the end of that join ordering (B join C), or it can be pushed into the right input of JoinY, since D joins with C.
+</p><p>The join on the left is the result of adding D to the end of JoinX's right input, while the one on the right is the result of pushing D to JoinY's right input.  In both cases, assume D is the smaller table, so it appears on the right-hand side of the resulting joins.
+</p>
+<pre>      Join                 Join
+     /    \               /    \
+    A    Join            A    Join
+        /    \               /    \
+      Join    D             B    Join
+     /    \                     /    \
+    B      C                   C      D
+</pre>
+<p>The semijoins selected in the first phase will influence the cost of the plans generated in the second phase.  From the N join orderings that are generated, the lowest cost one is selected.
+</p><p>Let's do a reality check on the algorithm just described, and see what type of join ordering would be generated if you have a star join with multiple dimension tables, all joining with a fact table.  Let's consider the ordering for the case where the first table in the ordering is the fact table.  When deciding which table to join next, the optimizer can choose from amongst each of the joining dimension tables.  If all join with the fact table using equality join filters, then the decision on which to join first is based on which dimension table has the highest cardinality join keys.  If the dimension join keys are unique, which generally is the case, then the largest dimension table will be chosen.  Since it's generally smaller than the fact table, it appears on the right hand side of that first join.  The next table chosen will be the next largest dimension table.  Again, since it's smaller than the result of the join between the fact table and the largest dimension table, it appears on the right hand side of this new join.  This repeats for the remaining dimension tables, and the resulting join is a left-deep join with the fact table as the first table, followed by the dimension tables ordered from largest to smallest.
+</p><p>Note that when adding D2 to (F join D1), the optimizer will consider pushing D2 into the middle of that join.  But as you'll see in the next section, the cost of the plan ((F join D1) join D2) is the same as ((F join D2) join D1), so the first one takes precedence.
+</p><p>If you would like to see the join ordering that the optimizer has selected, execute EXPLAIN PLAN, and see <a href="/wiki/Diagnosing_Slow_Queries_Using_Explain_Plan#Run_EXPLAIN_PLAN_and_Interpret_the_Output" title="Diagnosing Slow Queries Using Explain Plan" class="mw-redirect">Diagnosing Slow Queries Using Explain Plan#Run EXPLAIN PLAN and Interpret the Output</a> for an overview on how to interpret the output.
+</p>
+<h1> <span class="mw-headline" id="Cost_Functions">Cost Functions</span></h1>
+<p>When optimizing join queries, the LucidDB optimizer utilizes cost functions as a basis for comparing one query plan against another.  These cost functions compute estimates for all the different relational expressions.  A relational expression is a tree of relational operators (e.g., filter, group by, join, project, table scan, etc.)  The cost functions use data statistics, if they're available.  The accuracy of these estimates is dependent on the accuracy of the statistics.  These functions all contribute towards estimating the number of rows returned by the different relational expressions, which is important because the cost of executing a particular query plan in LucidDB is primarily a measure of the number of rows processed by the plan. 
+</p><p>For example, an estimate of the number of rows returned from a table scan without filters is in fact the total number of rows in the table; whereas an estimate of the number of rows returned from that same table scan but with filters is the number of rows in the table multiplied by a fractional value that estimates the percentage of rows that qualify the filter.  If you have two joins that are identical except one has a full table scan as one of its inputs and the other has the table scan with filters instead, then the latter is less costly because it has the smaller join input.  Therefore, this correlates with the optimizer's goal of filtering as much data as possible early on during processing of joins.
+</p><p>Data statistics are gathered by running ANALYZE TABLE.  See <a href="/wiki/LucidDbDataStorageAndAccess#Analyze_Table" title="LucidDbDataStorageAndAccess">LucidDbDataStorageAndAccess#Analyze Table</a> for details on the types of statistics gathered.
+</p><p>The following table summarizes some of the cost functions used by the optimizer, with an example of where each function is used, in relation to the join ordering selection algorithm described in the previous section.
+</p><p><br />
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> LucidDB Cost Functions <i>(Partial List)</i>
+</caption>
+<tr>
+<th width="150"> Function
+</th>
+<th width="300"> Description
+</th>
+<th width="300"> Example Usage
+</th></tr>
+<tr>
+<td> Cumulative Cost </td>
+<td> Estimates the total cost of a relational expression </td>
+<td> Used to compare the cost of one join ordering against another
+</td></tr>
+<tr>
+<td> Row Count </td>
+<td> Estimates the number of rows returned by a relational expression </td>
+<td> Used to decide which input is the left vs right in a join
+</td></tr>
+<tr>
+<td> Selectivity </td>
+<td> Estimates the fraction of rows that qualify filters applied on a relational expression </td>
+<td> Used to compute row counts for operations involving filtering
+</td></tr>
+<tr>
+<td> Distinct Row Count </td>
+<td> Estimates the number of rows that would be produced by a GROUP BY on a set of columns, where the input into the GROUP BY is optionally filtered </td>
+<td> Used to compute the row count estimate for a join
+</td></tr></table>
+<p><br />
+For a given query, LucidDB caches the return values from calls into these cost functions.  Therefore, a function does not need to be evaluated multiple times during a given optimization instance, provided the same inputs are being passed into the function.
+</p><p>In cases when statistics aren't available, the cost functions will assign default <i>guesstimates</i>.  Depending on how close these estimates are to the values that would have been computed using actual statistics, that can influence the quality of the plans selected by the optimizer.
+</p><p>For example, if data distributions are unavailable for columns, the optimizer assigns a default value of .15 for equality predicates and .5 for greater than, less than predicates.  Note that the IS NULL predicate is treated like an equality predicate, so its default selectivity is also .15.
+</p><p>If statistics are not available, the LucidDB optimizer will try make the most out of the information that it does have.  One statistic that is always available is the row count for LucidDB tables.  LucidDB can also infer the distinct row count for columns that correspond to either primary keys or unique constraints on non-null columns.  As a result, provided the default selectivities described above are somewhat reasonable, LucidDB can  come up with fairly reasonable estimates for the result size of star joins.  This is because it assumes that the table containing the unique join columns is the dimension table, and therefore, the estimated row count for the join is the number of rows in the other join input, i.e., the fact table, after it has been filtered.  The fact table is filtered by whatever filters are applied on the table itself, as well as any semijoins.  The selectivity of the semijoin filters is the same as the selectivity of the table-level filters applied on the dimension tables.  For example, if a dimension table is filtered by 1/3, then the selectivity of a semijoin between a fact table and that dimension table is also 1/3.  Hence, the accuracy of the row count estimates in this case is dependent on the accuracy of the various table-level filters.
+</p><p>If column cardinalities are unavailable and the keys involved in the join are non-unique, then the estimated row count for a join with two equality join predicates is:
+</p>
+<pre>  (number of rows in the left join input) * (number of rows in the right join input) *
+      .15 * .15
+</pre>
+<p>.15 is multiplied twice because .15 is the default selectivity for an equality predicate, and the selectivity of two predicates AND'd together is the product of their individual selectivities.
+</p><p>If this join is the input into another join, then the estimate above is used to compute the row count returned from the subsequent join, as these functions recursively call one another on a relational expression's inputs.  Therefore, any inaccuracies in the estimates are exacerbated as they're used in the computations for these subsequent joins.  In other words, if you're executing a join between a few tables, inaccurate statistics may result in a non-optimal join ordering, but not one that will result in poor performance.  However, as the number of joins increases, the inaccuracies will compound, increasing the likelihood of the optimizer making a decision that can result in a poor-performing query.
+</p><p>Had statistics been available, the row count returned from that same join would have been the following instead:
+</p>
+<pre>  (number of rows in the left join input) * (number of rows in the right join input) /
+     max(number of distinct values in the left input's join keys,
+         number of distinct values in the right input's join keys)
+</pre>
+<p>The number of distinct values in a pair of keys is the product of the cardinalities of the individual keys.  Note that this formula works out to be the same as the estimate that's described above for a star join, in the case where statistics are unavailable.
+</p><p>As you've hopefully concluded by now, the quality of the query plans chosen by the optimizer is dependent on the availability of stats.  When stats aren't available, it should not come as a surprise if your query performs poorly.
+</p><p>Poor query plans can even result in queries that cannot execute to completion.  Hash joins operate by building a hash table on its right input.  See <a href="/wiki/LucidDbJoinImplementation#Partitoning" title="LucidDbJoinImplementation">LucidDbJoinImplementation#Partitoning</a>.  Unavailable or incorrect stats can cause the optimizer to choose as the right input into a hash join an input that contains a large number of duplicate key values.  If so, this could potentially lead to the hash recursion error.
+</p><p>The following table summarizes the scenarios discussed in this section.
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> Impact of Not Having Stats
+</caption>
+<tr>
+<th width="150"> Accurate Stats?
+</th>
+<th width="150"> Type of Query
+</th>
+<th width="300"> Formula Used to Estimate Join Result Sizes
+</th>
+<th width="300"> Quality of Resulting Plan
+</th></tr>
+<tr>
+<td> Yes </td>
+<td> Any </td>
+<td> (number of rows in left join input) * (number of rows in right join input) / max(number of distinct values in left input's join keys, number of distinct values in right input's join keys) </td>
+<td> Optimal
+</td></tr>
+<tr>
+<td> No </td>
+<td> Star Join </td>
+<td> number of rows in the fact table after applying table and semijoin filters; fact table is assumed to be the table without the unique keys </td>
+<td> Good, provided default table selectivities are reasonably close to actual selectivities
+</td></tr>
+<tr>
+<td> No </td>
+<td> Small number of joins, some of which are not star joins </td>
+<td> For non-star joins: (number of rows in left join input) * (number of rows in right join input) * default selectivity of join predicates </td>
+<td> Possibly non-optimal with some risk of poor performance
+</td></tr>
+<tr>
+<td> No </td>
+<td> Large number of joins, some of which are not star joins </td>
+<td> <i>same as above</i> </td>
+<td> Likely non-optimal with high risk of poor performance, and possibly even hash recursion errors
+</td></tr></table>
+<p><br />
+One other key point is that it's not only important that you have stats but that they be relatively up-to-date.  If stats are out-dated, that can potentially be worse than not having stats at all.  Let's consider the worst-case scenario.  Suppose that your stats indicate that your join columns have a single, unique value.  If so, the computed size of the join is the cross product of the two join input sizes.  However, suppose that the cardinality of the join key in one of the two join inputs is actually unique.  That means then that the actual size of the join result is the size of the larger join input.  Had statistics been unavailable, the estimated size of the join would have still been wrong, but its computed value would have been smaller than the estimate in the case of out-dated stats.
+</p>
+<h1> <span class="mw-headline" id="Outer_Joins">Outer Joins</span></h1>
+<p>Outer joins impose certain restrictions in the overall join ordering of a query.  This section describes  those restrictions.
+</p>
+<h2> <span class="mw-headline" id="Null_Generating_Inputs">Null Generating Inputs</span></h2>
+<p>The first restriction relates to how the tables referenced within a null-generating input are optimized.  The rule is that the tables within a null-generating input must be joined with one another before they can be joined with other tables in the query.  Otherwise, the query will return incorrect results.  Therefore, in the queries below, A and B, as well as C and D, must be joined with one another before they can be joined with any of the other tables in the query.
+</p>
+<pre>  select * from
+     X left outer join (select * from A, B where A.a = B.b) Y
+     on X.x = Y.y;
+</pre>
+<pre>  select * from
+     (select * from A, B where A.a = B.b) X right outer join Y
+     on X.x = Y.y;
+</pre>
+<pre>  select * from
+     (select * from A, B where A.a = B.b) X full outer join
+     (select * from C, D where C.c = D.d) Y
+     on X.a = Y.d and X.b = Y.c;
+</pre>
+<p>In other words, for the last query, the join ordering on the left is valid, but the one on the right is invalid.
+</p>
+<pre>       Join                   Join
+      /    \                 /    \
+    Join  Join             Join  Join
+    /  \  /  \             /  \  /  \
+    B  A  D  C             A  D  B  C
+      <b>Valid</b>                 <b>Invalid</b>
+</pre>
+<h2> <span class="mw-headline" id="Outer_Join_Dependencies">Outer Join Dependencies</span></h2>
+<p>The second restriction relates to outer join dependencies in the case of LEFT and RIGHT outer joins.  For those joins, the null-generating input of the join cannot be joined with other tables if it hasn't yet been joined with the tables that are part of its outer join.  Again, this is required to ensure correct query results.
+</p><p>For example, if you have a query like the following:
+</p>
+<pre>  select * from
+     (select * from A right outer join B on A.a = B.b) A,
+     (select * from C left outer join D on C.c = D.d) Y
+     where X.a = Y.c;
+</pre>
+<p>then the join ordering on the left is valid, but the one on the right isn't, since A is dependent on B, and D is dependent on C.  In the plan on the right, A is joined with C before it's joined with B.
+</p>
+<pre>        Left Join               Left Join
+         /     \                 /     \
+       Join     D           Right Join  D
+      /    \                  /    \
+Right Join  C               Join    B
+   /   \                   /    \
+  A     B                 A      C
+        <b>Valid</b>                 <b>Invalid</b>
+</pre>
+<h2> <span class="mw-headline" id="Swapping_Inputs">Swapping Inputs</span></h2>
+<p>It may be advantageous for a null-generating input in a LEFT OUTER JOIN to be the left input in the join, e.g., if it's the larger of the two join inputs.  If so, then that join needs to be converted to a RIGHT OUTER JOIN.  The reverse holds true for a RIGHT OUTER JOIN.
+</p><p>For example, the following two joins are equivalent:
+</p>
+<pre>      Left Outer Join           Right Outer Join
+         /      \                  /      \
+        A        B                B        A
+</pre>
+<h1> <span class="mw-headline" id="Redundant_Join_Removal">Redundant Join Removal</span></h1>
+<p>Joins are sometimes redundant and therefore can be removed from the query plan.  This section describes the three instances where LucidDB currently removes redundant joins.
+</p>
+<h2> <span class="mw-headline" id="Redundant_Outer_Joins">Redundant Outer Joins</span></h2>
+<p>Outer joins can be removed from a query plan if the following conditions are true:
+</p>
+<ul><li> The outer join is a LEFT or RIGHT outer join.
+</li><li> The columns from the null-generating input in the outer join are only referenced in the outer join condition.
+</li><li> The join condition is an equi-join where each filter is of the form <i>&lt;left input column&gt; = &lt;right input column&gt;</i>.
+</li><li> The join keys corresponding to the null-generating input are unique.
+</li></ul>
+<p>Since the join keys for the null-generating input are unique and the outer join condition is an equi-join between simple column references, this guarantees that each row from that input appears once in the join result.  Since the columns from that null-generating input are only used in the join condition, there's no need to execute the outer join.  Hence, the query plan reduces to the non-null generating input.
+</p><p>It's unlikely that anyone would ever explicitly write a query like this.  The more likely scenario where this occurs is when you have a view definition that contains an outer join between two tables.  If your select from the view doesn't need to project any of the view columns that map to columns from the null-generating join input, and the conditions specified above are true, then the outer join can be avoided.
+</p><p>For example, if you have the following view definition, and column t2a in T2 is unique
+</p>
+<pre>  create view V as
+     select T1.t1b, T2.t2b from
+        T1 left outer join T2
+        on T1.t1a = T2.t2a;
+</pre>
+<p>then the following select results in a simple row scan on T1.
+</p>
+<pre>  select t1b from v;
+</pre>
+<h2> <span class="mw-headline" id="Joins_That_Become_Redundant_Because_of_Semijoins">Joins That Become Redundant Because of Semijoins</span></h2>
+<p>Normally, after applying a semijoin on a fact table, LucidDB will then join the result of that fact table with the dimension table that was used to filter the fact table.  However, there are cases where that join can be avoided.  The following conditions must be true for that to occur:
+</p>
+<ul><li> The join keys from the dimension table must be unique.
+</li><li> The only columns referenced from the dimension table are its join keys.
+</li></ul>
+<p>Since the semijoin has already filtered from the fact table the rows that join with the dimension table, the dimension join keys are unique, and semijoins are only used for INNER equi-joins, the only other reason to join back with the dimension table would be to project additional columns from the dimension table in the join result.  If those columns are the dimension join keys, then because of the INNER equi-join, those columns can be derived from the corresponding join keys from the fact table.
+</p><p>In other words, the following query:
+</p>
+<pre>  SELECT factTab.colA, dimTab.colB FROM
+     factTab, dimTab
+     WHERE factTab.colB = dimTab.colB;
+</pre>
+<p>is equivalent to:
+</p>
+<pre>  SELECT factTab.colA, <b>factTab.colB</b> FROM
+     factTab, dimTab
+     WHERE factTab.colB = dimTab.colB;
+</pre>
+<p>In the case where a join can be removed because of a semijoin, that also reduces the number of join orderings the optimizer needs to consider.  For example, if the join between dimTab and factTab is redundant, then the optimizer doesn't need to consider any join orderings where dimTab precedes factTab. Once the optimizer comes across the join ordering where dimTab is joined with factTab, it can immediately remove dimTab from the ordering.
+</p>
+<h2> <span class="mw-headline" id="Self-Joins">Self-Joins</span></h2>
+<p>If a query contains a join between the same table, i.e., a self join, the self-join can be removed if the following conditions are met:
+</p>
+<ul><li> The self-join is an inner join.
+</li><li> The input into the self-join is a simple table, i.e., it cannot be the result of a full outer join or a group by.
+</li><li> The join keys in the self-join are the same, and make up a unique key.
+</li></ul>
+<p>In removing the self-join, LucidDB will combine any filtering and projections that are applied on the inputs into the self-join into a single row scan that's applied on the common table.
+</p><p>Although a user may not explicitly write a query containing a self-join, they may issue a join between a table and a view that references that table.  This could occur as a result of an update-only MERGE statement, which implicitly executes an inner join between the target and source of the MERGE.  An example of such a MERGE statement is shown below.
+</p>
+<pre>
+CREATE TABLE target(ta INT PRIMARY KEY, tb INT, tc INT);
+CREATE TABLE dim(da INT PRIMARY KEY, db INT);
+CREATE VIEW source(sta, stb, stc, sda, sdb) AS
+   SELECT *  FROM target, dim WHERE target.tb = dim.da;
+
+MERGE INTO target
+   USING (SELECT * FROM source WHERE sta &lt; 10) AS source
+   ON target.ta = source.sta
+   WHEN MATCHED THEN UPDATE SET tc = source.sdb;
+</pre>
+<p>After unfolding the source view, the original implicit join that's executed as part of this MERGE statement is:
+</p>
+<pre>
+SELECT t1.ta, t1.tc, t2.*, dim.* FROM target t1, target t2, dim
+   WHERE t2.tb = dim.da AND t1.ta = t2.ta AND t2.ta &lt; 10;
+</pre>
+<p>After removing the self-join, the query becomes:
+</p>
+<pre>
+SELECT * FROM target, dim WHERE target.tb = dim.da AND target.ta &lt; 10;
+</pre>
+<h1> <span class="mw-headline" id="Limitations">Limitations</span></h1>
+<p>The following are limitations in LucidDB optimization due to unimplemented functionality.
+</p>
+<h2> <span class="mw-headline" id="Statistics_For_UDX.27s_and_Foreign_Tables">Statistics For UDX's and Foreign Tables</span></h2>
+<p>Earlier it was noted that table row counts are always available.  This only applies to LucidDB <a href="/wiki/LucidDbDataStorageAndAccess#Column_Store_Tables" title="LucidDbDataStorageAndAccess">column store tables</a>.  In general, LucidDB does not have access to any statistics for foreign (aka external) tables.  However, it estimates the row count statistics for the tables that result from <a href="/wiki/LucidDbUdxJavaHowto" title="LucidDbUdxJavaHowto">UDX calls</a> as well as <a href="/wiki/LucidDbFlatFileWrapper" title="LucidDbFlatFileWrapper">flat file foreign tables</a>.  Flat file foreign table row counts are estimated by sampling some number of rows from the flat file to compute the width of a typical row of data and then dividing that width into the number of bytes in the flat file.  The accuracy of this computation can be influenced by tweaking the <b>NUM_ROWS_SCAN</b> parameter when defining your flat file foreign server.  See <a href="/wiki/LucidDbFlatFileWrapper#Flat_File_Foreign_Server" title="LucidDbFlatFileWrapper">LucidDbFlatFileWrapper#Flat_File_Foreign_Server</a> for details.
+</p><p>Because of these limited statistics, this could result in non-optimal join orderings when foreign tables are referenced in complex join queries.  If row counts are unavailable, LucidDB assumes that the size of a foreign table is a small number.  Therefore, in an equi-join with a larger table, the foreign table becomes the build side in a hash join.  If the foreign table actually returns a large number of rows with a large number of duplicates, this can lead to partitioning during the hash join, even though the other table being joined fits in memory.  That, by itself, may not result in significant slowdown because it's just a single join.  But if there are additional joins in the query, the optimizer will under-estimate the size of the join containing the foreign table, and likely assign the result of that join as the build side in the next hash join in the query plan.  If this continues, then the resulting query plan is a right-deep join plan, which can result in poor query performance due to excessive hash partitioning.  Even worse, if any of these intermediate hash join results contain data skew, i.e., a large number of duplicates in the join keys for subsequent joins, then the hash join will abort because it cannot partition the data.
+</p>
+<pre>      Hash Join
+       /     \
+      T1   Hash Join
+            /     \
+           T2   Hash Join
+                 /     \
+                T3     ...
+                         \
+                     Hash Join
+                      /     \
+                     Tn  Foreign Table
+                    
+</pre>
+<p>The workaround is to materialize the foreign table into a temporary table and then to reference the temporary table in the complex join query.  This workaround is also necessary if your query plan results in a cartesian product join involving a foreign table.  See <a href="/wiki/Diagnosing_Slow_Queries_Using_Explain_Plan#Special_Inputs" title="Diagnosing Slow Queries Using Explain Plan" class="mw-redirect">Diagnosing Slow Queries Using Explain Plan#Special Inputs</a> for more details.
+</p><p>The principles just described also apply in the case of UDX calls.  The exception is that the rowcount for a UDX is estimated to be the sum of the rowcounts of its inputs.  So, you may be able to avoid materializing the UDX call result for simple joins.  However because column cardinality and data distributions are not available, that may not be the case for more complex joins.
+</p>
+<h2> <span class="mw-headline" id="Pull_Up_of_Aggregates">Pull Up of Aggregates</span></h2>
+<p>LucidDB currently does not pull up aggregates if an aggregate is referenced in a sub-select that appears in the FROM clause of a query.  By pulling up the aggregate, the optimizer has a wider range of join ordering choices.  When the aggregate isn't pulled up, it means the optimizer must consider the optimal join ordering for the tables referenced within the sub-select before it can join that sub-select with other tables in the query.
+</p><p>For example, if your query is as follows:
+</p>
+<pre>  select * from
+     X,
+     (select Y.y1, Z.z1, sum(Y.y2), min(Z.z2) from Y, Z group by Y.y1, Z.z1)
+     where X.x1 = Y.y1 and X.x2 = Z.z1;
+</pre>
+<p>then Y and Z must be joined together before that result (a cartesian join) can be joined with X.
+</p>
+<h2> <span class="mw-headline" id="Converting_Outer_Joins_To_Inner_Joins">Converting Outer Joins To Inner Joins</span></h2>
+<p>In some cases it is possible to convert outer joins into inner joins.  For example, if the result of the outer join is filtered by IS NOT NULL predicates on all of the columns referenced from the null-generating table in the outer join, then the outer join reduces to an inner join, since the rows containing nulls are going to be filtered out.  In fact, the predicate can be any predicate that filters out NULL values, e.g., an equality join predicate between the null-generating column and a column from some other table.  This, however, assumes that expressions are not applied in the projection of the outer join query, converting the null value to a non-null value.
+</p><p>As with redundant outer joins, you probably wouldn't ever explicitly write a query like this.  This likely would only occur as a result of unfolding views or converting subqueries into equivalent outer joins.
+</p>
+<h2> <span class="mw-headline" id="Removing_Redundant_Joins_When_Primary.2FForeign_Key_Relationships_Exist">Removing Redundant Joins When Primary/Foreign Key Relationships Exist</span></h2>
+<p>Similar to what was described <a href="#Removing_Redundant_Joins">earlier</a> in the case of outer joins and semijoins, it is possible to remove an inner join to a table with a primary key if the join is between that table and a table that it has a primary-foreign key relationship with.  <i>(Note that additional conditions not described here must also be true.)</i>  However, since LucidDB does not currently support declarative foreign key constraints, this optimization is not possible.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 169/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1617-0!*!0!!en!*!* and timestamp 20140414191044 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbJoinOptimization&amp;oldid=6246">http://luciddb.org/wiki/index.php?title=LucidDbJoinOptimization&amp;oldid=6246</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbJoinOptimization" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbJoinOptimization&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbJoinOptimization&amp;returntoquery=oldid%3D6246" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbJoinOptimization" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbJoinOptimization" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;oldid=6246&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbJoinOptimization&amp;oldid=6246" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.146 secs. --></body></html>

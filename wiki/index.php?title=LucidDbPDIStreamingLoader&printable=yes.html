@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbPDIStreamingLoader - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbPDIStreamingLoader", "wgTitle": "LucidDbPDIStreamingLoader", "wgCurRevisionId": 6599, "wgArticleId": 2004, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbPDIStreamingLoader action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbPDIStreamingLoader</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#PDI_Streaming_Loader"><span class="tocnumber">1</span> <span class="toctext">PDI Streaming Loader</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Specification"><span class="tocnumber">2</span> <span class="toctext">Specification</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Overview_Diagram"><span class="tocnumber">3</span> <span class="toctext">Overview Diagram</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#PDI_Screens_and_Behavior"><span class="tocnumber">4</span> <span class="toctext">PDI Screens and Behavior</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#KEYS_TAB"><span class="tocnumber">5</span> <span class="toctext">KEYS TAB</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#FIELDS_TAB"><span class="tocnumber">6</span> <span class="toctext">FIELDS TAB</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#CUSTOM_TAB"><span class="tocnumber">7</span> <span class="toctext">CUSTOM TAB</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Operations"><span class="tocnumber">8</span> <span class="toctext">Operations</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#OPERATION_:_MERGE"><span class="tocnumber">8.1</span> <span class="toctext">OPERATION&#160;: MERGE</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#OPERATION_:_INSERT"><span class="tocnumber">8.2</span> <span class="toctext">OPERATION&#160;: INSERT</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#OPERATION_:_UPDATE"><span class="tocnumber">8.3</span> <span class="toctext">OPERATION&#160;: UPDATE</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#OPERATION_:_CUSTOM"><span class="tocnumber">8.4</span> <span class="toctext">OPERATION&#160;: CUSTOM</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#Future_Work"><span class="tocnumber">9</span> <span class="toctext">Future Work</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#See_Also"><span class="tocnumber">10</span> <span class="toctext">See Also</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="PDI_Streaming_Loader"> PDI Streaming Loader </span></h2>
+<p>A PDI  step that provides well performing DML operations from a remote source in LucidDb.  This plugin supercedes and replaces the PDI step <a href="/wiki/LucidDbPdiBulkLoad" title="LucidDbPdiBulkLoad">LucidDbPdiBulkLoad</a> and the methods put forth in <a href="/wiki/LucidDbStreamingLoad" title="LucidDbStreamingLoad">LucidDbStreamingLoad</a>.
+</p>
+<h2> <span class="mw-headline" id="Specification"> Specification </span></h2>
+<p>A new PDI 4.0 plugin that will stream rows over the wire to <a href="/wiki/LucidDbAppLib_REMOTE_ROWS" title="LucidDbAppLib REMOTE ROWS" class="mw-redirect">LucidDbAppLib_REMOTE_ROWS</a> and execute a DML statement to read the rows from that stream.
+</p><p>The PDI plugin opens two connections to LucidDb.  One to execute a very specific (and specialized) bit of DML, and the other to push serialized Java objects over the wire.  This allows us to get a set based, bulk DML statement that will perform well given the nature of the I/O required in a column store database.
+</p>
+<h2> <span class="mw-headline" id="Overview_Diagram"> Overview Diagram </span></h2>
+<p><a href="/wiki/File:Luciddb_streaming_loader_overview.png" class="image"><img alt="Luciddb streaming loader overview.png" src="/wiki/upload/6/6c/Luciddb_streaming_loader_overview.png" width="994" height="469" /></a>
+</p>
+<pre>
+ - PDI connects to the LucidDb database specified on Database.
+ - PDI prepares the DML statement (according to the rules outline below) (1) in overview diagram
+ - PDI fires a new thread to execute the DML (since it will block run for the entire time) (1) in overview diagram
+ - LucidDb starts the DML, and [[LucidDbAppLib_REMOTE_ROWS]] begins listening on port 9099 (defined in DML) (2) in overview diagram
+ - PDI serializes and sends rows over the wire to LucidDb on port speceified in DML and step configuration (3) in overview diagram
+ - LucidDb [[LucidDbAppLib_REMOTE_ROWS]] deserializes and outputs records from PDI as a cursor UDX
+ - LucidDb returns the JDBC call when REMOTE_ROWS has processed all rows on the wire.
+ - PDI interrogates LucidDb (num warnings, errors, etc) (4) in overview diagram
+</pre> 
+<h2> <span class="mw-headline" id="PDI_Screens_and_Behavior"> PDI Screens and Behavior </span></h2>
+<p>The following diagram shows the main UI screen when configuring the <strong class="selflink">LucidDbPDIStreamingLoader</strong> step in PDI.  It consists of the main screen (an SWT built as specified in the PDI plugin packaging) that have several tabs.  The three TABS (KEYS, FIELDS, CUSTOM) are covered in more detail, along with the behavior of the plugin.
+</p><p><a href="/wiki/File:Luciddb_streaming_loader1.png" class="image"><img alt="Luciddb streaming loader1.png" src="/wiki/upload/7/7a/Luciddb_streaming_loader1.png" width="771" height="692" /></a>
+</p>
+<ul><li> Step Name: The name of the step.  This is consistent amoungst all PDI steps.  It's the unique logical name for this configured step on the canvas.
+</li><li> Connection: The JDBC connection to LucidDb.  Use the existing UI framework objects that allow for editing or making new connections.
+</li><li> Schema: The schema name that contains the table to operate upon.
+</li><li> Table: The DML target table.
+</li><li> Operation: Enumeration to pick one of the following (MERGE, INSERT, UPDATE, CUSTOM)
+</li></ul>
+<h2> <span class="mw-headline" id="KEYS_TAB"> KEYS TAB </span></h2>
+<p>Pictured in Main UI picture above.
+</p><p>Specifies the keys that will be used to match for DML operations that require matching.  The Table Field will be the names of the columns in the target table, and the stream field will be the names of the value to use on the incoming rows (from incoming hop).  <i>STRETCH GOAL: Make both text fields, but add a drop down based on the incoming fields (for stream field) or table columns (from database connection))</i>
+</p>
+<h2> <span class="mw-headline" id="FIELDS_TAB"> FIELDS TAB </span></h2>
+<p><a href="/wiki/File:Luciddb_streaming_loader2.png" class="image"><img alt="Luciddb streaming loader2.png" src="/wiki/upload/f/fa/Luciddb_streaming_loader2.png" width="768" height="233" /></a>
+</p><p>This tab defines which rows will be part of the DML operation.  It specifies what the column names are in the table (Table Field), the names of the fields in the stream (Stream Field) and if in the case where the DML operation has the choice (ie, MERGE) whether or not to update the or only insert the column.
+</p>
+<h2> <span class="mw-headline" id="CUSTOM_TAB"> CUSTOM TAB </span></h2>
+<p><a href="/wiki/File:Luciddb_streaming_loader3.png" class="image"><img alt="Luciddb streaming loader3.png" src="/wiki/upload/4/49/Luciddb_streaming_loader3.png" width="731" height="234" /></a>
+</p><p>In the case where the DML operations presented are not sufficient, this allows a custom DML statement to be written.
+</p>
+<h2> <span class="mw-headline" id="Operations"> Operations </span></h2>
+<p>The following section defines the operations available.  It gives a description of the behavior of the plugin, and any UI specifics associated with the operation selected.
+</p>
+<h3> <span class="mw-headline" id="OPERATION_:_MERGE"> OPERATION&#160;: MERGE </span></h3>
+<ul><li> The <i>-FORMAT-</i> of rows sent over the wire are the union of both the KEYS and FIELDS tabs.
+</li><li> The fields on the FIELDS TAB create two separate field lists.  One as the <i>-UPDATE-</i> fields, the other as <i>-INSERT-</i>.  All fields are present in the <i>-INSERT-</i> list, but only fields with UPDATE=Y on the UI are placed into the <i>-UPDATE-</i> list.
+</li><li> The fields on the KEYS TAB are used to create the <i>-MATCHING-</i> field list
+</li><li> The DML statement takes the format of:
+</li></ul>
+<pre>
+
+Main DML Statement:
+
+MERGE INTO 
+schema.table                                        -- derived from the main UI schema.table
+as tgt
+USING 
+&lt;&lt;cursor&gt;&gt; 
+src ON
+src.key1 = tgt.key1indb AND src.key2 = tgt.key2indb -- derived from the -MATCHING- field list
+WHEN MATCHED THEN
+UPDATE SET col1 = src.stream1                       -- derived from the -UPDATE- field list
+WHEN NOT MATCHED THEN INSERT
+(col1, col2) values (src.stream1, src.stream2)      -- derived from the -INSERT- field list
+
+
+Cursor Statement:
+
+select table ( applib.remote_rows (
+9099                                                -- from main UI screen port
+,
+cursor (
+select 
+  cast(null as INT) as &quot;key1&quot;                       -- datatype and aliases derived from -FORMAT-
+  ,cast(null as VARCHAR(128)) as &quot;key2&quot;             -- datatype and aliases derived from -FORMAT-
+  ,cast(null as VARCHAR) as &quot;stream1&quot;               -- datatype and aliases derived from -FORMAT-
+  ,cast(null as NUMERIC) as &quot;stream2&quot;               -- datatype and aliases derived from -FORMAT-
+from
+(values(0)) 
+) -- end cursor
+)) -- end applib / table
+
+</pre>
+<p>UI Considerations:
+</p>
+<ul><li> Custom Tab is greyed out so it can't be edited
+</li></ul>
+<h3> <span class="mw-headline" id="OPERATION_:_INSERT"> OPERATION&#160;: INSERT </span></h3>
+<ul><li> The <i>-FORMAT-</i> of rows sent over the wire are fields on the FIELDS tabs.
+</li><li> The fields on the FIELDS TAB represent a single <i>-INSERT-</i> list.  
+</li><li> The DML statement takes the format of:
+</li></ul>
+<pre>
+
+Main DML Statement:
+
+INSERT INTO 
+schema.table                                        -- derived from the main UI schema.table
+(col1, col2)                                        -- derived from the -INSERT- field list
+&lt;&lt;Cursor&gt;&gt;
+
+Cursor Statement:
+
+select table ( applib.remote_rows (
+9099                                                -- from main UI screen port
+,
+cursor (
+select 
+  cast(null as VARCHAR) as &quot;stream1&quot;                -- datatype and aliases derived from -FORMAT-
+  ,cast(null as NUMERIC) as &quot;stream2&quot;               -- datatype and aliases derived from -FORMAT-
+from
+(values(0)) 
+) -- end cursor
+)) -- end applib / table
+
+</pre>
+<p>UI Considerations:
+</p>
+<ul><li> Keys and Custom tab is greyed out.  
+</li><li> The "UPDATE Y/N" column in the Fields tab is also greyed out
+</li></ul>
+<p><br />
+</p>
+<h3> <span class="mw-headline" id="OPERATION_:_UPDATE"> OPERATION&#160;: UPDATE </span></h3>
+<p>Uses the same specification for MERGE except REMOVEs the following part of DML
+</p>
+<pre>
+
+WHEN NOT MATCHED THEN INSERT
+(col1, col2) values (src.stream1, src.stream2)      -- derived from the -INSERT- field list
+
+</pre>
+<p>UI Considerations:
+</p>
+<ul><li> Fields tab the Update Y/N is greyed out (and assumed to be Y for all rows)
+</li></ul>
+<h3> <span class="mw-headline" id="OPERATION_:_CUSTOM"> OPERATION&#160;: CUSTOM </span></h3>
+<p>--<a href="/wiki/index.php?title=User:Ngoodman&amp;action=edit&amp;redlink=1" class="new" title="User:Ngoodman (page does not exist)">Ngoodman</a> 15:39, 13 June 2010 (EDT) Not implemented in PDI 4.0, in progress.
+</p>
+<ul><li> The <i>-FORMAT-</i> of rows sent over the wire are the union of both the KEYS and FIELDS tabs.
+</li><li> The DML statement is the one entered in on the CUSTOM tab with the CURSOR being replaced for the&#160;?
+</li></ul>
+<pre>
+
+Main DML Statement:
+
+from Custom tab with the&#160;? replaced with &lt;&lt;cursor&gt;&gt;  For example:
+
+insert into mytable 
+?
+
+Cursor Statement:
+
+select table ( applib.remote_rows (
+9099                                                -- from main UI screen port
+,
+cursor (
+select 
+  cast(null as INT) as &quot;key1&quot;                       -- datatype and aliases derived from -FORMAT-
+  ,cast(null as VARCHAR(128)) as &quot;key2&quot;             -- datatype and aliases derived from -FORMAT-
+  ,cast(null as VARCHAR) as &quot;stream1&quot;               -- datatype and aliases derived from -FORMAT-
+  ,cast(null as NUMERIC) as &quot;stream2&quot;               -- datatype and aliases derived from -FORMAT-
+from
+(values(0)) 
+) -- end cursor
+)) -- end applib / table
+
+</pre>
+<p>UI Considerations: 
+</p>
+<pre>* None.
+</pre>
+<h2> <span class="mw-headline" id="Future_Work"> Future Work </span></h2>
+<ul><li> Enable compression (GZIP) on the stream?  Is it I/O or CPU bound&#160;?
+</li><li> Batching and async I/O on both sides?
+</li><li> Set Max Number of Errors on connection?
+</li><li> Multiple sockets?
+</li></ul>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<ul><li> <a href="/wiki/LucidDbAppLib_REMOTE_ROWS" title="LucidDbAppLib REMOTE ROWS" class="mw-redirect">REMOTE_ROWS</a>
+</li><li> <a href="/wiki/LucidDbUtilityRowSerialization" title="LucidDbUtilityRowSerialization">LucidDbUtilityRowSerialization</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 99/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2004-0!*!0!!en!2!* and timestamp 20140414191152 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbPDIStreamingLoader&amp;oldid=6599">http://luciddb.org/wiki/index.php?title=LucidDbPDIStreamingLoader&amp;oldid=6599</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbPDIStreamingLoader" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbPDIStreamingLoader&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbPDIStreamingLoader&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbPDIStreamingLoader&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbPDIStreamingLoader&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbPDIStreamingLoader" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbPDIStreamingLoader" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbPDIStreamingLoader&amp;oldid=6599" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 13 June 2010, at 19:39.</li>
+		<li id="viewcount">This page has been accessed 6,484 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.150 secs. --></body></html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoEclipse - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoEclipse", "wgTitle": "FarragoEclipse", "wgCurRevisionId": 6971, "wgArticleId": 1501, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoEclipse action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoEclipse</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Farrago_Development"><span class="tocnumber">1</span> <span class="toctext">Farrago Development</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Farrago_Server_Debugging"><span class="tocnumber">2</span> <span class="toctext">Farrago Server Debugging</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#LucidDB_Debugging"><span class="tocnumber">3</span> <span class="toctext">LucidDB Debugging</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Debugging_Via_sqllineEngine"><span class="tocnumber">4</span> <span class="toctext">Debugging Via sqllineEngine</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Farrago_Development"> Farrago Development </span></h1>
+<p>Instructions for setting up Eclipse for use in Farrago development:
+</p>
+<ol><li> Get an <a rel="nofollow" class="external text" href="http://farrago.sf.net/developerJumpStart.html">ant-only build of Farrago</a> working
+</li><li> Download and unpack a copy of <a rel="nofollow" class="external text" href="http://www.eclipse.org/downloads/index.php">Eclipse SDK 3.1</a>
+</li><li> From Farrago, run <b>ant createEclipseProject</b>; this will generate .project and .classpath files with the correct thirdparty dependencies predefined.
+</li><li> Start Eclipse
+</li><li> Accept the default workspace location (or customize your own), and check the box to make it the default
+</li><li> Choose <b>Workbench</b>
+</li><li> From the top menu, choose <b>File-&gt;New-&gt;Project</b>
+<ol><li> Choose the <b>Java Project</b> wizard (but not <b>from Existing Ant Buildfile</b>)
+</li><li> Enter <b>farrago</b> for the project name
+</li><li> Change <b>Contents</b> to <b>Create project from existing source</b>
+</li><li> Enter the path to farrago (e.g. <b>/home/calvin/open/farrago</b>)
+</li><li> Click the <b>Finish</b> button
+</li></ol>
+</li><li> From the top menu, choose <b>Project-&gt;Properties</b>
+<ol><li> Open the <b>Java Code Style</b> tree node and select <b>Formatter</b>
+<ol><li> Click the <b>Enable project specific settings</b> checkbox
+</li><li> Click the <b>Import</b> button
+</li><li> Browse to and select <b>farrago/eclipse/codeFormat.xml</b>
+</li></ol>
+</li><li> Select <b>Organize Imports</b> in the tree
+<ol><li> For the <b>Number of imports needed for .*</b>, change the value to 0 to force imports to get collapsed
+</li></ol>
+</li><li> Click the <b>Apply</b> button and then <b>Yes</b> to rebuild the project; you may get a lot of warnings, but there should be no errors
+</li><li> Click <b>OK</b>
+</li></ol>
+</li><li> You should now be able to browse source files, build, run JUnit tests, etc.
+</li><li> Install the <a rel="nofollow" class="external text" href="http://www.perforce.com/perforce/products/p4wsad.html">Perforce plugin</a>
+</li><li> From the Package Explorer, right-click the farrago project to get a pop-up menu
+<ol><li> Choose <b>Team-&gt;Share Project</b>
+</li><li> Select Perforce for repository type and click <b>Next</b>
+</li><li> Enter connection information for your client and click <b>Finish</b>
+</li></ol>
+</li></ol>
+<p>Note that whenever the thirdparty classpath defined in the ant build changes, you will need to rerun <b>ant createEclipseProject</b> to propagate the changes. No other action should be required.
+</p>
+<h1> <span class="mw-headline" id="Farrago_Server_Debugging"> Farrago Server Debugging </span></h1>
+<p>For ad-hoc SQL debugging, here's the procedure:
+</p>
+<ol><li> Browse to class <b>net.sf.farrago.test.FarragoDebugServer</b>
+</li><li> Debug the <b>main</b> method as a <b>Java Application</b>
+</li><li> You will see the Farrago server startup messages in the console at the bottom
+</li><li> Run a client such as the <b>sqllineClient</b> script to connect to the server
+</li><li> Set breakpoints, debug, etc.
+</li><li> When you are done, after disconnecting the client, go back to the Eclipse console window and enter the <b>!quit</b> command to shut down the server cleanly (yes, you can type stuff in that window!)
+</li></ol>
+<p>There are two errors you might encounter if you get a problem trying to load the database. The first is: "Installation error: required Java property java.util.logging.config.file not set". The second error is: "java.lang.UnsatisfiedLinkError: no farrago in java.library.path".
+</p><p>To fix the first error, open the Debug Configurations window within the Debug As context menu, and click the Arguments tab. Put in "-Dnet.sf.farrago.home=.   -Djava.util.logging.config.file=trace/FarragoTrace.properties" under the VM Arguments option. These are normally passed with the farragoServer script so you need to include them manually for Eclipse.
+</p><p>To fix the second error, open the Debug Configurations window again and open the Environment tab. Add a new variable called LD_LIBRARY_PATH and set its value to be "/path/to/dev/fennel/farrago". There is a .so file (.dll for Windows) that needs to be loaded and that particular path is usually set by the user from sourcing the contents of fennelenv.sh.
+</p>
+<h1> <span class="mw-headline" id="LucidDB_Debugging"> LucidDB Debugging </span></h1>
+<p>If you want to debug the LucidDB server or tests, you can follow steps similar to the ones above for Farrago.  
+</p>
+<ol><li> Start with <b>ant createEclipseProject</b> from the <b>luciddb</b> directory, register the project, etc.
+</li><li> Select the new luciddb project, configure its <b>Build Path</b>, and click <b>Link Source</b> from the <b>Source</b> tab.
+</li><li> Enter the location of farrago/src.
+</li><li> You'll need to give it an alias such as <b>farrago_src</b> to avoid clashing with <b>luciddb/src</b>.
+</li><li> Click <b>Finish</b> to save the path.
+</li></ol>
+<p>To debug the server:
+</p>
+<ol><li> Browse to class <b>com.lucidera.luciddb.test.LucidDbDebugServer</b> and debug it (as above for <b>FarragoDebugServer</b>).
+</li></ol>
+<p><b>WARNING:  building the luciddb project will create duplicate class copies of farrago, which is not what you want unless you want mysterious runtime errors after making changes.</b>
+</p>
+<h1> <span class="mw-headline" id="Debugging_Via_sqllineEngine"> Debugging Via sqllineEngine </span></h1>
+<p>Here's an alternate way to debug, using sqllineEngine:
+</p>
+<ol><li> From a shell prompt, run sqllineEngine using <b>sh -x sqllineEngine</b>. This will allow you to see the full java command required to run sqllineEngine. The last line of trace should be formatted as <b>java [vm_args...] [java class] [program arguments...]</b>
+</li><li> In Eclipse, from the <b>Run</b> menu, select <b>Debug...</b>. This brings up a window for editing debug configurations.
+</li><li> In the left tree pane, select <b>Java Application</b> and hit the button underneath the pane for <b>New</b> debug configuration.
+</li><li> In the right window pane, under the <b>Main</b> tab, enter <b>sqlline.SqlLine</b> as your <b>Main class</b>
+</li><li> Select the <b>Arguments</b> tab
+</li><li> Copy and paste the <b>Program</b> and <b>VM</b> (java virtual machine) arguments that were used to run your program (as described above)
+</li><li> For <b>working directory</b>, enter the full path to farrago (or luciddb) such as /home/calvin/open/farrago.
+</li><li> To run a <b>luciddb</b> version of sqllineEngine, there are two extra steps. Navigate to the <b>Classpath</b> tab. Remove the default classpath (because it will cause Farrago to be loaded). Then, navigate to the <b>Source</b> tab. Click <b>Add</b> on the right hand side. Then, click on <b>Java Project</b>. This will display a list of your current projects. Select the one corresponding to your Farrago project. Then, click <b>OK.</b> This allows Eclipse to find the corresponding Farrago source files when you're debugging LucidDB.
+</li><li> Finally, at the bottom right corner of the window, there are buttons to <b>Apply</b> the changes to your configuration, and to <b>Debug</b> using your configuration.
+</li></ol>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 14/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1501-0!*!*!!en!*!* and timestamp 20140414193644 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoEclipse&amp;oldid=6971">http://luciddb.org/wiki/index.php?title=FarragoEclipse&amp;oldid=6971</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoEclipse" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoEclipse&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoEclipse&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoEclipse&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoEclipse" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoEclipse" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoEclipse" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoEclipse&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoEclipse&amp;oldid=6971" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 29 June 2011, at 19:02.</li>
+		<li id="viewcount">This page has been accessed 3,269 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.154 secs. --></body></html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbEfficientUpdates - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbEfficientUpdates", "wgTitle": "LucidDbEfficientUpdates", "wgCurRevisionId": 6136, "wgArticleId": 1994, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbEfficientUpdates action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbEfficientUpdates</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 21:16, 18 June 2009 by <a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Zfong (page does not exist)">Zfong</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User talk:Zfong (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Zfong" title="Special:Contributions/Zfong">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(diff) ← Older revision | Latest revision (diff) | Newer revision → (diff)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview_of_Enhancements"><span class="tocnumber">1</span> <span class="toctext">Overview of Enhancements</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#High_Level_Design"><span class="tocnumber">2</span> <span class="toctext">High Level Design</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Updates_Written_As_Merges"><span class="tocnumber">2.1</span> <span class="toctext">Updates Written As Merges</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Replacement_of_Updated_Columns"><span class="tocnumber">2.2</span> <span class="toctext">Replacement of Updated Columns</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Combining_Both_Optimizations"><span class="tocnumber">2.3</span> <span class="toctext">Combining Both Optimizations</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Interface_Design"><span class="tocnumber">3</span> <span class="toctext">Interface Design</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Data_Model"><span class="tocnumber">4</span> <span class="toctext">Data Model</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Detailed_Design"><span class="tocnumber">5</span> <span class="toctext">Detailed Design</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Updates_Written_As_Merges_2"><span class="tocnumber">5.1</span> <span class="toctext">Updates Written As Merges</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Replacement_of_Updated_Columns_2"><span class="tocnumber">5.2</span> <span class="toctext">Replacement of Updated Columns</span></a>
+<ul>
+<li class="toclevel-3 tocsection-11"><a href="#Farrago_Changes"><span class="tocnumber">5.2.1</span> <span class="toctext">Farrago Changes</span></a></li>
+<li class="toclevel-3 tocsection-12"><a href="#Fennel_Changes"><span class="tocnumber">5.2.2</span> <span class="toctext">Fennel Changes</span></a>
+<ul>
+<li class="toclevel-4 tocsection-13"><a href="#Creating_the_New_Clusters_and_Indexes"><span class="tocnumber">5.2.2.1</span> <span class="toctext">Creating the New Clusters and Indexes</span></a></li>
+<li class="toclevel-4 tocsection-14"><a href="#Versioning_the_New_Clusters_and_Indexes"><span class="tocnumber">5.2.2.2</span> <span class="toctext">Versioning the New Clusters and Indexes</span></a></li>
+<li class="toclevel-4 tocsection-15"><a href="#New_and_Modified_Execution_Streams"><span class="tocnumber">5.2.2.3</span> <span class="toctext">New and Modified Execution Streams</span></a>
+<ul>
+<li class="toclevel-5 tocsection-16"><a href="#LbmGeneratorExecStream"><span class="tocnumber">5.2.2.3.1</span> <span class="toctext">LbmGeneratorExecStream</span></a></li>
+<li class="toclevel-5 tocsection-17"><a href="#LbmSplicerExecStream"><span class="tocnumber">5.2.2.3.2</span> <span class="toctext">LbmSplicerExecStream</span></a></li>
+<li class="toclevel-5 tocsection-18"><a href="#LcsClusterReplaceExecStream"><span class="tocnumber">5.2.2.3.3</span> <span class="toctext">LcsClusterReplaceExecStream</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-19"><a href="#Removing_Self-Joins"><span class="tocnumber">5.3</span> <span class="toctext">Removing Self-Joins</span></a>
+<ul>
+<li class="toclevel-3 tocsection-20"><a href="#Actual_Implementation"><span class="tocnumber">5.3.1</span> <span class="toctext">Actual Implementation</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-21"><a href="#Validation_Rules"><span class="tocnumber">6</span> <span class="toctext">Validation Rules</span></a></li>
+<li class="toclevel-1 tocsection-22"><a href="#Performance_Impact"><span class="tocnumber">7</span> <span class="toctext">Performance Impact</span></a></li>
+<li class="toclevel-1 tocsection-23"><a href="#Testing"><span class="tocnumber">8</span> <span class="toctext">Testing</span></a>
+<ul>
+<li class="toclevel-2 tocsection-24"><a href="#Unit_Tests"><span class="tocnumber">8.1</span> <span class="toctext">Unit Tests</span></a>
+<ul>
+<li class="toclevel-3 tocsection-25"><a href="#Fennel_Unit_Tests"><span class="tocnumber">8.1.1</span> <span class="toctext">Fennel Unit Tests</span></a></li>
+<li class="toclevel-3 tocsection-26"><a href="#Farrago_Unit_Tests"><span class="tocnumber">8.1.2</span> <span class="toctext">Farrago Unit Tests</span></a></li>
+<li class="toclevel-3 tocsection-27"><a href="#Performance_Results"><span class="tocnumber">8.1.3</span> <span class="toctext">Performance Results</span></a>
+<ul>
+<li class="toclevel-4 tocsection-28"><a href="#Updates_Written_As_Merge_Optimization"><span class="tocnumber">8.1.3.1</span> <span class="toctext">Updates Written As Merge Optimization</span></a></li>
+<li class="toclevel-4 tocsection-29"><a href="#Replacement_of_Updated_Columns_Optimization"><span class="tocnumber">8.1.3.2</span> <span class="toctext">Replacement of Updated Columns Optimization</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-30"><a href="#Open_Issues"><span class="tocnumber">9</span> <span class="toctext">Open Issues</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview_of_Enhancements">Overview of Enhancements</span></h1>
+<p>This design describes three performance improvements that will be made for LucidDB MERGE (aka upsert) statements.  For background on the MERGE statement, see <a href="/wiki/LucidDbDataStorageAndAccess#Upserts" title="LucidDbDataStorageAndAccess">LucidDbDataStorageAndAccess#Upserts</a>.
+</p>
+<ol>
+<li> Currently, the source of the MERGE is always buffered before any update or insert processing takes place.  This can be expensive if the source data size is large, e.g., if the source includes data from a snapshot fact table.  By utilizing <a href="/wiki/LucidDbDataStorageAndAccess#Page_Versioning" title="LucidDbDataStorageAndAccess">page versioning</a>, we can avoid this buffering.
+<li> Currently, we do not support the UPDATE statement.  So, updates need to be written as MERGEs.  The downside of this is it requires a self-join of the target table in order to locate the rows that need to be updated, which can be expensive for large tables.  We can detect this special case and avoid the self-join.  These type of update statements are used frequently in CST scripts.
+<br />
+--<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 15:16, 13 December 2008 (PST) After this design was written, JVS has added support for the UPDATE statement in LucidDB by rewriting the user-specified UPDATE statement into an equivalent MERGE statement, using LCS_RID expressions as the unique join keys between the target and source.  Because the resulting MERGE statement meets the special case criteria noted above, it also avoids the self-join that otherwise would occur.
+<li> If the MERGE:
+<ol style="list-style-type:lower-alpha">
+  <li>is an update-only MERGE (i.e., does not contain a WHEN NOT MATCHED clause)</li>
+  <li>results in the majority of the rows in the table, but only a few columns, being updated</li>
+  <li>updates only clusters containing single columns</li>
+  <li>contains an ON condition where the respective keys from the source and target for the equality portion of the condition are unique</li>
+</ol> then rather than deleting the existing rows and inserting new ones, it can be more efficient to just replace the updated columns with new ones, containing the new data.  This avoids not only having to update columns that really aren't being updated, but also having to read those columns, both of which can be expensive for tables with a large number of columns.
+<p>This usage pattern is common in excel enrichment.
+</p><p>Note that condition c is not an absolute requirement, but is there to simplify the implementation.  Since our application only uses single-column clusters, that restriction should not prevent this optimization from being used by our apps in all cases where it applies.
+</p><p>Also, condition d is necessary to ensure that the input into the MERGE contains unique rows.
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 17:16, 18 June 2009 (EDT) I subsequently realized after the fact that condition d is too strict.  Only the join keys from the source need to be unique.  Moreover, the source keys can contain null values.
+</dd></dl>
+</ol>
+<p>Item #1 had already been implemented as a "bugfix". The general idea behind the fix was as follows. 
+Rather than generalizing the problem to allow multiple csn's to be associated with a stream graph, I've restricted it so streams in a stream graph fall into one of two categories -- those that behave as they do today and those that read based on the current csn, but ignoring uncommitted pages that are newly created by the current txn. Therefore, every txn now creates new snapshot segments -- the current one plus a new one that ignores uncommitted pages. The "source" for DML statements always use the new snapshot segment whereas the rest of the statement uses the existing one.
+</p><p>To distinguish which parts of the stream graph should use which segment, I added a <code>readOnlyCommittedData</code> boolean field to <code>IndexAccessorDef</code> in the UML model. Only stream defs associated with cluster row scans corresponding to queries will set this flag to true. In other words, the cluster row scan that's done by <code>LbmGeneratorExecStream</code> would not set this flag since it needs to see the newly appended rows. The key is to make sure this flag is set correctly.
+</p><p>The remainder of this document will focus on just items 2 and 3.  For item #2, we chose to automatically recognize these special-case updates rather than adding support for an UPDATE statement.  That way, no changes will be required in either Workbench or ALS to take advantage of the optimization.  However, the statement needs to meet the following pre-conditions:
+</p>
+<ul><li> There cannot be a WHEN NOT MATCHED clause.
+</li><li> All columns referenced in equality join filters that are of the form <code>source.col = target.col</code> are the same set of keys and are unique keys in the source/target.
+</li><li> The source must be a simple table reference (i.e., no grouping or joins), and it must be the same as the target.
+</li></ul>
+<p>It is possible to filter either the source or target.  The filter can appear in the ON clause, or as part of a select from the source table.
+</p><p>All of these statements meet these pre-conditions, assuming <code>empno</code> is a unique key.  
+</p>
+<pre>
+Patterns Recognized:
+
+MERGE INTO emps e1
+   USING emps e2 
+   ON e1.empno = e2.empno
+   WHEN MATCHED THEN UPDATE SET salary = e2.salary * 1.1;
+
+MERGE INTO emps e1
+   USING emps e2 
+   ON e1.empno = e2.empno AND e2.age &gt; 40
+   WHEN MATCHED THEN UPDATE SET salary = e2.salary * 1.1;
+
+MERGE INTO emps e1
+   USING emps e2 
+   ON e1.empno = e2.empno AND e1.age &gt; 40
+   WHEN MATCHED THEN UPDATE SET salary = e2.salary * 1.1;
+
+MERGE INTO emps e1
+   USING (SELECT * FROM emps WHERE age &gt; 40) e2
+   ON e1.empno = e2.empno
+   WHEN MATCHED THEN UPDATE SET salary = e2.salary * 1.1;
+
+MERGE INTO emps e1
+   USING (SELECT salary * 1.1 as newSalary, empno FROM emps) e2
+   ON e1.empno = e2.empno
+   WHEN MATCHED THEN UPDATE SET salary = e2.newSalary
+</pre>
+<p>For updates written as merges, the CST scripts I looked at only use the first pattern.  In cases where the source was not a simple table/view reference but did reference the target, there was a join involving aggregation, which is beyond of the scope of this optimization.
+</p><p>All MERGE statements will benefit from optimization #1.  Statements that take advantage of optimization #2 can also take advantage of optimization #3 if those criteria are also met.
+</p>
+<h1> <span class="mw-headline" id="High_Level_Design">High Level Design</span></h1>
+<p>From hereon, optimization #2 from the previous section will be referred to as <i>updates written as merges</i>, and optimization #3 will be referred to as <i>replacement of updated columns</i>.
+</p>
+<h2> <span class="mw-headline" id="Updates_Written_As_Merges">Updates Written As Merges</span></h2>
+<p>Detecting whether a MERGE can be converted into an UPDATE will be done in a new optimizer rule.  The details of that detection are fairly low-level, so see the <a href="#Detailed_Design">#Detailed Design</a> section for further information.
+</p>
+<h2> <span class="mw-headline" id="Replacement_of_Updated_Columns">Replacement of Updated Columns</span></h2>
+<p>This optimization will be applied if the number of rows affected by the statement is large and the number of columns updated is small.  Rather than using absolute values, the cutoff values will be based on the percentage of rows and columns updated.  Once this optimization is implemented, we'll run some performance tests to determine what the two percentage thresholds should be.
+</p><p>To compute the percentage of rows that are updated by a MERGE statement, we'll use a metadata query to estimate the rowcount for the inner join that's the input into the MERGE and then divide that by the number of rows in the target table.  Therefore, up-to-date statistics will be necessary for this computation to be reasonably accurate.
+</p><p>Assuming the threshold criteria are met, the fundamental idea is:
+</p>
+<ol>
+<li> Create new column store clusters for each column that's updated.
+<li> Modify the input into the MERGE so:
+  <ol style="list-style-type:lower-alpha">
+    <li> We no longer select every column from the target.  Currently, the result of the inner join selects every column from the target table because when a row is updated, we end up updating the non-update columns with their original values.  Since we're no longer touching the non-update columns, we only need to select from the target table those columns that are referenced in update expressions.  See item 3 below for how we deal with rows that aren't updated and therefore must retain their original values.
+    <li> The result of the join must still include the rid column from the target table, and the join result must also be ordered on that rid column.  That way, the order of the input matches the original row order of the target.
+  </ol>
+<li> Insert the input rows into the new clusters using an extension of the cluster append execution stream where the input row includes rid column values.  This is needed because there may be <i>gaps</i> in the rid values.  The extended cluster append stream will need to detect these gaps and will insert the <i>original</i> column values for those rows.  These rows correspond to either:
+  <ol style="list-style-type:lower-alpha">
+    <li> rows that aren't updated
+    <li> deleted rows, or 
+    <li> rows that resulted in some type of calculator violation when running in non-fail-fast mode.
+  </ol> Normally, the cluster append exec stream returns the number of rows it has inserted into the cluster.  In the case of this extended cluster append stream, it will <i>exclude</i> the gap rows from the count.  That way, the MERGE statement accurately reflects that only the rows that were actually updated are affected by the statement.
+<p>To save storage space, we could detect the missing rids that correspond to deleted rows by checking if the rid is in the deletion index and instead store <i>placeholder</i> values for these deleted rows.  Since these rows are never returned to the end user, they can contain arbitrary values.  For nullable columns, we could use the null value since that requires the least amount of storage space, whereas for all other columns, we could use 0 for integer columns, a string of 0's for fixed length char and binary columns, and empty strings for varchars and varbinaries.  (Using 0 for 8-byte integer columns maximizes the storage compression for those column values.)  However, that's an optimization we'll defer based on the assumption that the number of rejected rows due to calculator errors and deleted rows won't be large.  The number of rows that are filtered should also be small; otherwise this optimization would not have kicked in.
+</p>
+<li> Create new indexes for any indexes whose keys include any of the target update columns.  Rebuild the new indexes using the rows just inserted and possibly pre-existing data if the index spans columns that weren't updated.
+<li> Version the root pages of the new clusters and indexes off of the original root pages.  Any new transactions will therefore access the new clusters and indexes, but the original clusters and indexes will still be available for older transactions/labels.
+</ol>
+<p>No special handling should be required for unique indexes and the unique constraint violations that can result when inserting into them.  Special recovery for unique constraint violations is only required when non-fail-fast mode is used.  However, columns that are part of unique constraints can only be updated in fail-fast mode.  If a violation occurs in fail-fast mode, the entire statement is rolled back.
+</p>
+<dl><dd>--<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 08:31, 23 March 2009 (PDT) After the initial implementation, it was discovered that the first sentence above is not correct.  Because the replaced column data retains deleted rows, it will contain duplicate values for the unique columns.  To avoid unique constraint violations because of these deleted values, the index splicer code needs to be modified so it ignores deleted rows.
+</dd></dl>
+<h2> <span class="mw-headline" id="Combining_Both_Optimizations">Combining Both Optimizations</span></h2>
+<p>If the criteria for both optimizations are met, no additional changes are required.  For the updates written as merge optimization, if filtering is being done on the source/target, that will result in rid gaps in the input into the extended cluster append stream.  The replacement of updated columns optimization already handles this by inserting the original column values, which is also the desired behavior in this case.  Again, this assumes that very few rows are being filtered, which should be the case for the replacement of updated columns optimization to have kicked in.
+</p><p>One further improvement we could make, in the case where both optimizations are used, is to avoid the sort on the target table's rid column, provided the target table is being read in rid order.  Currently, by default, that is the case because index-only scans are disabled.  But index-only scans can be explicitly enabled, and in the future, once its <a href="http://issues.eigenbase.org/browse/LDB-187" class="extiw" title="eigenjira:LDB-187">performance issues</a> are addressed, we will probably re-enable it by default.  So, we can't assume that the sort can always be avoided.
+</p><p>There is a way of detecting if an input is sorted in a specific order, but the information isn't being properly propagated by the Java calculator.  See the comments in <code>LcsTableDeleteRel.toStreamDef</code>.
+</p><p>--<a href="/wiki/index.php?title=User:Jsichi&amp;action=edit&amp;redlink=1" class="new" title="User:Jsichi (page does not exist)">Jsichi</a> 00:04, 21 October 2008 (PDT):  Can the code from FennelCalcRel be reused?  They are both based on a RexProgram.
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 11:47, 21 October 2008 (PDT) The interface that propagates this sort information is <code>FennelRel.getCollations</code>.  <code>IterCalcRel</code> doesn't implement that interface.  Moreover, neither does <code>FennelToIteratorConverter</code>.  So, we'll need to extend the <code>JavaRel</code> interface so it also supports a <code>getCollations</code> method.  Or alternatively, we can unify <code>RelNode.getCollationList</code> and <code>FennelRel.getCollations</code> (as noted in Julian's TODO comment in <code>FennelRel.getCollations</code>) and move the logic into that method.  There's also the note in <a href="/wiki/FarragoRelCleanup" title="FarragoRelCleanup">FarragoRelCleanup</a> about moving the interface into <code>RelMetadataQuery</code>.  Also, see <a href="/wiki/FarragoSortOrder" title="FarragoSortOrder">FarragoSortOrder</a> for additional background.
+</dd></dl>
+<h1> <span class="mw-headline" id="Interface_Design">Interface Design</span></h1>
+<p>No syntax changes in existing MERGE statements are required to take advantage of these new optimizations, <b>unless</b> an existing MERGE statement is really an update statement, and it's not using one of the patterns that will trigger usage of the replacement of updated columns optimization.  If so, it may be possible to rewrite the statement into a form that will use the optimization.  See <a href="#Overview_of_Enhancements">#Overview of Enhancements</a> for a description of the patterns.
+</p>
+<h1> <span class="mw-headline" id="Data_Model">Data Model</span></h1>
+<p>The following change will be required in the UML model:
+</p>
+<ul><li> Add a new Boolean <code>createNewIndex</code> parameter to <code>LbmSplicerStreamDef</code>.
+</li><li> Derive a new <code>LcsClusterReplaceStreamDef</code> from <code>LcsClusterAppendStreamDef</code> with no new parameters.
+</li></ul>
+<h1> <span class="mw-headline" id="Detailed_Design">Detailed Design</span></h1>
+<h2> <span class="mw-headline" id="Updates_Written_As_Merges_2">Updates Written As Merges</span></h2>
+<p>These special case updates will be detected in a new optimizer rule <code>LcsConvertMergeToUpdateRule</code>.  The rule needs to be applied early enough so the original ON condition is still in the <code>JoinRel</code> created by the statement and before the statement is converted to a <code>LcsTableMergeRel</code> in <code>LcsTableMergeRule</code>.  It needs to match on all of the supported query patterns on the source side.
+</p><p><code>RelOptUtil.splitJoinCondition</code> will be called to locate the equality joins and what those join keys are.  <code>RelMetadataQuery.getColumnOrigins</code> will be used to determine whether the source join key is a derived column and if it not, the  column's original offset. <code>RelMdUtil.areColumnsDefinitelyUnique</code> will be used to determine if the keys are unique.
+</p><p>If all pre-conditions are met, then the <code>JoinRel</code> noted above is simply replaced with a <code>ProjectRel</code> that's placed on top of the <code>LcsRowScanRel</code> corresponding to the source.  The expressions in this <code>ProjectRel</code> simply select each column from the source followed by each column from the target, so the constructed <code>ProjectRel</code> looks like the result of a join between the source and target.  Any excess filters from the original ON clause as well as filters originating from the source are put into a <code>FilterRel</code> that's placed on top of the new <code>ProjectRel</code>.  The rest of the RelNode tree that was above the <code>JoinRel</code> is unchanged.
+</p><p>Simply replacing the <code>JoinRel</code> localizes the changes required for the conversion.  The fact that the <code>JoinRel</code> has been replaced is transparent to <code>LcsTableMergeRule</code>, which later does further transformations on the statement.
+</p>
+<h2> <span class="mw-headline" id="Replacement_of_Updated_Columns_2">Replacement of Updated Columns</span></h2>
+<h3> <span class="mw-headline" id="Farrago_Changes"> Farrago Changes </span></h3>
+<p>The primary changes here are:
+</p>
+<ul><li> Modify <code>LcsTableMergeRule</code> with logic that determines whether the optimization should be applied.  If so, an indicator is passed to <code>LcsTableMergeRel</code>, signalling that the merge should be executed by replacing columns.
+</li><li> Modify <code>LcsTableMergeRel.toStreamDef</code> to:
+<ul><li> Include a sort on the target table's rid column
+</li><li> Make the necessary adjustments as a result of the MERGE input no longer including all target columns.
+</li><li> Adjust the input into the cluster append stream so the target table's rid column is pre-pended to the stream's input.
+</li><li> Exclude from the stream graph the delete substream that's used to delete the original rows corresponding to rows that are updated by the MERGE.
+</li><li> Instead of cluster append streams, create cluster replace streams.
+</li><li> Although violations will never occur when this optimization is applied, the bitmap append substream will still include the portion that inserts violating rids into the deletion index.  The substream should effectively be a no-op and therefore could be omitted, but keeping it simplifies the code.
+</li></ul>
+</li></ul>
+<h3> <span class="mw-headline" id="Fennel_Changes"> Fennel Changes </span></h3>
+<h4> <span class="mw-headline" id="Creating_the_New_Clusters_and_Indexes"> Creating the New Clusters and Indexes </span></h4>
+<p>New, empty clusters must be created for the columns being updated and new, empty indexes for any indexes that include any of the columns being updated.  They must be created before new data can be appended to them.  The most obvious way of handling this is to create the new clusters/indexes directly in the execution streams that will be writing to them, i.e., the cluster append and bitmap splicer exec streams, when those streams are opened.  However, the problem with doing that is as part of constructing the bitmap entries, the bitmap generator exec stream reads the cluster columns corresponding to the columns that make up the index.  I.e., it will need to read data from the newly created clusters.
+</p><p>We can utilize dynamic parameters to pass around the <code>rootPageId</code>s of the newly created clusters.  This is the approach that was used for nested loop joins.  In order for this to work though, the clusters need to be created <i>before</i> the streams that will be accessing them.  Streams in a stream graph are opened such that producers are always opened before consumers.  Therefore, the cluster append exec streams will be opened before the bitmap generator exec streams.
+</p>
+<h4> <span class="mw-headline" id="Versioning_the_New_Clusters_and_Indexes"> Versioning the New Clusters and Indexes </span></h4>
+<p>Once the cluster append and bitmap splicer exec streams have written all their data and are ready to return EOS, they'll need to call <code>SnapshotRandomAllocationSegment::versionPage</code>, passing in the <code>rootPageId</code>s of the original and new clusters/indexes.  This will version the root pages of those clusters/indexes.
+</p>
+<h4> <span class="mw-headline" id="New_and_Modified_Execution_Streams"> New and Modified Execution Streams </span></h4>
+<h5> <span class="mw-headline" id="LbmGeneratorExecStream"> LbmGeneratorExecStream </span></h5>
+<p>Since the changes in <code>LbmGeneratorExecStream</code> are minor, a new subclass will not be derived, and instead the existing class will simply be extended.
+</p><p>The <code>BTreeParams</code> class already supports btrees where the <code>rootPageId</code> is a dynamic parameter, as a result of the changes made for nested loop joins.  Therefore, the new cluster columns that the generator exec stream will be reading will just need to be setup so those clusters have dynamic parameters associated with them.
+</p><p><code>LbmGeneratorExecStream::prepare</code> will save in a new member field, the dynamic parameter id values corresponding to the clusters it will be reading.  If a cluster is not going to be dynamically created, then the parameter id is set to 0.
+</p><p><code>LbmGeneratorExecStream::open</code> will then be extended so if any of the clusters it needs to read have a  dynamic parameter id &gt; 0, it will call <code>DynamicParamManager::getParam</code> to retrieve the parameter value created by the upstream cluster append exec stream.
+</p>
+<h5> <span class="mw-headline" id="LbmSplicerExecStream"> LbmSplicerExecStream </span></h5>
+<p>The changes in <code>LbmSplicerExecStream</code> are also relatively minor, so it also will just be extended.
+</p><p>The stream will take a new parameter, <code>createNewIndex</code>, which if set to true, indicates that the stream needs to create a new index, replacing the existing one.  The index's original <code>rootPageId</code> is already being passed into the stream.  The resulting new <code>rootPageId</code> will version off of that original <code>rootPageId</code> after the stream has finished writing the new index.  Thus, <code>createNewIndex</code> can only be true if the segment associated with the index is a <code>SnapshotRandomAllocationSegment</code>.
+</p>
+<h5> <span class="mw-headline" id="LcsClusterReplaceExecStream"> LcsClusterReplaceExecStream </span></h5>
+<p>The changes in the cluster append exec stream are more extensive, so we will derive a new class named <code>LcsClusterReplaceExecStream</code> from the existing <code>LcsClusterAppendExecStream</code>.
+</p><p>The btree input parameter corresponding to the cluster being replaced will have a dynamic parameter associated with it.  This corresponds to the cluster's new <code>rootPageId</code>.  The dynamic parameter will be created at open time.  Note that this dynamic parameter will be deleted when the stream graph is closed.  Therefore, there's no need for individual streams to clean up their own dynamic parameters.
+</p><p>The <code>rootPageId</code> of the original cluster that the stream will be replacing will be also passed in through the btree input parameter.  That <code>rootPageId</code> is needed to create a <code>LcsClusterReader</code> that will be used to read values from the original cluster.  Those value will be used to fill in gaps in the input rows.  <code>LcsClusterReader::position</code> positions to a specified rid value within the cluster and then an UnalignedAttributeAccessor::loadValue call reads a specific column value at that rid position.
+</p><p>Note that pre-fetches will not be used with this <code>LcsClusterReader</code>, although as an optimization, we could.  That would require reading ahead from the input, detecting the gaps between rids, and creating <i>rid runs</i> corresponding to those missing values.
+</p><p>The original <code>rootPageId</code> will also be used later to version the new cluster's <code>rootPageId</code>.  So, this execution stream can only be used if the segment associated with the cluster is a <code>SnapshotRandomAllocationSegment</code>.
+</p><p>The input row passed into <code>LcsClusterReplaceExecStream</code> will include a rid column as the first column in the row.  That extra rid column will need to be projected from the input, but is excluded from the set of column values that are inserted into the cluster.  The rid value will be used to detect gaps in the rid sequence.  In order to detect gaps at the very end of the sequence, we need to know how many rows are in the original cluster at the time the stream is executing.  The count will be determined in <code>LcsClusterReplaceExecStream</code>, using code similar to what's already being done in <code>LcsClusterAppendExecStream::loadExistingBlock</code> when appending rows to an already populated cluster.  It means we end up computing the row count for each column that's updated.  But if we were to determine the rowcount in Farrago and then pass it down to Fennel, it would have to be done through some new dynamic parameter passing mechanism.
+</p><p><code>LcsClusterAppendExecStream::compress</code> will be refactored so existing code can be reused in the new, derived stream.
+</p>
+<h2> <span class="mw-headline" id="Removing_Self-Joins"> Removing Self-Joins </span></h2>
+<p>A further optimization that can be made is an extension of the updates written as merge optimization.  The idea here is if the source contains a join that references the target table, provided there is an equality join filter on unique keys between the target table from the MERGE and the target table reference in the source, we can also eliminate that self-join.  This typically occurs when the source is a view that references the target table.  However doing this is a bit more work, so perhaps we'll implement this as time permits.  A possible approach on how to implement this is as follows:
+</p>
+<ul><li> Extend <code>LoptOptimizeJoinRule</code> to recognize factors that are simple table references, i.e., no grouping or joins.  For each of these factors, see if any two map to the same underlying table, and if so, see if there's an equality inner join between them such that the join keys are identical and unique.
+</li><li> When creating join paths for the self-joining factors, instead of including these factors in arbitrary joins with other factors, force a join between the two by creating a new <code>RelNode</code> named <code>SelfJoinRel</code> that joins the factors.
+</li><li> After <code>LoptOptimizerJoinRule</code>, invoke a new optimizer rule that matches on a pattern containing the <code>SelfJoinRel</code>.  The rule will replace the join with a <code>FilterRel</code>, <code>ProjectRel</code>, and <code>LcsRowScanRel</code>, similar to what will be done in <code>LcsConvertMergeToUpdateRule</code>.  However, whereas that rule only needs to match on 4 possible patterns, if we want to address the most general case where both inputs into the self-join can be arbitrarily projected and filtered, there will be 16 possible patterns, as each join input can be one of the following:
+</li></ul>
+<pre>
+   LcsRowScanRel
+
+   FilterRel
+     LcsRowScanRel
+
+   ProjectRel
+     LcsRowScanRel
+
+   ProjectRel
+     FilterRel
+       LcsRowScanRel
+</pre>
+<p>The union of filters and projection expressions from each join input will be combined into the new filter and project.  By allowing all possible patterns, this also means that the optimization can also be used for SELECT statements, not just MERGEs.  If we only want to provide this optimization for MERGE statements, the number of patterns reduces to 8, as the target table will always be projected because of the rid column reference.  We can further reduce the number of patterns to 4 if we prevent the optimization from being used when the target table of the MERGE is filtered.  However, that makes the change less general.
+</p><p>Note that when removing the redundant table, if a semijoin is being applied on one of the tables, that semijoin must be preserved.
+</p>
+<h3> <span class="mw-headline" id="Actual_Implementation"> Actual Implementation </span></h3>
+<p>This has subsequently been implemented.  The design is slightly different from the one described above.  The approach taken was as follows:
+</p>
+<ul><li> The changes in <code>LoptOptimizeJoinRule</code> were as described above, except instead of creating a new <code>SelfJoinRel</code>, I added a new static method <code>LoptOptimizeJoinRule.isRemovableJoin(JoinRel)</code> that is called dynamically, as needed, to determine if a join is a removable self-join.
+</li><li> Rather than writing a rule that matches on 16 different patterns, I introduced a new rule, <code>LoptModifyRemovableSelfJoinRule</code> that modifies the inputs into a removable self-join so that each join input is always of the form:
+</li></ul>
+<pre>
+ProjectRel
+   FilterRel
+      LcsRowScanRel
+</pre>
+<dl><dd> Since each input can be dealt with independently, the rule only needs to match on 6 possible patterns.  If the <code>ProjectRel</code> is missing, then the rule adds a projection that projects all columns.  If the <code>FilterRel</code> is missing, then the rule adds a dummy IS TRUE filter.  Both of these will be removed and dealt with in the next rule.
+</dd></dl>
+<ul><li> By putting the self-join inputs into a canonical form, the new rule, <code>LoptRemoveSelfJoinRule</code>, only needs to look for one specific pattern.  Another key is the rule needs to be fired after semijoins have been converted but before projections and filters have been pushed into row scans.  That way, when combining the two common row scans, the rule simply needs to take the intersection of the row scan inputs (if semijoins are being used on both row scans), instead of having to deal with a projected row scan or a row scan with residual filters.  One limitation though is that when doing the intersection of the semijoin index lookups, the dynamic parameter used to skip past rids will not be used.  Doing so would require recreating the index searches, which requires matching on a complex rule pattern, similar to what's being done in <code>LcsIndexSemiJoinRule</code>.  So, I opted for simplicity.  Although there's potential for further improvement here, there's already a win by avoiding the self-join.
+</li></ul>
+<p>Because <code>LoptRemoveSelfJoinRule</code> is more general, it supersedes <code>LcsConvertMergeToUpdateRule</code>, which only handles self-joins inside MERGE statements.  Therefore, that rule has been removed.  Subsequent changes that were made to convert UPDATE statements into MERGEs are also handled by the new rule, after extending various metadata queries so that a projection of a rid expression is treated as a unique column.
+</p><p>To avoid redundant column references in the case of self-joins, <code>LoptOptimizeJoinRule</code> was also changed so references to the table in the self-join that will be removed are remapped to reference the preserved table in the self-join, if that preserved table also references the same column.  This applies for references in the projection as well as join filters.  By doing so, in the case where the source view also references a large number of columns from the target as part of joins specified in the source view as well as in the computation of the value of the update expressions, the resulting row scan on the target table only needs to return each column at most once.
+</p><p>The remapping of references to the self-join table that's removed is done as join conditions are attached to the different join combinations that are generated by <code>LoptOptimizeJoinRule</code> and when the final projections are created by the rule.  An alternative would have been to simply place a <code>ProjectRel</code> on top of the self-joins as they're generated, that maps the column references.  But to make that work, after <code>LoptOptimizeJoinRule</code> is applied, the HEP program needs to apply the rules that will pull up projections above the resulting joins.  Doing the pull up is necessary so when the projections are later pushed back down, the redundant references are removed.  The implemented approach required more code changes, but it avoids having to do an extra round of projection pull up that we only need for self-joins.
+</p>
+<h1> <span class="mw-headline" id="Validation_Rules">Validation Rules</span></h1>
+<p>For the replacement of updated columns optimization, in the explain plan, you should see much fewer columns being referenced in various <code>RelNode</code>s, particularly the <code>LcsRowScanRel</code> corresponding to the target table and various <code>IterCalcRel</code>s and <code>FennelReshapeRel</code>s that pass along data from that row scan.
+</p><p>Without the replacement of updated columns optimization:
+</p>
+<pre>
+explain plan for merge into emps e
+    using tempemps t on t.t_empno = e.empno
+    when matched then
+        update set salary = e.salary * .25;
+'column0'
+'FennelToIteratorConverter'
+'  LcsTableMergeRel(table=[[LOCALDB, RC, EMPS]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..9=[{inputs}], expr#10=[CAST($t9):BIGINT NOT NULL], expr#11=[0.25], expr#12=[Reinterpret($t8)], expr#13=[Reinterpret($t11)], expr#14=[*($t12, $t13)], expr#15=[Reinterpret($t14)], expr#16=[Reinterpret($t15)], expr#17=[0], expr#18=[&gt;($t16, $t17)], expr#19=[50], expr#20=[+($t16, $t19)], expr#21=[-($t16, $t19)], expr#22=[CASE($t18, $t20, $t21)], expr#23=[100], expr#24=[/INT($t22, $t23)], expr#25=[true], expr#26=[Reinterpret($t24, $t25)], rid=[$t10], EMPNO=[$t2], NAME=[$t3], DEPTNO=[$t4], GENDER=[$t5], CITY=[$t6], AGE=[$t7], SALARY=[$t26])'
+'        FennelToIteratorConverter'
+'          LhxJoinRel(leftKeys=[[1]], rightKeys=[[0]], joinType=[INNER])'
+'            FennelReshapeRel(projection=[[0, 0]], outputRowType=[RecordType(INTEGER NOT NULL T_EMPNO, INTEGER CAST($0):INTEGER) NOT NULL])'
+'              LcsRowScanRel(table=[[LOCALDB, RC, TEMPEMPS]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$TEMPEMPS$T_EMPNO]])'
+'            IteratorToFennelConverter'
+'              IterCalcRel(expr#0..7=[{inputs}], expr#8=[ROW($t6)], expr#9=[0.25], expr#10=[Reinterpret($t6)], expr#11=[Reinterpret($t9)], expr#12=[*($t10, $t11)], expr#13=[Reinterpret($t12)], expr#14=[Reinterpret($t13)], expr#15=[0], expr#16=[&gt;($t14, $t15)], expr#17=[50], expr#18=[+($t14, $t17)], expr#19=[-($t14, $t17)], expr#20=[CASE($t16, $t18, $t19)], expr#21=[100], expr#22=[/INT($t20, $t21)], expr#23=[true], expr#24=[Reinterpret($t22, $t23)], expr#25=[ROW($t24)], expr#26=[$IS_DIFFERENT_FROM($t8, $t25)], proj#0..7=[{exprs}], $condition=[$t26])'
+'                FennelToIteratorConverter'
+'                  LcsRowScanRel(table=[[LOCALDB, RC, EMPS]], projection=[[0, 1, 2, 3, 4, 5, 6, LCS_RID]], clustered indexes=[[SYS$CLUSTERED_INDEX$EMPS$AGE, SYS$CLUSTERED_INDEX$EMPS$CITY, SYS$CLUSTERED_INDEX$EMPS$DEPTNO, SYS$CLUSTERED_INDEX$EMPS$EMPNO, SYS$CLUSTERED_INDEX$EMPS$GENDER, SYS$CLUSTERED_INDEX$EMPS$NAME, SYS$CLUSTERED_INDEX$EMPS$SALARY]])'
+</pre>
+<p>With the replacement of updated columns optimization:
+</p>
+<pre>
+explain plan for merge into emps e
+    using tempemps t on t.t_empno = e.empno
+    when matched then
+         update set salary = e.salary * .25;
+'column0'
+'FennelToIteratorConverter'
+'  LcsTableMergeRel(table=[[LOCALDB, RC, EMPS]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..3=[{inputs}], expr#4=[0.25], expr#5=[Reinterpret($t2)], expr#6=[Reinterpret($t4)], expr#7=[*($t5, $t6)], expr#8=[Reinterpret($t7)], expr#9=[CAST($t3):BIGINT NOT NULL], expr#10=[Reinterpret($t8)], expr#11=[0], expr#12=[&gt;($t10, $t11)], expr#13=[50], expr#14=[+($t10, $t13)], expr#15=[-($t10, $t13)], expr#16=[CASE($t12, $t14, $t15)], expr#17=[100], expr#18=[/INT($t16, $t17)], expr#19=[true], expr#20=[Reinterpret($t18, $t19)], rid=[$t9], SALARY=[$t20])'
+'        FennelToIteratorConverter'
+'          LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])'
+'            LcsRowScanRel(table=[[LOCALDB, RC, TEMPEMPS]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$TEMPEMPS$T_EMPNO]])'
+'            IteratorToFennelConverter'
+'              IterCalcRel(expr#0..2=[{inputs}], expr#3=[ROW($t1)], expr#4=[0.25], expr#5=[Reinterpret($t1)], expr#6=[Reinterpret($t4)], expr#7=[*($t5, $t6)], expr#8=[Reinterpret($t7)], expr#9=[Reinterpret($t8)], expr#10=[0], expr#11=[&gt;($t9, $t10)], expr#12=[50], expr#13=[+($t9, $t12)], expr#14=[-($t9, $t12)], expr#15=[CASE($t11, $t13, $t14)], expr#16=[100], expr#17=[/INT($t15, $t16)], expr#18=[true], expr#19=[Reinterpret($t17, $t18)], expr#20=[ROW($t19)], expr#21=[$IS_DIFFERENT_FROM($t3, $t20)], proj#0..2=[{exprs}], $condition=[$t21])'
+'                FennelToIteratorConverter'
+'                  LcsRowScanRel(table=[[LOCALDB, RC, EMPS]], projection=[[0, 6, LCS_RID]], clustered indexes=[[SYS$CLUSTERED_INDEX$EMPS$EMPNO, SYS$CLUSTERED_INDEX$EMPS$SALARY]])'
+</pre>
+<p>Note that the <code>LcsRowScanRel</code> on <b>EMPS</b> now only projects 2 columns (and the rid) instead of 7 columns.  The only 2 columns that are needed from EMPS are the column being updated (salary) and the join key (empno).
+</p><p>You can also turn on the trace flag, <b>net.sf.farrago.query.rule</b>, to level <b>FINE</b>, and if the optimization is used, you'll see a message like the following in the trace log.
+</p>
+<pre>
+Replace columns optimization used for MERGE on target table EMPS
+</pre>
+<p>For the updates written as merge optimization, other than better performance, the only way of knowing when this optimization is being used is by examining the explain output of the MERGE statement.  You'll no longer see a self-join of the target table.
+</p><p>Without the updates written as merge optimization:
+</p>
+<pre>
+explain plan for
+merge into emps e1
+    using (select * from emps) e2 on e1.empno = e2.empno
+    when matched then
+        update set salary = e1.salary * 1.25;
+'column0'
+'FennelToIteratorConverter'
+'  LcsTableMergeRel(table=[[LOCALDB, RC, EMPS]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..8=[{inputs}], expr#9=[1.25], expr#10=[Reinterpret($t7)], expr#11=[Reinterpret($t9)], expr#12=[*($t10, $t11)], expr#13=[Reinterpret($t12)], expr#14=[CAST($t8):BIGINT NOT NULL], expr#15=[Reinterpret($t13)], expr#16=[0], expr#17=[&gt;($t15, $t16)], expr#18=[50], expr#19=[+($t15, $t18)], expr#20=[-($t15, $t18)], expr#21=[CASE($t17, $t19, $t20)], expr#22=[100], expr#23=[/INT($t21, $t22)], expr#24=[true], expr#25=[Reinterpret($t23, $t24)], rid=[$t14], EMPNO=[$t1], NAME=[$t2], DEPTNO=[$t3], GENDER=[$t4], CITY=[$t5], AGE=[$t6], SALARY=[$t25])'
+'        FennelToIteratorConverter'
+'          LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])'
+'            LcsRowScanRel(table=[[LOCALDB, RC, EMPS]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$EMPS$EMPNO]])'
+'            IteratorToFennelConverter'
+'              IterCalcRel(expr#0..7=[{inputs}], expr#8=[ROW($t6)], expr#9=[1.25], expr#10=[Reinterpret($t6)], expr#11=[Reinterpret($t9)], expr#12=[*($t10, $t11)], expr#13=[Reinterpret($t12)], expr#14=[Reinterpret($t13)], expr#15=[0], expr#16=[&gt;($t14, $t15)], expr#17=[50], expr#18=[+($t14, $t17)], expr#19=[-($t14, $t17)], expr#20=[CASE($t16, $t18, $t19)], expr#21=[100], expr#22=[/INT($t20, $t21)], expr#23=[true], expr#24=[Reinterpret($t22, $t23)], expr#25=[ROW($t24)], expr#26=[$IS_DIFFERENT_FROM($t8, $t25)], proj#0..7=[{exprs}], $condition=[$t26])'
+'                FennelToIteratorConverter'
+'                  LcsRowScanRel(table=[[LOCALDB, RC, EMPS]], projection=[[0, 1, 2, 3, 4, 5, 6, LCS_RID]], clustered indexes=[[SYS$CLUSTERED_INDEX$EMPS$AGE, SYS$CLUSTERED_INDEX$EMPS$CITY, SYS$CLUSTERED_INDEX$EMPS$DEPTNO, SYS$CLUSTERED_INDEX$EMPS$EMPNO, SYS$CLUSTERED_INDEX$EMPS$GENDER, SYS$CLUSTERED_INDEX$EMPS$NAME, SYS$CLUSTERED_INDEX$EMPS$SALARY]])'
+
+</pre>
+<p>With the updates written as merge optimization:
+</p>
+<pre>
+explain plan for
+merge into emps e1
+    using (select * from emps) e2 on e1.empno = e2.empno
+    when matched then
+        update set salary = e1.salary * 1.25;
+'column0'
+'FennelToIteratorConverter'
+'  LcsTableMergeRel(table=[[LOCALDB, RC, EMPS]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..1=[{inputs}], expr#2=[ROW($t0)], expr#3=[1.25], expr#4=[Reinterpret($t0)], expr#5=[Reinterpret($t3)], expr#6=[*($t4, $t5)], expr#7=[Reinterpret($t6)], expr#8=[Reinterpret($t7)], expr#9=[0], expr#10=[&gt;($t8, $t9)], expr#11=[50], expr#12=[+($t8, $t11)], expr#13=[-($t8, $t11)], expr#14=[CASE($t10, $t12, $t13)], expr#15=[100], expr#16=[/INT($t14, $t15)], expr#17=[true], expr#18=[Reinterpret($t16, $t17)], expr#19=[ROW($t18)], expr#20=[$IS_DIFFERENT_FROM($t2, $t19)], expr#21=[CAST($t1):BIGINT NOT NULL], rid=[$t21], SALARY=[$t18], $condition=[$t20])'
+'        FennelToIteratorConverter'
+'          LcsRowScanRel(table=[[LOCALDB, RC, EMPS]], projection=[[6, LCS_RID]], clustered indexes=[[SYS$CLUSTERED_INDEX$EMPS$SALARY]])'
+</pre>
+<p>In addition to avoiding the self-join, the example above also utilizes the replacement of updated columns optimization.  That's why the <code>LcsRowScanRel</code> on <b>EMPS</b> only needs to project one column (salary) and the rid.  It no longer needs to project the join key because the join has been eliminated.
+</p>
+<h1> <span class="mw-headline" id="Performance_Impact">Performance Impact</span></h1>
+<p>Savings, in both time and space, for the replacement of updated columns optimization occur because:
+</p>
+<ul><li> We avoid having to read and update columns that aren't updated in the MERGE statement.
+</li><li> We avoid having to delete the original rows that are updated by the statement.
+</li><li> We can utilize monotonic inserts when inserting into the btree indexes that are affected by the statement, which makes inserting into the btrees more efficient.
+</li></ul>
+<p>But the tradeoff is there will be additional cost because we have to re-insert all values into columns that are updated, not just the subset of rows that are affected by the statement, as well as rebuilding all indexes that include any of these updated columns.  Therefore, if we don't correctly choose the percentage threshold values that determine when this optimization kicks in, we could degrade performance.
+</p>
+<h1> <span class="mw-headline" id="Testing">Testing</span></h1>
+<h2> <span class="mw-headline" id="Unit_Tests">Unit Tests</span></h2>
+<h3> <span class="mw-headline" id="Fennel_Unit_Tests"> Fennel Unit Tests </span></h3>
+<p>C++ unit tests will be modified/written to exercise the changes in the execution streams.
+</p>
+<ul><li> <code>LbmLoadBitmapTest.cpp</code> will be modified to test the changes in <code>LbmGeneratorExecStream</code> by passing the <code>rootPageId</code> of the cluster it needs to read through a dynamic parameter that's created and set outside of the stream.
+</li><li> A new unit test will be written for <code>LcsClusterReplaceExecStream</code>.  The test will append to an empty cluster using <code>LcsClusterAppendExecStream</code>.  Then it will replace the cluster using the new stream, such that the input contains a pre-determined pattern of gaps in the rids.
+</li><li> I need to see if there's a way of testing the changes in <code>LbmSplicerExecStream</code> without having to write a lot of new test code.  If it's too difficult, we'll have to rely on Farrago-level tests.  The code changes are fairly minor, so it doesn't seem worthwhile if writing the tests requires more work than the changes themselves&#160;:-).
+</li></ul>
+<h3> <span class="mw-headline" id="Farrago_Unit_Tests"> Farrago Unit Tests </span></h3>
+<ul><li> Verify that the preconditions required for the updates written as merge optimization trigger its usage.
+</li><li> Verify that when the preconditions for the updates written as merge optimization are not met, the optimization is not used.
+</li><li> Exercise the updates written as merge optimization for statements in the following scenarios:
+<ul><li> There is filtering on the target and/or source.
+</li><li> There are additional non-equality join filters in the ON clause.
+</li></ul>
+</li></ul>
+<ul><li> Verify that the replacement of updated columns optimization is used only if a small number of columns and large number of rows are updated.
+</li><li> Exercise the replacement of updated columns optimization in the following scenarios:
+<ul><li> The table contains indexes whose columns overlap the updated columns.  Include cases where the index includes both updated and non-updated columns as well as cases where an updated column is a key in multiple indexes.
+</li><li> The table contains deleted rows at the beginning, in the middle, and at the end of the table.
+</li><li> Some rows in the table are filtered and not updated.
+</li><li> Non-fail-fast mode is used and the update results in calculator errors for some rows.
+</li><li> Enable index-only scans and execute a replacement update.
+</li></ul>
+</li><li> Verify that statements using an older label setting do not see the replaced columns.
+</li><li> Verify that the statement is properly rolled back if replacement update is used and a constraint violation occurs updating a column that is part of a unique index.
+</li></ul>
+<ul><li> Exercise statements that will utilize both optimizations.
+</li><li> Include data containing null values.
+</li></ul>
+<h3> <span class="mw-headline" id="Performance_Results"> Performance Results </span></h3>
+<h4> <span class="mw-headline" id="Updates_Written_As_Merge_Optimization"> Updates Written As Merge Optimization </span></h4>
+<p>Using Eigenbase build 11795 with the updates written as merges optimization, I measured equivalent no-op MERGE statements running against the 1 million row BENCH table for the two extremes -- all columns updated and only one column updated.  By making the MERGEs no-ops, that isolates the timings to the portion of the MERGE statement that is generating the source input for the MERGE.
+</p><p>These are the two statements in the case where only one column is updated:
+</p>
+<pre>
+Without the Optimization:
+
+MERGE INTO bench1m b1 USING (SELECT * FROM bench1m) b2
+   ON b1.&quot;kseq&quot; = b2.&quot;kseq&quot;
+   WHEN MATCHED THEN UPDATE SET &quot;k2&quot; = b2.&quot;k2&quot;;
+
+With the Optimization:
+
+MERGE INTO bench1m b1 USING bench1m b2
+   ON b1.&quot;kseq&quot; = b2.&quot;kseq&quot;
+   WHEN MATCHED THEN UPDATE SET &quot;k2&quot; = b2.&quot;k2&quot;;
+</pre>
+<p>Note that build 11795 did not have the changes where projecting the source allows the optimization to be used.  So, that's why the same build with two different query variations provides the desired comparison.
+</p><p><br />
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> Updates Written As Merges Optimization on BENCH1M Table
+</caption>
+<tr>
+<th width="200"> Number of Columns Updated
+</th>
+<th width="200"> Without Optimization
+</th>
+<th width="200"> With Optimization
+</th>
+<th width="200"> Percentage Improvement
+</th></tr>
+<tr>
+<td> All, except the primary key (12) </td>
+<td> 85s </td>
+<td> 60s </td>
+<td> 29%
+</td></tr>
+<tr>
+<td> 1 </td>
+<td> 18s </td>
+<td> 6s </td>
+<td> 67%
+</td></tr></table>
+<h4> <span class="mw-headline" id="Replacement_of_Updated_Columns_Optimization"> Replacement of Updated Columns Optimization </span></h4>
+<p>To determine the threshold values for when this optimization should be used, tests were run on smcorpdbdev11 using the equivalent of db team branch build 12055.  The following table was used in these tests.
+</p>
+<ul><li> Extended the schema of the BENCH table so the columns were repeated 5 times for a total of 5*13=65 columns.
+</li><li> Loaded the table with 1 million rows.
+</li><li> Created indexes on all columns except the original primary key, which is already indexed.
+</li></ul>
+<p>Various MERGE statements were run, varying the number of columns updated so that either 100%, 80%, 60%, 40%, or 20% of the columns were updated.  That way, for all statements, the distribution of values in the columns updated was always the same; each statement updated x sets of 13 columns.
+</p><p>The percentage of rows was also varied, and the resulting MERGE statement would always filter away 50% of the rows because those updates were no-op updates.  For example, in the case where the source for the MERGE contained 1 million rows, half of the updates resulted in no change in the original row values, so the resulting MERGE would only affect 500,000 rows.  Unfortunately, there's no good way for the optimizer to predict how many updates will be filtered away like this.  In the case where more rows are filtered, that favors not using the optimization because it means no work is required for those filtered rows.  With the optimization, because the entire column is replaced, we still end up having to do some work to handle those rows.  However, based on testing, even in the case where all source rows result in no-op updates, the advantage of not using the optimization was small, whereas in the case where no rows are filtered away, using the optimization is significantly better.  Therefore, half was chosen as a middle ground.
+</p><p>Contrary to what I would have expected, the percentage of columns that need to be updated does not have to be small in order to realize benefits from this optimization.  Moreover, the percentage of rows updated does not have to be large either.  But as you would expect, the smaller the percentage of columns and the larger the percentage of rows, the greater the benefits.  Also, for the table used in this test, updating all columns is not better with the optimization.  However, with a smaller table (i.e., fewer columns and rows), even when all columns are updated, the optimization can perform better.  So, there is some degree of variability in the threshold depending on the input size, and we could conceivably come with a complex formula for computing the threshold that takes into account the input size and the number of cache pages available in Fennel.  For simplicity, I decided to base the threshold simply on the results from tests run on the 1 million row, 65 column table.  Consequently, the thresholds may be too conservative for smaller tables and potentially too aggressive for much larger tables.
+</p><p>The table below shows a subset of the timings I got, including numbers for cases where there is no improvement and therefore the optimization should not be used.  Based on these numbers, the optimization will only kick in if all of the following criteria are met:
+</p>
+<ul><li> The percentage of columns updated must be &lt;= 60%
+</li><li> The percentage of rows updated must be &gt;= the percentage of columns updated times .4 and &gt; 1%.
+</li></ul>
+<p>For example, if 60% of the columns are updated, then at least 24% of the rows must be updated.  Whereas if 2% of the columns are updated, then at least 1% of the rows have to be updated.
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> Replace Columns Optimization on 65-column BENCH1M Table
+</caption>
+<tr>
+<th width="200">&#160;% of Columns Updated
+</th>
+<th width="200">&#160;% of Rows Updated
+</th>
+<th width="200"> Without Optimization
+</th>
+<th width="200"> With Optimization
+</th>
+<th width="200"> Percentage Improvement
+</th></tr>
+<tr>
+<td> 100 </td>
+<td> 100 </td>
+<td> 1118s </td>
+<td> 1249s </td>
+<td> none
+</td></tr>
+<tr>
+<td> 80 </td>
+<td> 100 </td>
+<td> 871s </td>
+<td> 991s </td>
+<td> none
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 100 </td>
+<td> 697s </td>
+<td> 556s </td>
+<td> 20%
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 50 </td>
+<td> 414s </td>
+<td> 320s </td>
+<td> 23%
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 30 </td>
+<td> 278s </td>
+<td> 259s </td>
+<td> 7%
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 20 </td>
+<td> 207s </td>
+<td> 232s </td>
+<td> none
+</td></tr>
+<tr>
+<td> 40 </td>
+<td> 100 </td>
+<td> 575s </td>
+<td> 278s </td>
+<td> 52%
+</td></tr>
+<tr>
+<td> 40 </td>
+<td> 20 </td>
+<td> 181s </td>
+<td> 151s </td>
+<td> 17%
+</td></tr>
+<tr>
+<td> 40 </td>
+<td> 10 </td>
+<td> 135s </td>
+<td> 137s </td>
+<td> none
+</td></tr>
+<tr>
+<td> 20 </td>
+<td> 100 </td>
+<td> 450s </td>
+<td> 110s </td>
+<td> 76%
+</td></tr>
+<tr>
+<td> 20 </td>
+<td> 10 </td>
+<td> 136s </td>
+<td> 57s </td>
+<td> 58%
+</td></tr>
+<tr>
+<td> 20 </td>
+<td> 1 </td>
+<td> 84s </td>
+<td> 79s </td>
+<td> 6%
+</td></tr></table>
+<h1> <span class="mw-headline" id="Open_Issues"> Open Issues </span></h1>
+<ul><li> Is it worthwhile fixing collations so we can avoid ordering rids when the data is already sorted in that order?  Note that this will also benefit deletes, but to a much smaller extent because in the case of deletes, the row being sorted only includes the rid column, whereas for MERGE, it includes all columns referenced from the target table.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 202/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1994-0!*!0!!en!*!* and timestamp 20140414191210 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbEfficientUpdates&amp;oldid=6136">http://luciddb.org/wiki/index.php?title=LucidDbEfficientUpdates&amp;oldid=6136</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbEfficientUpdates" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbEfficientUpdates&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbEfficientUpdates&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbEfficientUpdates&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbEfficientUpdates&amp;returntoquery=oldid%3D6136" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbEfficientUpdates" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbEfficientUpdates" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbEfficientUpdates&amp;oldid=6136&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbEfficientUpdates&amp;oldid=6136" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.147 secs. --></body></html>

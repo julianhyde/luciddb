@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>View source - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="next" href="http://luciddb.org/wiki/LucidDbWarehouseLabels" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if IE 8]><link rel="stylesheet" href="/wiki/skins/common/IE80Fixes.css?303" media="screen" /><![endif]-->
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbWarehouseLabels", "wgTitle": "LucidDbWarehouseLabels", "wgCurRevisionId": 5546, "wgArticleId": 1869, "wgIsArticle": false, "wgAction": "edit", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": true, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbWarehouseLabels action-edit skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">View source</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">for <a href="/wiki/LucidDbWarehouseLabels" title="LucidDbWarehouseLabels">LucidDbWarehouseLabels</a></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>You do not have permission to edit this page, for the following reason:
+</p>
+<div class="permissions-errors">
+<p>The action you have requested is limited to users in the group: <a href="/wiki/index.php?title=LucidDB_Wiki:Users&amp;action=edit&amp;redlink=1" class="new" title="LucidDB Wiki:Users (page does not exist)">Users</a>.
+</p>
+</div>
+<p>You can view and copy the source of this page:
+</p><textarea id="wpTextbox1" name="wpTextbox1" cols="80" rows="25" readonly="">= Introduction =
+
+This page provides an overview of a unique feature available in LucidDB starting with release 0.8.0:  warehouse labels.
+
+A warehouse label is an identifier that corresponds to database state at some particular point in time, such as after successful completion of an ETL job.  By applying warehouse labels to LucidDB sessions, those sessions can execute point-in-time queries, where the point-in-time corresponds to when the specified label was created.  That way, sessions can query the database based on an ETL job that finished the day before, even though there is a new ETL job running concurrently.
+
+Note that the database state only applies to [[LucidDbDataStorageAndAccess#Column_Store_Tables|LucidDB column store tables]].  External, foreign tables such as those created through the [[LucidDbFlatFileWrapper|LucidDB flat file wrapper]] are excluded; likewise, catalog information is excluded.
+
+Also, a label does not prevent a table from being dropped if that table exists at the time the label is created.  In other words, if session A runs with a label setting where it can access table X, and session B subsequently drops table X, then session A will no longer be able to access table X.
+
+This feature is possible because of LucidDB's underlying support for [[LucidDbDataStorageAndAccess#Page_Versioning|page versioning]].
+
+= Usage Example =
+
+The following is an example of how labels can be used by a data warehousing application.
+
+* On Monday evening, a nightly ETL job runs successfully, producing warehouse label, L1.
+* All subsequent report sessions that are initiated following the nightly run will use warehouse label L1, therefore seeing a copy of the warehouse corresponding to Monday night's ETL run.  This continues throughout the next day, Tuesday.
+* At the end of the day on Tuesday, the nightly ETL job fires off again.  Any report sessions that are running while this ETL job is running can continue to run based on label L1.
+* The Tuesday evening ETL job completes, creating a new warehouse label, L2.
+* All new report sessions will now start to use warehouse label L2 throughout the day on Wednesday.
+
+= Creating and Dropping Warehouse Labels =
+
+The syntax for creating and dropping warehouse labels is as follows:
+
+&lt;pre>
+CREATE [ OR REPLACE ] LABEL &lt;labelname> [ FROM LABEL &lt;parentLabelName> ]
+    [ DESCRIPTION label-description ]
+
+DROP LABEL &lt;labelname> [ CASCADE | RESTRICT ]
+&lt;/pre>
+
+== Create ==
+
+If the optional &lt;code>FROM&lt;/code> clause in the &lt;code>CREATE LABEL&lt;/code> statement is not specified, then a '''base label''' is created.  The point-in-time associated with the base label corresponds to the time of the last committed transaction, at the time the label is created.
+
+Without the optional clause, a logical label (or '''label alias''') is created.  The point-in-time associated with that label is the point-in-time associated with the parent label that the logical label serves as an alias for.
+
+Label names must be unique across LucidDB.  Information on active labels will be available through a new system view, [[LucidDbSystemViews#DBA_LABELS|'''DBA_LABELS''']].
+
+== Drop ==
+
+Base labels can only be dropped if the label is not currently in-use by active LucidDB sessions.  The label is in-use because either the base label or one of its aliases is being referenced.  In other words, when an alias is referenced, LucidDB directly maps the alias to the corresponding base label.  Therefore, label aliases can be dropped at any time, even if they are currently in-use by an active session.  This makes it possible to replace the alias with a later point-in-time for new sessions, even if existing sessions are still using the original alias.
+
+It will be the responsibility of LucidDB clients to keep track of when a base label is no longer in-use.
+
+If a label has aliases defined on top of, then it cannot be dropped unless the &lt;code>CASCADE&lt;/code> option is specified.  The default behavior is &lt;code>RESTRICT&lt;/code>.
+
+== Replace ==
+
+Replacing an existing label either results in establishing a new point in time for a base label or defining a new parent label for an alias.  If an existing label has aliases defined on top of it, then replacing that label results in the aliases ''following'' the replaced label.  As a result, it is possible to inadvertently define a circular label chain.  This is detected and disallowed.
+
+To utilize label aliases, you would make use of the &lt;code>REPLACE&lt;/code> option as follows:
+
+* ETL from Sunday evening completes.  Define a base label and a label alias on top off of it, representing the last good nightly ETL.
+&lt;pre>
+CREATE LABEL "2008-Aug-03 ETL";
+CREATE OR REPLACE LABEL "CURRENT_NIGHTLY" FROM LABEL "2008-Aug-03 ETL";
+&lt;/pre>
+* All report sessions utilize the CURRENT_NIGHTLY label and see the data as of the Sunday evening ETL run.
+* ETL from Monday evening completes.  Define a new base label and then reset the label alias to point to the new base label.
+&lt;pre>
+CREATE LABEL "2008-Aug-04 ETL";
+CREATE OR REPLACE LABEL "CURRENT_NIGHTLY" FROM LABEL "2008-Aug-04 ETL";
+&lt;/pre>
+* Note that any sessions that were running at the time of the Monday ETL run will continue to see data as of the Sunday ETL run; but any new sessions initiated after the Monday ETL run completed will see data as of the Monday ETL run.  Again, all report sessions are using the CURRENT_NIGHTLY label.
+
+= Setting Warehouse Labels =
+
+By default, LucidDB sessions will run without a warehouse label setting.  I.e., sessions will read the latest, committed snapshot of all data.
+
+Labels can be set in one of two ways:
+# By passing the label name as a property in the LucidDB JDBC connect string ([[JdbcUrlConventions#Connection_Attributes|either as part of the URL, or in the property map]]).  The property name is "label", all in lower-case.
+# By explicitly executing the following SQL statement:
+&lt;pre>
+ALTER SESSION SET "label" = {'&lt;labelname>' | NULL }
+&lt;/pre>
+
+The specified label can either be a base label or a label alias.  In the case of the latter, LucidDB will map the alias to the underlying base label.  Specifying NULL reverts the session back to the default of no label setting.
+
+When a session runs with an explicit label setting, committed data as of the timestamp when the base label was created will be the data read.
+
+Setting a label also effectively makes the session read-only.  Attempts to execute DML (upsert, insert, delete) or DDL (create, drop) statements will result in errors.  This includes DDL/DML statements executed within user-defined routine (UDR) calls.  UDR calls are allowed, provided they don't result in the execution of any DDL or DML statements.
+
+It is not appropriate to set a warehouse label in an ETL session.
+
+In addition, when a label is set, this also controls the set of column store tables visible to the session.  For example, if a new column store table is created ''after'' a label has been established, any session using that earlier label will not be able to access the new table.
+
+Similar rules apply to the columns of a table, since new columns may be added at any time via [[LucidDbAlterTableAddColumn|ALTER TABLE ADD COLUMN]].  A column can only be accessed if its creation completed after the label's timestamp.
+
+The system view, '''DBA_SESSIONS''', shows each session's current label setting.  '''DBA_OBJECTS_IN_USE''' will not show labels that are in-use.  To see the current session's label setting:
+&lt;pre>
+SELECT * FROM SYS_ROOT.USER_SESSION_PARAMETERS WHERE PARAM_NAME = 'label';
+&lt;/pre>
+
+= Space Reclamation =
+
+The semantics of the &lt;code>ALTER SYSTEM DEALLOCATE OLD&lt;/code> statement is impacted if labels have been created.  See [[LucidDbDataStorageAndAccess#Page_Versioning]] for a discussion of the semantics if no labels have been created.  When there are active labels, a page cannot be deallocated unless it is older than the timestamp associated with the oldest active base label.
+
+Typically, once an ETL job completes, creating a new label, the previous label can be dropped, and then &lt;code>ALTER SYSTEM DEALLOCATE OLD&lt;/code> can be run to reclaim old pages.  However, if the label that we would like to drop is still in-use because of a long-running report, even though a new ETL job has just completed, it will not be possible to reclaim the data pages that have been versioned by the just completed ETL job.  The old pages cannot be reclaimed until the next execution of &lt;code>ALTER SYSTEM DEALLOCATE OLD&lt;/code>, after the old base label has been dropped.  And the old base label cannot be dropped until the long-running report has completed.  Furthermore, even if the long-running report session completes, if there are other active base labels with even earlier timestamps, then the pages cannot be reclaimed either.
+
+= Data Statistics =
+
+If warehouse labels are not in use, then only one set of statistics are kept per table, column, and index, representing statistics gathered during the last execution of [[LucidDbDataStorageAndAccess#Analyze_Table|&lt;code>ANALYZE TABLE&lt;/code>]] on a table; or in the case of row count stats, the latest DML statement executed on the table.  With labels, there's now the need to keep multiple sets of statistics.
+
+Typically, only one set of stats will be generated per ETL run.  However, if multiple ETL sessions for different warehouses are running concurrently within the same LucidDB instance, it is possible for more than one set of stats to be generated during a single ETL run.  That's because ETL sessions don't run with label settings and therefore, their only point of reference is the timestamp of the latest label.  If that latest label is associated with some other warehouse, then a new set of stats will be created unnecessarily for the current warehouse.  This shouldn't be a problem unless the number of concurrent ETL sessions is high.
+
+Because DML sessions also update row count stats, they will follow the same conventions as &lt;code>ANALYZE TABLE&lt;/code> in terms of which row count stat instance is updated by the DML operation. 
+
+Since each ETL run will generate at least one set of stats, it will be important for LucidDB to clean up ''inactive'' statistics.  This will be done whenever a base label is dropped or replaced.  Any stats associated with that base label will be removed, unless the stat is the latest. E.g., if there is only one base label, and therefore only one set of stats, dropping the label will not remove the only set of sets.
+
+The newest stats generated earlier than the timestamp associated with a session's warehouse label setting will be the stats that are used by the query optimizer.
+
+Although multiple sets of stats will be stored by LucidDB, the system views that contain statistics ([[LucidDbSystemViews#DBA_STORED_TABLES|DBA_STORED_TABLES]], [[LucidDbSystemViews#DBA_COLUMN_STATS|DBA_COLUMN_STATS]], [[LucidDbSystemViews#DBA_COLUMN_HISTOGRAMS|DBA_COLUMN_HISTOGRAMS]]) will only return the latest set of stats.</textarea><div class='templatesUsed'>
+
+</div>
+<p id="mw-returnto">Return to <a href="/wiki/LucidDbWarehouseLabels" title="LucidDbWarehouseLabels">LucidDbWarehouseLabels</a>.</p>
+<div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/LucidDbWarehouseLabels">http://luciddb.org/wiki/LucidDbWarehouseLabels</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbWarehouseLabels" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbWarehouseLabels&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource" class="selected"><a href="/wiki/index.php?title=LucidDbWarehouseLabels&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbWarehouseLabels&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbWarehouseLabels&amp;returntoquery=action%3Dedit" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbWarehouseLabels" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbWarehouseLabels" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.action.edit", "mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.167 secs. --></body></html>

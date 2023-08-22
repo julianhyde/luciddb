@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelPageBasedDataStructureHowto - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelPageBasedDataStructureHowto", "wgTitle": "FennelPageBasedDataStructureHowto", "wgCurRevisionId": 5386, "wgArticleId": 1927, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelPageBasedDataStructureHowto action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelPageBasedDataStructureHowto</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page walks through an example of how to create a new persistent page-based data structure built on Fennel.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Premise"><span class="tocnumber">1</span> <span class="toctext">Premise</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Directory_Node_Structure"><span class="tocnumber">2</span> <span class="toctext">Directory Node Structure</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Leaf_Node_Structure"><span class="tocnumber">3</span> <span class="toctext">Leaf Node Structure</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Bitmap_Access_Class"><span class="tocnumber">4</span> <span class="toctext">Bitmap Access Class</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Constructor"><span class="tocnumber">5</span> <span class="toctext">Constructor</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Method_getBit"><span class="tocnumber">6</span> <span class="toctext">Method getBit</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Method_setBit"><span class="tocnumber">7</span> <span class="toctext">Method setBit</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Unit_Tests"><span class="tocnumber">8</span> <span class="toctext">Unit Tests</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Attachments"><span class="tocnumber">9</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Premise"> Premise </span></h1>
+<p>For conceptual background on how Fennel stores pages in <i>segments</i>, see <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structSegmentDesign.html">the segment design docs</a>.
+</p><p>As an example, we're going to create a <i>sparse bitmap</i> class.  The idea is that an application can store a bitmap of arbitrary size as long as it is mostly "holes", i.e. pages which have all zero bits set.
+</p><p>To keep the example simple, we'll structure it with a single <b>directory</b> page which indexes a number of <b>leaf</b> pages (each with a capacity of 8 bits), with no intermediate levels.  In the example below, the directory has entries for two non-empty leaf pages (indexed by their bit start offsets, with pointers to the corresponding leaf pages); the rest of the leaves are holes (i.e. no pages have been allocated for them yet, so they are implicitly full of zero bits).  So a total of three pages are allocated.
+</p><p><a href="/wiki/File:FennelSparseBitmap.png" class="image"><img alt="FennelSparseBitmap.png" src="/wiki/upload/e/e2/FennelSparseBitmap.png" width="500" height="476" /></a>
+</p><p>Although the logical bitmap size is arbitrary, physically it cannot have more non-empty leaf pages than can be indexed by the single directory page.  There is no correlation between the page locations on disk and the bitmap offsets; in the example above, if bit 33 was set first, and then bit 9, the second leaf page might be allocated with a lower page ID than the first leaf page.
+</p><p>A few other simplifying assumptions:
+</p>
+<ul><li> bits are numbered starting from 0
+</li><li> each leaf page spans the same fixed number of bits, which must be a multiple of 8
+</li><li> pages are never deleted, even if all of the bits are reset to 0
+</li><li> the only operations are getting and setting individual bits
+</li></ul>
+<p>The complete code for this example is in <b>fennel/test/SparseBitmapTest.cpp</b>.  We'll walk through snippets of it in the sections below.
+</p><p><i>Note:  if you need to modify this page, please update the code in Perforce as well.</i>
+</p>
+<h1> <span class="mw-headline" id="Directory_Node_Structure"> Directory Node Structure </span></h1>
+<p>Directory pages will be stored based on the following header structure.  It inherits <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structStoredNode.html">fennel::StoredNode</a>, which contains a generic field for tracking the page type via a magic number.  This is important for us, since we have two different node types (directory and leaf), and we wouldn't want to accidentally mix them up.  Fennel will automatically set and check the magic numbers as pages are allocated and accessed, and raise an assertion failure if we make a mistake.
+</p>
+<pre>
+/**
+ * Page header data structure for a sparse bitmap directory node.
+ */
+struct SparseBitmapDirectory&#160;: public fennel::StoredNode
+{
+    static const fennel::MagicNumber MAGIC_NUMBER = 0x82009900461412f0LL;
+
+    /**
+     * Number of SparseBitmapDirEntry items currently filled on this page.
+     */
+    uint nEntries;
+
+    /**
+     * @return read-only reference to array of directory entries
+     * on this page
+     */
+    SparseBitmapDirEntry const *getEntriesForRead() const
+    {
+        return reinterpret_cast&lt;SparseBitmapDirEntry const *&gt;(
+            this + 1);
+    }
+
+    /**
+     * @return read/write reference to array of directory entries
+     * on this page
+     */
+    SparseBitmapDirEntry *getEntriesForWrite()
+    {
+        return reinterpret_cast&lt;SparseBitmapDirEntry *&gt;(
+            this + 1);
+    }
+};
+</pre>
+<p>The magic number is generated as part of defining a new page type by running <b>uuidgen</b> and combining the last two portions of the result:
+</p>
+<pre>
+$ uuidgen
+359342bc-b69c-4eba-8200-9900461412f0
+                  [-----------------]
+</pre>
+<p>Be careful not to copy and paste magic numbers from existing data structures when creating new ones.  Fennel currently has no way to catch this mistake for you.
+</p><p>Beyond the fixed-size header, the rest of a directory page will be used as an array of entries describing allocated leaves.  The <b>nEntries</b> field tracks the size of this array; the rest of the page contents beyond the array are undefined.  The two helper methods <b>getEntriesForRead</b> and <b>getEntriesForWrite</b> encapsulate pointer arithmetic for locating the array start just past the header.  It's important for both versions to be available since Fennel uses const-correctness as a way of helping programmers avoid accidentally writing to pages which haven't been exclusively locked and marked dirty in the cache.
+</p><p>The array entries are defined as follows:
+</p>
+<pre>
+/**
+ * 0-based offset (bit address) within a sparse bitmap.
+ */
+typedef uint64_t SparseBitmapOffset;
+
+/**
+ * Entry in a sparse bitmap directory.
+ */
+struct SparseBitmapDirEntry
+{
+    /**
+     * Start offsets of bits contained by the corresponding leaf node.
+     */
+    SparseBitmapOffset iLeafStartOffset;
+
+    /**
+     * Reference to leaf node.
+     */
+    fennel::PageId leafId;
+};
+</pre>
+<p>Note that only the start offset of each non-empty leaf is indexed; we know which other bit addresses are spanned by each leaf because the leaves are fixed-size.
+</p><p>Out of programmer laziness, we won't bother keeping the array sorted; we'll just use linear search and insert new entries at the end.
+</p><p>Finally, we define a corresponding guard object for directory page locks:
+</p>
+<pre>
+/**
+ * Page lock guard for sparse bitmap directory nodes.
+ */
+typedef fennel::SegNodeLock&lt;SparseBitmapDirectory&gt; SparseBitmapDirLock;
+</pre>
+<p>This is based on the generic <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/classSegNodeLock.html">fennel::SegNodeLock</a>; we'll see how it is used later on.
+</p>
+<h1> <span class="mw-headline" id="Leaf_Node_Structure"> Leaf Node Structure </span></h1>
+<p>The leaf page header definition follows a similar pattern:
+</p>
+<pre>
+/**
+ * Page header data structure for a sparse bitmap leaf node.
+ */
+struct SparseBitmapLeaf&#160;: public fennel::StoredNode
+{
+    static const fennel::MagicNumber MAGIC_NUMBER = 0xba107d175b3338dcLL;
+
+    /**
+     * Start offset of bits contained by this leaf node.  This is redundant
+     * (for sanity-checking and self-identification purposes); it should
+     * match the corresponding directory entry referencing this leaf.
+     */
+    SparseBitmapOffset iStartOffset;
+
+    /**
+     * @return read-only reference to bytes containing bit array on
+     * this page
+     */
+    fennel::PConstBuffer getBytesForRead() const
+    {
+        return reinterpret_cast&lt;fennel::PConstBuffer&gt;(this + 1);
+    }
+    
+    /**
+     * @return read/write reference to bytes containing bit array on
+     * this page
+     */
+    fennel::PBuffer getBytesForWrite()
+    {
+        return reinterpret_cast&lt;fennel::PBuffer&gt;(this + 1);
+    }
+};
+</pre>
+<p><b>iStartOffset</b> is redundant, but it's a good idea to build in a limited amount of redundancy for use by physical integrity-checking utilities (and also for when you are unlucky enough to be tasked with digging through a corrupted database to diagnose or repair it!)
+</p><p>Again, we define a companion guard object for leaf page locks:
+</p>
+<pre>
+/**
+ * Page lock guard for sparse bitmap leaf nodes.
+ */
+typedef fennel::SegNodeLock&lt;SparseBitmapLeaf&gt; SparseBitmapLeafLock;
+</pre>
+<h1> <span class="mw-headline" id="Bitmap_Access_Class"> Bitmap Access Class </span></h1>
+<p>Now that we've defined the persistent structures, we can develop the class which will be used to instantiate and access them:
+</p>
+<pre>
+/**
+ * SparseBitmap is an example of how to create a page-based
+ * persistent data structure using Fennel.  It is only intended
+ * for educational purposes, not for real use.
+ */
+class SparseBitmap
+{
+    /**
+     * Accessor for the segment storing the bitmap node pages.
+     */
+    fennel::SegmentAccessor segmentAccessor;
+
+    /**
+     * Location of bitmap directory node.
+     */
+    fennel::PageId dirPageId;
+
+    /**
+     * Number of bits contained by each leaf node; this is fixed
+     * based on segment page size after headers and footers have been
+     * subtracted off.
+     */
+    size_t nBitsPerLeaf;
+
+    /**
+     * Maximum number of entries which can be contained by
+     * the directory node; this is fixed based on segment page size
+     * after headers and footers have been subtracted off, and determines
+     * the total number of leaf pages which can be allocated.
+     */
+    size_t nDirEntriesMax;
+
+    /**
+     * Looks up a leaf node (based on its start offset) in the directory.
+     *
+     * @param dirLock page guard for directory node, which must already
+     * be locked in the desired mode
+     *
+     * @param iLeafStartOffset leaf node start offset to search for
+     *
+     * @return location of leaf node, or NULL_PAGE_ID if not found
+     */
+    fennel::PageId searchDirectory(
+        SparseBitmapDirLock &amp;dirLock,
+        SparseBitmapOffset iLeafStartOffset);
+    
+public:
+    /**
+     * Creates a new empty sparse bitmap (or loads an existing one).
+     *
+     * @param segmentAccessor accessor for the segment storing the bitmap node
+     * pages
+     *
+     * @param dirPageId location of existing directory node to load,
+     * or NULL_PAGE_ID to create a new bitmap
+     */
+    explicit SparseBitmap(
+        fennel::SegmentAccessor segmentAccessor,
+        fennel::PageId dirPageId = fennel::NULL_PAGE_ID);
+
+    /**
+     * Sparse bitmap destructor.
+     */
+    virtual ~SparseBitmap();
+
+    /**
+     * Reads a bit from the bitmap.
+     *
+     * @param iOffset address of bit to read
+     *
+     * @return true iff bit is set
+     */
+    bool getBit(SparseBitmapOffset iOffset);
+
+    /**
+     * Writes a bit in the bitmap.
+     *
+     * @param iOffset address of bit to write
+     *
+     * @param value true to set bit; false to clear bit
+     */
+    void setBit(SparseBitmapOffset iOffset, bool value);
+
+    /**
+     * @return the location of the directory node for this bitmap
+     */
+    fennel::PageId getDirPageId() const;
+
+    /**
+     * @return number of bits contained by each leaf node
+     */
+    size_t getBitsPerLeaf() const;
+
+    /**
+     * @return maximum number of entries which can be contained
+     * by the directory node
+     */
+    size_t getMaxDirectoryEntries() const;
+};
+</pre>
+<p>The <b>segmentAccessor</b> data member is what we need for allocating and accessing persistent pages in the segment which will contain the bitmap storage.  The <b>dirPageId</b> data member is our starting point for finding the directory node.
+</p><p>We'll walk through the method implementations below.
+</p>
+<h1> <span class="mw-headline" id="Constructor"> Constructor </span></h1>
+<p>The SparseBitmap constructor takes care of precomputing some parameters based on page size, and also allocates the directory page if none was supplied.  This is our first example of how a page lock guard object (<b>dirLock</b>) is used.  The guard is associated with the segment accessor, and then <b>allocatePage</b> is called, resulting in a new page being allocated in the segment, with a corresponding cache buffer mapped to it and implicitly pinned with an exclusive lock via dirLock.  
+</p><p>We pass <b>ANON_PAGE_OWNER_ID</b> for anonymous allocation; real applications can define their own object ID's so that all pages of a particular object (e.g. one bitmap) can be marked with a unique owner ID in the segment extent metadata.
+</p><p>The cache buffer is accessed in a strongly-typed fashion via <b>dirLock.getNodeForWrite</b>; since dirLock is based on a template, it knows how to automatically cast the cache memory reference to the correct type (<b>SparseBitmapDirectory &amp;</b>).
+</p>
+<pre>
+SparseBitmap::SparseBitmap(
+    fennel::SegmentAccessor segmentAccessorInit,
+    fennel::PageId dirPageIdInit)
+{
+    segmentAccessor = segmentAccessorInit;
+    dirPageId = dirPageIdInit;
+
+    if (dirPageId == fennel::NULL_PAGE_ID) {
+        // create new empty directory
+        SparseBitmapDirLock dirLock;
+        dirLock.accessSegment(segmentAccessor);
+        dirPageId = dirLock.allocatePage(fennel::ANON_PAGE_OWNER_ID);
+        SparseBitmapDirectory &amp;dir = dirLock.getNodeForWrite();
+        dir.nEntries = 0;
+    }
+
+    // precompute some limits based on page and header sizes
+    size_t cbPage = segmentAccessor.pSegment-&gt;getUsablePageSize();
+    size_t nBytesPerLeaf = cbPage - sizeof(SparseBitmapLeaf);
+    nBitsPerLeaf = nBytesPerLeaf * 8;
+    assert(nBitsPerLeaf &gt; 0);
+
+    nDirEntriesMax =
+        (cbPage - sizeof(SparseBitmapDirectory)) / sizeof(SparseBitmapDirEntry);
+    assert(nDirEntriesMax &gt; 0);
+}
+</pre>
+<p>The guard object takes care of releasing the cache lock as soon as the guard goes out of scope for any reason (including unexpected reasons such as exceptions being thrown).  This is very important for making sure that page locks don't linger.  However, it also means that the programmer has to be careful, since once the guard goes out of scope, the corresponding node reference becomes invalid.  For example, in the code above, it would be a <b>big mistake</b> to keep using the <b>dir</b> reference after the <b>if</b> block!
+</p>
+<h1> <span class="mw-headline" id="Method_getBit"> Method getBit </span></h1>
+<p>The '<i>getBit</i> method is an example of using shared locks to read existing data without modifying it.  Again using guard objects we start with a shared lock on the directory, and try to find an entry covering the offset of the bit we're looking for.  If we can't find it, the bit is implicitly clear, so we can return immediately without looking at any leaves; dirLock will be unlocked automatically.  If we do find an entry, then we'll take a shared-lock on the corresponding leaf node and access the bit.  To minimize the impact on concurrent writers, we can explicitly unlock dirLock as soon as we're done accessing the directory.
+</p>
+<pre>
+bool SparseBitmap::getBit(SparseBitmapOffset iOffset)
+{
+    // Lock directory page in shared mode
+    SparseBitmapDirLock dirLock;
+    dirLock.accessSegment(segmentAccessor);
+    dirLock.lockShared(dirPageId);
+
+    // Compute start offset of leaf page containing iOffset
+    SparseBitmapOffset iLeafStartOffset =
+        (iOffset / nBitsPerLeaf) * nBitsPerLeaf;
+
+    // Look for it in the directory
+    fennel::PageId leafId = searchDirectory(dirLock, iLeafStartOffset);
+    if (leafId == fennel::NULL_PAGE_ID) {
+        // Not in directory, so the bit is not set
+        return false;
+    }
+
+    // Unlock directory node early since we don't need it any more
+    dirLock.unlock();
+
+    // Lock leaf page and perform sanity check
+    SparseBitmapLeafLock leafLock;
+    leafLock.accessSegment(segmentAccessor);
+    leafLock.lockShared(leafId);
+    SparseBitmapLeaf const &amp;leaf = leafLock.getNodeForRead();
+    assert(leaf.iStartOffset == iLeafStartOffset);
+
+    // Read bit value from leaf
+    fennel::PConstBuffer pBytes = leaf.getBytesForRead();
+    size_t iBit = iOffset - iLeafStartOffset;
+    size_t iByte = iBit / 8;
+    size_t iBitInByte = iBit - 8 * iByte;
+    if (pBytes[iByte] &amp; (1 &lt;&lt; iBitInByte)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+</pre>
+<p>The <b>searchDirectory</b> helper method performs the brain-dead linear search mentioned earlier, and illustrates how Boost and STLport algorithms may even be applicable to the contents of cache pages:
+</p>
+<pre>
+fennel::PageId SparseBitmap::searchDirectory(
+    SparseBitmapDirLock &amp;dirLock,
+    SparseBitmapOffset iLeafStartOffset)
+{
+    SparseBitmapDirectory const &amp;dir = dirLock.getNodeForRead();
+    
+    SparseBitmapDirEntry const *pFirst = dir.getEntriesForRead();
+    SparseBitmapDirEntry const *pLast = pFirst + dir.nEntries;
+    SparseBitmapDirEntry const *pFound =
+        std::find_if(
+            pFirst,
+            pLast,
+            boost::bind(&amp;SparseBitmapDirEntry::iLeafStartOffset, _1)
+            == iLeafStartOffset);
+    if (pFound == pLast) {
+        return fennel::NULL_PAGE_ID;
+    }
+    return pFound-&gt;leafId;
+}
+</pre>
+<p><b>Important:</b> note that dir is declared as a reference (<b>SparseBitmapDirectory const &amp;</b>).  Declaring it as a real object would not work, since it would slice off the page header from the cache page and read garbage from the stack, instead of accessing the cache page contents by reference, which is what we want.  There is currently no compile-time protection available to prevent this mistake.
+</p>
+<h1> <span class="mw-headline" id="Method_setBit"> Method setBit </span></h1>
+<p>The <b>setBit</b> method below is similar to getBit, but there are a few differences to note.  We need to take an exclusive lock on the directory, since there's a chance we may need to modify it.  However, we do <b>not</b> call <b>getNodeForWrite</b> on it until we are sure that we need to modify it; this avoids unnecessarily dirtying the directory page in the case where a leaf has already been allocated for the bit we want.  We are able to reuse the searchDirectory helper method here since it uses getNodeForRead.  Note that exclusive-locking a page doesn't mark it as dirty; that is deferred until getNodeForWrite is called.
+</p><p>Also note that we have to zero-out the contents of new bitmap leaf pages explicitly; Fennel does not guarantee anything about the contents of a newly allocated page.
+</p><p>The exception thrown when the directory is full is a good illustration of how page guards take care of unlocking automatically, avoiding the need to clean anything up explicitly during unwind.
+</p>
+<pre>
+void SparseBitmap::setBit(SparseBitmapOffset iOffset, bool value)
+{
+    // Lock directory page in exclusive mode
+    SparseBitmapDirLock dirLock;
+    dirLock.accessSegment(segmentAccessor);
+    dirLock.lockExclusive(dirPageId);
+
+    // Search directory; if it already has a corresponding leaf entry,
+    // we won't need to modify the directory
+    SparseBitmapOffset iLeafStartOffset =
+        (iOffset / nBitsPerLeaf) * nBitsPerLeaf;
+    fennel::PageId leafId = searchDirectory(dirLock, iLeafStartOffset);
+
+    SparseBitmapLeafLock leafLock;
+    leafLock.accessSegment(segmentAccessor);
+    bool clearLeaf = false;
+    if (leafId == fennel::NULL_PAGE_ID) {
+        // Leaf doesn't exist yet:  we'll need a new one
+        SparseBitmapDirectory &amp;dir = dirLock.getNodeForWrite();
+        if (dir.nEntries &gt;= nDirEntriesMax) {
+            // Oops, directory is full and we have no provisions
+            // for splitting it; we haven't modified the directory yet,
+            // so the bitmap remains intact
+            throw std::runtime_error(&quot;SparseBitmap directory full&quot;);
+        }
+        // Allocate new leaf and add it to the directory
+        SparseBitmapDirEntry *pLast =
+            dir.getEntriesForWrite() + dir.nEntries;
+        leafId = leafLock.allocatePage(fennel::ANON_PAGE_OWNER_ID);
+        pLast-&gt;iLeafStartOffset = iLeafStartOffset;
+        pLast-&gt;leafId = leafId;
+        dir.nEntries++;
+        clearLeaf = true;
+        dirLock.unlock();
+    } else {
+        // Leaf already exists, so no need to modify directory;
+        // we can unlock the directory early
+        dirLock.unlock();
+        leafLock.lockExclusive(leafId);
+    }
+
+    // Write bit value to leaf
+    SparseBitmapLeaf &amp;leaf = leafLock.getNodeForWrite();
+    fennel::PBuffer pBytes = leaf.getBytesForWrite();
+    if (clearLeaf) {
+        // We're initializing a new leaf, so clear all the bits first
+        leaf.iStartOffset = iLeafStartOffset;
+        memset(pBytes, 0, nBitsPerLeaf / 8);
+    }
+    size_t iBit = iOffset - iLeafStartOffset;
+    size_t iByte = iBit / 8;
+    size_t iBitInByte = iBit - 8 * iByte;
+    if (value) {
+        pBytes[iByte] |= (1 &lt;&lt; iBitInByte);
+    } else {
+        pBytes[iByte] &amp;= ~(1 &lt;&lt; iBitInByte);
+    }
+}
+</pre>
+<p>There are a few subtle concurrency control points to note here:
+</p>
+<ul><li> In the case where we need to allocate a new leaf, it's OK to release the directory lock once we are done updating the directory (and before initializing the leaf).  The reason is that the exclusive lock taken by leaf allocation will prevent any other threads from seeing the uninitialized state of the leaf.
+</li><li> It's easy to show that the getBit and setBit operations are deadlock-free since they always proceed in directory-&gt;leaf order.
+</li><li> Starting the setBit operation by taking an exclusive lock on the directory is actually overly pessimistic, and can cause the directory to become a source of contention.  An optimized approach is to start by taking a shared lock on the directory node.  If no new leaf needs to be allocated, then the optimism was a win.  In the case where a new leaf needs to be allocated, then we can try an instantaneous upgrade to an exclusive lock on the directory.  If that fails (due to the presence of other threads with shared locks), then we would unlock the directory and restart the operation, this time starting pessimistically with an exclusive lock as before.  This approach takes only a little more code, and works well, with no possibility of deadlock (it has been implemented for the Fennel btree library, where root access is similar).
+</li></ul>
+<h1> <span class="mw-headline" id="Unit_Tests"> Unit Tests </span></h1>
+<p>The unit tests for SparseBitmap demonstrate application-level usage.
+</p><p>Although a real application would be free standing, the SparseBitmap unit tests are based on the Fennel/Boost framework, keeping a number of data members for resources such as segment/device/cache objects:
+</p>
+<pre>
+/**
+ * Unit tests for SparseBitmap.
+ */
+class SparseBitmapTest&#160;: virtual public TestBase
+{
+    SharedRandomAccessDevice pDevice;
+    SharedCache pCache;
+    SharedSegmentFactory pSegmentFactory;
+    SharedSegment pSegment;
+    SegmentAccessor segmentAccessor;
+    
+    static const DeviceId BITMAP_DEVICE_ID;
+        
+    void openStorage(DeviceMode deviceMode);
+    void closeStorage();
+    
+public:
+    explicit SparseBitmapTest()
+    {
+        FENNEL_UNIT_TEST_CASE(SparseBitmapTest,testBasic);
+        FENNEL_UNIT_TEST_CASE(SparseBitmapTest,testSpread);
+        FENNEL_UNIT_TEST_CASE(SparseBitmapTest,testSizes);
+        FENNEL_UNIT_TEST_CASE(SparseBitmapTest,testFullDirectory);
+    }
+
+    virtual void testCaseTearDown();
+    
+    void testBasic();
+    void testSpread();
+    void testSizes();
+    void testFullDirectory();
+};
+</pre>
+<p>The <b>testBasic</b> case demonstrates creating a new bitmap, setting a bit, closing the bitmap, and then reloading it and verifying that the bit is still set:
+</p>
+<pre>
+void SparseBitmapTest::testBasic()
+{
+    // Create a new bitmap and set a single bit at offset 0
+    PageId dirPageId;
+    openStorage(DeviceMode::createNew);
+    
+    {
+        SparseBitmap bitmap(segmentAccessor);
+        dirPageId = bitmap.getDirPageId();
+        bitmap.setBit(0, 1);
+
+        // Make sure we can read the bit back
+        bool x = bitmap.getBit(0);
+        BOOST_CHECK_EQUAL(1, x);
+    }
+
+    // Now close and re-open storage
+    closeStorage();
+    openStorage(DeviceMode::load);
+    
+    {
+        // Verify that we can still read the bit back
+        SparseBitmap bitmap(segmentAccessor, dirPageId);
+        bool x = bitmap.getBit(0);
+        BOOST_CHECK_EQUAL(1, x);
+    }
+}
+</pre>
+<p>The directory location is remembered by the <b>dirPageId</b> stack variable across the close/reopen.
+</p><p><b>openStorage</b> is implemented as follows.  We use a simple <b>LinearDeviceSegment</b> since we don't need random allocation (the bitmap only allocates new pages, never freeing existing ones).
+</p>
+<pre>
+void SparseBitmapTest::openStorage(DeviceMode deviceMode)
+{
+    // Create or load a file device
+    pDevice.reset(
+        new RandomAccessFileDevice(
+            &quot;bitmap.dat&quot;,
+            deviceMode,
+            0));
+
+    // Set up the cache
+    CacheParams cacheParams;
+    cacheParams.readConfig(configMap);
+    pCache = Cache::newCache(cacheParams);
+    pCache-&gt;registerDevice(BITMAP_DEVICE_ID, pDevice);
+
+    // Map a segment onto the file
+    pSegmentFactory =
+        SegmentFactory::newSegmentFactory(configMap, shared_from_this());
+    LinearDeviceSegmentParams segParams;
+    CompoundId::setDeviceId(segParams.firstBlockId, BITMAP_DEVICE_ID);
+    CompoundId::setBlockNum(segParams.firstBlockId, 0);
+    if (!deviceMode.create) {
+        segParams.nPagesAllocated = MAXU;
+    }
+    pSegment = pSegmentFactory-&gt;newLinearDeviceSegment(
+        pCache,
+        segParams);
+    segmentAccessor.pSegment = pSegment;
+    segmentAccessor.pCacheAccessor = pCache;
+}
+</pre>
+<p><b>closeStorage</b> is also called from <b>testCaseTearDown</b> to make sure each test case always cleans up after itself:
+</p>
+<pre>
+void SparseBitmapTest::closeStorage()
+{
+    segmentAccessor.reset();
+    if (pSegment) {
+        assert(pSegment.unique());
+        pSegment.reset();
+    }
+    if (pSegmentFactory) {
+        assert(pSegmentFactory.unique());
+        pSegmentFactory.reset();
+    }
+    if (pCache) {
+        pCache-&gt;unregisterDevice(BITMAP_DEVICE_ID);
+        assert(pCache.unique());
+        pCache.reset();
+    }
+    if (pDevice) {
+        assert(pDevice.unique());
+        pDevice.reset();
+    }
+}
+</pre>
+<p>The <b>unique</b> assertions verify that no lingering references remain to objects tracked via shared pointers; this is important for catching leaks and cyclic references.
+</p><p>One other unit test of interest is <b>testSizes</b>:
+</p>
+<pre>
+void SparseBitmapTest::testSizes()
+{
+    openStorage(DeviceMode::createNew);
+    if (pCache-&gt;getPageSize()&#160;!= 4096) {
+        // Expected values below are only valid for 4K page size
+        return;
+    }
+    SparseBitmap bitmap(segmentAccessor);
+    BOOST_CHECK_EQUAL(32640, bitmap.getBitsPerLeaf());
+    BOOST_CHECK_EQUAL(255, bitmap.getMaxDirectoryEntries());
+}
+</pre>
+<p>See if you can figure out where those numbers came from based on the default 4K page size.
+</p>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:FennelSparseBitmap.odg" title="File:FennelSparseBitmap.odg">Image:FennelSparseBitmap.odg</a>
+</li><li> <a href="/wiki/File:FennelSparseBitmap.png" title="File:FennelSparseBitmap.png">Image:FennelSparseBitmap.png</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 179/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1927-0!*!*!!en!2!* and timestamp 20140414194719 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;oldid=5386">http://luciddb.org/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;oldid=5386</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelPageBasedDataStructureHowto" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelPageBasedDataStructureHowto&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelPageBasedDataStructureHowto" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelPageBasedDataStructureHowto" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelPageBasedDataStructureHowto" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelPageBasedDataStructureHowto&amp;oldid=5386" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 27 November 2008, at 07:57.</li>
+		<li id="viewcount">This page has been accessed 2,863 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.248 secs. --></body></html>

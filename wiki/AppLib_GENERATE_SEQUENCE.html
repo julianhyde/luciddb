@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib GENERATE SEQUENCE - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib_GENERATE_SEQUENCE", "wgTitle": "AppLib GENERATE SEQUENCE", "wgCurRevisionId": 6946, "wgArticleId": 1906, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib_GENERATE_SEQUENCE action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib GENERATE SEQUENCE</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><b>NOTE:</b> The applib UDR's here will be available starting with LucidDB 0.9.4.
+</p>
+<h2> <span class="mw-headline" id="GENERATE_SEQUENCE"> GENERATE_SEQUENCE </span></h2>
+<p><b>Declaration:</b>
+</p>
+<pre>
+create or replace function generate_sequence(
+  input_table cursor,
+  start_number bigint,
+  increment bigint)
+returns table(
+  input_table.*, 
+  seq_num bigint)
+language java
+parameter style system defined java
+deterministic
+no sql
+external name '...';
+</pre>
+<p><b>Input</b>:
+</p>
+<ul><li> INPUT_TABLE:  rows for which ordinals are to be assigned
+</li><li> START_NUMBER:  the starting sequence number for the output SEQ_NUM column, can be a positive or negative number. If set to null, starting sequence number defaults to 1.
+</li><li> INCREMENT:  the step size for the sequence; can be a positive or negative number, but must not be 0. If positive, sequence number will be incremented by the value of the number; if negative, sequence number will be decremented by the absolute value of the number. If set to null, defaults to 1.
+</li></ul>
+<p><b>Output</b>:
+</p>
+<ul><li>  a table with the same columns as the input table, plus one additional SEQ_NUM column of type BIGINT
+</li></ul>
+<p><b>Calculation</b>:
+</p>
+<ul><li> The output contains one row per input row, in the same order as the input.  Input column values are passed through unmodified.
+</li><li> The ith row of output has value START_NUMBER + i*INCREMENT for the SEQ_NUM column, with i=0 for the first row.  Values beyond the range of BIGINT will wrap according to the rules of <a href="http://en.wikipedia.org/wiki/Two%27s_complement" class="extiw" title="wikipedia:Two's complement">two's-complement representation</a>.
+</li></ul>
+<p><b>Example Invocation:</b>
+</p>
+<pre>
+select 
+    step,
+    dirty_seq,
+    relative_seq,
+    seq_num as absolute_seq
+from table(
+    generate_sequence(
+        cursor(
+            select step, dirty_seq, relative_seq
+            from firing_squad_orders
+            order by dirty_seq, relative_seq
+        ),
+        0,
+        1));
+</pre>
+<p><b>Example Output:</b>
+</p><p>See the last table in <a href="/wiki/MondrianCompareSiblingsByOrderKeyProperty#Dirty_Data" title="MondrianCompareSiblingsByOrderKeyProperty">MondrianCompareSiblingsByOrderKeyProperty#Dirty_Data</a>.
+</p><p><b>Exceptions</b>:
+</p>
+<ul><li> Value of zero specified for INCREMENT
+</li></ul>
+<h2> <span class="mw-headline" id="GENERATE_SEQUENCE_PARTITIONED"> GENERATE_SEQUENCE_PARTITIONED </span></h2>
+<p><b>Declaration:</b>
+</p>
+<pre>
+create or replace function generate_sequence_partitioned(
+  input_table cursor,
+  partitioning_columns select from input_table,
+  start_number bigint,
+  increment bigint)
+returns table(
+  input_table.*, 
+  seq_num bigint)
+language java
+parameter style system defined java
+deterministic
+no sql
+external name '...';
+</pre>
+<p><b>Input</b>:
+</p>
+<ul><li> INPUT_TABLE:  rows for which ordinals are to be assigned, presorted on PARTITIONING_COLUMNS
+</li><li> PARTITIONING_COLUMNS:  one or more columns of the input which are used to break the input set into independent partitions for the purposes of sequence generation --<a href="/wiki/index.php?title=User:Ngoodman&amp;action=edit&amp;redlink=1" class="new" title="User:Ngoodman (page does not exist)">Ngoodman</a> 18:44, 10 June 2010 (EDT) What's the actual datatype of PARTITIONING_COLUMNS?  Varchar?  '1,2,5' or 'colname1,colname2'&#160;?
+</li><li> START_NUMBER:  the per-partition starting sequence number for the output SEQ_NUM column, can be a positive or negative number. If set to null, starting sequence number defaults to 1.
+</li><li> INCREMENT:  the step size for the sequence; can be a positive or negative number, but must not be 0. If positive, sequence number will be incremented by the value of the number; if negative, sequence number will be decremented by the absolute value of the number. If set to null, defaults to 1.
+</li></ul>
+<p><b>Output</b>:
+</p>
+<ul><li>  a table with the same columns as the input table, plus one additional SEQ_NUM column of type BIGINT
+</li></ul>
+<p><b>Calculation</b>:
+</p>
+<ul><li> The output contains one row per input row, in the same order as the input.  Input column values are passed through unmodified.
+</li><li> For each distinct key within PARTITIONING_COLUMNS in the input set, identify a corresponding set of contiguous rows having that key as a partition.
+</li><li> The ith row of output within a given partition has value START_NUMBER + i*INCREMENT for the SEQ_NUM column, with i=0 for the first row in the partition.  Values beyond the range of BIGINT will wrap according to the rules of <a href="http://en.wikipedia.org/wiki/Two%27s_complement" class="extiw" title="wikipedia:Two's complement">two's-complement representation</a>.
+</li></ul>
+<p><b>Example Invocation:</b>
+</p>
+<pre>
+select 
+    step,
+    dirty_seq,
+    seq_num as relative_seq
+from table(
+    generate_sequence_partitioned(
+        cursor(
+            select step, dirty_seq
+            from firing_squad_orders
+            order by dirty_seq
+        ),
+        row(dirty_seq),
+        0,
+        1));
+</pre>
+<p><b>Example Output:</b>
+</p><p>See the first table in <a href="/wiki/MondrianCompareSiblingsByOrderKeyProperty#Dirty_Data" title="MondrianCompareSiblingsByOrderKeyProperty">MondrianCompareSiblingsByOrderKeyProperty#Dirty_Data</a>.
+</p><p><b>Exceptions</b>:
+</p>
+<ul><li> Input table not presorted correctly
+</li><li> Value of zero specified for INCREMENT
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 31/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1906-0!*!0!!*!*!* and timestamp 20140414192830 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;oldid=6946">http://luciddb.org/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;oldid=6946</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib_GENERATE_SEQUENCE" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib_GENERATE_SEQUENCE&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib+GENERATE+SEQUENCE" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib_GENERATE_SEQUENCE" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib_GENERATE_SEQUENCE" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib_GENERATE_SEQUENCE&amp;oldid=6946" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 19 May 2011, at 18:49.</li>
+		<li id="viewcount">This page has been accessed 2,768 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.216 secs. --></body></html>

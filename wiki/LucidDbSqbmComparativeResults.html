@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbSqbmComparativeResults - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbSqbmComparativeResults", "wgTitle": "LucidDbSqbmComparativeResults", "wgCurRevisionId": 2367, "wgArticleId": 1575, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbSqbmComparativeResults action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbSqbmComparativeResults</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Environment"><span class="tocnumber">2</span> <span class="toctext">Environment</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#LucidDB_Setup"><span class="tocnumber">3</span> <span class="toctext">LucidDB Setup</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#MySQL_Setup"><span class="tocnumber">4</span> <span class="toctext">MySQL Setup</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Storage"><span class="tocnumber">5</span> <span class="toctext">Storage</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Timing"><span class="tocnumber">6</span> <span class="toctext">Timing</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p><b>This page is under construction.</b>
+</p><p>This page provides an unscientific, informal performance analysis of LucidDB in terms of the <a href="/wiki/LucidDbSqbm" title="LucidDbSqbm">Set Query Benchmark</a> (using MySQL as a standard reference point).  It is <b>not</b> an official benchmark execution report and should not be interpreted as such.  Readers of this page are encouraged to execute their own benchmark configurations, since environment and performance requirements vary greatly by application.
+</p>
+<h2> <span class="mw-headline" id="Environment"> Environment </span></h2>
+<p>Test machine was a 3Ghz 4-CPU machine with 8 gigabytes of RAM (Dell PowerEdge 2950), running Red Hat Enterprise Linux 4.  Disk configuration was RAID-1.  No parallelism was used by the tests, so only one CPU was active.
+</p><p>In order to simulate a typical data warehouse environment in which only a small portion of the database can fit in memory, the amount of physical memory made available to the DBMS was constrained to 64MB by setting the buffer cache size and requesting usage of direct I/O (disabling the file system cache).  For example, MySQL index joins perform very well as long as the database fits in memory, but beyond that may degrade depending on locality of reference during the join.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Setup"> LucidDB Setup </span></h2>
+<p>LucidDB 0.7 prerelease codebase as of eigenchange 9187.
+</p>
+<pre>
+alter system set &quot;cachePagesInit&quot;=2000;
+</pre>
+<p>(LucidDB page size is 32K, so 2000*32K = 64MB.)
+</p>
+<h2> <span class="mw-headline" id="MySQL_Setup"> MySQL Setup </span></h2>
+<p>MySQL version 5.0.22.
+</p><p>Relevant lines from my.cnf:
+</p>
+<pre>
+default-storage-engine=INNODB
+key_buffer_size=64M
+innodb_buffer_pool_size=64M
+innodb_log_file_size=64M
+innodb_log_buffer_size=8M
+sort_buffer_size=64M
+innodb_flush_method=O_DIRECT
+</pre>
+<p>The InnoDB storage engine was used in order to match a standard production configuration with fault tolerance (and because MyISAM does not support O_DIRECT).
+</p><p>The following command was used to load data from the flatfile into the database (as with LucidDB, indexes other than the primary key were not created until after the load).
+</p>
+<pre>
+LOAD DATA LOCAL INFILE '/path/to/luciddb-sqbm-testdata/bench1M.csv'
+INTO TABLE BENCH1M   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' 
+IGNORE 1 LINES
+(KSEQ,K2,K4,K5,K10,K25,K100,K1K,K10K,K40K,K100K,K250K,K500K)
+SET 
+S1='12345678',
+S2='12345678900987654321', 
+S3='12345678900987654321', 
+S4='12345678900987654321', 
+S5='12345678900987654321',
+S6='12345678900987654321', 
+S7='12345678900987654321', 
+S8='12345678900987654321';
+</pre>
+<h2> <span class="mw-headline" id="Storage"> Storage </span></h2>
+<ul><li> Source data size (uncompressed .csv):  54.3MB
+</li><li> Source data size (compressed .bz2):  20.8MB
+</li><li> LucidDB database size unindexed:  98.4MB
+</li><li> LucidDB database size after indexing:  163.9MB
+</li><li> MySQL database size unindexed:  278MB
+</li><li> MySQL database size after indexing:  1176MB (can this be right?!?)
+</li></ul>
+<h2> <span class="mw-headline" id="Timing"> Timing </span></h2>
+<table border="1">
+<tr>
+<th> Operation </th>
+<th> LucidDB Time </th>
+<th> MySQL Time (seconds)
+</th></tr>
+<tr>
+<td> Load from flatfile </td>
+<td> 60.3 </td>
+<td> 45.1
+</td></tr>
+<tr>
+<td> CREATE INDEX on K2 </td>
+<td> 2.1 </td>
+<td> 69.6
+</td></tr>
+<tr>
+<td> CREATE INDEX on K4 </td>
+<td> 1.4 </td>
+<td> 69.4
+</td></tr>
+<tr>
+<td> CREATE INDEX on K5 </td>
+<td> 1.3 </td>
+<td> 77.2
+</td></tr>
+<tr>
+<td> CREATE INDEX on K10 </td>
+<td> 1.4 </td>
+<td> 86.3
+</td></tr>
+<tr>
+<td> CREATE INDEX on K25 </td>
+<td> 1.6 </td>
+<td> 93.7
+</td></tr>
+<tr>
+<td> CREATE INDEX on K100 </td>
+<td> 2.0 </td>
+<td> 110.4
+</td></tr>
+<tr>
+<td> CREATE INDEX on K1K </td>
+<td> 3.4 </td>
+<td> 126.3
+</td></tr>
+<tr>
+<td> CREATE INDEX on K10K </td>
+<td> 13.5 </td>
+<td> 142.0
+</td></tr>
+<tr>
+<td> CREATE INDEX on K40K </td>
+<td> 12.7 </td>
+<td> 213.2
+</td></tr>
+<tr>
+<td> CREATE INDEX on K100K </td>
+<td> 12.3 </td>
+<td> 449.5
+</td></tr>
+<tr>
+<td> CREATE INDEX on K250K </td>
+<td> 13.1 </td>
+<td> 807.4
+</td></tr>
+<tr>
+<td> CREATE INDEX on K500K </td>
+<td> 14.6 </td>
+<td> 1217.1
+</td></tr>
+<tr>
+<td> CREATE INDEX on (K2,K100) </td>
+<td> 16.8 </td>
+<td> 1498.0
+</td></tr>
+<tr>
+<td> CREATE INDEX on (K4,K25) </td>
+<td> 15.3 </td>
+<td> 1557.9
+</td></tr>
+<tr>
+<td> CREATE INDEX on (K10,K25) </td>
+<td> 16.2 </td>
+<td> 1810.4
+</td></tr>
+<tr>
+<td> ANALYZE TABLE </td>
+<td> 55.8 </td>
+<td> 0.7
+</td></tr>
+<tr>
+<td> Q1(KSEQ) </td>
+<td> 1.6 </td>
+<td> 0.8
+</td></tr>
+<tr>
+<td> Q1(K100K) </td>
+<td> 0.7 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q1(K10K) </td>
+<td> 0.6 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q1(K1K) </td>
+<td> 0.7 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q1(K100) </td>
+<td> 0.7 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q1(K25) </td>
+<td> 0.8 </td>
+<td> 0.2
+</td></tr>
+<tr>
+<td> Q1(K10) </td>
+<td> 0.8 </td>
+<td> 0.4
+</td></tr>
+<tr>
+<td> Q1(K5) </td>
+<td> 0.8 </td>
+<td> 0.6
+</td></tr>
+<tr>
+<td> Q1(K4) </td>
+<td> 1.0 </td>
+<td> 0.6
+</td></tr>
+<tr>
+<td> Q1(K2) </td>
+<td> 1.1 </td>
+<td> 0.6
+</td></tr>
+<tr>
+<td> Q2A(KSEQ) </td>
+<td> 0.9 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q2A(K100K) </td>
+<td> 0.9 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q2A(K10K) </td>
+<td> 0.8 </td>
+<td> 0.4
+</td></tr>
+<tr>
+<td> Q2A(K1K) </td>
+<td> 0.8 </td>
+<td> 0.8
+</td></tr>
+<tr>
+<td> Q2A(K100) </td>
+<td> 0.9 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q2A(K25) </td>
+<td> 0.9 </td>
+<td> 0.6
+</td></tr>
+<tr>
+<td> Q2A(K10) </td>
+<td> 1.1 </td>
+<td> 0.8
+</td></tr>
+<tr>
+<td> Q2A(K5) </td>
+<td> 1.0 </td>
+<td> 0.8
+</td></tr>
+<tr>
+<td> Q2A(K4) </td>
+<td> 1.2 </td>
+<td> 0.9
+</td></tr>
+<tr>
+<td> Q2B(KSEQ) </td>
+<td> 1.9 </td>
+<td> 0.3
+</td></tr>
+<tr>
+<td> Q2B(K100K) </td>
+<td> 1.8 </td>
+<td> 1545.9
+</td></tr>
+<tr>
+<td> Q2B(K10K) </td>
+<td> 1.9 </td>
+<td> 1547.4
+</td></tr>
+<tr>
+<td> Q2B(K1K) </td>
+<td> 1.6 </td>
+<td> 1547.2
+</td></tr>
+<tr>
+<td> Q2B(K100) </td>
+<td> 1.4 </td>
+<td> 1.8
+</td></tr>
+<tr>
+<td> Q2B(K25) </td>
+<td> 1.3 </td>
+<td> 1548.0
+</td></tr>
+<tr>
+<td> Q2B(K10) </td>
+<td> 1.4 </td>
+<td> 1547.8
+</td></tr>
+<tr>
+<td> Q2B(K5) </td>
+<td> 1.3 </td>
+<td> 1549.5
+</td></tr>
+<tr>
+<td> Q2B(K4) </td>
+<td> 1.4 </td>
+<td> 1548.1
+</td></tr>
+<tr>
+<td> Q3A(K100K) </td>
+<td> 0.4 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q3A(K10K) </td>
+<td> 0.4 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q3A(K100) </td>
+<td> 0.5 </td>
+<td> 1.1
+</td></tr>
+<tr>
+<td> Q3A(K25) </td>
+<td> 0.5 </td>
+<td> 5.7
+</td></tr>
+<tr>
+<td> Q3A(K10) </td>
+<td> 0.7 </td>
+<td> 6.2
+</td></tr>
+<tr>
+<td> Q3A(K5) </td>
+<td> 0.6 </td>
+<td> 7.4
+</td></tr>
+<tr>
+<td> Q3A(K4) </td>
+<td> 0.7 </td>
+<td> 8.0
+</td></tr>
+<tr>
+<td> Q3B(K100K) </td>
+<td> 0.5 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q3B(K10K) </td>
+<td> 0.5 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q3B(K100) </td>
+<td> 0.5 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q3B(K25) </td>
+<td> 0.6 </td>
+<td> 0.2
+</td></tr>
+<tr>
+<td> Q3B(K10) </td>
+<td> 0.7 </td>
+<td> 0.5
+</td></tr>
+<tr>
+<td> Q3B(K5) </td>
+<td> 0.7 </td>
+<td> 0.9
+</td></tr>
+<tr>
+<td> Q3B(K4) </td>
+<td> 0.8 </td>
+<td> 0.9
+</td></tr>
+<tr>
+<td> Q4.1 </td>
+<td> 3.5 </td>
+<td> 310.9
+</td></tr>
+<tr>
+<td> Q4.2 </td>
+<td> 1.2 </td>
+<td> 7.4
+</td></tr>
+<tr>
+<td> Q4.3 </td>
+<td> 1.0 </td>
+<td> 7.5
+</td></tr>
+<tr>
+<td> Q4.4 </td>
+<td> 1.8 </td>
+<td> 23.4
+</td></tr>
+<tr>
+<td> Q4.5 </td>
+<td> 2.2 </td>
+<td> 23.1
+</td></tr>
+<tr>
+<td> Q4.6 </td>
+<td> 2.3 </td>
+<td> 7.9
+</td></tr>
+<tr>
+<td> Q4.7 </td>
+<td> 1.6 </td>
+<td> 6.4
+</td></tr>
+<tr>
+<td> Q4.8 </td>
+<td> 1.6 </td>
+<td> 27.1
+</td></tr>
+<tr>
+<td> Q4.9 </td>
+<td> 7.7 </td>
+<td> 1544.2
+</td></tr>
+<tr>
+<td> Q4.10 </td>
+<td> 7.9 </td>
+<td> 22.9
+</td></tr>
+<tr>
+<td> Q4.11 </td>
+<td> 7.6 </td>
+<td> 23.1
+</td></tr>
+<tr>
+<td> Q4.12 </td>
+<td> 8.1 </td>
+<td> 23.1
+</td></tr>
+<tr>
+<td> Q4.13 </td>
+<td> 19.0 </td>
+<td> 8.2
+</td></tr>
+<tr>
+<td> Q4.14 </td>
+<td> 17.1 </td>
+<td> 8.2
+</td></tr>
+<tr>
+<td> Q4.15 </td>
+<td> 17.2 </td>
+<td> 26.8
+</td></tr>
+<tr>
+<td> Q5.1 </td>
+<td> 4.5 </td>
+<td> 2.4
+</td></tr>
+<tr>
+<td> Q5.2 </td>
+<td> 4.0 </td>
+<td> 2.2
+</td></tr>
+<tr>
+<td> Q5.3 </td>
+<td> 4.5 </td>
+<td> 2.6
+</td></tr>
+<tr>
+<td> Q6A (K100K) </td>
+<td> 1.1 </td>
+<td> 0.1
+</td></tr>
+<tr>
+<td> Q6A (K40K) </td>
+<td> 1.1 </td>
+<td> 0.3
+</td></tr>
+<tr>
+<td> Q6A (K10K) </td>
+<td> 1.3 </td>
+<td> 0.7
+</td></tr>
+<tr>
+<td> Q6A (K1K) </td>
+<td> 1.4 </td>
+<td> 5.1
+</td></tr>
+<tr>
+<td> Q6A (K100) </td>
+<td> 1.3 </td>
+<td> 12.3
+</td></tr>
+<tr>
+<td> Q6B (K40K) </td>
+<td> 1.1 </td>
+<td> 0.2
+</td></tr>
+<tr>
+<td> Q6B (K10K) </td>
+<td> 1.1 </td>
+<td> 1.0
+</td></tr>
+<tr>
+<td> Q6B (K1K) </td>
+<td> 0.8 </td>
+<td> 10.4
+</td></tr>
+<tr>
+<td> Q6B (K100) </td>
+<td> 1.0 </td>
+<td> 83.1
+</td></tr></table>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 49/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1575-0!*!0!!en!*!* and timestamp 20140414193302 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;oldid=2367">http://luciddb.org/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;oldid=2367</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbSqbmComparativeResults" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbSqbmComparativeResults&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbSqbmComparativeResults" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbSqbmComparativeResults" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbSqbmComparativeResults" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbSqbmComparativeResults&amp;oldid=2367" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 3 May 2007, at 00:25.</li>
+		<li id="viewcount">This page has been accessed 3,303 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.212 secs. --></body></html>

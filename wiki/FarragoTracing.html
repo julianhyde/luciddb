@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoTracing - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoTracing", "wgTitle": "FarragoTracing", "wgCurRevisionId": 5879, "wgArticleId": 1490, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoTracing action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoTracing</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Configuration"><span class="tocnumber">1</span> <span class="toctext">Configuration</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Trace_Levels"><span class="tocnumber">2</span> <span class="toctext">Trace Levels</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#JNI_Handle_Tracing"><span class="tocnumber">3</span> <span class="toctext">JNI Handle Tracing</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Trace_Configuration_Caching"><span class="tocnumber">4</span> <span class="toctext">Trace Configuration Caching</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Configuration">Configuration</span></h2>
+<p>Tracing based on the standard <a rel="nofollow" class="external text" href="http://java.sun.com/j2se/1.4.1/docs/api/java/util/logging/package-summary.html#package_description">java.util.logging facility</a> is controlled by the file <b>farrago/trace/FarragoTrace.properties</b>, which is generated when the catalog is created. You can make modifications to this file; they won't be overwritten during regeneration. However, comments cannot be preserved during regeneration, so don't bother. Normally, trace output is written to <b>farrago/trace/FarragoTrace.log</b>.
+</p><p>Here is an example of the default <b>FarragoTrace.properties</b> generated for a developer build:
+</p>
+<pre>
+         #Developer tracing configuration (do not add comments)
+         #Sat Dec 10 00:28:54 PST 2005
+         .level=CONFIG
+         handlers=java.util.logging.FileHandler
+         java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
+         java.util.logging.FileHandler.pattern=/home/jvs/open/farrago/trace/FarragoTrace.log
+         net.sf.farrago.jdbc.level=FINER
+         java.util.logging.FileHandler.append=true
+</pre>
+<p><i><b>NOTE</b></i>: it is very easy to forget to append the "<b>.level</b>" part of the specification when enabling a new trace. If something isn't tracing and you think it should be, this is the first thing to check.
+</p><p>The timestamp of the trace configuration file is checked once per second; whenever it changes, the new configuration is applied automatically (and dumped to <b>FarragoTrace.log</b>), so there's no need to restart the JVM. This can be very useful in the middle of a debugging session. (TODO: make this behavior configurable, since that's not always desirable for all usages.)
+</p><p>When Fennel is run inside of Farrago, Fennel trace output is automatically intercepted and appended to Farrago's trace log, so all tracing from Java and native code is unified.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="Trace_Levels">Trace Levels</span></h2>
+<p>Most Farrago classes use the standard logger naming scheme (logger name matches fully-qualified class name). However, Fennel doesn't use the java.util.logging API directly, so it has a custom logger naming scheme. You never need to include the class name unless you require fine-grained discrimination.
+</p><p>Some common trace settings you might need:
+</p>
+<ul><li> add <b>net.sf.farrago.jdbc.level=FINER</b> to trace exceptions which are returned via the JDBC driver (this is very useful since it traces underlying exceptions as well; these may not be visible in a front end such as sqlline); this is added automatically for developer builds
+</li><li> add <b>net.sf.farrago.db.level=FINE</b> to see all SQL statements as they are prepared and executed (use FINER to see dynamic parameter values as well)
+</li><li> add <b>net.sf.farrago.query.streamgraph.level=FINE</b> to trace Fennel execution stream graphs
+</li><li> add <b>net.sf.farrago.fennel.level=FINE</b> to trace just the commands sent to the Fennel API (not their implementation)
+</li><li> add <b>net.sf.fennel.xo.level=FINER</b> to trace tuples produced by execution streams and enable <a href="/wiki/ExecStreamGraphVisualization" title="ExecStreamGraphVisualization">ExecStreamGraphVisualization</a>
+</li><li> add <b>org.eigenbase.relopt.level=FINE</b> to trace query optimization
+</li><li> add <b>net.sf.farrago.query.plandump.level=FINE</b> to dump optimizer plans for all statements prepared
+</li><li> add <b>net.sf.farrago.dynamic.level=FINE</b> to cause generated Java source files to be saved in the file system for debugging (as described in <a href="/wiki/FarragoCodeGenDebugging" title="FarragoCodeGenDebugging">FarragoCodeGenDebugging</a>)
+</li></ul>
+<p>The table below lists all known tracers except for ones which have been added recently. The table isn't in any particular order. For Java code, these tracers are declared in classes <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/trace/FarragoTrace.html">FarragoTrace</a> and <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/trace/EigenbaseTrace.html">EigenbaseTrace</a>.
+</p>
+<table border="1">
+<tr>
+<th> <b>Functional Area</b> </th>
+<th> <b>Name</b> </th>
+<th> <b>Description</b> </th>
+<th> <b>Levels</b>
+</th></tr>
+<tr>
+<td> JDBC Driver </td>
+<td> net.sf.farrago.jdbc.engine.FarragoJdbcEngineDriver </td>
+<td> Traces JDBC driver errors. </td>
+<td> <b>FINER</b> enables trace of JDBC errors.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.runtime.FarragoIteratorResultSet </td>
+<td> Traces JDBC result sets </td>
+<td> <b>FINE</b> enables trace of cursor open/fetch/close.
+</td></tr>
+<tr>
+<td> Database </td>
+<td> net.sf.farrago.db.FarragoDatabase </td>
+<td> Traces database events. </td>
+<td> <b>CONFIG</b> traces database configuration parameters; <b>INFO</b> traces database open/close and session connect/disconnect; <b>FINE</b> traces miscellaneous state changes.
+</td></tr>
+<tr>
+<td> Session </td>
+<td> net.sf.farrago.db.FarragoDbSession </td>
+<td> Traces session events. </td>
+<td> <b>INFO</b> traces transaction begin/end and SQL statement preparation.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.db.FarragoDbStmtContext </td>
+<td> Traces statement execution. </td>
+<td> <b>FINE</b> traces statement execution and update counts; <b>FINER</b> includes dynamic parameter values for each execution.
+</td></tr>
+<tr>
+<td>   </td>
+<td> org.eigenbase.sql.timing </td>
+<td> Traces timing of various stages of query processing. </td>
+<td> <b>FINE</b> emits a high-resolution timer record for each stage.
+</td></tr>
+<tr>
+<td> Catalog </td>
+<td> net.sf.farrago.catalog.FarragoRepos </td>
+<td> Traces catalog and repository events. </td>
+<td> <b>INFO</b> traces catalog open/close; <b>FINE</b> traces repository transaction begin/end.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.mdr </td>
+<td> Traces Farrago's use of MDR. </td>
+<td> <b>EXCEPTION</b> traces errors; <b>WARNING</b> traces warnings; <b>INFO</b> traces messages intended for users; <b>FINE</b> traces what MDR calls informational messages; and <b>FINER</b> traces anything else.
+</td></tr>
+<tr>
+<td> Optimizer </td>
+<td> org.eigenbase.relopt.RelOptPlanner </td>
+<td> Traces the query optimization process. </td>
+<td> <b>FINE</b> prints rules as they fire; <b>FINER</b> prints and validates the whole expression pool and rule queue as each rule fires; <b>FINEST</b> prints finer details like rule importance. See also <a href="/wiki/HepTracing" title="HepTracing">HepTracing</a>.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.query.rule </td>
+<td> Traces rules which have enough complexity to require tracing. </td>
+<td> <b>FINER</b> traces rule details.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.query.plandump </td>
+<td> Dumps plans generated by sql2rel conversion and the optimizer. </td>
+<td> <b>FINE</b> dumps plan before UDT flattening, after UDT flattening, and after optimization.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.plannerviz </td>
+<td> Controls JGraph visualization of planner activity; see <a href="/wiki/FarragoPlannerVisualization" title="FarragoPlannerVisualization">FarragoPlannerVisualization</a> for details. </td>
+<td> <b>FINE</b> renders only logical equivalence classes; <b>FINER</b> renders only physical equivalence classes; <b>FINEST</b> renders both.
+</td></tr>
+<tr>
+<td> Java codegen </td>
+<td> org.eigenbase.oj.stmt.OJPreparingStmt </td>
+<td> Dumps Java classes generated to implement SQL expressions. </td>
+<td> <b>FINE</b> enables dump.
+</td></tr>
+<tr>
+<td>   </td>
+<td> org.eigenbase.oj.util.OJClassMap </td>
+<td> Reports when synthetic classes are generated to represent SQL types. </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td>   </td>
+<td> org.eigenbase.oj.rel.JavaRelImplementor </td>
+<td> Reports when the outputs of relational expressions are bound to Java variables. </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.dynamic </td>
+<td> See <a href="/wiki/FarragoCodeGenDebugging" title="FarragoCodeGenDebugging">FarragoCodeGenDebugging</a> </td>
+<td> <b>FINE</b> results in preservation of generated sources.
+</td></tr>
+<tr>
+<td> Calc codegen </td>
+<td> net.sf.farrago.fennel.calc.CalcProgramBuilder </td>
+<td> Dumps calc programs once they are constructed. </td>
+<td> <b>FINE</b> enables dump.
+</td></tr>
+<tr>
+<td> Java executor </td>
+<td> org.eigenbase.runtime.CompoundIterator, CompoundParallelIterator </td>
+<td> Traces Java UNION implementation </td>
+<td> <b>FINE</b> traces transitions to the next iterator; <b>FINER</b> traces every element
+</td></tr>
+<tr>
+<td> DDL </td>
+<td> org.eigenbase.jmi.JmiChangeSet </td>
+<td> Traces repository update processing. </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.ddl.DdlValidator </td>
+<td> Traces generic DDL processing. </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td> Parser </td>
+<td> org.eigenbase.sql.parser </td>
+<td> Traces parse events. </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td> Fennel JNI Layer (Java half) </td>
+<td> net.sf.farrago.fennel.FennelDbHandle </td>
+<td> Traces commands sent to Fennel. </td>
+<td> <b>FINE</b> traces commands rendered as XMI.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.fennel.FennelStreamGraph </td>
+<td> Traces stream graph calls. </td>
+<td> <b>FINE</b> traces open/close/abort/deallocate; <b>FINER</b> traces fetch.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.query.streamgraph </td>
+<td> Traces ExecStreamGraph definitions. </td>
+<td> <b>FINE</b> traces graphs as they are prepared.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.runtime.FennelPipeIterator </td>
+<td> Traces class FennelPipeIterator </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.runtime.JavaPushTupleStream </td>
+<td> Traces class JavaPushTupleStream </td>
+<td> <b>FINE</b> enables trace.
+</td></tr>
+<tr>
+<td> Fennel native code </td>
+<td> net.sf.fennel.xo.[streamname] </td>
+<td> Traces Fennel execution streams </td>
+<td> <b>FINE</b> traces result of each scheduled stream execution; <b>FINER</b> traces buffer states before and after, including tuple contents after; <b>FINEST</b> traces buffer contents before execution as well.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.xo.scheduler </td>
+<td> Traces Fennel execution stream scheduler </td>
+<td> <b>FINE</b> traces start/stop/abort/enter/leave, and enables <a href="/wiki/ExecStreamGraphVisualization" title="ExecStreamGraphVisualization">ExecStreamGraphVisualization</a>
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.xo.resourceGovernor </td>
+<td> Traces Fennel execution stream resource governor </td>
+<td> <b>FINE</b> traces resource setting changes and allocation requests and returns at the stream graph level; <b>FINER</b> traces allocation assignments to each individual stream in the graph.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.segment </td>
+<td> Traces storage access. </td>
+<td> <b>FINE</b> traces segment open/close and page allocation/deallocation; <b>FINER</b> traces page updates; <b>FINEST</b> traces page map/unmap (this is very verbose!)
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.Database </td>
+<td> Traces database events. </td>
+<td> <b>INFO</b> traces open/close/recovery.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.calc </td>
+<td> Traces calculator execution. </td>
+<td> <b>FINE</b> traces programs when they are assembled; <b>FINER</b> traces instruction execution.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.fennel.[testname] </td>
+<td> Traces specific tests. </td>
+<td> Depends on test.
+</td></tr>
+<tr>
+<td> Test </td>
+<td> net.sf.farrago.test.FarragoTestCase </td>
+<td> Traces test events. </td>
+<td> <b>INFO</b> traces test begin/end; <b>FINE</b> traces memory usage also.
+</td></tr>
+<tr>
+<td> Utilities </td>
+<td> org.eigenbase.util.property.Property </td>
+<td> Traces property lookup infrastructure. </td>
+<td> <b>WARNING</b> traces warnings about property settings.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.util.FarragoFileAllocation </td>
+<td> Traces auto-deletion of files from Java. </td>
+<td> <b>WARNING</b> traces warnings if files cannot be deleted.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.util.FarragoFileLockAllocation </td>
+<td> Traces files locked from Java. </td>
+<td> <b>FINE</b> enables trace of lock/unlock.
+</td></tr>
+<tr>
+<td>   </td>
+<td> net.sf.farrago.util.FarragoObjectCache </td>
+<td> Traces object definitions cached in Java. </td>
+<td> <b>FINE</b> enables trace of object cache pin/unpin.
+</td></tr></table>
+<p>To add a new Java tracer, edit the tracer class corresponding to your component (e.g. <b>net.sf.farrago.trace.FarragoTrace</b>), add and document a new member variable there, and refer to it from the class into which you are inserting trace calls. Also, remember to update the table above!
+</p><p>For a good example of an existing class which uses tracing, see the source code for <b>net.sf.farrago.db.FarragoDbSession</b>.
+</p><p>TODO: use annotations to generate the above table automatically from Tracer classes.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="JNI_Handle_Tracing">JNI Handle Tracing</span></h2>
+<p>There is a special facility for tracing JNI handle usage; see <a href="/wiki/FennelJniHandleTracing" title="FennelJniHandleTracing">FennelJniHandleTracing</a>.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="Trace_Configuration_Caching">Trace Configuration Caching</span></h2>
+<p>Some components (especially inside Fennel) cache trace settings for performance. Cached trace settings are typically associated with an object lifetime. For example, when an <b>ExecStreamGraph</b> is first prepared, extra tracers are instrumented into the graph if the corresponding trace setting is set. These continue to trace for the lifetime of the graph. Conversely, if the graph was prepared when trace was off, no extra tracers are created, and the graph's execution will never be traced even if the trace settings change in the middle. This is intentional, but when combined with object caching, it can make debugging mysterious. If you want to be absolutely sure of getting something traced, start a new VM after changing trace settings.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 23/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1490-0!*!0!!en!*!* and timestamp 20140414194556 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoTracing&amp;oldid=5879">http://luciddb.org/wiki/index.php?title=FarragoTracing&amp;oldid=5879</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoTracing" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoTracing&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoTracing&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoTracing&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoTracing" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoTracing" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoTracing" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoTracing&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoTracing&amp;oldid=5879" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 22 March 2009, at 00:04.</li>
+		<li id="viewcount">This page has been accessed 3,505 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.196 secs. --></body></html>

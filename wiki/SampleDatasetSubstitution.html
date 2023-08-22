@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>SampleDatasetSubstitution - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "SampleDatasetSubstitution", "wgTitle": "SampleDatasetSubstitution", "wgCurRevisionId": 5433, "wgArticleId": 1520, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-SampleDatasetSubstitution action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">SampleDatasetSubstitution</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><i>Sample dataset substitution</i> is a technique which is useful when developing queries against a large or otherwise difficult schema.
+</p><p>Some examples:
+</p>
+<ul><li> Suppose that you are designing a query to detect an unusual condition, such as fraudulent behavior in banking transactions. This condition is unusual, so your dataset does not contain an example of one.
+</li><li> You are writing a set of views, and queries to test them, against a data warehouse. The data warehouse has not been populated, because the <a href="http://en.wikipedia.org/wiki/ETL" class="extiw" title="wikipedia:ETL">ETL</a> process has not been completed, but you want to write the queries now.
+</li></ul>
+<p>In both of these examples, it is helpful to be able to develop the queries against a sample dataset.
+</p>
+<h2> <span class="mw-headline" id="SQL_syntax">SQL syntax</span></h2>
+<p>We extend the TABLESAMPLE SQL syntax used for <a href="/wiki/TableSampling" title="TableSampling">table sampling</a> with the SUBSTITUTE keyword:
+</p><p>DDL:
+</p>
+<pre>
+CREATE TABLE tableName ( columnSpecification [, ...] )
+SAMPLE ( tableName AS sampleName [, ...]);
+
+-- not yet implemented
+ALTER TABLE tableName
+ DROP SAMPLE ( sampleName [ , ...] );
+
+ALTER TABLE tableName
+ ADD SAMPLE ( tableName AS sampleName [, ...] );
+
+CREATE [ OR REPLACE ] VIEW viewName
+ SAMPLE ( tableName AS sampleName [ , ...] )
+ AS ...;
+</pre>
+<p>Query/DML:
+</p>
+<pre>
+tableReference TABLESAMPLE SUBSTITUTE('sampleName')
+</pre>
+<h2> <span class="mw-headline" id="Examples">Examples</span></h2>
+<p>Here we define a table EMP with two sample datasets: Small held in table EmpSmall, and Medium held in table EmpMedium.
+</p>
+<pre>
+CREATE TABLE EmpSmall (empno INTEGER, ename VARCHAR(10));
+INSERT INTO EmpSmall VALUES (10, 'Fred'), (20, 'Bill');
+
+CREATE TABLE EmpMedium (empno INTEGER, ename VARCHAR(10));
+INSERT INTO EmpMedium VALUES (10, 'Fred'), (30, 'Wilma'), (50, 'Barney');
+
+CREATE TABLE Emp (empno INTEGER, ename VARCHAR(10))
+SAMPLE (EmpSmall AS SMALL, EmpMedium AS Medium);
+</pre>
+<p>To use a sample, reference it directly against the table reference, or in an enclosing query:
+</p>
+<pre>
+SELECT * FROM Emp TABLESAMPLE SUBSTITUTE('SMALL');
+
+SELECT * FROM (
+SELECT * FROM Emp
+JOIN Dept USING deptno
+) TABLESAMPLE SUBSTITUTE('MEDIUM')
+</pre>
+<p>If the Dept table has a sample called 'MEDIUM', the second query will substitute both Emp and Dept with sample datasets; otherwise, it substitute only Emp and use the real contents of the Dept table.
+</p>
+<h2> <span class="mw-headline" id="Functional_specification">Functional specification</span></h2>
+<ol><li> Samples can be tables, views, or any other relation; and can live in other schemas.
+</li><li> Sample names behave like other SQL identifiers. If you don't quote them, they can only consist of alphanumerics, and implicitly become uppercase.
+</li><li> If the query contains nested sub-queries, the sample name is inherited from outer queries. Inner queries can override outer samples, as you'd expect. (REVIEW: Or would you expect the inner query to get a list of candidate sample names?)
+</li><li> Samples are applied to all base tables, including those referenced via a view (even multiple levels of views). If a sample matches a sample on a view definition, the view definition is replaced by the sample, and sample substitution takes place on the sample.
+</li><li> It is an error sample names within a table are not unique.
+</li><li> Give error if a sample S for table T does not contain a column for each column in T.
+</li><li> Give error if a column CS in sample S for table T does not have the same datatype as the corresponding column CT in T. Implicit coercions are allowed. Also nullability.
+</li><li> If table T has a sample S, user cannot drop S. With 'DROP s CASCADE' keyword, the sample is removed from T but T is not dropped.
+</li><li> Include samples in generated DDL. Also, add the sample relationship to the partial order, so that sample tables are exported before the tables which depend on them.
+</li><li> Detect cycles in sample tables (E.g. x samples from y samples from x) and issue a specific error. Doesn't matter whether error is at DDL time or at runtime -- runtime is probably easier.
+</li><li> (When we implement access control.) Access to sample tables is subject to access control. If not, there would be an easy exploit: to read table T which you don't have access to, create another table U with the same columns, make T a sample for it, then run 'select * from U tablesample substitute('T')'.
+</li></ol>
+<p>This feature is incomplete. The remaining tasks are listed in <a href="http://issues.eigenbase.org/browse/FRG-152" class="extiw" title="eigenjira:FRG-152">eigenjira:FRG-152</a>.
+</p><p><i>REVIEW jvs 25-June-2006: Regarding identifiers, there's a discrepancy between how the name of a sample is defined and referenced. When it is defined, it is as an SQL identifier, but when it is referenced, it is as a literal string. Since we've taken the route of an explicit SQL clause instead of a UDX, we have the option of removing this discrepancy by making the reference an identifier instead of a literal string. This would be an improvement in user-friendliness, but maybe you want to keep it this way to indicate that the referenced sample doesn't have to actually exist at all levels? The same discrepancy exists in some other places, like in set schema vs. create schema; note that for set schema the SQL standard actually says that the referencing string expression is evaluated and then reparsed as an identifier, so set schema 's' and set schema 'S' are equivalent, whereas set schema '"s"' is different. If we want to keep the discrepancy, I would say follow the create/set schema rules for consistency. See DdlSetContextStmt for where the string evaluation and reparsing happens. If we follow this and allow an expression to be evaluated instead of just a literal, it's possible to give different users different sample results via reference expressions like SUBSTITUTE(CURRENT_USER||'_SMALL').</i>
+</p><p><i>jhyde replies, 4-December-2006: Yes, something similar to indicating "that the referenced sample doesn't have to actually exist at all levels". Sample dataset matches should be fuzzy, although I'm not yet sure what the best matching algorithm should be. As you say, sample datasets are currently inherited. It might also be useful for the sample name to be interpreted as a regexp. I'd like to keep identifiers as string expressions for now, and nail down the precise semantics when we have more experience using these in the field.</i>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 47/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1520-0!*!0!!*!*!* and timestamp 20140414194606 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=SampleDatasetSubstitution&amp;oldid=5433">http://luciddb.org/wiki/index.php?title=SampleDatasetSubstitution&amp;oldid=5433</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/SampleDatasetSubstitution" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:SampleDatasetSubstitution&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=SampleDatasetSubstitution&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=SampleDatasetSubstitution&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=SampleDatasetSubstitution" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/SampleDatasetSubstitution" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/SampleDatasetSubstitution" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=SampleDatasetSubstitution&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=SampleDatasetSubstitution&amp;oldid=5433" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 10 December 2008, at 03:01.</li>
+		<li id="viewcount">This page has been accessed 2,988 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.187 secs. --></body></html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedUdx - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedUdx", "wgTitle": "FarragoMedUdx", "wgCurRevisionId": 5977, "wgArticleId": 1537, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedUdx action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedUdx</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>Suppose you'd like to write a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/sqlmed.html">SQL/MED foreign data wrapper</a> to allow users to query the <a rel="nofollow" class="external text" href="http://www.imdb.com/">Internet Movie Database</a> (IMDb) via SQL. Being an accomplished Java programmer, you already know how to call IMDb via HTTP and parse HTML results (or maybe you know about the secret web-service API); now you need to figure out how to expose that functionality via SQL/MED. This document describes the easy way: write a <a href="/wiki/FarragoUdx" title="FarragoUdx">FarragoUdx</a> which encapsulates your request/response logic, and then tell SQL/MED how to rewrite queries against a foreign table into invocations of your UDX.
+</p>
+<hr />
+<p>We'll assume you've already created a skeletal foreign data wrapper implementation, probably by copying the implementation from package <b>net.sf.farrago.namespace.mock</b> and adapting it to your purposes. In fact, the mock wrapper provides an example of how to rewrite to a UDX, so let's take a look at that. Here's a SQL transcript which shows it in action:
+</p>
+<pre>
+0: jdbc:farrago:&gt; create schema mock_schema;
+0: jdbc:farrago:&gt;
+0: jdbc:farrago:&gt; set schema 'mock_schema';
+0: jdbc:farrago:&gt;
+0: jdbc:farrago:&gt; create function ramp(n int)
+. . . . . . . . &gt; returns table(i int)
+. . . . . . . . &gt; language java
+. . . . . . . . &gt; parameter style system defined java
+. . . . . . . . &gt; no sql
+. . . . . . . . &gt; external name 'class net.sf.farrago.test.FarragoTestUDR.ramp';
+0: jdbc:farrago:&gt;
+0: jdbc:farrago:&gt; create foreign table mock_ramp_udx_table(
+. . . . . . . . &gt; id int not null)
+. . . . . . . . &gt; server sys_mock_foreign_data_server
+. . . . . . . . &gt; options (
+. . . . . . . . &gt; executor_impl 'JAVA',
+. . . . . . . . &gt; udx_specific_name 'mock_schema.ramp',
+. . . . . . . . &gt; row_count '3');
+0: jdbc:farrago:&gt;
+0: jdbc:farrago:&gt; select * from mock_ramp_udx_table;
++-----+
+| ID  |
++-----+
+| 0   |
+| 1   |
+| 2   |
++-----+
+0: jdbc:farrago:&gt;
+</pre>
+<p>The script first creates the UDX, and then references it in the definition of a foreign table via the <b>UDX_SPECIFIC_NAME</b> option. This option is interpreted by the mock wrapper as a request to implement the table by calling the UDX. The code which achieves that is in method <b>MedMockColumnSet.toRel</b>:
+</p>
+<pre>
+RexBuilder rexBuilder = cluster.getRexBuilder();
+RexNode arg = rexBuilder.makeExactLiteral(new BigDecimal(nRows));
+
+// Call to super handles the rest.
+return toUdxRel(
+    cluster,
+    connection,
+    udxSpecificName,
+    null,
+    new RexNode [] { arg });
+</pre>
+<p>The <b>toRel</b> method is responsible for constructing the UDX argument list (in this case the desired row-count from member variable <b>nRows</b>) as an array of <b>RexNode</b> objects. The rest (catalog lookup, relational algebra construction) is handled by the <b>toUdxRel</b> call implemented by superclass <b>MedAbstractColumnSet</b>. That's all there is to it. Usually, all of the arguments will be literals, so it's just a matter of finding the right factory methods on the <b>RexBuilder</b> interface.
+</p><p>Let's use <a href="/wiki/FarragoExplainPlanExplained" title="FarragoExplainPlanExplained">EXPLAIN PLAN</a> to see the "before and after":
+</p>
+<pre>
+0: jdbc:farrago:&gt; explain plan without implementation for
+. . . . . . . . &gt; select * from mock_ramp_udx_table;
+'column0'
+'ProjectRel(ID=[$0])'
+' TableAccessRel(table=[[LOCALDB, MOCK_SCHEMA, MOCK_RAMP_UDX_TABLE]])'
+2 rows selected (0.075 seconds)
+0: jdbc:farrago:&gt;
+0: jdbc:farrago:&gt; explain plan with implementation for
+. . . . . . . . &gt; select * from mock_ramp_udx_table;
+'column0'
+'IterCalcRel(expr#0=[{inputs}], expr#1=[CAST($t0):INTEGER NOT NULL], ID=[$t1])'
+' FarragoJavaUdxRel(invocation=[CAST(RAMP(CAST(3):INTEGER)):RecordType(INTEGER I) NOT NULL])'
+2 rows selected (0.083 seconds)
+</pre>
+<p>Before plan implementation, we see a <b>TableAccessRel</b> to the foreign table. Afterwards, we see it rewritten as a <b>FarragoJavaUdxRel</b>, with the call to the <b>RAMP</b> function plus some redundant argument and result datatype casts.
+</p>
+<hr />
+<p>Now, the popcorn is getting cold, so back to IMDb. Let's assume you can get as far as writing a UDX which retrieves a particular entity from IMDb, say actors. So you test it out, first retrieving a particular actor by URL, and then requesting all actors by passing in null for the URL:
+</p>
+<pre>
+create schema imdb;
+set schema 'imdb';
+create function retrieve_actor(url varchar(256))
+returns table(url varchar(256), name varchar(256), dob date, ...)
+language java
+parameter style system defined java
+no sql
+external name 'imdb_plugin:com.acme.ImdbUDX.retrieveActor';
+
+select name,dob from table(retrieve_actor('http://www.imdb.com/name/nm0000148/'));
+'NAME','DOB'
+'Harrison Ford', '1942-08-13'
+
+select name,dob from table(retrieve_actor(null));
+'NAME','DOB'
+'Harrison Ford', '1942-08-13'
+'Ruth Gordon', '1896-10-30'
+...
+</pre>
+<p>To turn this into a foreign table, you can follow the pattern from <b>MedMockColumnSet</b>; in your <b>ImdbColumnSet.toRel</b>, once you established that the table being queried was the <b>actors</b> table, you would do something like:
+</p>
+<pre>
+RexBuilder rexBuilder = cluster.getRexBuilder();
+RexNode arg = rexBuilder.constantNull();
+
+// Call to super handles the rest.
+return toUdxRel(
+    cluster,
+    connection,
+    &quot;imdb.retrieve_actor&quot;,
+    null,
+    new RexNode [] { arg });
+</pre>
+<p>The code passes a literal <b>null</b> (constructed via constantNull) for <b>arg</b> so that querying the table will return all actors.
+</p><p>Then, once you'd created a foreign server <b>imdb_server</b> which instantiated your data wrapper, you could do:
+</p>
+<pre>
+create foreign table actors
+server imdb_server
+options (entity_name 'ACTOR');
+select name,dob from actors;
+'NAME','DOB'
+'Harrison Ford', '1942-08-13'
+'Ruth Gordon', '1896-10-30'
+...
+</pre>
+<p>At this point, you're probably wondering why you would want to jump through all of these hoops. After all, you could just as easily have done:
+</p>
+<pre>
+create view actors as select * from table(retrieve_actor(null));
+select name,dob from actors;
+</pre>
+<p>No foreign data wrapper required, and you get the same results. But read on...
+</p><p>There are at least three good reasons to go to the trouble of writing a foreign data wrapper:
+</p>
+<ol><li> <i>Optimization potential</i>. Once you have the basics working, it's possible to start adding rules for optimizations such as pushing filters down into the foreign server. For example, a query against the <b>actors</b> view above will return rows for all actors before doing any further processing. So if you execute a query like <b>select name from actors where url='<a rel="nofollow" class="external free" href="http://www.imdb.com/name/nm0000148/'">http://www.imdb.com/name/nm0000148/'</a></b>, Farrago will pull out all of the actor entries from IMDb and then apply the URL filter locally. This will be very slow, and the people at IMDb probably won't be happy if you run this over and over. But with a foreign data wrapper, you can provide an optimizer rule which recognizes URL filters, extracts the URL, and supplies it as the argument to the UDX invocation, so only one row will come back. More advanced patterns such as joins can also be pushed down in this way (e.g. "find all movies in which Li Gong acts").
+</li><li> <i>Dynamic schemas</i>. Some data sources may extend their schemas over time. For example, IMDb might start providing box office and video revenue information. If a foreign data wrapper is capable of querying metadata, it can use this to dynamically derive the available tables and columns. This is not possible with fixed views built on top of fixed UDX's.
+</li><li> <i>UDX reuse</i>. Instead of writing one UDX per entity to be queried, you can write just one and reuse it for all entities. In the IMDb example, you might write a <b>retrieve_url</b> UDX capable of producing a different result set for each entity. Because foreign table rewrite happens <b>after</b> SQL validation, it is not subject to the usual rule that every UDX has to produce a fixed table result set.
+</li></ol>
+<p>For a concrete example, see <a href="/wiki/FarragoMedMqlPlugin" title="FarragoMedMqlPlugin">FarragoMedMqlPlugin</a>.
+</p>
+<hr />
+<p><i>Final note</i>. Implementation via UDX is not necessarily the most efficient way to accomplish external data access. Farrago provides two other approaches:
+</p>
+<ul><li> Generation of Java iterator code. There's no threading/queueing overhead, and code generation can produce very efficient runtime code. This is the approach used for the JDBC foreign data wrapper.
+</li><li> Generation of Fennel <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structExecStreamHowTo.html">ExecStream plans</a>. In the right hands, native code provides extreme efficiency and access to API's not available from Java. This is the approach used for the flat-file foreign data wrapper.
+</li></ul>
+<p>However, writing a UDX is much easier than either of these approaches, so it's usually best to start with that and move to one of the other methods only if required.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 22/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1537-0!*!0!*!*!*!* and timestamp 20140414194646 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedUdx&amp;oldid=5977">http://luciddb.org/wiki/index.php?title=FarragoMedUdx&amp;oldid=5977</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedUdx" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedUdx&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedUdx&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedUdx&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedUdx" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedUdx" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedUdx" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedUdx&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedUdx&amp;oldid=5977" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 26 April 2009, at 17:41.</li>
+		<li id="viewcount">This page has been accessed 2,150 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.173 secs. --></body></html>

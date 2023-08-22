@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedJdbcDataSourceSupport - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedJdbcDataSourceSupport", "wgTitle": "FarragoMedJdbcDataSourceSupport", "wgCurRevisionId": 4804, "wgArticleId": 1886, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedJdbcDataSourceSupport action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedJdbcDataSourceSupport</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#New_Configuration_Parameters"><span class="tocnumber">2</span> <span class="toctext">New Configuration Parameters</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Connection_Pool_Configuration"><span class="tocnumber">3</span> <span class="toctext">Connection Pool Configuration</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#MedJdbcDataServer_Changes"><span class="tocnumber">4</span> <span class="toctext">MedJdbcDataServer Changes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#initialize_Method"><span class="tocnumber">4.1</span> <span class="toctext">initialize Method</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Connection_Management_Methods"><span class="tocnumber">4.2</span> <span class="toctext">Connection Management Methods</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#closeAllocation_Method"><span class="tocnumber">4.3</span> <span class="toctext">closeAllocation Method</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Other_MedJdbc_Changes"><span class="tocnumber">5</span> <span class="toctext">Other MedJdbc Changes</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#FarragoStatementAllocation"><span class="tocnumber">6</span> <span class="toctext">FarragoStatementAllocation</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>This page described enhancements to the <a href="/wiki/FarragoMedJdbcPlugin" title="FarragoMedJdbcPlugin">SQL/MED JDBC foreign data wrapper</a> for supporting JNDI-stored data sources and connection pooling.
+</p><p>JNDI-stored data sources are useful for situations where Farrago is executing inside the context of an application container.  Connection pooling resolves issues with concurrent execution of multiple statements against a single data server.  Some JDBC drivers, notable MySQL's, do not support multiple streaming result sets on a single connection which prevents joining two foreign tables from the same JDBC data server.
+</p><p>TODO: update the medjdbc document with new configuration parameters
+</p>
+<h2> <span class="mw-headline" id="New_Configuration_Parameters"> New Configuration Parameters </span></h2>
+<p>New configuration parameters are introduced as follows:
+</p>
+<table border="1" cellspacing="0" cellpadding="2">
+<tr>
+<th> Option Name
+</th>
+<th> Description
+</th>
+<th> Default Value
+</th></tr>
+<tr>
+<td> JNDI_NAME
+</td>
+<td> Name of the JNDI resource that contains a <tt>javax.sql.DataSource</tt> suitable for use with the SQL/MED JDBC foreign data wrapper.  The DataSource <b>must not</b> block when connections are requested.  This option is mutually exclusive with the existing <tt>DRIVER_CLASS</tt>, <tt>URL</tt>, <tt>USER_NAME</tt>, <tt>PASSWORD</tt>, and <tt>EXTENDED_OPTIONS</tt> parameters.  The following parameters are ignored if <tt>JNDI_NAME</tt> is specified: <tt>LOGIN_TIMEOUT</tt>, <tt>VALIDATION_QUERY</tt>.
+</td>
+<td> <i>None</i>
+</td></tr>
+<tr>
+<td> MAX_IDLE_CONNECTIONS
+</td>
+<td> When creating a connection pool implicitly, this many connections are kept open.  If a connection is returned to the pool and this many idle connections are already in the pool, the newly returned connection is immediately closed.  Each <tt>MedJdbcDataServer</tt> instance may hold this many connections open.  Ignored if <tt>JNDI_NAME</tt> is specified.
+</td>
+<td> 1
+</td></tr>
+<tr>
+<td> EVICTION_TIMER_PERIOD_MILLIS
+</td>
+<td> Controls how frequently idle connections are pruned from the pool.  If set to a value N &gt; 0 (zero), idle connections are removed from the pool and closed every N milliseconds. Ignored if <tt>JNDI_NAME</tt> is specified.
+</td>
+<td> -1 <i>(disabled)</i>
+</td></tr>
+<tr>
+<td> MIN_EVICTION_IDLE_MILLIS
+</td>
+<td> Controls how long a connection must be idle before it is evicted.  If <tt>EVICTION_TIMER_PERIOD_MILLIS</tt> is disabled, this setting has no effect.  Otherwise, when the eviction timer fires, idle connections are only closed if they have been idle for at least this many milliseconds.  Ignored if <tt>JNDI_NAME</tt> is specified.
+</td>
+<td> -1 <i>(disabled)</i>
+</td></tr>
+<tr>
+<td> VALIDATION_TIMING
+</td>
+<td> Controls when connections are validated.  Multiple values may be specified if separated by commas. The values are case insensitive. Possible values and their meanings: <tt>ON_BORROW</tt> (validate when connection is borrowed from the connection pool), <tt>ON_RETURN</tt> (validate when connection is returned to the connection pool), or <tt>WHILE_IDLE</tt> (validate idle connections when the eviction timer fires and the connection has not been idle long enough to warrant eviction).  The WHILE_IDLE value only has effect when both <tt>EVICTION_TIMER_PERIOD_MILLIS</tt> and <tt>MIN_EVICTION_IDLE_MILLIS</tt> is positive.  This parameter is ignored if <tt>JNDI_NAME</tt> is specified.  This parameter has no effect if <tt>VALIDATION_QUERY</tt> is not specified.
+</td>
+<td> ON_BORROW
+</td></tr>
+<tr>
+<td> DISABLE_CONNECTION_POOL
+</td>
+<td> Reverts connection management behavior to pre-connection pool semantics.  A single connection is re-used for all purposes.
+</td>
+<td> false
+</td></tr></table>
+<h2> <span class="mw-headline" id="Connection_Pool_Configuration"> Connection Pool Configuration </span></h2>
+<p>The interaction between the idle connection parameters is somewhat complex.  The <tt>MAX_IDLE_CONNECTIONS</tt> parameter dictates the connection pool's behavior when a connection is returned to the pool:  the connection is closed immediately if there are already at least this many idle connections in the pool.  When <tt>EVICTION_TIMER_PERIOD_MILLIS</tt> is set, the pool is also periodically polled and its idle connections are closed.  This means that if all connections are idle when the eviction timer fires, all connections will be closed.  The <tt>MIN_EVICTION_IDLE_MILLIS</tt> parameter modifies the eviction timer to only close connections that have been idle for a given amount of time.  Finally, the <tt>WHILE_IDLE</tt> setting for <tt>VALIDATION_TIMING</tt> depends on the eviction timer being activated and a minimum eviction idle time: connections are validated "while idle" only if they are not being evicted for other reasons.
+</p><p>Here's an example with the settings <tt>MAX_IDLE_CONNECTIONS</tt> = 2, <tt>EVICTION_TIMER_PERIOD_MILLIS</tt> = 10000, <tt>MIN_EVICTION_IDLE_TIME</tt> = 15000.
+</p>
+<table border="1" cellspacing="0" cellpadding="2">
+<tr>
+<th> Time (ms)
+</th>
+<th> Event
+</th>
+<th> Open Connections
+</th>
+<th> Number of Idle Connections in Pool
+</th>
+<th> Notes
+</th></tr>
+<tr>
+<td> 0
+</td>
+<td> Connection A Requested
+</td>
+<td> 1
+</td>
+<td> 0
+</td>
+<td> New connection created
+</td></tr>
+<tr>
+<td> 100
+</td>
+<td> Connection B Requested
+</td>
+<td> 2
+</td>
+<td> 0
+</td>
+<td> New connection created
+</td></tr>
+<tr>
+<td> 200
+</td>
+<td> Connection C Requested
+</td>
+<td> 3
+</td>
+<td> 0
+</td>
+<td> New connection created
+</td></tr>
+<tr>
+<td> 300
+</td>
+<td> Connection D Requested
+</td>
+<td> 4
+</td>
+<td> 0
+</td>
+<td> New connection created
+</td></tr>
+<tr>
+<td> 1000
+</td>
+<td> Connection B Released
+</td>
+<td> 4
+</td>
+<td> 1
+</td>
+<td>
+</td></tr>
+<tr>
+<td> 6000
+</td>
+<td> Connection A Released
+</td>
+<td> 4
+</td>
+<td> 2
+</td>
+<td>
+</td></tr>
+<tr>
+<td> 6500
+</td>
+<td> Connection C Released
+</td>
+<td> 3
+</td>
+<td> 2
+</td>
+<td> Connection C closed due to <tt>MAX_IDLE_CONNECTIONS</tt>
+</td></tr>
+<tr>
+<td> 10000
+</td>
+<td> Eviction Timer Event
+</td>
+<td> 3
+</td>
+<td> 2
+</td>
+<td> No action: idle connections have not been idle long enough
+</td></tr>
+<tr>
+<td> 20000
+</td>
+<td> Eviction Timer Event
+</td>
+<td> 2
+</td>
+<td> 1
+</td>
+<td> Connection B closed: idle &gt; 15000 ms
+</td></tr>
+<tr>
+<td> 24000
+</td>
+<td> Connection D Released
+</td>
+<td> 2
+</td>
+<td> 2
+</td>
+<td>
+</td></tr>
+<tr>
+<td> 30000
+</td>
+<td> Eviction Timer Event
+</td>
+<td> 1
+</td>
+<td> 1
+</td>
+<td> Connection A closed: idle &gt; 15000 ms
+</td></tr>
+<tr>
+<td> 40000
+</td>
+<td> Eviction Timer Event
+</td>
+<td> 0
+</td>
+<td> 0
+</td>
+<td> Connection D closed: idle &gt; 15000 ms
+</td></tr></table>
+<p>A separate connection pool is instantiated per <tt>FarragoMedDataServer</tt> instance.  Therefore, the connection pool should be configured with the requirements of a single user session in mind, rather than the requirements of the data server across all sessions.  A future enhancement would be to re-use a single connection pool across <tt>FarragoMedDataServer</tt> instances.
+</p>
+<h2> <span class="mw-headline" id="MedJdbcDataServer_Changes"> MedJdbcDataServer Changes </span></h2>
+<h3> <span class="mw-headline" id="initialize_Method"> initialize Method </span></h3>
+<p>During the <tt>initialize</tt> method, the data server's parameters are validated. Incompatible options (as described above) will cause an exception to be thrown.
+</p><p>A <tt>DataSource</tt> instance is obtained if <tt>JNDI_NAME</tt> is set.
+</p><p>Otherwise, a DBCP connection pooling data source is created:
+</p>
+<blockquote>
+<pre>
+import org.apache.commons.dbcp.*;
+import org.apache.commons.pool.impl.GenericObjectPool;
+
+...
+
+ConnectionFactory connFactory = 
+    new DriverManagerConnectionFactory(
+        url,
+        username,
+        password);
+        
+GenericObjectPool connPool = new GenericObjectPool();
+connPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+connPool.setMaxActive(-1);
+
+// Configurable options:
+connPool.setMaxIdle(maxIdle);
+connPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRuns);
+connPool.setMinEvictableIdleTimeMillis(minEvictableTime);
+
+// Registers the PoolableConnectionFactory with the connection
+// pool.
+new PoolableConnectionFactory(
+    connFactory,
+    connPool,
+    null,
+    null,
+    false,
+    true);
+
+DataSource ds = new PoolingDataSource(connPool);
+</pre>
+</blockquote>
+<p>The auto-commit default (<tt>PoolableConnectionFactory</tt> argument) will be set to true, and <tt>createConnection</tt> will set the auto-commit mode as usual. The login timeout is set as before.
+</p>
+<h3> <span class="mw-headline" id="Connection_Management_Methods"> Connection Management Methods </span></h3>
+<p>The <tt>createConnection()</tt> method will be removed.  
+</p><p>Instead, DBCP is used to open connections and perform validation queries as required.
+</p><p>The logic for configuring connections is moved to <tt>initialize</tt>.
+</p><p>The <tt>getConnection()</tt> method will obtain a <tt>Connection</tt> from the <tt>DataSource</tt> and will hold the connection until <tt>releaseResources()</tt> is invoked.  In addition, <tt>getConnection</tt> will obtain a <tt>DatabaseMetaData</tt> instance for its connection.  A method <tt>getDatabaseMetaData</tt> is introduced to insure that <tt>getConnection()</tt> is invoked before database metadata is accessed. The <tt>getConnection</tt> method will be made protected and should only be used by methods associated with DDL.  This prevents a connection from being repeatedly borrowed from the connection pool and re-validated during CREATE OR REPLACE SERVER.  Assuming <tt>ON_BORROW</tt> validation timing, this logic produces the same number of validations per prepare/execute cycle as the old wrapper.
+</p><p>During query execution one or more <tt>Connection</tt> objects are obtained via <tt>getRuntimeSupport()</tt> as necessary.  That method will retrieve connections directly from the data source.
+</p>
+<h3> <span class="mw-headline" id="closeAllocation_Method"> closeAllocation Method </span></h3>
+<p>The <tt>closeAllocation</tt> method will close the connection pool created in <tt>initialize</tt>.  If a JNDI <tt>DataSource</tt> was used, no action is taken.
+</p>
+<h2> <span class="mw-headline" id="Other_MedJdbc_Changes"> Other MedJdbc Changes </span></h2>
+<p>Other JDBC plugin classes that require access to the data server's connection or <tt>DatabaseMetaData</tt> will be modified as needed.
+</p>
+<h2> <span class="mw-headline" id="FarragoStatementAllocation"> FarragoStatementAllocation </span></h2>
+<p>Extend <tt>FarragoStatementAllocation</tt> to optionally manage a <tt>Connection</tt> object in addition to the <tt>Statement</tt> and <tt>ResultSet</tt> objects it already deals with.  This allows pooled <tt>Connection</tt> objects to be returned to the connection pool when the Farrago statement finishes executing.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 43/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1886-0!*!0!!en!*!* and timestamp 20140414194621 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;oldid=4804">http://luciddb.org/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;oldid=4804</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedJdbcDataSourceSupport" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedJdbcDataSourceSupport&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedJdbcDataSourceSupport" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedJdbcDataSourceSupport" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedJdbcDataSourceSupport" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedJdbcDataSourceSupport&amp;oldid=4804" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 10 September 2008, at 23:54.</li>
+		<li id="viewcount">This page has been accessed 4,906 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.199 secs. --></body></html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbSqlDiffTesting - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbSqlDiffTesting", "wgTitle": "LucidDbSqlDiffTesting", "wgCurRevisionId": 5760, "wgArticleId": 1954, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbSqlDiffTesting action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbSqlDiffTesting</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Setup"><span class="tocnumber">2</span> <span class="toctext">Setup</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Create_Test_Class"><span class="tocnumber">3</span> <span class="toctext">Create Test Class</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Create_Ant_Buildfile"><span class="tocnumber">4</span> <span class="toctext">Create Ant Buildfile</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Build_Test_Class"><span class="tocnumber">5</span> <span class="toctext">Build Test Class</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Create_Test_Scripts"><span class="tocnumber">6</span> <span class="toctext">Create Test Scripts</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Generate_Golden_Files"><span class="tocnumber">7</span> <span class="toctext">Generate Golden Files</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Rerun"><span class="tocnumber">8</span> <span class="toctext">Rerun</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#TBD"><span class="tocnumber">9</span> <span class="toctext">TBD</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This page describes how to make use of some of the diff-based testing frameworks built into LucidDB for the purpose of test-driven ETL script development, as raised in <a rel="nofollow" class="external text" href="http://n2.nabble.com/LucidDB-and-TDD-processes-for-data-warehouse-loading-td2309386.html">this thread</a>.
+</p><p>The necessary glue code is provided inline, as well as some simple example test scripts.
+</p>
+<h1> <span class="mw-headline" id="Setup"> Setup </span></h1>
+<p>Create a directory for your tests outside of your LucidDB installation directory.  We'll refer to the test directory as <b>test</b>, and the LucidDB installation directory as <b>luciddb</b> (see <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a> for installation instructions).
+</p>
+<h1> <span class="mw-headline" id="Create_Test_Class"> Create Test Class </span></h1>
+<p>Copy and paste the Java code below into a file named <b>test/SqlDiffTest.java</b>:
+</p>
+<pre>
+import java.io.*;
+import junit.extensions.*;
+import junit.framework.*;
+import net.sf.farrago.util.*;
+import net.sf.farrago.test.*;
+
+/**
+ * SqlDiffTest runs a .sql script via sqlline and diffs
+ * the output against a golden .ref file.
+ */
+public class SqlDiffTest extends FarragoTestCase
+{
+
+    public SqlDiffTest(String testName)
+        throws Exception
+    {
+        super(testName);
+    }
+
+    public static Test suite()
+        throws Exception
+    {
+        return gatherSuite(
+            FarragoProperties.instance().testFilesetUnitsql.get(true),
+            new SqlDiffTestFactory() {
+                public FarragoTestCase createSqlTest(String testName)
+                    throws Exception
+                {
+                    return new SqlDiffTest(testName);
+                }
+            });
+    }
+
+    protected static Test gatherSuite(
+        String fileSet,
+        SqlDiffTestFactory fac)
+        throws Exception
+    {
+        StringReader stringReader = new StringReader(fileSet);
+        LineNumberReader lineReader = new LineNumberReader(stringReader);
+        TestSuite suite = new TestSuite();
+        for (;;) {
+            String file = lineReader.readLine();
+            if (file == null) {
+                break;
+            }
+            suite.addTest(fac.createSqlTest(file));
+        }
+        return wrappedSuite(suite);
+    }
+    
+    // override FarragoTestCase
+    public static Test wrappedSuite(TestSuite suite)
+    {
+        TestSetup wrapper =
+            new TestSetup(suite) {
+                protected void setUp()
+                    throws Exception
+                {
+                    staticSetUp();
+                }
+
+                protected void tearDown()
+                    throws Exception
+                {
+                    staticTearDown();
+                }
+            };
+        return wrapper;
+    }
+    
+    // override FarragoTestCase
+    public static void staticSetUp()
+        throws Exception
+    {
+        CleanupFactory.setFactory(
+            new SqlDiffCleanupFactory());
+        FarragoTestCase.staticSetUp();
+    }
+    
+    // override FarragoTestCase
+    public static void staticTearDown()
+        throws Exception
+    {
+        FarragoTestCase.staticTearDown();
+        CleanupFactory.resetFactory();
+    }
+
+    protected void runTest()
+        throws Exception
+    {
+        // mask out source control Id, etc
+        setRefFileDiffMasks();
+        runSqlLineTest(getName());
+    }
+
+    public interface SqlDiffTestFactory
+    {
+        public FarragoTestCase createSqlTest(String testName)
+            throws Exception;
+    }
+    
+    /**
+     * Custom implementation of CleanupFactory.
+     */
+    private static class SqlDiffCleanupFactory extends CleanupFactory
+    {
+        // override CleanupFactory
+        public Cleanup newCleanup(String name) throws Exception
+        {
+            return new SqlDiffCleanup(name);
+        }
+    }
+    
+    /**
+     * Custom implementation of Cleanup.
+     */
+    public static class SqlDiffCleanup extends Cleanup
+    {
+        public SqlDiffCleanup(String name)
+            throws Exception
+        {
+            super(name);
+        }
+
+        public void execute()
+            throws Exception
+        {
+        }
+    }
+}
+</pre>
+<p>(The base class <b>FarragoTestCase</b> normally tries to clean up by dropping all non-system objects at the start of each test run, but we don't want that behavior, so we override the <b>Cleanup.execute</b> method to stub it out.)
+</p>
+<h1> <span class="mw-headline" id="Create_Ant_Buildfile"> Create Ant Buildfile </span></h1>
+<p>Next, copy and paste the ant build script below into <b>test/build.xml</b>:
+</p>
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project name=&quot;test&quot; basedir=&quot;.&quot; default=&quot;test&quot;&gt;
+
+  &lt;property name=&quot;luciddb.dir&quot; location=&quot;/path/to/luciddb&quot; /&gt;
+  &lt;filelist id=&quot;test.sql&quot; dir=&quot;.&quot; files=&quot;test1.sql,test2.sql&quot;/&gt;
+  &lt;pathconvert property=&quot;test.sql&quot; refid=&quot;test.sql&quot;
+    pathsep=&quot;${line.separator}&quot; dirsep=&quot;${file.separator}&quot; /&gt;
+
+  &lt;path id=&quot;test.classpath&quot;&gt;
+    &lt;pathelement path=&quot;.&quot;/&gt;
+    &lt;pathelement path=&quot;${luciddb.dir}/lib/mdrlibs/jmi.jar&quot;/&gt;
+    &lt;pathelement path=&quot;${luciddb.dir}/lib/farrago.jar&quot;/&gt;
+    &lt;pathelement path=&quot;${luciddb.dir}/lib/sqlline.jar&quot;/&gt;
+    &lt;pathelement path=&quot;${luciddb.dir}/plugin/LucidDbClient.jar&quot;/&gt;
+  &lt;/path&gt;
+  &lt;property name=&quot;test.classpath&quot; refid=&quot;test.classpath&quot;/&gt;
+
+  &lt;target name=&quot;compile&quot;&gt;
+    &lt;javac
+      srcdir=&quot;.&quot;
+      destdir=&quot;.&quot;
+      classpathref=&quot;test.classpath&quot;&gt;
+      &lt;include name=&quot;**/*.java&quot;/&gt;
+    &lt;/javac&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;test&quot;&gt;
+    &lt;junit printsummary=&quot;true&quot;&gt;
+      &lt;sysproperty key=&quot;net.sf.farrago.fileset.unitsql&quot; value=&quot;${test.sql}&quot;/&gt;
+      &lt;sysproperty key=&quot;net.sf.farrago.test.jdbcDriverClass&quot;
+        value=&quot;com.lucidera.jdbc.LucidDbRmiDriver&quot;/&gt;
+      &lt;classpath&gt;
+        &lt;pathelement path=&quot;${test.classpath}&quot;/&gt;
+      &lt;/classpath&gt;
+      &lt;formatter type=&quot;plain&quot;/&gt;
+      &lt;test name=&quot;SqlDiffTest&quot; todir=&quot;.&quot;/&gt;
+    &lt;/junit&gt;
+  &lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+<p>Edit the definition of the <b>luciddb.dir</b> property to point to your LucidDB installation directory.
+</p><p>Note that we use a <i>filelist</i> rather than a <i>fileset</i> for the list of .sql files to be run so that they will be executed in the specified order.
+</p>
+<h1> <span class="mw-headline" id="Build_Test_Class"> Build Test Class </span></h1>
+<p>Now, you'll need a copy of <a rel="nofollow" class="external text" href="http://ant.apache.org/">ant</a> installed in order to compile the glue code.
+</p>
+<pre>
+$ ant compile
+Buildfile: build.xml
+
+compile:
+    [javac] Compiling 1 source file to /home/cleanroom/test
+
+BUILD SUCCESSFUL
+</pre>
+<h1> <span class="mw-headline" id="Create_Test_Scripts"> Create Test Scripts </span></h1>
+<p>Copy and paste this to <b>test/test1.sql</b>:
+</p>
+<pre>
+call applib.drop_schema_if_exists('TEST1', 'CASCADE');
+
+create schema test1;
+create table test1.days2007(
+date_key date not null primary key,
+day_of_week varchar(20));
+</pre>
+<p>And <b>test/test2.sql</b>:
+</p>
+<pre>
+insert into test1.days2007
+select time_key, day_of_week
+from table(applib.fiscal_time_dimension(2007, 1, 1, 2007, 12, 31, 1));
+
+select count(*) from test1.days2007;
+</pre>
+<h1> <span class="mw-headline" id="Generate_Golden_Files"> Generate Golden Files </span></h1>
+<p>Now, make sure the LucidDB server is up, then run the test.  The first time, it will fail, since no reference files exist yet:
+</p>
+<pre>
+$ ant test
+Buildfile: build.xml
+
+test:
+    [junit] Running SqlDiffTest
+    [junit] Tests run: 2, Failures: 2, Errors: 0, Time elapsed: 1.779 sec
+    [junit] Test SqlDiffTest FAILED
+
+BUILD SUCCESSFUL
+</pre>
+<p>This fact shows up in the test report in <b>test/TEST-SqlDiffTest.txt:</b>
+</p>
+<pre>
+...
+Testcase: /home/cleanroom/test/test1.sql took 0.446 sec
+        FAILED
+Reference file /home/cleanroom/test/test1.ref does not exist
+...
+Testcase: /home/cleanroom/test/test2.sql took 1.137 sec
+        FAILED
+Reference file /home/cleanroom/test/test2.ref does not exist
+</pre>
+<p>Verify the output generated in <b>test/test1.log</b>:
+</p>
+<pre>
+0: jdbc:luciddb:rmi://&gt; call applib.drop_schema_if_exists('TEST1', 'CASCADE');
+0: jdbc:luciddb:rmi://&gt; 
+0: jdbc:luciddb:rmi://&gt; create schema test1;
+0: jdbc:luciddb:rmi://&gt; create table test1.days2007(
+&gt; date_key date not null primary key,
+&gt; day_of_week varchar(20));
+0: jdbc:luciddb:rmi://&gt; 
+0: jdbc:luciddb:rmi://&gt;&#160;!quit
+</pre>
+<p>And <b>test/test2.log</b>:
+</p>
+<pre>
+0: jdbc:luciddb:rmi://&gt; insert into test1.days2007
+&gt; select time_key, day_of_week
+&gt; from table(applib.fiscal_time_dimension(2007, 1, 1, 2007, 12, 31, 1));
+0: jdbc:luciddb:rmi://&gt; 
+0: jdbc:luciddb:rmi://&gt; select count(*) from test1.days2007;
++---------+
+| EXPR$0  |
++---------+
+| 365     |
++---------+
+0: jdbc:luciddb:rmi://&gt; 
+0: jdbc:luciddb:rmi://&gt;&#160;!quit
+</pre>
+<p>Now rename them to create the golden files:
+</p>
+<pre>
+$ mv test1.log test1.ref
+$ mv test2.log test2.ref
+</pre>
+<h1> <span class="mw-headline" id="Rerun"> Rerun </span></h1>
+<p>Now that the reference files exist, rerunning the test should succeed:
+</p>
+<pre>
+$ ant test
+Buildfile: build.xml
+
+test:
+    [junit] Running SqlDiffTest
+    [junit] Tests run: 2, Failures: 0, Errors: 0, Time elapsed: 1.573 sec
+BUILD SUCCESSFUL
+</pre>
+<h1> <span class="mw-headline" id="TBD"> TBD </span></h1>
+<ul><li> Eclipse setup
+</li><li> setting <b>haltonfailure=true</b> (normally this is what you want, but for the first run with multiple .sql files, it takes multiple runs to generate the .ref files)
+</li><li> various sqlline options and other tricks
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 133/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1954-0!*!0!!en!*!* and timestamp 20140414191200 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbSqlDiffTesting&amp;oldid=5760">http://luciddb.org/wiki/index.php?title=LucidDbSqlDiffTesting&amp;oldid=5760</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbSqlDiffTesting" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbSqlDiffTesting&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbSqlDiffTesting&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbSqlDiffTesting&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbSqlDiffTesting&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbSqlDiffTesting" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbSqlDiffTesting" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbSqlDiffTesting&amp;oldid=5760" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 17 February 2009, at 01:36.</li>
+		<li id="viewcount">This page has been accessed 3,185 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.134 secs. --></body></html>

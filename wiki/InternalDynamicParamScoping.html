@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>InternalDynamicParamScoping - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "InternalDynamicParamScoping", "wgTitle": "InternalDynamicParamScoping", "wgCurRevisionId": 3940, "wgArticleId": 1533, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-InternalDynamicParamScoping action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">InternalDynamicParamScoping</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page explains the problem from <a rel="nofollow" class="external text" href="http://issues.eigenbase.org/browse/FRG-83">FRG-83</a> and Farrago's solution. Here's the SQL in question:
+</p>
+<pre>
+create table t(a int, b int, c int) server sys_column_store_data_server;
+create index ita on t(a);
+create index itb on t(b);
+create view v as select * from t where a = 1 and b = 2;
+select * from v v1, v v2;
+</pre>
+<p>The query is a self-join, and the view being joined to itself is implemented by a bitmap index intersection, which requires system-generated dynamic parameters in the Fennel plan for communication between ExecStreams.
+</p><p>The problem is that the optimizer recognizes the self-join, meaning there's really only one input to the join, but it's referenced as both the left- and right-hand inputs to the join via aliasing. Since we don't currently materialize the result once and re-use it, this aliasing goes away at StreamDef-generation time: we generate two identical StreamDef subgraphs, so the exact same bitmap index intersection gets executed twice (or more depending on the join implementation). Here's the physical stream graph:
+</p><p><a href="/wiki/File:InternalDynamicParamScoping.png" class="image"><img alt="InternalDynamicParamScoping.png" src="/wiki/upload/f/f6/InternalDynamicParamScoping.png" width="930" height="1228" /></a>
+</p><p>The stream subgraphs numbered {0,2,4,5,6} and {1,3,7,10,12} are the duplicates. The LbmIntersectExecStream 5 uses a dynamic parameter P1 to control LbmIndexScanExecStream 6, and another parameter P2 to control LbmIndexScanExecStream 2. Dynamic parameter references are indicated in red.
+</p><p>Unfortunately, the subgraphs are TOO identical: the subgraph rooted at LbmIntersectExecStream 7 also tries to use dynamic parameters P1 and P2 to communicate with streams 1 and 3. This causes Fennel to assert (correctly) when the ExecStreamGraph is executed, because a given dynamic parameter should only be created once.
+</p>
+<hr />
+<p>The solution in cases where we don't materialize and reuse common subgraphs is to introduce dynamic parameter scoping during StreamDef generation. During rel manipulation, we make up logical dynamic parameter ID's via new method FennelRelImplementor.allocateRelParamId. During StreamDef generation, we convert these into physical parameter ID's as follows:
+</p>
+<ul><li> In FarragoRelImplementor, we maintain a stack of scopes corresponding to the current path through the rel tree. Whenever we visit a child rel, we push a new scope onto the stack, and whenever we're done with a child, we pop.
+</li><li> StreamDefs get physical parameter ID's via a new interface method FennelRelImplementor.translateParamId which takes a logical parameter ID as input and returns a physical one as output.
+</li><li> The implementation for translateParamId walks up the stack looking for a scope which maps the logical parameter ID. If it finds one, it returns the corresponding physical ID. Otherwise, it allocates a new physical ID and maps it in the scope at the top of the stack.
+</li><li> We'll introduce strong typing via Java holder classes to avoid getting logical and physical parameter ID's mixed up. As part of this, we'll make logical ID's 64-bit, since a lot of these may get generated and discarded during plan selection, and the generator uses a simple autoincrement counter. The strong type for logical ID's is FennelRelParamId; the strong type for physical ID's is FennelDynamicParamId.
+</li></ul>
+<p>This will handle the case in FRG-83, and more complicated cases such as a join implemented using a correlation variable which is set by the join and read by the right-hand subgraph; the scoping should work regardless of whether the aliasing occurs above the join or between the join and the usage.
+</p><p>However, this will not handle cases where a dynamic parameter is used between siblings rather than upstream/downstream. I don't know of any use-cases for that, but it should be easy to deal with this by putting in a dummy reference to the parameter from the rel which defines the enclosing scope; that parent rel just needs to call translateParamId and throw away the result.
+</p>
+<h2> <span class="mw-headline" id="Update_14-Jun-2007"> Update 14-Jun-2007 </span></h2>
+<p>There are some problems with the scope stack scheme above in the case of a plan with a Fennel/Java/Fennel sandwich, where the Fennel top and bottom of the sandwich need to reference the same dynamic parameter across the Java boundary.  Namely, due to the way the hybrid codegen works, the Fennel code for the bottom half of the sandwich actually gets generated <b>before</b> the top half, so the physical dynamic param translation for the top isn't available yet.
+</p><p>Proposed solution:
+</p>
+<ul><li> Replace the scope stack in FarragoRelImplementor with a Map&lt;List&lt;RelPathEntry&gt;,RelScope&gt;.  The key of the map is a path through the RelNode DAG (starting at the root).  What is the RelPathEntry?  A RelNode isn't good enough, since a child may be directly aliased as multiple inputs to the same parent, e.g. J(T,T) where J is a self-join of table T.  In other words, we need the edges in the path, not just the vertices.  As is, we can't get this from visitFennelChild, because it doesn't accept a child-ordinal parameter.  We could clean this up to match visitJavaChild, which already takes both the parent and the ordinal.  This requires changing a bit of code, with backwards compatibility for any unseen dependencies if possible.
+</li><li> As we traverse the RelNode graph for both Java and Fennel translation, maintain the "current path" in FarragoRelImplementor.  Path maintenance can be done in visitFennelChild, plus overriding the visitJavaChild implementation inherited from JavaRelImplementor (it's declared as final, so override createFrame and visitChildInternal instead).  There should be only one unified path (not one for Java and one for Fennel).  In other words, both visitFennelChild and visitJavaChild push and pop from the same path.
+</li><li> Change the existing FarragoRelImplementor.translateParamId logic to use the map instead of the stack.  The logic for translation should remain the same:  start with the full current path, and keep checking shorter and shorter prefixes (using them as lookup keys in the map) to see if a RelScope exists which binds the given FennelRelParamId; if none is found, instantiate a new entry in the map and add the binding to the new RelScope (or reuse an existing map entry if already created).
+</li><li> FennelRelNodes which care about Java-sandwich children with dynamic parameters (e.g. the NLJ case which motivated all of this) must perform a dummy translateParamId call during Java codegen, even though they are not generating any Java code.  The reason is that this will happen before the Fennel child codegen, putting the translation into the map so that the child can find it.  This is done by overriding implementFennelChild.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 12/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1533-0!*!*!*!*!2!* and timestamp 20140414194638 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=InternalDynamicParamScoping&amp;oldid=3940">http://luciddb.org/wiki/index.php?title=InternalDynamicParamScoping&amp;oldid=3940</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/InternalDynamicParamScoping" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:InternalDynamicParamScoping&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=InternalDynamicParamScoping&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=InternalDynamicParamScoping&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=InternalDynamicParamScoping" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/InternalDynamicParamScoping" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/InternalDynamicParamScoping" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=InternalDynamicParamScoping&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=InternalDynamicParamScoping&amp;oldid=3940" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 25 February 2008, at 08:03.</li>
+		<li id="viewcount">This page has been accessed 2,563 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.190 secs. --></body></html>

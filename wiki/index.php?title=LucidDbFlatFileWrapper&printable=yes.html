@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbFlatFileWrapper - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbFlatFileWrapper", "wgTitle": "LucidDbFlatFileWrapper", "wgCurRevisionId": 6279, "wgArticleId": 1623, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbFlatFileWrapper action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbFlatFileWrapper</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#LucidDB_plug-in_SQL.2FMED_File_Foreign_Wrapper"><span class="tocnumber">1</span> <span class="toctext">LucidDB plug-in SQL/MED File Foreign Wrapper</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Introduction"><span class="tocnumber">1.1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Format"><span class="tocnumber">1.2</span> <span class="toctext">Format</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Column_Descriptions"><span class="tocnumber">1.3</span> <span class="toctext">Column Descriptions</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Usage"><span class="tocnumber">1.4</span> <span class="toctext">Usage</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Flat_File_Foreign_Data_Wrapper_Definition"><span class="tocnumber">2</span> <span class="toctext">Flat File Foreign Data Wrapper Definition</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Flat_File_Foreign_Server"><span class="tocnumber">3</span> <span class="toctext">Flat File Foreign Server</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Create_Foreign_Server_DDL_Syntax"><span class="tocnumber">3.1</span> <span class="toctext">Create Foreign Server DDL Syntax</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Drop_Foreign_Server"><span class="tocnumber">3.2</span> <span class="toctext">Drop Foreign Server</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Alter_Foreign_Server"><span class="tocnumber">3.3</span> <span class="toctext">Alter Foreign Server</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Flat_File_Foreign_Table"><span class="tocnumber">4</span> <span class="toctext">Flat File Foreign Table</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#Create_Foreign_Table"><span class="tocnumber">4.1</span> <span class="toctext">Create Foreign Table</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#Flat_File_Foreign_Schema"><span class="tocnumber">5</span> <span class="toctext">Flat File Foreign Schema</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#Error_Handling"><span class="tocnumber">6</span> <span class="toctext">Error Handling</span></a>
+<ul>
+<li class="toclevel-2 tocsection-15"><a href="#Foreign_server_definition"><span class="tocnumber">6.1</span> <span class="toctext">Foreign server definition</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Metadata_related_errors"><span class="tocnumber">6.2</span> <span class="toctext">Metadata related errors</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#Parser_behavior"><span class="tocnumber">6.3</span> <span class="toctext">Parser behavior</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Error_logging"><span class="tocnumber">6.4</span> <span class="toctext">Error logging</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-19"><a href="#References_.26_Related_Work"><span class="tocnumber">7</span> <span class="toctext">References &amp; Related Work</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="LucidDB_plug-in_SQL.2FMED_File_Foreign_Wrapper"> LucidDB plug-in SQL/MED File Foreign Wrapper </span></h1>
+<h2> <span class="mw-headline" id="Introduction"> Introduction </span></h2>
+<p>LucidDB provides a plugin implementing SQL/MED (<a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/sqlmed.html">Management of External Data</a>) read only access to text files. Each data file is accessed as a single table. A data file may be associated with a control file that contains column descriptions. A set of data files found in a file system directory can be accessed as an external schema through the <b>IMPORT FOREIGN SCHEMA</b> command.
+</p><p>The flatfile wrapper also has experimental support for streaming data from a named pipe; see <a href="/wiki/LucidDbStreamingLoad" title="LucidDbStreamingLoad">LucidDbStreamingLoad</a>.
+</p><p>Note that the flatfile reader does not yet support any encoding other than ISO-8859-1; for any other encoding, use the <a href="/wiki/LucidDbCreateForeignServer#CSVJDBC" title="LucidDbCreateForeignServer">csvjdbc driver</a> instead.
+</p>
+<h2> <span class="mw-headline" id="Format"> Format </span></h2>
+<p>The major format for flat files is a Delimiter Field Separated Value format (such as comma or tab separated values format). Each record is separated from other records by a record delimiter (usually the newline character). Within a record, columns are separated by column delimiters (usually commas or tabs). Delimiters may appear within a value, if the value is quoted (usually with double quotes). A quote character may appear in a value if it is preceded by an escape character. Usually the double quote character is also the escape character, in which case, it only escapes itself. Optionally the first line of a file may be a header, containing column names. For example:
+</p><p><i>Figure 1. Typical flat file data</i>
+</p>
+<pre>ID,NAME,EXTRA_FIELD
+123,"""S,""",F
+123,Jonathan Ackerman,A
+234,Grady O'Neil,B
+456,"Susan, Peter and Dave",C
+789,"Amelia ""meals"" Maurice",E
+234,"Peter ""peg leg"", Jimmy &amp; Samantha ""Sam""",G
+</pre>
+<p>Rows 1, 4, and 6 include quoted column delimiters (commas). Rows 1, 5, and 6 have values with embedded quote characters. Note that empty quotes ("") represents the empty string, while a completely empty value () represents a null. (For the effect of this distinction on the interpretation of non-character data, see <a rel="nofollow" class="external text" href="http://issues.eigenbase.org/browse/LDB-167">LDB-167</a>.)
+</p><p>An alternative format for flat files is position based. In this format, columns are declared as fixed width character columns and are identified by character position, rather than by delimiters. This format makes use of row delimiters, but should not use column delimiters or quote characters.
+</p><p><i>Figure 2. Fixed width flat file data</i>
+</p>
+<pre>123     "S,"                                     F
+123     Jonathan Ackerman                        A
+234     Grady O'Neil                             B
+456     Susan, Peter and Dave                    C
+789     Amelia "meals" Maurice                   E
+234     Peter "peg leg", Jimmy &amp; Samantha "Sam"  G
+</pre>
+<h2> <span class="mw-headline" id="Column_Descriptions"> Column Descriptions </span></h2>
+<p>LucidDB provides several options for defining column descriptions for flat files. An effective method is to provide column descriptions through a control file. Control files are specified in SqlServer's <a rel="nofollow" class="external text" href="http://msdn2.microsoft.com/ms191479.aspx">bcp (bulk copy)</a> style format file. For example:
+</p><p><i>Figure 3. Sample control file</i>
+</p>
+<pre>9.0
+3
+1 SQLCHAR 0 7 "\t" 1 ID ""
+2 SQLCHAR 0 100 "\t" 2 NAME SQL_Latin1_General_CP1_CI_AS
+3 SQLCHAR 0 24 "\r\n" 3 EXTRA_FIELD ""
+</pre>
+<p>The first two values in the control file are the version number and the number of columns in the table. The version number is unused by LucidDB.
+</p><p>Note that many of the columns are unused by LucidDB. The columns used are: (2) data type, (4) data length, (7) identifier, and possibly (8) collation/format. A data file usually has the extension ".txt" while a matching control file (with the same name) usually has the extension ".bcp"
+</p><p>If a control file is not detected, the wrapper will try to detect column types. It does so by scanning a selected number of rows. It performs a simple analysis, identifying basic types such as integer and floating point. If the wrapper cannot identify the type of a column, it defaults to the character type. It labels the columns as "COL1", "COL2", etc. or uses column names found in the data file header, if they are supplied.
+</p><p>Whether using control files or implicit typing, it is possible to override column descriptions, by (explicitly) specifying column descriptions in a "create foreign table" command. (See below.)
+</p><p>Extensions. LucidDB introduces several extensions to support a greater variety of data types in BCP files. LucidDB supports the following BCP types including new types for date and time: SQLCHAR, SQLVARCHAR, SQLDATE, SQLTIME, SQLTIMESTAMP, SQLDECIMAL, SQLINT, SQLBIGINT, SQLSMALLINT, SQLTINYINT, SQLREAL, SQLFLT8, SQLFLT4. Since BCP does not support scale for decimal types, LucidDB has additional support for scale to be specified in column 9. For clarity, precision can be repeated in column 8. For a mapping of BCP data types to LucidDB data types see <a href="/wiki/LucidDbBcpTypeToSqlType" title="LucidDbBcpTypeToSqlType"> mapping table</a>.
+</p>
+<h2> <span class="mw-headline" id="Usage"> Usage </span></h2>
+<p>The flat file wrapper is accessed via the standard SQL/MED interface.
+</p><p>0. First, a <i>data wrapper</i> is defined. A data wrapper represents a program module for accessing external data. The user does not have to perform this step, because the flat file data wrapper is predefined in the system catalog as <i>sys_file_wrapper</i>.
+</p><p>1. Second, a <i>foreign server</i> is defined. In this case, a server describes a directory of data files, corresponding to a single schema. A server also contains parameters for parsing files.
+</p><p>2. Finally, <i>data files</i> may be accessed in one of two ways.<br />
+2a. One can create a foreign table, corresponding to a single data file<br />
+2b. One can import the foreign schema, which corresponds with the entire directory
+</p><p>Eventually, the data wrapper will be able to support international data. For now, however, it only supports single-byte ISO-8859-1 data (a superset of ASCII).
+</p><p>For more information related to SQL/MED, please see <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/sqlmed.html">Farrago design docs</a> and reference [Ref 1]. The rest of this document covers SQL syntax, errors, and use cases.
+</p>
+<h1> <span class="mw-headline" id="Flat_File_Foreign_Data_Wrapper_Definition"> Flat File Foreign Data Wrapper Definition </span></h1>
+<p>The plugin is included as part of the LucidDB distribution; a corresponding foreign data wrapper instance named SYS_FILE_WRAPPER is predefined by LucidDB initialization scripts. Normally, there is no need to define additional instances.
+</p>
+<h1> <span class="mw-headline" id="Flat_File_Foreign_Server"> Flat File Foreign Server </span></h1>
+<p>A File foreign data wrapper provides the capability to mediate access to file foreign servers. You can define a flat file foreign server to access files in a particular directory. The following server-level options can be specified:
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; align: left;" border="1">
+<caption style="font-size:12pt">
+</caption>
+<tr>
+<th> Option </th>
+<th>Default </th>
+<th>Description
+</th></tr>
+<tr>
+<td> DIRECTORY </td>
+<td>  </td>
+<td> OS directory path accessible by LucidDB, this directory contains a collection of files which all have the same content format (the format related attributes are specified in this table e.g. FIELD_DELIMITER etc.). Each data file in the directory is typically has a corresponding control file where the latter describes the information about each column in the data file. The control file must have the same name but with different extension. For example, if the data file is customer.dat then the control file is customer.bcp. The syntax of the control file is based on MS BCP file format.
+</td></tr>
+<tr>
+<td> FILE_EXTENSION </td>
+<td> txt</td>
+<td> The default file name extension e.g. "txt", "dat". If this option is not specified then the wrapper will assume the default file extension as "txt".
+</td></tr>
+<tr>
+<td> CONTROL_FILE_EXTENSION </td>
+<td> bcp </td>
+<td> The file extension of the control file. The default control file extension is ‘.bcp’.
+</td></tr>
+<tr>
+<td> FIELD_DELIMITER </td>
+<td> , </td>
+<td> delimiter character e.g. "," (comma) or '\t' (tab) or " " (space). The default is ","
+</td></tr>
+<tr>
+<td> LINE_DELIMITER </td>
+<td> \n </td>
+<td> Line delimiter character e.g. "\n". If this option is not specified, the default is "\n"
+</td></tr>
+<tr>
+<td> QUOTE_CHAR </td>
+<td> " </td>
+<td> Character used to quote e.g. Single quote (') or double quote ("). The default character is ".
+</td></tr>
+<tr>
+<td> ESCAPE_CHAR </td>
+<td> " </td>
+<td> Character used to escape the special characters, Quote char, field delimiter, line delimiter, escape char. The default character is ".
+</td></tr>
+<tr>
+<td> WITH_HEADER </td>
+<td> YES </td>
+<td> Attribute which indicates whether the data file has a header record, this option must have a value either "YES" or "NO". The default is "YES"
+</td></tr>
+<tr>
+<td> NUM_ROWS_SCAN </td>
+<td> 5 </td>
+<td> The number of rows to scan in order to deduce the data type of the columns, if a control file does not exist for a data file. Also, the number of rows to scan to provide the optimizer with an estimate of the total number of rows in a data file.
+</td></tr>
+<tr>
+<td> TRIM </td>
+<td> YES </td>
+<td> Whether to trim column values before reading them. If column values are quoted, whitespace inside quotes is preserved.
+</td></tr>
+<tr>
+<td> LENIENT </td>
+<td> YES </td>
+<td> Whether to be lenient when parsing rows of data. When lenient, missing columns at the end of rows are filled in with null. Extra columns at the end of rows are discarded.
+</td></tr>
+<tr>
+<td> MAPPED </td>
+<td> NO </td>
+<td> Whether to match source columns in a flat file with target columns specified by a control file or foreign table definition. If columns are to be mapped, then the data file must have a header, and the server must be lenient. Source columns, which are named in the header, are matched with target columns using a case-insensitive string comparison. By default columns are mapped by position.
+</td></tr>
+<tr>
+<td> DATE_FORMAT </td>
+<td> </td>
+<td> This string specifies a custom datetime format for date columns. For more details on date format, see <a href="/wiki/LucidDbDateFormat" title="LucidDbDateFormat">LucidDbDateFormat</a>.
+</td></tr>
+<tr>
+<td> TIME_FORMAT </td>
+<td> </td>
+<td> This string specifies a custom datetime format for time columns. For more details on date format, see <a href="/wiki/LucidDbDateFormat" title="LucidDbDateFormat">LucidDbDateFormat</a>.
+</td></tr>
+<tr>
+<td> TIMESTAMP_FORMAT </td>
+<td> </td>
+<td> This string specifies a custom datetime format for timestamp columns. For more details on date format, see <a href="/wiki/LucidDbDateFormat" title="LucidDbDateFormat">LucidDbDateFormat</a>.
+</td></tr>
+</table>
+<h2> <span class="mw-headline" id="Create_Foreign_Server_DDL_Syntax"> Create Foreign Server DDL Syntax </span></h2>
+<p>Example:
+</p>
+<pre>CREATE SERVER file_dump_staging
+FOREIGN DATA WRAPPER SYS_FILE_WRAPPER
+OPTIONS (
+DIRECTORY '/staging/file/data',
+FILE_EXTENSION 'txt',
+CONTROL_FILE_EXTENSION 'bcp',
+FIELD_DELIMITER ',',
+LINE_DELIMITER '\n',
+QUOTE_CHAR '"',
+WITH_HEADER 'YES')
+</pre>
+<p>The server options are to identify storage location and to specify the content format information of the files.
+</p>
+<h2> <span class="mw-headline" id="Drop_Foreign_Server"> Drop Foreign Server </span></h2>
+<p>A foreign server can be dropped or altered. The DDL syntax is as follows:
+</p>
+<pre>DROP SERVER <i>server_name drop_behavior</i>
+
+Where:
+<i>drop_behavior</i>&#160;::= RESTRICT | CASCADE
+</pre>
+<h2> <span class="mw-headline" id="Alter_Foreign_Server"> Alter Foreign Server </span></h2>
+<p>The standard ALTER SERVER syntax is not currently supported, but you can use CREATE OR REPLACE instead to change the options.
+</p>
+<h1> <span class="mw-headline" id="Flat_File_Foreign_Table"> Flat File Foreign Table </span></h1>
+<p>You can define foreign tables that are managed by a foreign server.
+It is similar to defining normal SQL table except that you have to
+specify the foreign server name and table options. A foreign table is
+a schema object. You can create it under a schema.
+</p>
+<h2> <span class="mw-headline" id="Create_Foreign_Table"> Create Foreign Table </span></h2>
+<p>The DDL syntax for creating a file foreign table is as follows:
+</p>
+<pre>CREATE FOREIGN TABLE <i>table_name</i>
+[ <i>left_paren</i> <i>basic_column_definition_list</i> <i>right_paren</i> ]
+SERVER <i>server_name</i> [ <i>table_options</i> ]
+</pre>
+<p>For file foreign table, the only major table option supported is the file name. All other information related to the content format are inherited from the file foreign server options.
+</p><p>(It is also possible to specify log_filename in order to override the default error log filename.)
+</p><p>Example:
+</p>
+<pre>Create Schema FILE_STAGING;
+CREATE FOREIGN TABLE FILE_STAGING.Customer_Stage (
+name varchar(128),
+dnb_number varchar(50),
+industry varchar(50),
+revenue numeric(8))
+SERVER file_dump_staging
+OPTIONS (filename 'customer_dump');
+
+-- the foreign table can now be queried via standard SQL
+Select * from FILE_Staging.Customer_stage;
+</pre>
+<p><br />
+</p>
+<h1> <span class="mw-headline" id="Flat_File_Foreign_Schema"> Flat File Foreign Schema </span></h1>
+<p>LucidDB’s file wrapper plugin supports metadata extraction from bcp control files or it can guess column metadata when bcp control files are not available. The metadata from a file foreign server can be imported into LucidDB’s catalog, using the fixed foreign schema name 'BCP'. The DDL syntax is as follows: 
+</p>
+<pre>IMPORT FOREIGN SCHEMA <i>BCP</i>
+[<i>import_qualification</i>]
+FROM SERVER <i>foreign_server_name</i>
+INTO <i>local_schema_name</i>
+
+Where:
+<i>import_qualification</i>&#160;::=
+LIMIT TO | EXCEPT
+(<i>table_name_list</i>) | TABLE_NAME LIKE expression
+
+<i>table_name_list</i>&#160;::= <i>table_name</i> [ { comma table_name } ...]
+</pre>
+<h1> <span class="mw-headline" id="Error_Handling"> Error Handling </span></h1>
+<h2> <span class="mw-headline" id="Foreign_server_definition"> Foreign server definition </span></h2>
+<p>This involves specifying a data directory and metadata and parsing options. The following errors/issues may arise during a definition.
+</p>
+<ul><li> <b>Parsing for boolean fields</b>. The following case insensitive values are accepted for true: “1”, “t”, “true”, “yes”, “on”. All other values are interpreted as false
+</li><li><b>Directory cannot be read</b>. The server will try to open the directory and will return this error if it does not exist or cannot be read.
+</li><li> <b>Extension does not match any file in directory</b>. No tables will be detected.
+</li></ul>
+<h2> <span class="mw-headline" id="Metadata_related_errors"> Metadata related errors </span></h2>
+<p>As well as through SQL, column descriptions for a foreign table may be specified by a control file, through column headers, or may be derived (guessed) from the data itself. The following issues may arise.
+</p>
+<ul><li> Invalid control (bcp) file. The control file is similar to a flat file, but has a short header and has certain restrictions: the column delimiter is a tab, and the row delimiter is a newline. These special characters are not allowed within quoted values.
+<ul><li> <b>Empty control file</b>.
+</li><li> <b>Unsupported version</b>. Version of control file, specified in header, is unsupported.
+</li><li> <b>Invalid number of columns</b>. Also specified in header, must be at least one, less than maximum.
+</li><li> <b>Unbalanced quotes</b> (while reading column attributes)
+</li><li> <b>Invalid column definition</b>
+</li><li> <b>Incorrect number of column definitions</b>. Number of column definitions in file does not match the number specified in header
+</li><li> <b>Unsupported data type</b>. User specified a type not supported by the server
+</li></ul>
+</li><li> Unable to gather metadata. Usually, it is acceptable to have an empty data file (for an empty table). However, data is required when inferring the type of data.
+<ul><li> <b>Data file doesn't exist</b>. The file should exist, if reading column headers or deriving data types
+</li><li> <b>Column name header missing</b>. If a foreign server is defined as having files with headers, each data file should have a single line header containing column names.
+</li><li> <b>Unable to derive column types</b>. If no control file exists to describe column types, then the type of columns must be derived. It is impossible to derive column types when there is no data
+</li></ul>
+</li><li> Row parsing errors
+<ul><li> <b>Maximum size of row is too large</b>. The server does not support the specified row description.
+</li><li> <b>No row delimiter in file</b>. The file has data, but does not contain a row delimiter. (Row delimiter may be invalid).
+</li><li> <b>No column delimiter in row</b>. Returned when file has data and row is supposed to have more than one column, but it does not contain a column delimiter. (Column delimiter may be invalid.)
+</li><li> <b>Row being read has too few columns</b>. Row specification may be invalid or row may be invalid
+</li><li> <b>Row being read has too many columns</b>. Row specification may be invalid or row may be invalid
+</li><li> <b>Error converting column value</b>. Column text could not be converted into expected data type.
+</li><li> <b>Row being read is too large</b>. A row is required to fit within internal buffers. If it does not, it will be interpreted as multiple rows.
+</li></ul>
+</li><li> Errors not returned
+<ul><li> <b>Improperly quoted column</b>. When a column value is begins with a quote, the parser will scan for the column value until it finds a close quote or until the maximum length of the column has been reached. If the scan is ended due to length, the parser does not look for a closing quote. Also, extra data after the end of a quoted value will be ignored.
+</li></ul>
+</li></ul>
+<h2> <span class="mw-headline" id="Parser_behavior"> Parser behavior </span></h2>
+<ol><li> <b>Any column can be quoted, regardless of type</b>. For example, it may be desirable to quote a date value, because it may contain commas, a common field delimiter.
+</li><li> <b>Null values are represented by an empty field</b>. An empty string is represented by a quoted empty value.
+</li><li> <b>Value too large for column description</b>. Parser quietly truncates the data, and skips to the next demiliter.
+</li><li> <b>Fixed length fields without column delimiter</b>. If there is no column delimiter, then the parser enters a special mode for fixed position parsing. This mode does not allow/support a quote character or an escape character. For this mode, the parser interprets columns of data by character column position. (note: similar to unix cut -c)
+</li><li> <b>Unable to derive column types</b>. A user wants to import flat file data. They would like the server to guess the column type. However, no data is available yet. An error is returned saying the server is unable to derive column types
+</li><li> <b>Notify of recoverable errors</b>. If no good row has been returned, and errors have been received, then don't just log errors to a file. Return an error to the top level. The user may have specified an incorrect delimiter and may want to be notified of the mistake without having to search for the log file.
+</li></ol>
+<h2> <span class="mw-headline" id="Error_logging"> Error logging </span></h2>
+<p>When recoverable errors have been encountered, log them to a file and notify the user of the file location.
+</p>
+<ul><li> File location: <i>file-root_timestamp.err</i>
+<ul><li> <i>file-root</i> is path to data file being read, without the extension (ex: sales.dat becomes sales)
+</li><li> <i>timestamp</i> explains when file was created. (ex: 200512051348 for 2005-12-05 at 1:48pm)
+</li><li> in the case of multiple writes in the same minute, the file will be appended
+</li></ul>
+</li><li> File contents:
+<ul><li> two columns, in flat file format: reason, row-text (perfect quoting deferred for now)
+</li><li> <i>reason</i> and <i>row-text</i> will be quoted appropriately (deferred for now)
+</li></ul>
+</li></ul>
+<p>See <a href="/wiki/LucidDbErrorHandling" title="LucidDbErrorHandling">LucidDbErrorHandling</a> for more information.
+</p>
+<h1> <span class="mw-headline" id="References_.26_Related_Work"> References &amp; Related Work </span></h1>
+<p>[Ref 1] <i>Advanced SQL:1999 Understanding Object-Relational and Other Advanced Features</i>,
+Author: Jim Melton, Morgan Kaufmann, 2003.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 74/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1623-0!*!0!!en!*!* and timestamp 20140414191133 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbFlatFileWrapper&amp;oldid=6279">http://luciddb.org/wiki/index.php?title=LucidDbFlatFileWrapper&amp;oldid=6279</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbFlatFileWrapper" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbFlatFileWrapper&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbFlatFileWrapper&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbFlatFileWrapper&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbFlatFileWrapper&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbFlatFileWrapper" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbFlatFileWrapper" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbFlatFileWrapper&amp;oldid=6279" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 31 August 2009, at 16:09.</li>
+		<li id="viewcount">This page has been accessed 10,953 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.149 secs. --></body></html>

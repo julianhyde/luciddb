@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoIteratorRedesign - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoIteratorRedesign", "wgTitle": "FarragoIteratorRedesign", "wgCurRevisionId": 2182, "wgArticleId": 1532, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoIteratorRedesign action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoIteratorRedesign</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Farrago_Iterator_Redesign_Discussion"><span class="tocnumber">1</span> <span class="toctext">Farrago Iterator Redesign Discussion</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Rationale"><span class="tocnumber">1.1</span> <span class="toctext">Rationale</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Requirements"><span class="tocnumber">1.2</span> <span class="toctext">Requirements</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Design"><span class="tocnumber">1.3</span> <span class="toctext">Design</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Implementation_Plan"><span class="tocnumber">1.4</span> <span class="toctext">Implementation Plan</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Farrago_Iterator_Redesign_Discussion">Farrago Iterator Redesign Discussion</span></h1>
+<p>This page is a work in progress. Please make comments as you see fit.
+</p>
+<h2> <span class="mw-headline" id="Rationale">Rationale</span></h2>
+<p>Currently, Farrago uses Java's <b>java.util.Iterator</b> to implement iterator calling convention for Java-based execution objects. Unfortunately, the semantics of query processing mean that there are cases where an execution object does not have enough information to properly indicate whether another row of data is (or will be) available. Therefore implementations of <b>java.util.Iterator.hasNext()</b> must either break the interface's contract and return <b>false</b> before the end of all data or the implementation must block waiting for more data or an end-of-data indication.
+</p><p>As a result, Farrago requires separate threads for Java-based execution objects, which is sometimes undesirable. Requiring a separate Java thread prevents Fennel's scheduler architecture from being used to schedule Java-based execution objects. Our goal is to provide a new iterator-like interface that makes it posssible for Fennel to schedule Java XOs.
+</p>
+<h2> <span class="mw-headline" id="Requirements">Requirements</span></h2>
+<ol><li> Replaces <b>java.util.Iterator</b> in generated Java XOs.
+</li><li> Shouldn't require complicated implementations: currently hasNext() often performs the work of next() in order to return the correct result and next() ends up calling hasNext() to insure the next row is in place.
+</li><li> Allows caller to distinguish between row currently available, row not available, and end-of-data.
+</li><li> Allows restart of iterator, which in turn facilitates query re-use.
+</li><li> Clearly describes the lifetime of objects returned by the iterator (e.g., object is re-used)
+</li><li> Provides mechanism for release of resources in an orderly manner. (May be possible to defer.)
+</li></ol>
+<h2> <span class="mw-headline" id="Design">Design</span></h2>
+<p>To start the ball rolling on an alternate implementation, here's an interface describing a replacement for <b>java.util.Iterator</b> and <b>org.eigenbase.runtime.RestartableIterator</b>. Please add comments. As usual, I'm not wed to the names I've chosen for the interface or its methods.
+</p>
+<pre>
+public interface FarragoTupleIter extends FarragoAllocation
+{
+    /**
+     * NoDataReason provides a reason why no data was returned by a
+     * call to {@link #fetchNext()}.
+     */
+    public enum NoDataReason
+    {
+        /**
+         * End of data.  No more data will be returned unless the
+         * iterator is reset by a call to {@link #restart()}.
+         */
+        END_OF_DATA,
+
+        /**
+         * Data underflow. No more data will be returned until the
+         * underlying data source provides more input rows.
+         */
+        UNDERFLOW,
+    }
+
+    /**
+     * Returns the next element in the iteration.  This method returns
+     * the next value in the iteration, if there is one.  If not, it
+     * returns a value from the {@link #NoDataReason} enumeration
+     * indicating why no data was returned.
+     *
+     * &lt;p&gt;If this method returns {@link NoDataReason#END_OF_DATA}, no
+     * further data will be returned by this iterator unless
+     * {@link #restart()} is called.
+     *
+     * &lt;p&gt;If this method returns {@link NoDataReason#UNDERFLOW}, no
+     * data is currently available, but may be come available in the
+     * future.  It is possible for consecutive calls to return
+     * UNDERFLOW and then END_OF_DATA.
+     *
+     * &lt;p&gt;The object returned by this method may be re-used for each
+     * subsequent call to &lt;code&gt;fetchNext()&lt;/code&gt;.  In other words,
+     * callers must either make certain that the returned value is no
+     * longer needed or is copied before any subsequent calls to
+     * &lt;code&gt;fetchNext()&lt;/code&gt;.
+     *
+     * @return the next element in the iteration, or an instance of
+     *         {@link NoDataReason}.
+     */
+    public Object fetchNext();
+
+    /**
+     * Restarts this iterator, so that a subsequent call to
+     * {@link #fetchNext()} returns the first element in the collection
+     * being iterated.
+     */
+    public void restart();
+
+    /**
+     * Closes this iterator, allowing it to release its resources.  No
+     * further calls to {@link #fetchNext()} or {@link #restart()} may
+     * be made once the iterator is closed.
+     *
+     * (In practice this abstract method comes from FarragoAllocation,
+     * and is only here for illustrative purposes.)
+     */
+    public void closeAllocation();
+}
+</pre>
+<h2> <span class="mw-headline" id="Implementation_Plan">Implementation Plan</span></h2>
+<ol><li> //(done)// p4-integrate current rules to saffron -- don't attempt to fix, jhyde will fix them at some point
+</li><li> //(done)// write new iter api
+</li><li> //(done)// define global constant 'boolean ENABLE_NEW_ITER = false'
+</li><li> //(done)// add code to generate new style of code, protected by 'if (ENABLE_NEW_ITER)'. Stephan and JVS can work on this in parallel: JVS on the MDR rels, Stephan on the rest. Farrago should stay working the whole time.
+</li><li> //(done)// set ENABLE_NEW_ITER=true as soon as the whole of farrago works
+</li><li> //(done//) delete old iterator code after all dependencies are gone
+</li></ol>
+<p>Additionally, JVS says:
+</p><p>&gt; I can take on more than just MDR for #4. One way to split it up is one person handles the "pure Java sources" which can never produce underflow (MDR extent, UDX, MedMock, OneRow, ResultSet). These can all be handled via an adapter. The other person handles calc, union, and Fennel.
+&gt; (MDR join is not a source so it probably can't use the adapter approach.)
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 27/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1532-0!*!*!!en!*!* and timestamp 20140414194636 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoIteratorRedesign&amp;oldid=2182">http://luciddb.org/wiki/index.php?title=FarragoIteratorRedesign&amp;oldid=2182</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoIteratorRedesign" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoIteratorRedesign&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoIteratorRedesign&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoIteratorRedesign&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoIteratorRedesign" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoIteratorRedesign" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoIteratorRedesign" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoIteratorRedesign&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoIteratorRedesign&amp;oldid=2182" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2007, at 22:26.</li>
+		<li id="viewcount">This page has been accessed 1,610 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.157 secs. --></body></html>

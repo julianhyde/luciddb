@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbTpch - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbTpch", "wgTitle": "LucidDbTpch", "wgCurRevisionId": 5901, "wgArticleId": 1858, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbTpch action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbTpch</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 23:07, 30 March 2009 by <a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Jvs (page does not exist)">Jvs</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User talk:Jvs (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Jvs" title="Special:Contributions/Jvs">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="/wiki/index.php?title=LucidDbTpch&amp;diff=prev&amp;oldid=5901" title="LucidDbTpch">diff</a>) <a href="/wiki/index.php?title=LucidDbTpch&amp;direction=prev&amp;oldid=5901" title="LucidDbTpch">← Older revision</a> | Latest revision (diff) | Newer revision → (diff)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Disclaimers"><span class="tocnumber">1</span> <span class="toctext">Disclaimers</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Overview"><span class="tocnumber">2</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Scale_Factor_10_Benchmark_Machine_Specifications"><span class="tocnumber">3</span> <span class="toctext">Scale Factor 10 Benchmark Machine Specifications</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#LucidDB_Test_Execution"><span class="tocnumber">4</span> <span class="toctext">LucidDB Test Execution</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#LucidDB_Version"><span class="tocnumber">4.1</span> <span class="toctext">LucidDB Version</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#LucidDB_Storage_Preallocation"><span class="tocnumber">4.2</span> <span class="toctext">LucidDB Storage Preallocation</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#LucidDB_Buffer_Pool_Size"><span class="tocnumber">4.3</span> <span class="toctext">LucidDB Buffer Pool Size</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#LucidDB_I.2FO_Scheduler"><span class="tocnumber">4.4</span> <span class="toctext">LucidDB I/O Scheduler</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#LucidDB_Prefetch"><span class="tocnumber">4.5</span> <span class="toctext">LucidDB Prefetch</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#LucidDB_Concurrency"><span class="tocnumber">4.6</span> <span class="toctext">LucidDB Concurrency</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Data_Generation"><span class="tocnumber">4.7</span> <span class="toctext">Data Generation</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#LucidDB_Initialization_SQL"><span class="tocnumber">4.8</span> <span class="toctext">LucidDB Initialization SQL</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#LucidDB_Table_Definitions"><span class="tocnumber">4.9</span> <span class="toctext">LucidDB Table Definitions</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#LucidDB_Data_Load"><span class="tocnumber">4.10</span> <span class="toctext">LucidDB Data Load</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#LucidDB_Index_Creation"><span class="tocnumber">4.11</span> <span class="toctext">LucidDB Index Creation</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#LucidDB_Queries"><span class="tocnumber">4.12</span> <span class="toctext">LucidDB Queries</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#LucidDB_Storage"><span class="tocnumber">4.13</span> <span class="toctext">LucidDB Storage</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-18"><a href="#MySQL_Test_Execution"><span class="tocnumber">5</span> <span class="toctext">MySQL Test Execution</span></a>
+<ul>
+<li class="toclevel-2 tocsection-19"><a href="#MySQL_Version"><span class="tocnumber">5.1</span> <span class="toctext">MySQL Version</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#MySQL_Configuration"><span class="tocnumber">5.2</span> <span class="toctext">MySQL Configuration</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#MySQL_Scripts"><span class="tocnumber">5.3</span> <span class="toctext">MySQL Scripts</span></a></li>
+<li class="toclevel-2 tocsection-22"><a href="#MySQL_Storage"><span class="tocnumber">5.4</span> <span class="toctext">MySQL Storage</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-23"><a href="#Scale_Factor_10_Results"><span class="tocnumber">6</span> <span class="toctext">Scale Factor 10 Results</span></a>
+<ul>
+<li class="toclevel-2 tocsection-24"><a href="#Queries"><span class="tocnumber">6.1</span> <span class="toctext">Queries</span></a></li>
+<li class="toclevel-2 tocsection-25"><a href="#Load_Time"><span class="tocnumber">6.2</span> <span class="toctext">Load Time</span></a></li>
+<li class="toclevel-2 tocsection-26"><a href="#Storage"><span class="tocnumber">6.3</span> <span class="toctext">Storage</span></a></li>
+<li class="toclevel-2 tocsection-27"><a href="#SF_10_Numbers"><span class="tocnumber">6.4</span> <span class="toctext">SF 10 Numbers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-28"><a href="#Scale_Factor_30_Results"><span class="tocnumber">7</span> <span class="toctext">Scale Factor 30 Results</span></a>
+<ul>
+<li class="toclevel-2 tocsection-29"><a href="#SF_30_Numbers"><span class="tocnumber">7.1</span> <span class="toctext">SF 30 Numbers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-30"><a href="#Attachments"><span class="tocnumber">8</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Disclaimers"> Disclaimers </span></h1>
+<p><b>Important Notice #1:</b> the information on this page refers to the TPC-H benchmark tables and queries, but the results described are not official TPC-H results and should not be interpreted as such; nor should they be compared to official TPC-H results in any way.  TPC-H is a trademark of the Transaction Processing Performance Council.
+</p><p><b>Important Notice #2:</b> this page contains comparative results for LucidDB and MySQL, but the tests were carried out without expertise in MySQL performance tuning, and so the results should not be interpreted as what could be expected from a system tuned by an expert.  Suggestions for configuration improvements are welcome!  MySQL is a registered trademark of MySQL AB in the United States, the European Union and other countries.
+</p>
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 18:29, 29 July 2008 (PDT):  Peter Zaitsev has pointed out that MySQL load performance would be better if indexes were predefined before data is loaded (rather than created individually after), so we'll be trying that on the next run.  He also recommened using the rewritten queries with joins instead of subqueries against MySQL (not just LucidDB).
+</li></ul>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This wiki page presents some LucidDB performance results based on the table and query definitions from the <a rel="nofollow" class="external text" href="http://www.tpc.org/tpch">TPC-H</a> benchmark.  For the purposes of comparison between LucidDB's column store architecture and a typical row store, results from MySQL running on the same machine are also presented for the identical analytic workload.  Scale factor 10 (10GB of source flatfile data) was used for the cross-DBMS comparison.  Some information on how to run the tests yourself is also provided.  Join the luciddb-users mailing list at sourceforge.net if you need help.
+</p><p>Additional information was presented at <a rel="nofollow" class="external text" href="http://en.oreilly.com/oscon2008/public/schedule/detail/2781">OSCON 2008</a>; here are the <a href="/wiki/upload/2/2d/Luciddb_oscon2008_win.ppt" class="internal" title="Luciddb oscon2008 win.ppt">slides</a>.
+</p><p>Also, for some results obtained independently by others outside of the LucidDB project, see <a rel="nofollow" class="external text" href="http://www.tholis.com/news/open-source-data-warehousing/">this blog post</a>.
+</p>
+<h1> <span class="mw-headline" id="Scale_Factor_10_Benchmark_Machine_Specifications"> Scale Factor 10 Benchmark Machine Specifications </span></h1>
+<p>The machine used to run the scale factor 10 benchmark for both LucidDB and MySQL had the following hardware:
+</p>
+<ul><li> AMD64
+</li><li> 8GB RAM
+</li><li> 2GHz dual-core
+</li><li> 1MB L2 cache
+</li><li> Seagate ST3300555SS SATA drive, 10K RPM
+</li></ul>
+<p>All files (source flatfiles, data files, and temp files) were stored on the same ext3 filesystem on the single drive (no RAID).  The Linux I/O scheduler was changed from the default (cfq) to deadline.
+</p><p>The operating system was 64-bit RHEL 5.
+</p><p>For LucidDB, the JRockit R27.4 JVM was used.
+</p>
+<h1> <span class="mw-headline" id="LucidDB_Test_Execution"> LucidDB Test Execution </span></h1>
+<h2> <span class="mw-headline" id="LucidDB_Version"> LucidDB Version </span></h2>
+<p>The LucidDB version used for testing was a prerelease of 0.7.4.  If you're going to run the test yourself, download the full <a rel="nofollow" class="external text" href="http://downloads.sf.net/eigenbase/eigenbase-src-0.7.4.tar.bz2">0.7.4 source tarball</a> and unpack it.  <a rel="nofollow" class="external free" href="http://p4web.eigenbase.org/open/dev/thirdparty/tpch.tar.gz">http://p4web.eigenbase.org/open/dev/thirdparty/tpch.tar.gz</a> contains the dbgen benchmark code from the TPC website, plus some LucidDB-specifics helper scripts, while <b>luciddb/test/sql/tpch</b> from the source tarball contains all LucidDB-specific scripts.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Storage_Preallocation"> LucidDB Storage Preallocation </span></h2>
+<p>For optimal load performance, LucidDB data and temp files were preallocated via the <a href="/wiki/LucidDbPerformanceTuning#Pre-allocating_File_Space_.28Linux_Only.29" title="LucidDbPerformanceTuning">lucidDbAllocFile utility</a>.  The <b>allocSpace.10G.sh</b> script can be used after editing the path for LUCIDDB_DIR to point to your installed LucidDB <b>bin</b> directory.  Make sure LucidDB is not running when you execute the utility, otherwise you'll encounter a file lock error.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Buffer_Pool_Size"> LucidDB Buffer Pool Size </span></h2>
+<p>The LucidDB buffer pool was set to 6GB.  See <a href="/wiki/LucidDbBufferPoolSizing" title="LucidDbBufferPoolSizing">LucidDbBufferPoolSizing</a> for the procedure.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_I.2FO_Scheduler"> LucidDB I/O Scheduler </span></h2>
+<p>The LucidDB I/O Scheduler was set to <b>aioLinux</b> (forcing usage of libaio and O_DIRECT):
+</p>
+<pre>
+alter system set &quot;deviceSchedulerType&quot; = 'aioLinux';
+</pre>
+<p>Restart LucidDB after changing this setting and make sure that it comes back up successfully; if it doesn't, you probably need to install the libaio package on your machine.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Prefetch"> LucidDB Prefetch </span></h2>
+<p>A prefetch queue size of 50 pages was found to be the optimal setting for the disk configuration used:
+</p>
+<pre>
+alter system set &quot;prefetchPagesMax&quot; = 50;
+</pre>
+<p>Changing this setting also requires a restart in order to take effect.  The optimal setting is dependent on the disk configuration.
+</p><p>(The numbers reported below were with the default setting of 12.)
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Concurrency"> LucidDB Concurrency </span></h2>
+<p>For benchmark loads and queries run without any concurrency, LucidDB can be configured to give each statement the maximum possible memory:
+</p>
+<pre>
+alter system set &quot;expectedConcurrentStatements&quot; = 1;
+</pre>
+<p>Changing this setting does not require a restart.
+</p><p>(The numbers reported below were with the default setting of 4.)
+</p>
+<h2> <span class="mw-headline" id="Data_Generation"> Data Generation </span></h2>
+<p>The dbgen utility provided on the TPC website was used to generate the datafiles.  The utility can't generate files larger than 2GB, so at scale factor 10, it's necessary to generate the files split up into smaller pieces.  Large tables were split up into 10 parts, and then reconcatenated back into a single file per table (since the limit is in the utility, not in LucidDB's flatfile reader, and it's more efficient for LucidDB to load each table in one shot).
+</p><p>(--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 19:07, 30 March 2009 (EDT):  According to <a rel="nofollow" class="external free" href="http://n2.nabble.com/large-file-support-in-TPC-H-dbgen-td2559525.html">http://n2.nabble.com/large-file-support-in-TPC-H-dbgen-td2559525.html</a>, it should be possible to get dbgen to generate one big file.)
+</p><p>The <b>createdbMultiProcess</b> script in tpch.tar.gz takes care of the generation step above, as well as some additional munging needed to make the files parsable by LucidDB.
+</p>
+<pre>
+$ ./createdbMultiProcess 10G 10
+</pre>
+<p>Reconcatentation can be performed with the Unix <b>cat</b> command.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Initialization_SQL"> LucidDB Initialization SQL </span></h2>
+<p>The template script <b>init.sql.tmpl</b> executes DDL to create some of the necessary objects such as the flatfile links.  It also selects row counts from the flatfile links to verify that the files are accessible.  Edit it to match your site-specifics, and then execute it.  You can ignore the commented-out portions (they are obsolete leftovers from Broadbase).
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Table_Definitions"> LucidDB Table Definitions </span></h2>
+<p>The script <b>create_tables.sql</b> defines the TPC-H base tables.  The definitions include the primary keys, but no other indexes.
+</p><p>(Note that the flat file external tables are quoted as lowercase, e.g. "lineitem", whereas the corresponding base tables are unquoted and hence ALLCAPS, e.g. LINEITEM.)
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Data_Load"> LucidDB Data Load </span></h2>
+<p>The script <b>load_tables.sql</b> copies data from the flatfile links into the base tables.  Besides loading the data, this also updates the primary key index.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Index_Creation"> LucidDB Index Creation </span></h2>
+<p>Non-primary-key indexes are created by script <b>create_indexes.sql</b>.  LucidDB does not support foreign key constraints, but indexes on the foreign key columns are still needed for efficient query processing.  Additional indexes useful to the optimizer are also created.
+</p><p>This script also runs ANALYZE to collect statistics needed by the optimizer.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Queries"> LucidDB Queries </span></h2>
+<p>Queries are in individual script files named according to query number, e.g. <b>1.sql</b>.
+</p>
+<ul><li> Queries 2, 4, 11, 15, 16, and 17 are rewritten into an equivalent form which avoids subqueries, since LucidDB's optimizer does not yet handle all subquery decorrelation efficiently by itself.
+</li><li> Queries 19, 21, and 22 are omitted since LucidDB's optimizer cannot yet handle them, and no one has come up with an equivalent rewrite.
+</li><li> Queries 2, 3, 10, and 18 should be using&#160;!set rowlimit to control the result set size, but the scripts have not been updated yet; doing so may reduce the result rendering time.
+</li><li> Queries which perform date arithmetic after parameter substitution in the original spec have been rewritten with the result of the arithmetic; LucidDB's optimizer is capable of doing the equivalent constant reduction rewrite (the scripts can be edited to verify this).
+</li></ul>
+<p>After the server was restarted post-load, all queries were run through exactly once in sequence in the same session.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Storage"> LucidDB Storage </span></h2>
+<p>LucidDB storage breakdowns were obtained with this query:
+</p>
+<pre>
+select table_schem as schema_name, table_name, index_name, pages as page_count
+from sys_boot.jdbc_metadata.index_info_internal;
+</pre>
+<h1> <span class="mw-headline" id="MySQL_Test_Execution"> MySQL Test Execution </span></h1>
+<h2> <span class="mw-headline" id="MySQL_Version"> MySQL Version </span></h2>
+<p>The MySQL version used was 5.0.22, with the MyISAM storage engine.
+</p>
+<h2> <span class="mw-headline" id="MySQL_Configuration"> MySQL Configuration </span></h2>
+<p>For the data load and indexing, the following <b>my.cnf</b> settings were used (after some experimentation to attempt to find the best ones):
+</p>
+<pre>
+skip-locking
+key_buffer = 3000M
+sort_buffer_size = 2M
+read_buffer_size = 2M
+read_rnd_buffer_size = 8M
+myisam_sort_buffer_size = 64M
+bulk_insert_buffer_size = 2M
+</pre>
+<p>However, for queries, the default <b>my.cnf</b> settings were used, since attempts to use large-memory settings seemed to hurt query times in most cases.
+</p>
+<h2> <span class="mw-headline" id="MySQL_Scripts"> MySQL Scripts </span></h2>
+<p>The script <a href="/wiki/upload/7/7c/Mysql_load.sql" class="internal" title="Mysql load.sql">Media:mysql_load.sql</a> was used to create the schema, load the data, create the indexes, and analyze statistics.  PRIMARY KEY and index definitions were identical to those used for LucidDB.  However, unlike LucidDB, primary keys were added as a separate step (instead of being loaded together with the data).
+</p><p>The script <a href="/wiki/upload/a/ad/Mysql_query.sql" class="internal" title="Mysql query.sql">Media:mysql_query.sql</a> was used to run queries; the queries were not modified from the TPC-H specification.  As with LucidDB, queries were run in sequence in a single session after restarting the server post-load.
+</p><p>Query 11 returned incorrect results (empty result set).  Later investigation showed that the query was parameterized incorrectly for both MySQL and LucidDB, so the results for both should be ignored.  (This will be corrected for a future run.)
+</p><p>During a trial run, query 18 never came back after hours, and the machine was thrashing, so it was omitted from the real run.
+</p>
+<h2> <span class="mw-headline" id="MySQL_Storage"> MySQL Storage </span></h2>
+<p>Storage was measured by shutting the server down and examining data and index file sizes:
+</p>
+<pre>
+# ls -l
+total 16377720
+-rw-rw---- 1 mysql mysql       8850 Apr 13 23:28 customer.frm
+-rw-rw---- 1 mysql mysql  238173452 Apr 13 23:28 customer.MYD
+-rw-rw---- 1 mysql mysql   38496256 Apr 13 23:28 customer.MYI
+-rw-rw---- 1 mysql mysql         65 Apr 13 18:16 db.opt
+-rw-rw---- 1 mysql mysql       9226 Apr 14 04:50 lineitem.frm
+-rw-rw---- 1 mysql mysql 5296436176 Apr 14 05:01 lineitem.MYD
+-rw-rw---- 1 mysql mysql 7186396160 Apr 14 06:01 lineitem.MYI
+-rw-rw---- 1 mysql mysql       8692 Apr 14 06:06 nation.frm
+-rw-rw---- 1 mysql mysql       2316 Apr 14 06:06 nation.MYD
+-rw-rw---- 1 mysql mysql       4096 Apr 14 06:06 nation.MYI
+-rw-rw---- 1 mysql mysql       8928 Apr 14 06:07 orders.frm
+-rw-rw---- 1 mysql mysql 1472903276 Apr 14 06:09 orders.MYD
+-rw-rw---- 1 mysql mysql  585344000 Apr 14 06:14 orders.MYI
+-rw-rw---- 1 mysql mysql       8874 Apr 14 06:15 part.frm
+-rw-rw---- 1 mysql mysql  234451704 Apr 14 06:15 part.MYD
+-rw-rw---- 1 mysql mysql  156191744 Apr 14 06:16 part.MYI
+-rw-rw---- 1 mysql mysql       8748 Apr 14 06:03 partsupp.frm
+-rw-rw---- 1 mysql mysql 1160039052 Apr 14 06:04 partsupp.MYD
+-rw-rw---- 1 mysql mysql  370024448 Apr 14 06:06 partsupp.MYI
+-rw-rw---- 1 mysql mysql       8648 Apr 13 23:33 region.frm
+-rw-rw---- 1 mysql mysql        412 Apr 13 23:33 region.MYD
+-rw-rw---- 1 mysql mysql       3072 Apr 13 23:33 region.MYI
+-rw-rw---- 1 mysql mysql       8804 Apr 13 19:20 supplier.frm
+-rw-rw---- 1 mysql mysql   13888184 Apr 13 19:20 supplier.MYD
+-rw-rw---- 1 mysql mysql    1848320 Apr 13 19:20 supplier.MYI
+</pre>
+<h1> <span class="mw-headline" id="Scale_Factor_10_Results"> Scale Factor 10 Results </span></h1>
+<p>All times are in seconds; all storage sizes are in bytes.  Index storage includes PRIMARY KEY.
+</p>
+<h2> <span class="mw-headline" id="Queries"> Queries </span></h2>
+<p>Results for queries 1-18 are graphed here (times in seconds):
+</p><p><a href="/wiki/File:Tpch_sf10_queries.png" class="image"><img alt="Tpch sf10 queries.png" src="/wiki/upload/2/2b/Tpch_sf10_queries.png" width="553" height="349" /></a>
+</p><p>(As noted above, results for query 11 should be ignored due to a problem with the runs.)
+</p>
+<h2> <span class="mw-headline" id="Load_Time"> Load Time </span></h2>
+<p>This is how long it took to load the data (ANALYZE time not included):
+</p><p><a href="/wiki/File:Tpch_sf10_load.png" class="image"><img alt="Tpch sf10 load.png" src="/wiki/upload/f/fc/Tpch_sf10_load.png" width="541" height="349" /></a>
+</p><p>LucidDB takes longer to load the base data, but is able to take advantage of the compression results later while building indexes.
+</p>
+<h2> <span class="mw-headline" id="Storage"> Storage </span></h2>
+<p>Storage comparison for the LINEITEM table (which dominates the database) is graphed here (measured in bytes):
+</p><p><a href="/wiki/File:Tpch_sf10_storage.png" class="image"><img alt="Tpch sf10 storage.png" src="/wiki/upload/8/84/Tpch_sf10_storage.png" width="349" height="336" /></a>
+</p><p>If we drill into the LucidDB storage by column for this table, we find something interesting:
+</p><p><a href="/wiki/File:Tpch_sf10_column_storage.png" class="image"><img alt="Tpch sf10 column storage.png" src="/wiki/upload/7/7f/Tpch_sf10_column_storage.png" width="601" height="325" /></a>
+</p><p>Most of the storage is eaten up by the comment text field, whereas the other columns compress quite well.  With column store, the comment column is only accessed if the query actually needs it, whereas with row store, the I/O cost is always paid up front.
+</p><p>The LucidDB index storage breakdown for this table is also enlightening:
+</p><p><a href="/wiki/File:Tpch_sf10_index_storage.png" class="image"><img alt="Tpch sf10 index storage.png" src="/wiki/upload/b/bb/Tpch_sf10_index_storage.png" width="601" height="325" /></a>
+</p><p>Most of the storage is eaten up by the primary key index, which is hard to compress; the other index bitmaps compress quite well. The primary key on the fact table is not accessed much except at load time, so in terms of query I/O, it isn't relevant.
+</p>
+<h2> <span class="mw-headline" id="SF_10_Numbers"> SF 10 Numbers </span></h2>
+<table border="1">
+		<tr>
+			<td width="196" height="18" align="LEFT"><b><br /></b></td>
+			<td width="157" align="LEFT"><b>MySQL</b></td>
+			<td width="135" align="LEFT"><b>LucidDB</b></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>QUERIES</b></td>
+			<td align="LEFT">seconds</td>
+			<td align="LEFT">seconds</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">1</td>
+			<td align="RIGHT">464.6</td>
+			<td align="RIGHT">372.5</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">2</td>
+			<td align="RIGHT">26</td>
+			<td align="RIGHT">18.0</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">3</td>
+			<td align="RIGHT">3301.4</td>
+			<td align="RIGHT">74.2</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">4</td>
+			<td align="RIGHT">269.3</td>
+			<td align="RIGHT">86.4</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">5</td>
+			<td align="RIGHT">1724.3</td>
+			<td align="RIGHT">64.7</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">6</td>
+			<td align="RIGHT">63.6</td>
+			<td align="RIGHT">21.8</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">7</td>
+			<td align="RIGHT">94.8</td>
+			<td align="RIGHT">278.8</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">8</td>
+			<td align="RIGHT">42.8</td>
+			<td align="RIGHT">18.9</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">9</td>
+			<td align="RIGHT">533</td>
+			<td align="RIGHT">169.0</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">10</td>
+			<td align="RIGHT">2730.9</td>
+			<td align="RIGHT">119.6</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">11</td>
+			<td align="LEFT">bad run</td>
+			<td align="LEFT">bad run</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">12</td>
+			<td align="RIGHT">1388.7</td>
+			<td align="RIGHT">48.5</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">13</td>
+			<td align="RIGHT">571.2</td>
+			<td align="RIGHT">180.0</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">14</td>
+			<td align="RIGHT">487</td>
+			<td align="RIGHT">46.9</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">15</td>
+			<td align="RIGHT">357.1</td>
+			<td align="RIGHT">70.0</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">16</td>
+			<td align="RIGHT">132.2</td>
+			<td align="RIGHT">69.7</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">17</td>
+			<td align="RIGHT">49.1</td>
+			<td align="RIGHT">138.1</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">18</td>
+			<td align="LEFT">thrash</td>
+			<td align="RIGHT">249.3</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">19</td>
+			<td align="RIGHT">68.3</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">20</td>
+			<td align="RIGHT">248</td>
+			<td align="RIGHT">83.8</td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">21</td>
+			<td align="RIGHT">1787.3</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="RIGHT">22</td>
+			<td align="RIGHT">6.7</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>LOAD TABLE</b></td>
+			<td align="LEFT">seconds (does not include primary key creation)</td>
+			<td align="LEFT">seconds (includes primary key creation)</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    NATION</td>
+			<td align="RIGHT">0.1</td>
+			<td align="RIGHT">1.6</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    REGION</td>
+			<td align="RIGHT">0.1</td>
+			<td align="RIGHT">1.4</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PART</td>
+			<td align="RIGHT">15.1</td>
+			<td align="RIGHT">42.1</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    SUPPLIER</td>
+			<td align="RIGHT">0.8</td>
+			<td align="RIGHT">3.0</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    CUSTOMER</td>
+			<td align="RIGHT">12.7</td>
+			<td align="RIGHT">32.2</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PARTSUPP</td>
+			<td align="RIGHT">60.4</td>
+			<td align="RIGHT">210.8</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    ORDERS</td>
+			<td align="RIGHT">135</td>
+			<td align="RIGHT">584.7</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    LINEITEM</td>
+			<td align="RIGHT">665.7</td>
+			<td align="RIGHT">4841.4</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>PRIMARY KEY</b></td>
+			<td align="LEFT">seconds</td>
+			<td align="LEFT">seconds</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    NATION</td>
+			<td align="RIGHT">0.1</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    REGION</td>
+			<td align="RIGHT">0.5</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PART</td>
+			<td align="RIGHT">21.3</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    SUPPLIER</td>
+			<td align="RIGHT">1.2</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    CUSTOMER</td>
+			<td align="RIGHT">19.9</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PARTSUPP</td>
+			<td align="RIGHT">100.7</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    ORDERS</td>
+			<td align="RIGHT">158.4</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    LINEITEM</td>
+			<td align="RIGHT">741.7</td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>CREATE INDEX</b></td>
+			<td align="LEFT">seconds</td>
+			<td align="LEFT">seconds</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">NATION(N_REGIONKEY)</td>
+			<td align="RIGHT">1.1</td>
+			<td align="RIGHT">0.4</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">SUPPLIER(S_NATIONKEY)</td>
+			<td align="RIGHT">1.5</td>
+			<td align="RIGHT">0.6</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PARTSUPP(PS_PARTKEY)</td>
+			<td align="RIGHT">82.3</td>
+			<td align="RIGHT">32.0</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PARTSUPP(PS_SUPPKEY)</td>
+			<td align="RIGHT">120</td>
+			<td align="RIGHT">53.1</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">CUSTOMER(C_NATIONKEY)</td>
+			<td align="RIGHT">24.4</td>
+			<td align="RIGHT">1.2</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">ORDERS(O_CUSTKEY)</td>
+			<td align="RIGHT">142.6</td>
+			<td align="RIGHT">98.1</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_ORDERKEY)</td>
+			<td align="RIGHT">1002.7</td>
+			<td align="RIGHT">168.7</td>
+		</tr>
+		<tr>
+			<td height="36" align="LEFT">LINEITEM(L_PARTKEY,L_SUPPKEY)</td>
+			<td align="RIGHT">1370</td>
+			<td align="RIGHT">452.6</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_SHIPDATE)</td>
+			<td align="RIGHT">1993.9</td>
+			<td align="RIGHT">599.0</td>
+		</tr>
+		<tr>
+			<td height="36" align="LEFT">CUSTOMER(C_MKTSEGMENT)</td>
+			<td align="RIGHT">27.9</td>
+			<td align="RIGHT">1.1</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">ORDERS(O_ORDERDATE)</td>
+			<td align="RIGHT">281.1</td>
+			<td align="RIGHT">149.2</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_SUPPKEY)</td>
+			<td align="RIGHT">1691.1</td>
+			<td align="RIGHT">523.4</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">REGION(R_NAME)</td>
+			<td align="RIGHT">0.7</td>
+			<td align="RIGHT">0.5</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_DISCOUNT)</td>
+			<td align="RIGHT">2334.1</td>
+			<td align="RIGHT">15.3</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_QUANTITY)</td>
+			<td align="RIGHT">2528.7</td>
+			<td align="RIGHT">24.5</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_RETURNFLAG)</td>
+			<td align="RIGHT">2981.2</td>
+			<td align="RIGHT">11.7</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_SHIPMODE)</td>
+			<td align="RIGHT">3475.8</td>
+			<td align="RIGHT">14.9</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_COMMITDATE)</td>
+			<td align="RIGHT">3733.9</td>
+			<td align="RIGHT">565.3</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_RECEIPTDATE)</td>
+			<td align="RIGHT">3968</td>
+			<td align="RIGHT">557.3</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">LINEITEM(L_PARTKEY)</td>
+			<td align="RIGHT">4300.6</td>
+			<td align="RIGHT">457.8</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PART(P_SIZE)</td>
+			<td align="RIGHT">27</td>
+			<td align="RIGHT">1.5</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PART(P_TYPE)</td>
+			<td align="RIGHT">43.2</td>
+			<td align="RIGHT">2.4</td>
+		</tr>
+		<tr>
+			<td height="36" align="LEFT">PARTSUPP(PS_SUPPLYCOST)</td>
+			<td align="RIGHT">163.9</td>
+			<td align="RIGHT">62.4</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">NATION(N_NAME)</td>
+			<td align="RIGHT">0.2</td>
+			<td align="RIGHT">0.6</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PART(P_NAME)</td>
+			<td align="RIGHT">57</td>
+			<td align="RIGHT">21.4</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">ORDERS(O_CLERK)</td>
+			<td align="RIGHT">437.2</td>
+			<td align="RIGHT">181.3</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PART(P_BRAND)</td>
+			<td align="RIGHT">71.2</td>
+			<td align="RIGHT">1.6</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">PART(P_CONTAINER)</td>
+			<td align="RIGHT">76.5</td>
+			<td align="RIGHT">1.3</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>ANALYZE TABLE</b></td>
+			<td align="LEFT">seconds</td>
+			<td align="LEFT">seconds</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    NATION</td>
+			<td align="RIGHT">0.1</td>
+			<td align="RIGHT">2.1</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    REGION</td>
+			<td align="RIGHT">0.1</td>
+			<td align="RIGHT">1.4</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PART</td>
+			<td align="RIGHT">0.1</td>
+			<td align="RIGHT">4.5</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    SUPPLIER</td>
+			<td align="LEFT">N/A</td>
+			<td align="RIGHT">2.9</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    PARTSUPP</td>
+			<td align="RIGHT">15.9</td>
+			<td align="RIGHT">6.8</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    CUSTOMER</td>
+			<td align="LEFT">N/A</td>
+			<td align="RIGHT">3.5</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    ORDERS</td>
+			<td align="LEFT">N/A</td>
+			<td align="RIGHT">10.6</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT">    LINEITEM</td>
+			<td align="RIGHT">290</td>
+			<td align="RIGHT">36.3</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>STORAGE (DATA)</b></td>
+			<td align="LEFT">bytes</td>
+			<td align="LEFT">bytes</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    NATION</td>
+			<td align="RIGHT">2,316</td>
+			<td align="RIGHT">262,144</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    REGION</td>
+			<td align="RIGHT">412</td>
+			<td align="RIGHT">196,608</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    PART</td>
+			<td align="RIGHT">234,451,704</td>
+			<td align="RIGHT">126,353,408</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    SUPPLIER</td>
+			<td align="RIGHT">13,888,184</td>
+			<td align="RIGHT">14,155,776</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    PARTSUPP</td>
+			<td align="RIGHT">1,160,039,052</td>
+			<td align="RIGHT">1,156,907,008</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    CUSTOMER</td>
+			<td align="RIGHT">238,173,452</td>
+			<td align="RIGHT">224,034,816</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    ORDERS</td>
+			<td align="RIGHT">1,472,903,276</td>
+			<td align="RIGHT">1,288,536,064</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    LINEITEM</td>
+			<td align="RIGHT">5,296,436,176</td>
+			<td align="RIGHT">3,668,377,600</td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+			<td align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td height="18" align="LEFT"><b>STORAGE (INDEXES)</b></td>
+			<td align="LEFT">bytes</td>
+			<td align="LEFT">bytes</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    NATION</td>
+			<td align="RIGHT">4,096</td>
+			<td align="RIGHT">131,072</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    REGION</td>
+			<td align="RIGHT">3,072</td>
+			<td align="RIGHT">98,304</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    PART</td>
+			<td align="RIGHT">156,191,744</td>
+			<td align="RIGHT">176,553,984</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    SUPPLIER</td>
+			<td align="RIGHT">1,848,320</td>
+			<td align="RIGHT">2,883,584</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    PARTSUPP</td>
+			<td align="RIGHT">370,024,448</td>
+			<td align="RIGHT">329,875,456</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    CUSTOMER</td>
+			<td align="RIGHT">38,496,256</td>
+			<td align="RIGHT">42,696,704</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    ORDERS</td>
+			<td align="RIGHT">585,344,000</td>
+			<td align="RIGHT">595,722,240</td>
+		</tr>
+		<tr>
+			<td height="19" align="LEFT">    LINEITEM</td>
+			<td align="RIGHT">7,186,396,160</td>
+			<td align="RIGHT">3,918,462,976</td>
+		</tr>
+
+</table>
+<h1> <span class="mw-headline" id="Scale_Factor_30_Results"> Scale Factor 30 Results </span></h1>
+<p>To test LucidDB scalability, a separate test was carried out comparing LucidDB SF 10 against LucidDB SF 30.  (No MySQL run was attempted at SF 30.)  These test runs used a different machine with a larger filesystem mounted on  SAN (which is why the SF 10 numbers are better than the ones above); other than that, the hardware and LucidDB configuration were similar to the runs described above (in particular, still 8 GB RAM).
+</p><p><a href="/wiki/File:Tpch_sf10_vs_30.png" class="image"><img alt="Tpch sf10 vs 30.png" src="/wiki/upload/2/22/Tpch_sf10_vs_30.png" width="637" height="325" /></a>
+</p><p>Left-hand bars show the SF 10 results; right-hand bars show the SF 30 results.  The middle bars are computed as three times the SF 10 results (for comparing the expected results given perfect linear scaleup vs the actual SF 30 results).
+</p>
+<h2> <span class="mw-headline" id="SF_30_Numbers"> SF 30 Numbers </span></h2>
+<table frame="VOID" cellspacing="0" rules="NONE" border="0">
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" width="278" height="18" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" width="126" align="LEFT">LucidDB SF 10</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" width="144" align="LEFT">LucidDB SF 30</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT">Time (sec)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT">Time (sec)</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><b>GRAND TOTAL</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>10216</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>33703</b></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><b>LOAD TABLE</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>4820</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>14976</b></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    NATION</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    REGION</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    PART</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">38</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">110</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    SUPPLIER</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">3</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">6</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    CUSTOMER</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">29</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">85</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    PARTSUPP</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">122</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">387</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    ORDERS</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">495</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1519</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    LINEITEM</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">4131</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">12867</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><b>CREATE INDEX</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>3779</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>13509</b></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">NATION(N_REGIONKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">SUPPLIER(S_NATIONKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">PARTSUPP(PS_PARTKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">25</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">76</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">PARTSUPP(PS_SUPPKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">45</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">138</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">CUSTOMER(C_NATIONKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">ORDERS(O_CUSTKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">89</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">295</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">LINEITEM(L_ORDERKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">142</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">426</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="70" align="LEFT">LINEITEM(L_PARTKEY,L_SUPPKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">429</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1644</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">LINEITEM(L_SHIPDATE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">574</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1999</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">CUSTOMER(C_MKTSEGMENT)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">ORDERS(O_ORDERDATE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">132</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">426</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">LINEITEM(L_SUPPKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">519</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1979</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">REGION(R_NAME)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">LINEITEM(L_DISCOUNT)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">12</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">37</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">LINEITEM(L_QUANTITY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">17</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">51</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">LINEITEM(L_RETURNFLAG)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">10</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">28</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">LINEITEM(L_SHIPMODE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">12</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">34</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">LINEITEM(L_COMMITDATE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">565</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2054</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">LINEITEM(L_RECEIPTDATE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">559</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2052</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">LINEITEM(L_PARTKEY)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">422</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1551</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">PART(P_SIZE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">3</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">PART(P_TYPE)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">4</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="53" align="LEFT">PARTSUPP(PS_SUPPLYCOST)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">55</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">188</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">NATION(N_NAME)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">PART(P_NAME)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">15</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">47</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">ORDERS(O_CLERK)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">149</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">466</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">PART(P_BRAND)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="36" align="LEFT">PART(P_CONTAINER)</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><b>ANALYZE TABLE (ESTIMATE STAT)</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>64</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>228</b></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    NATION</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    REGION</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">1</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    PART</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">3</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">5</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    SUPPLIER</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    PARTSUPP</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">6</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">14</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    CUSTOMER</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">3</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">5</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    ORDERS</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">10</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">28</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT">    LINEITEM</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">37</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">171</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="LEFT"><b>QUERIES</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>1552</b></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT"><b>4991</b></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">1</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">287</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">842</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">13</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">48</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">3</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">60</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">207</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">4</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">74</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">231</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">5</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">63</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">168</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">6</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">19</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">57</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">7</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">273</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">837</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">8</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">17</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">70</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">9</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">105</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">462</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">10</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">88</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">184</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">11</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">10</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">30</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">12</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">35</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">138</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">13</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">2</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">9</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">14</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">36</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">117</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">15</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">68</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">192</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">16</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">53</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">171</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">17</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">116</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">375</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">18</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">170</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">653</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">19</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="LEFT"><br /></td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="18" align="RIGHT">20</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">67</td>
+			<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="RIGHT">200</td>
+		</tr>
+</table>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:Mysql_load.sql" title="File:Mysql load.sql">Image:mysql_load.sql</a>
+</li><li> <a href="/wiki/File:Mysql_query.sql" title="File:Mysql query.sql">Image:mysql_query.sql</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_queries.png" title="File:Tpch sf10 queries.png">Image:tpch_sf10_queries.png</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_load.png" title="File:Tpch sf10 load.png">Image:tpch_sf10_load.png</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_storage.png" title="File:Tpch sf10 storage.png">Image:tpch_sf10_storage.png</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_column_storage.png" title="File:Tpch sf10 column storage.png">Image:tpch_sf10_column_storage.png</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_index_storage.png" title="File:Tpch sf10 index storage.png">Image:tpch_sf10_index_storage.png</a>
+</li><li> <a href="/wiki/File:Tpch_sf10_vs_30.png" title="File:Tpch sf10 vs 30.png">Image:tpch_sf10_vs_30.png</a>
+</li><li> <a href="/wiki/File:Luciddb_oscon2008_win.ppt" title="File:Luciddb oscon2008 win.ppt">Image:luciddb_oscon2008_win.ppt</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 717/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1858-0!*!0!!en!2!* and timestamp 20140414191139 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbTpch&amp;oldid=5901">http://luciddb.org/wiki/index.php?title=LucidDbTpch&amp;oldid=5901</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbTpch" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbTpch&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbTpch&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbTpch&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbTpch&amp;returntoquery=oldid%3D5901" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbTpch" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbTpch" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbTpch&amp;oldid=5901&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbTpch&amp;oldid=5901" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.147 secs. --></body></html>

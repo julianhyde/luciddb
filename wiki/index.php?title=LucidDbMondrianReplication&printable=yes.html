@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbMondrianReplication - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbMondrianReplication", "wgTitle": "LucidDbMondrianReplication", "wgCurRevisionId": 6983, "wgArticleId": 1599, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbMondrianReplication action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbMondrianReplication</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Usage_Instructions"><span class="tocnumber">2</span> <span class="toctext">Usage Instructions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Create_Link_from_LucidDB_to_Old_DBMS"><span class="tocnumber">2.1</span> <span class="toctext">Create Link from LucidDB to Old DBMS</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Create_User_and_Schema"><span class="tocnumber">2.2</span> <span class="toctext">Create User and Schema</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Run_Replication_Procedure"><span class="tocnumber">2.3</span> <span class="toctext">Run Replication Procedure</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Reconfigure_Mondrian"><span class="tocnumber">2.4</span> <span class="toctext">Reconfigure Mondrian</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#How_It_Works"><span class="tocnumber">3</span> <span class="toctext">How It Works</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Mondrian_Schema_Parse"><span class="tocnumber">3.1</span> <span class="toctext">Mondrian Schema Parse</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Table_Definition_Copy"><span class="tocnumber">3.2</span> <span class="toctext">Table Definition Copy</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Indexing"><span class="tocnumber">3.3</span> <span class="toctext">Indexing</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Data_Copy"><span class="tocnumber">3.4</span> <span class="toctext">Data Copy</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Foreign_Table_Drop"><span class="tocnumber">3.5</span> <span class="toctext">Foreign Table Drop</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#Example_Output"><span class="tocnumber">4</span> <span class="toctext">Example Output</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#Enhancements_Needed"><span class="tocnumber">5</span> <span class="toctext">Enhancements Needed</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p><b>NOTE:  The procedure described in this page is available starting with the 0.7.1 release of LucidDB.</b>
+</p><p>If you are already using Mondrian with another DBMS, and would like to test out the <a href="/wiki/LucidDbOlap" title="LucidDbOlap">Mondrian/LucidDB</a> combination with your data, you can use the automatic replication procedure described in this page to save a lot of time.
+</p><p>Here's the picture initially:
+</p><p><a href="/wiki/File:MondrianReplicationBefore.png" class="image"><img alt="MondrianReplicationBefore.png" src="/wiki/upload/c/c6/MondrianReplicationBefore.png" width="235" height="229" /></a>
+</p><p>Replication will copy both metadata and data from your old DBMS into LucidDB (guided by your Mondrian schema .xml file), creating a logically identical structure:
+</p><p><a href="/wiki/File:MondrianReplicationDuring.png" class="image"><img alt="MondrianReplicationDuring.png" src="/wiki/upload/e/e4/MondrianReplicationDuring.png" width="337" height="248" /></a>
+</p><p>Once replication is complete, you can edit your Mondrian configuration to source from the data in LucidDB (instead of the old DBMS).  Callers to Mondrian should see the exact same MDX query results (the Mondrian schema .xml does not need to be modified at all, only the JDBC connection information):
+</p><p><a href="/wiki/File:MondrianReplicationAfter.png" class="image"><img alt="MondrianReplicationAfter.png" src="/wiki/upload/2/26/MondrianReplicationAfter.png" width="238" height="257" /></a>
+</p><p>The replication is a one-time transfer.  If the data changes in your old DBMS, you'll need to rerun the replication (or at least the data copy portion) in order to refresh LucidDB.
+</p>
+<h1> <span class="mw-headline" id="Usage_Instructions"> Usage Instructions </span></h1>
+<p>This section explains the steps required.  As an example, we'll use the Derby FOODMART database which comes with Mondrian; details may vary according to DBMS.  The procedure has been tested on 32-bit Linux with both Derby and MySQL using FOODMART; if you have trouble with a different DBMS, OS, or schema, send details to the luciddb-users mailing list @lists.sf.net.
+</p>
+<h2> <span class="mw-headline" id="Create_Link_from_LucidDB_to_Old_DBMS"> Create Link from LucidDB to Old DBMS </span></h2>
+<p>Assuming you've already connected to LucidDB as the <b>sa</b> account (see <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a>), the first step is to tell LucidDB where your old DBMS is so that metadata and data can be fetched via JDBC during replication.  This is done via the <a href="/wiki/LucidDbCreateForeignServer" title="LucidDbCreateForeignServer">CREATE SERVER</a> DDL command.  Here's how it looks for Derby (change the path to wherever you unpacked Mondrian):
+</p>
+<pre>
+CREATE SERVER DERBY_FOODMART
+FOREIGN DATA WRAPPER SYS_JDBC
+OPTIONS(
+    DRIVER_CLASS 'org.apache.derby.jdbc.EmbeddedDriver',
+    URL 'jdbc:derby:/path/to/mondrian/demo/derby/foodmart',
+    SCHEMA_NAME 'DEFAULT',
+    USER_NAME 'sa',
+    PASSWORD 'sa');
+</pre>
+<p>And MySQL:
+</p>
+<pre>
+CREATE SERVER MYSQL_FOODMART
+FOREIGN DATA WRAPPER sys_jdbc 
+OPTIONS ( 
+    driver_class 'com.mysql.jdbc.Driver', 
+    url 'jdbc:mysql://localhost/foodmart', 
+    user_name 'foodmart', 
+    password 'foodmart', 
+    login_timeout '10',
+    validation_query 'select 1',
+    fetch_size '-2147483648',
+    table_types 'TABLE', 
+    schema_name 'DEFAULT');
+</pre>
+<p>(Before doing this, add the location of your JDBC driver, e.g. derby.jar or mysql-connector-java-x.y.z-bin.jar, to the <i>luciddb/bin/classpath.gen</i> file so that LucidDB can find it.  This requires restarting LucidDB.)
+</p><p>If your tables are qualified by a real schema in the old DBMS, omit the <i>SCHEMA_NAME</i> parameter above (<i>DEFAULT</i> is just an artificial name to work around the fact that the FOODMART tables are not qualified by a real schema in Derby and MySQL).
+</p><p>Before continuing, test to make sure that you can access one of your tables via SQL/MED:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select count(*) from derby_foodmart.&quot;DEFAULT&quot;.&quot;time_by_day&quot;;
++---------+
+| EXPR$0  |
++---------+
+| 730     |
++---------+
+1 row selected (1.986 seconds)
+</pre>
+<p>For MySQL:
+</p>
+<pre>
+select count(*) from mysql_foodmart.&quot;DEFAULT&quot;.&quot;time_by_day&quot;;
+</pre>
+<h2> <span class="mw-headline" id="Create_User_and_Schema"> Create User and Schema </span></h2>
+<p>Create a LucidDB schema which will contain the replicated tables:
+</p>
+<pre>
+CREATE SCHEMA FOODMART;
+</pre>
+<p>Then create a LucidDB user which Mondrian will authenticate as when it connects to LucidDB:
+</p>
+<pre>
+CREATE USER FOODMART AUTHORIZATION 'Unused' DEFAULT SCHEMA FOODMART;
+</pre>
+<p>Finally, grant the new user rights needed for executing the replication process:
+</p>
+<pre>
+GRANT EXECUTE 
+ON SPECIFIC PROCEDURE APPLIB.REPLICATE_MONDRIAN
+TO FOODMART;
+
+GRANT EXECUTE 
+ON SPECIFIC PROCEDURE APPLIB.COMPUTE_STATISTICS_FOR_SCHEMA
+TO FOODMART;
+</pre>
+<h2> <span class="mw-headline" id="Run_Replication_Procedure"> Run Replication Procedure </span></h2>
+<p>Before continuing, you must disconnect from LucidDB and reconnect as the new user (e.g. <b>FOODMART</b> in our running example).  If you're using sqlline, specify this via the -n command, e.g. <i>sqllineClient -n FOODMART</i>.
+</p><p>Now, execute the replication command.  For a big database, this may take a while (Foodmart takes only a minute or so).  Read the notes below first to decide whether to pass TRUE or FALSE for the last parameter.
+</p>
+<pre>
+-- Run the replication
+CALL APPLIB.REPLICATE_MONDRIAN(
+    '/path/to/mondrian/demo/FoodMart.xml',
+    'DERBY_FOODMART',
+    'DEFAULT',
+    'FOODMART',
+    '/path/to/write/script.sql',
+    TRUE);
+
+-- ANALYZE the replicated data in all tables so that LucidDB's optimizer will have statistics
+CALL APPLIB.COMPUTE_STATISTICS_FOR_SCHEMA('FOODMART');
+</pre>
+<p>Notes on the parameters to <a href="/wiki/LucidDbAppLib_REPLICATE_MONDRIAN" title="LucidDbAppLib REPLICATE MONDRIAN" class="mw-redirect">APPLIB.REPLICATE_MONDRIAN</a>:
+</p>
+<ol><li> <i>/path/to/mondrian/demo/FoodMart.xml</i>:  use the location of your Mondrian schema .xml
+</li><li> <i>DERBY_FOODMART</i>:  supply whatever name you used in CREATE SERVER earlier
+</li><li> <i>DEFAULT</i>:  use the name of the schema in the old DBMS, or (if the old DBMS doesn't support schemas) whatever you specified for SCHEMA_NAME earlier in CREATE SERVER
+</li><li> <i>FOODMART</i>:  use the name of the LucidDB schema created above
+</li><li> <i>/path/to/write/script.sql</i>:  specify the name of a file where LucidDB can save a SQL script of the replication steps for future use; make sure the containing <i>/path/to/write</i> directory exists
+</li><li> <i>TRUE</i>:  this means copy the data, not just the metadata
+</li></ol>
+<p>Since copying the data can take a long time, and errors are always possible, an option is to pass <i>FALSE</i> for the last parameter.  This will just replicate the table definitions and generate the .sql script without executing the INSERT statements.  Then, run just the INSERT statements from the script.
+</p><p>If you get an error, check the last command in the generated script to see which step it was on.  If you are using sqlline, issue these commands:
+</p>
+<pre>
+!verbose on
+!set shownestederrs on
+</pre>
+<p>and then re-execute the failed command to get more diagnostics.  TODO:  link to general troubleshooting guide.
+</p>
+<h2> <span class="mw-headline" id="Reconfigure_Mondrian"> Reconfigure Mondrian </span></h2>
+<p>Once replication has been successfully performed, follow the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/installation.php#3_Deploy_and_run_the_web_app">Mondrian setup instructions</a> to reconfigure Mondrian, using
+</p>
+<ul><li> JDBC driver jar:  <b>luciddb/plugin/LucidDbClient.jar</b>
+</li><li> JDBC driver class: <b>org.luciddb.jdbc.LucidDbClientDriver</b>
+</li><li> JDBC URL: <b>jdbc:luciddb:<a rel="nofollow" class="external free" href="http://localhost">http://localhost</a></b> (or wherever your LucidDB server is if not on the same machine as Mondrian)
+</li><li> JDBC user: <b>FOODMART</b> (or whatever LucidDB user you created above)
+</li></ul>
+<p>You should now be able to test an MDX query with Mondrian fetching data from LucidDB.
+</p>
+<h1> <span class="mw-headline" id="How_It_Works"> How It Works </span></h1>
+<p>This section explains the steps performed by the automatic replication procedure in detail, using examples from the generated .sql script to see what it is doing.
+</p>
+<h2> <span class="mw-headline" id="Mondrian_Schema_Parse"> Mondrian Schema Parse </span></h2>
+<p>The first step of the replication is to parse the Mondrian schema .xml file.  The procedure looks for tables referenced by hierarchies and cubes and collects the names of those tables.  <i>Only</i> those referenced tables will replicated.  Currently, aggregate tables are never replicated.  
+</p><p>If tables are qualified by schemas, all referenced tables must be in the same schema, and that schema qualifier must match the <i>foreignSchemaName</i> argument passed to the procedure.
+</p><p>Besides tables, the parser also looks for references to the following kinds of columns (their effect on replication is explained further on):
+</p>
+<ul><li> Hierarchy primaryKey
+</li><li> DimensionUsage foreignKey
+</li><li> Level column
+</li></ul>
+<h2> <span class="mw-headline" id="Table_Definition_Copy"> Table Definition Copy </span></h2>
+<p>The next step is to copy the definition of each replicated table from the old DBMS into LucidDB.  This is accomplished via LucidDB's SQL/MED metadata extraction capability.  For each referenced table, a corresponding "linked" <a href="/wiki/LucidDbCreateForeignTable" title="LucidDbCreateForeignTable">foreign table</a> is created in the LucidDB schema, with column definitions derived from those in the old DBMS via JDBC metadata supplied by the old DBMS's driver.  (In some cases, datatypes may be adjusted to match LucidDB's conventions and limits.)  The name of this table is "OriginalTableName_link".
+</p><p>Here's an example from FOODMART:
+</p>
+<pre>
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;promotion_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'promotion');
+</pre>
+<p>Next, a logically identical column-store table is created in LucidDB with the name "OriginalTableName".  (The names must be preserved exactly to avoid needing to modify the Mondrian schema .xml.)  The column definitions are identical to the extracted foreign table.  If a <i>primaryKey</i> column was found while parsing the Mondrian schema, a corresponding constraint is generated:
+</p>
+<pre>
+CREATE TABLE &quot;FOODMART&quot;.&quot;promotion&quot; (
+   &quot;promotion_id&quot; INTEGER NOT NULL,
+   &quot;promotion_district_id&quot; INTEGER,
+   &quot;promotion_name&quot; VARCHAR(30),
+   &quot;media_type&quot; VARCHAR(30),
+   &quot;cost&quot; DECIMAL(10,4),
+   &quot;start_date&quot; TIMESTAMP(0),
+   &quot;end_date&quot; TIMESTAMP(0),
+   PRIMARY KEY (&quot;promotion_id&quot;)
+ );
+</pre>
+<h2> <span class="mw-headline" id="Indexing"> Indexing </span></h2>
+<p>The replication process does <b>not</b> copy the physical indexing from the old DBMS.  Instead, it chooses indexes appropriate to LucidDB based on DimensionUsage and Level column references:
+</p>
+<pre>
+CREATE INDEX &quot;promotion_media_type_idx&quot;
+ON &quot;FOODMART&quot;.&quot;promotion&quot;(&quot;media_type&quot;);
+
+CREATE INDEX &quot;promotion_promotion_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;promotion&quot;(&quot;promotion_name&quot;);
+
+CREATE INDEX &quot;sales_fact_1997_store_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;sales_fact_1997&quot;(&quot;store_id&quot;);
+</pre>
+<p>No UNIQUE constraints are replicated.
+</p>
+<h2> <span class="mw-headline" id="Data_Copy"> Data Copy </span></h2>
+<p>In LucidDB, copying data from a foreign server into a column-store table is very simple:
+</p>
+<pre>
+INSERT INTO &quot;FOODMART&quot;.&quot;promotion&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;promotion_link&quot;;
+</pre>
+<p>The column order is the same in both tables, allowing the procedure to omit the column names here.
+</p>
+<h2> <span class="mw-headline" id="Foreign_Table_Drop"> Foreign Table Drop </span></h2>
+<p>Finally, after the data has been copied, the foreign table link is no longer needed, so it is dropped:
+</p>
+<pre>
+DROP TABLE &quot;FOODMART&quot;.&quot;promotion_link&quot;;
+</pre>
+<h1> <span class="mw-headline" id="Example_Output"> Example Output </span></h1>
+<p>Here's an example of the script generated for Foodmart from Derby.  Note that the script might come out slightly different when another DBMS is used; for example, when replicated from MySQL, BOOLEAN columns come out as SMALLINT, and DOUBLE columns come out as REAL.
+</p>
+<pre>
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;store_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'store');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;store&quot; (
+   &quot;store_id&quot; INTEGER NOT NULL,
+   &quot;store_type&quot; VARCHAR(30),
+   &quot;region_id&quot; INTEGER,
+   &quot;store_name&quot; VARCHAR(30),
+   &quot;store_number&quot; INTEGER,
+   &quot;store_street_address&quot; VARCHAR(30),
+   &quot;store_city&quot; VARCHAR(30),
+   &quot;store_state&quot; VARCHAR(30),
+   &quot;store_postal_code&quot; VARCHAR(30),
+   &quot;store_country&quot; VARCHAR(30),
+   &quot;store_manager&quot; VARCHAR(30),
+   &quot;store_phone&quot; VARCHAR(30),
+   &quot;store_fax&quot; VARCHAR(30),
+   &quot;first_opened_date&quot; TIMESTAMP(0),
+   &quot;last_remodel_date&quot; TIMESTAMP(0),
+   &quot;store_sqft&quot; INTEGER,
+   &quot;grocery_sqft&quot; INTEGER,
+   &quot;frozen_sqft&quot; INTEGER,
+   &quot;meat_sqft&quot; INTEGER,
+   &quot;coffee_bar&quot; SMALLINT,
+   &quot;video_store&quot; SMALLINT,
+   &quot;salad_bar&quot; SMALLINT,
+   &quot;prepared_food&quot; SMALLINT,
+   &quot;florist&quot; SMALLINT,
+   PRIMARY KEY (&quot;store_id&quot;)
+ );
+
+CREATE INDEX &quot;store_store_country_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_country&quot;);
+
+CREATE INDEX &quot;store_store_state_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_state&quot;);
+
+CREATE INDEX &quot;store_store_city_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_city&quot;);
+
+CREATE INDEX &quot;store_store_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_name&quot;);
+
+CREATE INDEX &quot;store_store_sqft_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_sqft&quot;);
+
+CREATE INDEX &quot;store_store_type_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;store_type&quot;);
+
+CREATE INDEX &quot;store_coffee_bar_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store&quot;(&quot;coffee_bar&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;store&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;store_link&quot;;
+-- Initial load:  25 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;store_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;time_by_day_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'time_by_day');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;time_by_day&quot; (
+   &quot;time_id&quot; INTEGER NOT NULL,
+   &quot;the_date&quot; TIMESTAMP(0),
+   &quot;the_day&quot; VARCHAR(30),
+   &quot;the_month&quot; VARCHAR(30),
+   &quot;the_year&quot; SMALLINT,
+   &quot;day_of_month&quot; SMALLINT,
+   &quot;week_of_year&quot; INTEGER,
+   &quot;month_of_year&quot; SMALLINT,
+   &quot;quarter&quot; VARCHAR(30),
+   &quot;fiscal_period&quot; VARCHAR(30),
+   PRIMARY KEY (&quot;time_id&quot;,&quot;the_date&quot;)
+ );
+
+CREATE INDEX &quot;time_by_day_the_year_idx&quot;
+ON &quot;FOODMART&quot;.&quot;time_by_day&quot;(&quot;the_year&quot;);
+
+CREATE INDEX &quot;time_by_day_quarter_idx&quot;
+ON &quot;FOODMART&quot;.&quot;time_by_day&quot;(&quot;quarter&quot;);
+
+CREATE INDEX &quot;time_by_day_month_of_year_idx&quot;
+ON &quot;FOODMART&quot;.&quot;time_by_day&quot;(&quot;month_of_year&quot;);
+
+CREATE INDEX &quot;time_by_day_week_of_year_idx&quot;
+ON &quot;FOODMART&quot;.&quot;time_by_day&quot;(&quot;week_of_year&quot;);
+
+CREATE INDEX &quot;time_by_day_day_of_month_idx&quot;
+ON &quot;FOODMART&quot;.&quot;time_by_day&quot;(&quot;day_of_month&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;time_by_day&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;time_by_day_link&quot;;
+-- Initial load:  730 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;time_by_day_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;product_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'product');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;product&quot; (
+   &quot;product_class_id&quot; INTEGER NOT NULL,
+   &quot;product_id&quot; INTEGER NOT NULL,
+   &quot;brand_name&quot; VARCHAR(60),
+   &quot;product_name&quot; VARCHAR(60) NOT NULL,
+   &quot;SKU&quot; BIGINT NOT NULL,
+   &quot;SRP&quot; DECIMAL(10,4),
+   &quot;gross_weight&quot; REAL,
+   &quot;net_weight&quot; REAL,
+   &quot;recyclable_package&quot; SMALLINT,
+   &quot;low_fat&quot; SMALLINT,
+   &quot;units_per_case&quot; SMALLINT,
+   &quot;cases_per_pallet&quot; SMALLINT,
+   &quot;shelf_width&quot; REAL,
+   &quot;shelf_height&quot; REAL,
+   &quot;shelf_depth&quot; REAL,
+   PRIMARY KEY (&quot;product_id&quot;)
+ );
+
+CREATE INDEX &quot;product_brand_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product&quot;(&quot;brand_name&quot;);
+
+CREATE INDEX &quot;product_product_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product&quot;(&quot;product_name&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;product&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;product_link&quot;;
+-- Initial load:  1560 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;product_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;product_class_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'product_class');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;product_class&quot; (
+   &quot;product_class_id&quot; INTEGER NOT NULL,
+   &quot;product_subcategory&quot; VARCHAR(30),
+   &quot;product_category&quot; VARCHAR(30),
+   &quot;product_department&quot; VARCHAR(30),
+   &quot;product_family&quot; VARCHAR(30)
+ );
+
+CREATE INDEX &quot;product_class_product_family_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product_class&quot;(&quot;product_family&quot;);
+
+CREATE INDEX &quot;product_class_product_department_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product_class&quot;(&quot;product_department&quot;);
+
+CREATE INDEX &quot;product_class_product_category_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product_class&quot;(&quot;product_category&quot;);
+
+CREATE INDEX &quot;product_class_product_subcategory_idx&quot;
+ON &quot;FOODMART&quot;.&quot;product_class&quot;(&quot;product_subcategory&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;product_class&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;product_class_link&quot;;
+-- Initial load:  110 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;product_class_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;warehouse_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'warehouse');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;warehouse&quot; (
+   &quot;warehouse_id&quot; INTEGER NOT NULL,
+   &quot;warehouse_class_id&quot; INTEGER,
+   &quot;stores_id&quot; INTEGER,
+   &quot;warehouse_name&quot; VARCHAR(60),
+   &quot;wa_address1&quot; VARCHAR(30),
+   &quot;wa_address2&quot; VARCHAR(30),
+   &quot;wa_address3&quot; VARCHAR(30),
+   &quot;wa_address4&quot; VARCHAR(30),
+   &quot;warehouse_city&quot; VARCHAR(30),
+   &quot;warehouse_state_province&quot; VARCHAR(30),
+   &quot;warehouse_postal_code&quot; VARCHAR(30),
+   &quot;warehouse_country&quot; VARCHAR(30),
+   &quot;warehouse_owner_name&quot; VARCHAR(30),
+   &quot;warehouse_phone&quot; VARCHAR(30),
+   &quot;warehouse_fax&quot; VARCHAR(30),
+   PRIMARY KEY (&quot;warehouse_id&quot;)
+ );
+
+CREATE INDEX &quot;warehouse_warehouse_country_idx&quot;
+ON &quot;FOODMART&quot;.&quot;warehouse&quot;(&quot;warehouse_country&quot;);
+
+CREATE INDEX &quot;warehouse_warehouse_state_province_idx&quot;
+ON &quot;FOODMART&quot;.&quot;warehouse&quot;(&quot;warehouse_state_province&quot;);
+
+CREATE INDEX &quot;warehouse_warehouse_city_idx&quot;
+ON &quot;FOODMART&quot;.&quot;warehouse&quot;(&quot;warehouse_city&quot;);
+
+CREATE INDEX &quot;warehouse_warehouse_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;warehouse&quot;(&quot;warehouse_name&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;warehouse&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;warehouse_link&quot;;
+-- Initial load:  24 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;warehouse_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;sales_fact_1997_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'sales_fact_1997');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;sales_fact_1997&quot; (
+   &quot;product_id&quot; INTEGER NOT NULL,
+   &quot;time_id&quot; INTEGER NOT NULL,
+   &quot;customer_id&quot; INTEGER NOT NULL,
+   &quot;promotion_id&quot; INTEGER NOT NULL,
+   &quot;store_id&quot; INTEGER NOT NULL,
+   &quot;store_sales&quot; DECIMAL(10,4) NOT NULL,
+   &quot;store_cost&quot; DECIMAL(10,4) NOT NULL,
+   &quot;unit_sales&quot; DECIMAL(10,4) NOT NULL
+ );
+
+CREATE INDEX &quot;sales_fact_1997_store_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;sales_fact_1997&quot;(&quot;store_id&quot;);
+
+CREATE INDEX &quot;sales_fact_1997_time_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;sales_fact_1997&quot;(&quot;time_id&quot;);
+
+CREATE INDEX &quot;sales_fact_1997_product_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;sales_fact_1997&quot;(&quot;product_id&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;sales_fact_1997&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;sales_fact_1997_link&quot;;
+-- Initial load:  86837 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;sales_fact_1997_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;promotion_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'promotion');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;promotion&quot; (
+   &quot;promotion_id&quot; INTEGER NOT NULL,
+   &quot;promotion_district_id&quot; INTEGER,
+   &quot;promotion_name&quot; VARCHAR(30),
+   &quot;media_type&quot; VARCHAR(30),
+   &quot;cost&quot; DECIMAL(10,4),
+   &quot;start_date&quot; TIMESTAMP(0),
+   &quot;end_date&quot; TIMESTAMP(0),
+   PRIMARY KEY (&quot;promotion_id&quot;)
+ );
+
+CREATE INDEX &quot;promotion_media_type_idx&quot;
+ON &quot;FOODMART&quot;.&quot;promotion&quot;(&quot;media_type&quot;);
+
+CREATE INDEX &quot;promotion_promotion_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;promotion&quot;(&quot;promotion_name&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;promotion&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;promotion_link&quot;;
+-- Initial load:  1864 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;promotion_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;customer_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'customer');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;customer&quot; (
+   &quot;customer_id&quot; INTEGER NOT NULL,
+   &quot;account_num&quot; BIGINT NOT NULL,
+   &quot;lname&quot; VARCHAR(30) NOT NULL,
+   &quot;fname&quot; VARCHAR(30) NOT NULL,
+   &quot;mi&quot; VARCHAR(30),
+   &quot;address1&quot; VARCHAR(30),
+   &quot;address2&quot; VARCHAR(30),
+   &quot;address3&quot; VARCHAR(30),
+   &quot;address4&quot; VARCHAR(30),
+   &quot;city&quot; VARCHAR(30),
+   &quot;state_province&quot; VARCHAR(30),
+   &quot;postal_code&quot; VARCHAR(30) NOT NULL,
+   &quot;country&quot; VARCHAR(30) NOT NULL,
+   &quot;customer_region_id&quot; INTEGER NOT NULL,
+   &quot;phone1&quot; VARCHAR(30) NOT NULL,
+   &quot;phone2&quot; VARCHAR(30) NOT NULL,
+   &quot;birthdate&quot; DATE NOT NULL,
+   &quot;marital_status&quot; VARCHAR(30) NOT NULL,
+   &quot;yearly_income&quot; VARCHAR(30) NOT NULL,
+   &quot;gender&quot; VARCHAR(30) NOT NULL,
+   &quot;total_children&quot; SMALLINT NOT NULL,
+   &quot;num_children_at_home&quot; SMALLINT NOT NULL,
+   &quot;education&quot; VARCHAR(30) NOT NULL,
+   &quot;date_accnt_opened&quot; DATE NOT NULL,
+   &quot;member_card&quot; VARCHAR(30),
+   &quot;occupation&quot; VARCHAR(30),
+   &quot;houseowner&quot; VARCHAR(30),
+   &quot;num_cars_owned&quot; INTEGER,
+   &quot;fullname&quot; VARCHAR(60) NOT NULL,
+   PRIMARY KEY (&quot;customer_id&quot;)
+ );
+
+CREATE INDEX &quot;customer_country_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;country&quot;);
+
+CREATE INDEX &quot;customer_state_province_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;state_province&quot;);
+
+CREATE INDEX &quot;customer_city_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;city&quot;);
+
+CREATE INDEX &quot;customer_education_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;education&quot;);
+
+CREATE INDEX &quot;customer_gender_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;gender&quot;);
+
+CREATE INDEX &quot;customer_marital_status_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;marital_status&quot;);
+
+CREATE INDEX &quot;customer_yearly_income_idx&quot;
+ON &quot;FOODMART&quot;.&quot;customer&quot;(&quot;yearly_income&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;customer&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;customer_link&quot;;
+-- Initial load:  10281 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;customer_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;inventory_fact_1997_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'inventory_fact_1997');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot; (
+   &quot;product_id&quot; INTEGER NOT NULL,
+   &quot;time_id&quot; INTEGER,
+   &quot;warehouse_id&quot; INTEGER,
+   &quot;store_id&quot; INTEGER,
+   &quot;units_ordered&quot; INTEGER,
+   &quot;units_shipped&quot; INTEGER,
+   &quot;warehouse_sales&quot; DECIMAL(10,4),
+   &quot;warehouse_cost&quot; DECIMAL(10,4),
+   &quot;supply_time&quot; SMALLINT,
+   &quot;store_invoice&quot; DECIMAL(10,4)
+ );
+
+CREATE INDEX &quot;inventory_fact_1997_store_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot;(&quot;store_id&quot;);
+
+CREATE INDEX &quot;inventory_fact_1997_time_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot;(&quot;time_id&quot;);
+
+CREATE INDEX &quot;inventory_fact_1997_product_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot;(&quot;product_id&quot;);
+
+CREATE INDEX &quot;inventory_fact_1997_warehouse_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot;(&quot;warehouse_id&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;inventory_fact_1997&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;inventory_fact_1997_link&quot;;
+-- Initial load:  4070 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;inventory_fact_1997_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;salary_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'salary');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;salary&quot; (
+   &quot;pay_date&quot; TIMESTAMP(0) NOT NULL,
+   &quot;employee_id&quot; INTEGER NOT NULL,
+   &quot;department_id&quot; INTEGER NOT NULL,
+   &quot;currency_id&quot; INTEGER NOT NULL,
+   &quot;salary_paid&quot; DECIMAL(10,4) NOT NULL,
+   &quot;overtime_paid&quot; DECIMAL(10,4) NOT NULL,
+   &quot;vacation_accrued&quot; REAL NOT NULL,
+   &quot;vacation_used&quot; REAL NOT NULL
+ );
+
+INSERT INTO &quot;FOODMART&quot;.&quot;salary&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;salary_link&quot;;
+-- Initial load:  21252 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;salary_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;employee_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'employee');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;employee&quot; (
+   &quot;employee_id&quot; INTEGER NOT NULL,
+   &quot;full_name&quot; VARCHAR(30) NOT NULL,
+   &quot;first_name&quot; VARCHAR(30) NOT NULL,
+   &quot;last_name&quot; VARCHAR(30) NOT NULL,
+   &quot;position_id&quot; INTEGER,
+   &quot;position_title&quot; VARCHAR(30),
+   &quot;store_id&quot; INTEGER NOT NULL,
+   &quot;department_id&quot; INTEGER NOT NULL,
+   &quot;birth_date&quot; DATE NOT NULL,
+   &quot;hire_date&quot; TIMESTAMP(0),
+   &quot;end_date&quot; TIMESTAMP(0),
+   &quot;salary&quot; DECIMAL(10,4) NOT NULL,
+   &quot;supervisor_id&quot; INTEGER,
+   &quot;education_level&quot; VARCHAR(30) NOT NULL,
+   &quot;marital_status&quot; VARCHAR(30) NOT NULL,
+   &quot;gender&quot; VARCHAR(30) NOT NULL,
+   &quot;management_role&quot; VARCHAR(30)
+ );
+
+CREATE INDEX &quot;employee_employee_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;employee&quot;(&quot;employee_id&quot;);
+
+CREATE INDEX &quot;employee_management_role_idx&quot;
+ON &quot;FOODMART&quot;.&quot;employee&quot;(&quot;management_role&quot;);
+
+CREATE INDEX &quot;employee_position_title_idx&quot;
+ON &quot;FOODMART&quot;.&quot;employee&quot;(&quot;position_title&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;employee&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;employee_link&quot;;
+-- Initial load:  1155 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;employee_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;position_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'position');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;position&quot; (
+   &quot;position_id&quot; INTEGER NOT NULL,
+   &quot;position_title&quot; VARCHAR(30) NOT NULL,
+   &quot;pay_type&quot; VARCHAR(30) NOT NULL,
+   &quot;min_scale&quot; DECIMAL(10,4) NOT NULL,
+   &quot;max_scale&quot; DECIMAL(10,4) NOT NULL,
+   &quot;management_role&quot; VARCHAR(30) NOT NULL
+ );
+
+CREATE INDEX &quot;position_pay_type_idx&quot;
+ON &quot;FOODMART&quot;.&quot;position&quot;(&quot;pay_type&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;position&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;position_link&quot;;
+-- Initial load:  18 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;position_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;department_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'department');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;department&quot; (
+   &quot;department_id&quot; INTEGER NOT NULL,
+   &quot;department_description&quot; VARCHAR(30) NOT NULL
+ );
+
+CREATE INDEX &quot;department_department_id_idx&quot;
+ON &quot;FOODMART&quot;.&quot;department&quot;(&quot;department_id&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;department&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;department_link&quot;;
+-- Initial load:  12 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;department_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;employee_closure_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'employee_closure');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;employee_closure&quot; (
+   &quot;employee_id&quot; INTEGER NOT NULL,
+   &quot;supervisor_id&quot; INTEGER NOT NULL,
+   &quot;distance&quot; INTEGER
+ );
+
+INSERT INTO &quot;FOODMART&quot;.&quot;employee_closure&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;employee_closure_link&quot;;
+-- Initial load:  7179 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;employee_closure_link&quot;;
+
+CREATE FOREIGN TABLE &quot;FOODMART&quot;.&quot;store_ragged_link&quot;
+SERVER &quot;DERBY_FOODMART&quot; OPTIONS(SCHEMA_NAME 'DEFAULT', TABLE_NAME 'store_ragged');
+
+CREATE TABLE &quot;FOODMART&quot;.&quot;store_ragged&quot; (
+   &quot;store_id&quot; INTEGER NOT NULL,
+   &quot;store_type&quot; VARCHAR(30),
+   &quot;region_id&quot; INTEGER,
+   &quot;store_name&quot; VARCHAR(30),
+   &quot;store_number&quot; INTEGER,
+   &quot;store_street_address&quot; VARCHAR(30),
+   &quot;store_city&quot; VARCHAR(30),
+   &quot;store_state&quot; VARCHAR(30),
+   &quot;store_postal_code&quot; VARCHAR(30),
+   &quot;store_country&quot; VARCHAR(30),
+   &quot;store_manager&quot; VARCHAR(30),
+   &quot;store_phone&quot; VARCHAR(30),
+   &quot;store_fax&quot; VARCHAR(30),
+   &quot;first_opened_date&quot; TIMESTAMP(0),
+   &quot;last_remodel_date&quot; TIMESTAMP(0),
+   &quot;store_sqft&quot; INTEGER,
+   &quot;grocery_sqft&quot; INTEGER,
+   &quot;frozen_sqft&quot; INTEGER,
+   &quot;meat_sqft&quot; INTEGER,
+   &quot;coffee_bar&quot; SMALLINT,
+   &quot;video_store&quot; SMALLINT,
+   &quot;salad_bar&quot; SMALLINT,
+   &quot;prepared_food&quot; SMALLINT,
+   &quot;florist&quot; SMALLINT,
+   PRIMARY KEY (&quot;store_id&quot;)
+ );
+
+CREATE INDEX &quot;store_ragged_store_country_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store_ragged&quot;(&quot;store_country&quot;);
+
+CREATE INDEX &quot;store_ragged_store_state_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store_ragged&quot;(&quot;store_state&quot;);
+
+CREATE INDEX &quot;store_ragged_store_city_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store_ragged&quot;(&quot;store_city&quot;);
+
+CREATE INDEX &quot;store_ragged_store_name_idx&quot;
+ON &quot;FOODMART&quot;.&quot;store_ragged&quot;(&quot;store_name&quot;);
+
+INSERT INTO &quot;FOODMART&quot;.&quot;store_ragged&quot; SELECT * FROM &quot;FOODMART&quot;.&quot;store_ragged_link&quot;;
+-- Initial load:  25 rows
+
+DROP TABLE &quot;FOODMART&quot;.&quot;store_ragged_link&quot;;
+</pre>
+<h1> <span class="mw-headline" id="Enhancements_Needed"> Enhancements Needed </span></h1>
+<ul><li> Aggregate tables:  Currently, these are omitted by replication, meaning that if you're relying on them in your old DBMS, you'll need to disable them in your Mondrian property settings after replication.  See <a href="/wiki/LucidDbAggregateDesigner" title="LucidDbAggregateDesigner">LucidDbAggregateDesigner</a> for how you can automatically add aggregate tables within LucidDB.
+</li><li> Incremental refresh:  Currently, a refresh requires dropping the LucidDB schema and repeating the entire procedure, moving all data.  An incremental procedure would make use of LucidDB's <a href="/wiki/LucidDbUpsert" title="LucidDbUpsert">upsert</a> capabilities together with SQL/MED filter-pushdown to only move and update new/modified rows.  Of course, eventually you might instead want to take advantage of LucidDB's <a href="/wiki/LucidDbEtlTutorial" title="LucidDbEtlTutorial">built-in ETL capabilities</a> as an alternative to replication.
+</li><li> Indexes for Join columns:  Currently no indexes are generated for join columns in snowflake schemas.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 189/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1599-0!*!0!!en!2!* and timestamp 20140414191032 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbMondrianReplication&amp;oldid=6983">http://luciddb.org/wiki/index.php?title=LucidDbMondrianReplication&amp;oldid=6983</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbMondrianReplication" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbMondrianReplication&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbMondrianReplication&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbMondrianReplication&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbMondrianReplication&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbMondrianReplication" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbMondrianReplication" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbMondrianReplication&amp;oldid=6983" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 September 2011, at 21:06.</li>
+		<li id="viewcount">This page has been accessed 14,607 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.148 secs. --></body></html>

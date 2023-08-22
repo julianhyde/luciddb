@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbMemoryManagement - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbMemoryManagement", "wgTitle": "LucidDbMemoryManagement", "wgCurRevisionId": 7130, "wgArticleId": 1378, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbMemoryManagement action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbMemoryManagement</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>At the operating system level, memory management in LucidDB is reasonably straightforward because it runs as a single multi-threaded process (rather than as multiple processes with shared memory).  However, within that process, memory management is a bit complicated due to the server's hybrid Java+native architecture.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Virtual_memory_usage_overview"><span class="tocnumber">1</span> <span class="toctext">Virtual memory usage overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Administrative_goals"><span class="tocnumber">2</span> <span class="toctext">Administrative goals</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Available_parameters"><span class="tocnumber">3</span> <span class="toctext">Available parameters</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Running_out_of_memory"><span class="tocnumber">4</span> <span class="toctext">Running out of memory</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Limiting_overall_memory_usage"><span class="tocnumber">5</span> <span class="toctext">Limiting overall memory usage</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Tuning_for_performance"><span class="tocnumber">6</span> <span class="toctext">Tuning for performance</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Virtual_memory_usage_overview"> Virtual memory usage overview </span></h2>
+<p>The table below shows the overall breakdown for the virtual memory address space of a LucidDB process.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<th align="Left" style="background:#f0f0f0;">Memory Type</th>
+<th align="Center" style="background:#f0f0f0;">Category</th>
+<th align="Center" style="background:#f0f0f0;">Subcategory</th>
+<th align="Center" style="background:#f0f0f0;">Notes</th>
+</tr>
+
+<tr>
+<td rowspan="15">Java heap</td>
+</tr>
+
+<tr>
+<td>Catalog repository object cache</td>
+<td></td>
+<td>Contains descriptors for catalog objects such as schemas, tables, and columns.  This cache uses Java soft references, so it can grow and shrink automatically according to garbage collector memory pressure.  Hence, no knob is provided for controlling it.</td>
+</tr>
+
+<tr>
+<td>Session state</td>
+<td></td>
+<td>Typically small, this includes information about a session such as the associated user and the list of open cursors.  Memory consumption here is based on number of sessions and number of cursors open per session.</td>
+</tr>
+
+<tr>
+<td>Statement plan cache</td>
+<td></td>
+<td>As SQL statements are prepared and executed, they are encoded as "plans".  This cache contains the sharable top level of each plan, which in turn references other sub-components of plans such as generated Java classes and native-code ExecStream graphs.  Cache size is controlled by the "codeCacheMaxBytes" parameter.  See <a href="/wiki/FarragoCodeCache" title="FarragoCodeCache">FarragoCodeCache</a> for more information.</td>
+</tr>
+
+<tr>
+<td>Statements currently being prepared</td>
+<td></td>
+<td>As SQL statements are prepared, they undergo operations such as parsing, validation, and optimization.  Each preparation requires a spike of memory usage for these operations, after which most of the memory used by preparation can be garbage collected, with only the final plan remaining in memory.  Therefore, the memory usage in this area is very bursty.</td>
+</tr>
+
+<tr>
+<td>Statements currently being executed</td>
+<td></td>
+<td>As statements are executed, they acquire and release Java memory dynamically for activities such as SQL expression evaluation, UDF invocation, and tuple buffering.  The amount of memory used depends on the complexity of the statements currently being executed.</td>
+</tr>
+
+<tr>
+<td>Singleton objects</td>
+<td></td>
+<td>This includes global resources such as lock managers and catalog repository connections.  Memory usage here generally achieves steady state as the first few statements are executed after startup.</td>
+</tr>
+
+<tr>
+<td>Network connection pool</td>
+<td></td>
+<td>Sockets, threads, RMI objects, etc.  Size depends on number of clients active; there may be some RMI and VJDBC parameters which can control memory usage here.</td>
+</tr>
+
+<tr>
+<td rowspan="5">Java classloader</td>
+</tr>
+
+<tr>
+<td>JVM runtime libraries</td>
+<td>Should hit steady state soon after startup.</td>
+</tr>
+
+<tr>
+<td>LucidDB Java codebase</td>
+<td>Includes third-party libraries; should hit steady state soon after startup.</td>
+</tr>
+
+<tr>
+<td>Loaded plugin jar cache</td>
+<td>LucidDB allows plugin jars for SQL/MED and UDF's to be loaded dynamically.  Caching of these jars is controlled by the "codeCacheMaxBytes" parameter.  Jars are pinned while the code they contain is in use by at least one executing SQL statement.</td>
+</tr>
+
+<tr>
+<td>Generated Java code cache</td>
+<td>LucidDB generates Java code dynamically as part of SQL statement optimization.  Caching of generated classes is controlled by the "codeCacheMaxBytes" parameter.  Classes can be shared by multiple cursors executing the same plan; classes are pinned while they are in use by at least one executing SQL statement.</td>
+</tr>
+
+<tr>
+<td>Uncollected garbage</td>
+<td></td>
+<td>Whatever the garbage collector hasn't gotten around to yet.</td>
+</tr>
+
+<tr>
+<td>Unused space</td>
+<td></td>
+<td>The Java heap retains memory allocations for reuse after garbage collection.  There may also be significant fragmentation within Java heap blocks.</td>
+</tr>
+
+<tr>
+<td rowspan="16">Non-Java</td>
+</tr>
+
+<tr>
+<td rowspan="4">Buffer pool</td>
+</tr>
+
+<tr>
+<td>Cached disk pages</td>
+<td>LucidDB caches disk pages after they are read.  Disk pages are evicted from the cache automatically when no free pages remain and the memory is needed for some other buffer pool activity such as reading a different page or recording scratch information while executing a query.  Disk pages may be pinned by an ExecStream while a statement is accessing them, temporarily preventing them from being evicted.  The overall size of the buffer pool is controlled by the "cachePagesInit" parameter.  Pages can be dedicated to global cache via the "cacheReservePercentage" parameter.</td>
+</tr>
+
+<tr>
+<td>Scratch pages allocated to currently open ExecStreams</td>
+<td>ExecStreams are native-code dataflow algorithms used to execute SQL statements.  Many ExecStreams such as sort and join are memory-hungry; the memory they use for computation is referred to as "scratch" memory because it is never written to any disk page (note that this memory is different from "temp" disk pages used for activities such as external sort and hash partitioning).  Scratch pages are pinned exclusively by the ExecStreams which are using them and released into the free page pool once the ExecStream no longer needs their contents.  Scratch page quotas are controlled via the "expectedConcurrentStatements" parameter.  For more information, see the <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structResourceGovernorDesign.html#_details">Fennel resource governor design docs</a>.</td>
+</tr>
+
+<tr>
+<td>Free page pool</td>
+<td>All buffer pool pages start out here and then get allocated for either disk cache or scratch usage.  Pages are returned to the free pool once their contents are no longer needed (e.g. when a table is dropped, any of its cached disk pages are unmapped).</td>
+</tr>
+
+<tr>
+<td rowspan="5">Native heap</td>
+</tr>
+
+<tr>
+<td>ExecStream plan cache</td>
+<td>ExecStream instances are somewhat expensive to construct, so they are cached and reused as a separate level of plan caching.  An ExecStream can only be in use by one cursor at a time, so multiple copies of the same ExecStream are added to the cache as needed if multiple cursors are executing the same plan.  This cache is controlled by the "codeCacheMaxBytes" parameter.</td>
+</tr>
+
+<tr>
+<td>ExecStreams currently being executed</td>
+<td>As ExecStreams do their work, they may dynamically acquire and release small amounts of random memory outside of the scratch pages they allocate from the buffer pool.  In general, any large allocations are supposed to come out of the buffer pool where they can be accounted for accurately, so the small allocations should not be significant.</td>
+</tr>
+
+<tr>
+<td>Singleton objects</td>
+<td>This includes allocations such as cache and device data structures; should reach steady-state soon after startup.</td>
+</tr>
+
+<tr>
+<td>Fragmentation</td>
+<td>Without a garbage collector, there is a much greater potential for memory fragmentation since allocated objects cannot be moved.  Fragmentation is minimized by taking all allocations of any significant size out of the buffer pool, which consists of uniformly sized pages, but some amount of fragmentation can be expected from ExecStream data structures.</td>
+</tr>
+
+<tr>
+<td rowspan="4">Native code images</td>
+</tr>
+
+<tr>
+<td>System runtime libraries</td>
+<td>Includes native portion of JVM</td>
+</tr>
+
+<tr>
+<td>LucidDB native code libraries</td>
+<td>Includes third-party libraries such as Boost and STLport.</td>
+</tr>
+
+<tr>
+<td>Just-in-time compiled Java code</td>
+<td>The JVM may compile frequently-used Java classes into native code; this includes statically compiled LucidDB libraries and plugins as well as Java classes generated dynamically by LucidDB's optimizer.  Management of this memory is up to the JVM; there may be JVM-specific flags for controlling it.</td>
+</tr>
+
+<tr>
+<td>Thread stacks</td>
+<td></td>
+<td>Each thread executing in the server consumes some amount of memory for its stack.  The number of threads executing depends roughly on the number of concurrent requests.</td>
+</tr>
+
+<tr>
+<td>Unused virtual address ranges</td>
+<td></td>
+<td>Large portions of the process virtual address space may be left unused.</td>
+</tr>
+
+</table>
+<h2> <span class="mw-headline" id="Administrative_goals"> Administrative goals </span></h2>
+<p>There are three main reasons an administrator may want to control how LucidDB allocates and uses memory:
+</p>
+<ul><li> To eliminate errors caused by LucidDB running out of memory
+</li></ul>
+<ul><li> To limit the amount of physical memory LucidDB uses (e.g. to leave more for other processes running on the same machine)
+</li></ul>
+<ul><li> To improve performance of LucidDB
+</li></ul>
+<p>These goals are often in competition; for example, out of memory errors can be eliminated by disabling code caching, but only at the expense of performance.
+</p>
+<h2> <span class="mw-headline" id="Available_parameters"> Available parameters </span></h2>
+<p>The following parameters are the knobs currently available:
+</p>
+<ul><li> JVM limits:  the maximum size of the Java heap can be set via the -Xmx command-line parameter when the JVM is invoked to start LucidDB.  Defaults for this value are JVM-dependent; for example, the Sun hotspot client JVM defaults to a 64MB limit, whereas the server JVM defaults to a quarter of available physical memory.  For best performance on a server machine with dedicated resources, it's usually a good idea to set the minimum heap size (via -Xms) to the same value as the maximum heap size; this avoids unnecessary garbage collection.
+</li></ul>
+<ul><li> Buffer pool size:  this can be set via SQL with the "cachePagesInit" system parameter; see <a href="/wiki/LucidDbSystemParameters" title="LucidDbSystemParameters">LucidDbSystemParameters</a> and <a href="/wiki/LucidDbBufferPoolSizing" title="LucidDbBufferPoolSizing">LucidDbBufferPoolSizing</a>.
+</li></ul>
+<ul><li> Portion of buffer pool reserved for disk caching:  this can be set via SQL with the "cacheReservePercentage" system parameter.
+</li></ul>
+<ul><li> Buffer pool rationing for each statement:  this can be set via SQL with the "expectedConcurrentStatements" system parameter.
+</li></ul>
+<ul><li> Code cache size:  this can be set via SQL with the "codeCacheMaxBytes" system parameter.  The "code cache" is a single unified cache for statement plans, plugin jars, generated Java classes, and ExecStream plans.  Setting this parameter to "min" disables caching for all of these objects.  Setting this parameter to "max" prevents cached objects from ever being deallocated (this will eventually lead to out-of-memory errors).  By default, this parameter is set to 2MB, which should work well in most configurations.
+</li></ul>
+<h2> <span class="mw-headline" id="Running_out_of_memory"> Running out of memory </span></h2>
+<p>LucidDB can run out of memory for the following reasons:
+</p>
+<ul><li> Failure to allocate buffer pool on startup.  This can happen because the number of pages requested exceeds the available memory.  LucidDB does not lock buffer pool pages (preventing them from being paged out), so the failure would be due to virtual memory limits (maximum address space size exceeded).  With 32-bit address spaces, the virtual memory limit may be as low as 2GB depending on the operating system.
+</li></ul>
+<ul><li> Java heap limit exceeded.  This is probably the most common failure, and can happen during just about any activity.  It is usually caused by one of
+<ul><li> setting that limit too low
+</li><li> setting the "codeCacheMaxBytes" parameter too high
+</li><li> overloading the server with too many concurrent requests given the available memory
+</li></ul>
+</li></ul>
+<ul><li> Buffer pool exhausted.  This can occur when a new statement is about to start executing if the resource governor detects that the statement's requirements cannot be satisfied by the remaining buffers.  If you hit this, you'll receive a <i>"Cache scratch memory exhaused"</i> error message.  This is usually caused by:
+<ul><li> setting "cachePagesInit" and/or "cachePagesMax" too low
+</li><li> setting "expectedConcurrentStatements" too low (so that not enough of the buffer pool is kept in reserve for new statements)
+</li><li> setting "cacheReservePercentage" too high (so that not enough of the buffer pool is available for statement execution instead of disk caching)
+</li><li> overloading the server with too many concurrent requests given the available memory
+</li></ul>
+</li></ul>
+<ul><li> Native heap allocation failure.  This is rare; if encountered, it is most likely to be when a new statement is about to start executing rather than in the middle of statement execution.  The cause is usually that some parameter (such as the Java heap size, buffer pool size, or code cache size) is set too high, meaning not enough virtual memory is left over for miscellaneous native heap allocations.
+</li></ul>
+<h2> <span class="mw-headline" id="Limiting_overall_memory_usage"> Limiting overall memory usage </span></h2>
+<p>This goal is achieved by limiting the settings for the JVM heap size, "cachePagesInit", and "codeCacheMaxBytes" parameters mentioned above.  Roughly, the overall physical memory used by LucidDB can be calculated as the sum of
+</p>
+<ul><li> Java heap
+</li><li> Buffer pool
+</li><li> Native heap/stacks used by ExecStreams
+</li><li> Actively used portions of native code library images
+</li></ul>
+<p>Limits on the first two can be set directly.  The last one should be fairly static at steady-state and can probably be estimated via operating-system working-set analysis utilities.  The native heap is the hardest part; the only parameter which controls it is the code cache size, but that affects other objects as well.
+</p>
+<h2> <span class="mw-headline" id="Tuning_for_performance"> Tuning for performance </span></h2>
+<p>TBD.  Generally speaking, performance can be improved by increasing the sizes of the buffer pool and code cache, and by adjusting the "expectedConcurrentStatements" parameter to match the actual workload, but the details are very much application-dependent.
+</p><p>Note that for a database server, it is never a good idea to exceed available physical memory even if there is sufficient virtual memory available.  In this instance, the goals of limiting usage and improving performance actually harmonize.
+</p><p>See also <a href="/wiki/LucidDbPerformanceTuning" title="LucidDbPerformanceTuning">LucidDbPerformanceTuning</a>.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 38/1000000
+Post-expand include size: 126/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1378-0!*!0!!en!*!* and timestamp 20140414191058 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbMemoryManagement&amp;oldid=7130">http://luciddb.org/wiki/index.php?title=LucidDbMemoryManagement&amp;oldid=7130</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbMemoryManagement" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbMemoryManagement&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbMemoryManagement&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbMemoryManagement&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbMemoryManagement" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbMemoryManagement" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbMemoryManagement" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbMemoryManagement&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbMemoryManagement&amp;oldid=7130" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 3 November 2011, at 18:27.</li>
+		<li id="viewcount">This page has been accessed 12,774 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.189 secs. --></body></html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbEtlTutorial - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbEtlTutorial", "wgTitle": "LucidDbEtlTutorial", "wgCurRevisionId": 7095, "wgArticleId": 1385, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbEtlTutorial action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbEtlTutorial</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page provides a tutorial for using the extract/transform/load (ETL) features built into LucidDB.  It walks through a very simple example (ignoring a lot of the real complexity of ETL, like slowly changing dimensions).  The example data and scripts are provided as part of LucidDB under the examples/etl directory.
+</p><p>If you have used standalone ETL tools in the past, the LucidDB approach will probably seem unnatural to you at first.  LucidDB expresses the entire ETL process as bulk-operation SQL dataflow, without any of the usual concepts of pulling individual rows from sources and writing them into targets.  The benefits of the LucidDB approach become apparent once you've tried it:
+</p>
+<ul><li> simplicity (everything is either pure SQL or Java transformations pipelined directly within SQL)
+</li><li> expressive power (mix standard relational operators such as join, union, and aggregation with custom Java transformation logic, with any level of nesting)
+</li><li> modularity (SQL views can be used to build and debug complex pipelined transformations step by step)
+</li><li> convenience (ETL processes are never forced to arbitrarily materialize data into temporary tables)
+</li><li> performance (batch operations can be orders of magnitude faster than row-by-row operations)
+</li></ul>
+<p>Note that if you try to use a standalone ETL tool directly with LucidDB, it may not work well, because LucidDB's column-store architecture cannot implement single-row updates efficiently.  So...work through this tutorial and see if the SQL-everything approach is right for you.  If you still prefer a standalone ETL tool, that's OK; see <a href="/wiki/LucidDbTalend" title="LucidDbTalend">LucidDbTalend</a> for an integration example.  One simple approach is to use a tool like that to generate flat files, and then bulk-load those into LucidDB (referring to the examples below for accessing flat files); this way you can still use LucidDB as your warehouse DBMS.  There is also productized support for <a href="/wiki/LucidDbPDIStreamingLoader" title="LucidDbPDIStreamingLoader">streaming load from Pentaho Data Integration</a>.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Scenario"><span class="tocnumber">1</span> <span class="toctext">Scenario</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Setup"><span class="tocnumber">2</span> <span class="toctext">Setup</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Define_Sources"><span class="tocnumber">3</span> <span class="toctext">Define Sources</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Define_Transforms"><span class="tocnumber">4</span> <span class="toctext">Define Transforms</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Define_Warehouse"><span class="tocnumber">5</span> <span class="toctext">Define Warehouse</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Run_Full_Load"><span class="tocnumber">6</span> <span class="toctext">Run Full Load</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Run_Analysis_Queries"><span class="tocnumber">7</span> <span class="toctext">Run Analysis Queries</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Run_Incremental_Load"><span class="tocnumber">8</span> <span class="toctext">Run Incremental Load</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Exercise"><span class="tocnumber">9</span> <span class="toctext">Exercise</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Error_Handling"><span class="tocnumber">10</span> <span class="toctext">Error Handling</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#OLAP"><span class="tocnumber">11</span> <span class="toctext">OLAP</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Scenario"> Scenario </span></h2>
+<p>In our example, we're starting with two sources of external data:  
+</p>
+<ul><li> a flat file containing employee timesheet data (under the examples/etl/filedata directory)
+</li><li> an hsqldb database containing human resources information (under the examples/etl/jdbcdata directory)
+</li></ul>
+<p>What we would like to do is extract this data, transform it and load it into a warehouse schema, and then run analysis queries.  One of the queries we want to run is "Which employees work on weekends?", so in addition to the external table data, we are going to use Java to generate a calendar table which can be used to correlate dates in a year with weekends.
+</p>
+<h2> <span class="mw-headline" id="Setup"> Setup </span></h2>
+<p>The paths in this example are relative to the installation root.  For them to work, start both the server and client with the installation root as the working directory.  For example, to start the server:
+</p>
+<pre>
+cd luciddb-0.9.4
+bin/lucidDbServer
+</pre>
+<p>and then the client in another shell:
+</p>
+<pre>
+cd luciddb-0.9.4
+bin/sqllineClient
+</pre>
+<p>(For real applications, it's better to alway use absolute paths so that you don't have to rely on the working directory from which the server was started.)
+</p><p>If you have problems running the tutorial, check <a href="/wiki/LucidDbUserFaq" title="LucidDbUserFaq">LucidDbUserFaq</a>.
+</p>
+<h2> <span class="mw-headline" id="Define_Sources"> Define Sources </span></h2>
+<p>The first step is to define links to the sources within LucidDB.  In SQL/MED terms, these are "foreign servers".  From sqlline, you can run the source creation script as follows:
+</p>
+<pre>
+!run examples/etl/sql/defineSources.sql
+</pre>
+<p>Let's walk through the output one step at a time.
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/defineSources.sql
+create server jdbc_link
+foreign data wrapper sys_jdbc
+options(
+driver_class 'org.hsqldb.jdbcDriver',
+url 'jdbc:hsqldb:examples/etl/jdbcdata/scott',
+user_name 'SA',
+table_types 'TABLE');
+</pre>
+<p>The first command creates a link to the hsqldb database.  It specifies a predefined driver ("foreign data wrapper" in SQL/MED terms) named sys_jdbc, and configures it with the correct JDBC driver and properties.  See <a href="/wiki/LucidDbCreateForeignServer" title="LucidDbCreateForeignServer">LucidDbCreateForeignServer</a> for examples across other source DBMS products.
+</p><p>The next command does the same thing, except using the <a href="/wiki/LucidDbFlatFileWrapper" title="LucidDbFlatFileWrapper">flatfile foreign data wrapper</a> instead of JDBC:
+</p>
+<pre>
+create server file_link
+foreign data wrapper sys_file_wrapper
+options (
+directory 'examples/etl/filedata/',
+control_file_extension 'bcp',
+file_extension 'txt',
+with_header 'NO',
+log_directory 'trace/',
+field_delimiter '\t');
+</pre>
+<p>The next few commands create a schema to hold extracted metadata, and then use the IMPORT FOREIGN SCHEMA command to perform the metadata extraction.  This creates table definitions in LucidDB's catalog corresponding to the file structure and hsqldb JDBC table structures.  For simplicity, we extract all metadata into a single schema rather than keeping it separate by source.  (For management purposes, it is usually better to keep sources separate in real applications.)
+</p>
+<pre>
+create schema extraction_schema;
+
+import foreign schema sales
+from server jdbc_link
+into extraction_schema;
+
+import foreign schema bcp
+from server file_link
+into extraction_schema;
+</pre>
+<p>Once IMPORT FOREIGN SCHEMA has been run, we can query LucidDB's own administrative views to see the table definitions (see <a href="/wiki/LucidDbSystemViews" title="LucidDbSystemViews">LucidDbSystemViews</a>):
+</p>
+<pre>
+select table_name, column_name
+from sys_root.dba_columns
+where schema_name='EXTRACTION_SCHEMA'
+order by table_name,ordinal_position;
++-------------+---------------+
+| TABLE_NAME  |  COLUMN_NAME  |
++-------------+---------------+
+| DEPT        | DEPTNO        |
+| DEPT        | DNAME         |
+| DEPT        | LOC           |
+| EMP         | EMPNO         |
+| EMP         | ENAME         |
+| EMP         | JOB           |
+| EMP         | MGR           |
+| EMP         | HIREDATE      |
+| EMP         | SAL           |
+| EMP         | COMM          |
+| EMP         | DEPTNO        |
+| EMP2        | EMPNO         |
+| EMP2        | ENAME         |
+| EMP2        | JOB           |
+| EMP2        | MGR           |
+| EMP2        | HIREDATE      |
+| EMP2        | SAL           |
+| EMP2        | COMM          |
+| EMP2        | DEPTNO        |
+| SALGRADE    | GRADE         |
+| SALGRADE    | LOSAL         |
+| SALGRADE    | HISAL         |
+| TIMESHEET   | EMPNO         |
+| TIMESHEET   | WORKDAY       |
+| TIMESHEET   | HOURS_WORKED  |
++-------------+---------------+
+</pre>
+<p>So, we have departments, two copies of the employees table, salary grades, and timesheets.  How much data are we dealing with?
+</p>
+<pre>
+set schema 'extraction_schema';
+
+select count(*) from timesheet;
++---------+
+| EXPR$0  |
++---------+
+| 4060    |
++---------+
+
+select count(*) from emp;
++---------+
+| EXPR$0  |
++---------+
+| 14      |
++---------+
+
+select count(*) from dept;
++---------+
+| EXPR$0  |
++---------+
+| 4       |
++---------+
+</pre>
+<p>Not very much!  Finally, the script retrieves the contents of the smallest table:
+</p>
+<pre>
+select * from dept;
++---------+-------------+-----------+
+| DEPTNO  |    DNAME    |    LOC    |
++---------+-------------+-----------+
+| 10      | ACCOUNTING  | NEW YORK  |
+| 20      | RESEARCH    | DALLAS    |
+| 30      | SALES       | CHICAGO   |
+| 40      | OPERATIONS  | BOSTON    |
++---------+-------------+-----------+
+</pre>
+<p>Note that no data has actually been loaded into LucidDB tables yet; instead, LucidDB is acting as a SQL gateway to the hsqldb database.
+</p>
+<h2> <span class="mw-headline" id="Define_Transforms"> Define Transforms </span></h2>
+<p>The next script defines a transformation schema containing views which adapt the source data into the form in which we want it to be loaded into the warehouse schema:
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/defineTransforms.sql
+create schema transform_schema;
+set schema 'transform_schema';
+
+create view timesheet_view as
+select * from extraction_schema.timesheet;
+
+create view emp_view as
+select e.empno, e.ename, d.dname, e.job
+from extraction_schema.emp e inner join extraction_schema.dept d
+on e.deptno=d.deptno;
+
+create view calendar_view as
+select
+time_key as calendar_date,
+case when weekend='Y' then true else false end as is_weekend
+from table(applib.time_dimension(2005, 1, 1, 2005, 12, 31));
+</pre>
+<ul><li> The timesheet view is easy; it's "fact" data, so we're going to pass it straight through.
+</li><li> The employees view is a little more complicated, because we are denormalizing the source schema into a star schema; employee will be a "dimension" with department name as an attribute.  That way, we won't have to join to a department table every time we want to analyze by an employee's department.
+</li><li> Finally, the calendar view demonstrates the ability of a LucidDB user-defined transform (UDX) to make up data out of thin air.  In this case, the time_dimension table function (provided in the prepackaged applib schema) generates one row for each day in the year 2005.  The output columns have various useful attributes such as week number, month, day name, etc., but all we are interested in at the moment are which days fall on the weekend.
+</li></ul>
+<p>The next part of the script verifies the row counts after transformation:
+</p>
+<pre>
+select count(*) from timesheet_view;
++---------+
+| EXPR$0  |
++---------+
+| 4060    |
++---------+
+
+
+select count(*) from emp_view;
++---------+
+| EXPR$0  |
++---------+
+| 14      |
++---------+
+
+
+select count(*) from calendar_view;
++---------+
+| EXPR$0  |
++---------+
+| 365     |
++---------+
+</pre>
+<p>Good, the employee/department join didn't lose any rows (otherwise we should have used an outer join to preserve employees without departments!) and 2005 was not a leap year.
+</p><p>The end of the script reads the contents of the joined employees view:
+</p>
+<pre>
+select * from emp_view;
++--------+---------+-------------+------------+
+| EMPNO  |  ENAME  |    DNAME    |    JOB     |
++--------+---------+-------------+------------+
+| 7369   | SMITH   | RESEARCH    | CLERK      |
+| 7499   | ALLEN   | SALES       | SALESMAN   |
+| 7521   | WARD    | SALES       | SALESMAN   |
+| 7566   | JONES   | RESEARCH    | MANAGER    |
+| 7654   | MARTIN  | SALES       | SALESMAN   |
+| 7698   | BLAKE   | SALES       | MANAGER    |
+| 7782   | CLARK   | ACCOUNTING  | MANAGER    |
+| 7788   | SCOTT   | RESEARCH    | ANALYST    |
+| 7839   | KING    | ACCOUNTING  | PRESIDENT  |
+| 7844   | TURNER  | SALES       | SALESMAN   |
+| 7876   | ADAMS   | RESEARCH    | CLERK      |
+| 7900   | JAMES   | SALES       | CLERK      |
+| 7902   | FORD    | RESEARCH    | ANALYST    |
+| 7934   | MILLER  | ACCOUNTING  | CLERK      |
++--------+---------+-------------+------------+
+</pre>
+<p>Again, no data has actually been loaded yet; LucidDB is retrieving the contents of the two tables from hsqldb and then hash-joining it on the fly, returning the results to sqlline.
+</p>
+<h2> <span class="mw-headline" id="Define_Warehouse"> Define Warehouse </span></h2>
+<p>The next script creates the warehouse schema which will be used by our real analysis queries:
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/defineWarehouse.sql
+create schema warehouse;
+set schema 'warehouse';
+
+create table employee_dimension(
+    emp_key int generated always as identity not null primary key,
+    empno int not null,
+    ename varchar(128) not null,
+    dname varchar(128) not null,
+    job varchar(128) not null,
+unique(empno)
+);
+
+create table calendar_dimension(
+    calendar_key int generated always as identity not null primary key,
+    calendar_date date not null,
+    is_weekend boolean not null,
+unique(calendar_date)
+);
+create index calendar_weekend_idx on calendar_dimension(is_weekend);
+
+create table timesheet_fact(
+    timesheet_key int generated always as identity not null primary key,
+    emp_key int not null,
+    workday_key int not null,
+    hours_worked smallint not null,
+unique(emp_key, workday_key)
+);
+create index timesheet_workday_idx on timesheet_fact(workday_key);
+create index timesheet_hours_worked_idx on timesheet_fact(hours_worked);
+</pre>
+<p>Points to note:
+</p>
+<ul><li> Standard practice in ETL is to assign each row in the warehouse a "surrogate key" instead of relying on the "natural keys" from the source system.  In our example, emp_key is the surrogate key (which is almost always the PRIMARY KEY as well), and empno is the natural key.  LucidDB provides the GENERATED column feature to make it easy to populate tables with surrogate keys.  Natural keys are declared via UNIQUE constraints.  See <a href="/wiki/LucidDbUniqueConstraints" title="LucidDbUniqueConstraints">LucidDbUniqueConstraints</a> for more on this topic.
+</li></ul>
+<ul><li> LucidDB does not yet support declaration of foreign key constraints, but if it did, they would state that the references in the fact table are to the surrogate keys of the dimension table (NOT to the natural keys).  For example, timesheet_fact.emp_key corresponds to employee_dimension.emp_key, not empno.  We'll see how this correspondence is created when we run loads in the next section.
+</li></ul>
+<ul><li> We create indexes on columns of large tables which are likely to be used in predicates and as join keys.  LucidDB automatically adapts indexes to data distributions, so the indexes on low-cardinality columns such as is_weekend and hours_worked will be bitmap indexes, whereas the indexes implicitly created to enforce UNIQUE constraints will be standard B-trees.  No extra index is needed for timesheet_fact.emp_key, since it is the first column in the UNIQUE constraint, but one is needed for workday_key, since it is the second column, and we will be using it to join to calendar_dimension.
+</li></ul>
+<h2> <span class="mw-headline" id="Run_Full_Load"> Run Full Load </span></h2>
+<p>OK, now we're finally ready to pump in some data and store it:
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/runFullLoad.sql
+set schema 'warehouse';
+
+insert into employee_dimension(empno, ename, dname, job)
+select * from transform_schema.emp_view;
+
+insert into calendar_dimension(calendar_date, is_weekend)
+select * from transform_schema.calendar_view;
+
+insert into timesheet_fact(emp_key, workday_key, hours_worked)
+select
+    e.emp_key,
+    c.calendar_key,
+    t.hours_worked
+from
+    transform_schema.timesheet_view t,
+    employee_dimension e,
+    calendar_dimension c
+where
+    t.empno=e.empno and t.workday=c.calendar_date;
+</pre>
+<p>That was easy.  Just more SQL statements; there's no separate bulk-loader utility to run.
+</p><p>In the INSERT target lists, we don't mention the surrogate keys, causing them to get filled in with an autoincrement sequence.  The transform views already have everything else ready.  However, the fact load has to join to the preloaded dimensions in order to convert natural keys into surrogate keys.  (In a real ETL process, there would usually be a lot more complexity here, including an extra layer of staging tables.)
+</p><p>LucidDB can handle bulk-updates to indexes directly as part of bulk-loads to tables, so there's never a need to drop and recreate indexes as a load step.  (Some other DBMS products require this for efficiency.)
+</p><p>After loading data, it's a good idea to run ANALYZE TABLE to update the statistics in the catalog; otherwise, LucidDB's optimizer won't operate effectively:
+</p>
+<pre>
+analyze table employee_dimension estimate statistics for all columns;
+analyze table calendar_dimension estimate statistics for all columns;
+analyze table timesheet_fact estimate statistics for all columns;
+</pre>
+<p>Finally, another sanity check to verify that the data was loaded correctly:
+</p>
+<pre>
+select count(*) from employee_dimension;
++---------+
+| EXPR$0  |
++---------+
+| 14      |
++---------+
+
+select count(*) from calendar_dimension;
++---------+
+| EXPR$0  |
++---------+
+| 365     |
++---------+
+
+select count(*) from timesheet_fact;
++---------+
+| EXPR$0  |
++---------+
+| 4060    |
++---------+
+
+select * from employee_dimension;
++----------+--------+---------+-------------+------------+
+| EMP_KEY  | EMPNO  |  ENAME  |    DNAME    |    JOB     |
++----------+--------+---------+-------------+------------+
+| 0        | 7369   | SMITH   | RESEARCH    | CLERK      |
+| 1        | 7499   | ALLEN   | SALES       | SALESMAN   |
+| 2        | 7521   | WARD    | SALES       | SALESMAN   |
+| 3        | 7566   | JONES   | RESEARCH    | MANAGER    |
+| 4        | 7654   | MARTIN  | SALES       | SALESMAN   |
+| 5        | 7698   | BLAKE   | SALES       | MANAGER    |
+| 6        | 7782   | CLARK   | ACCOUNTING  | MANAGER    |
+| 7        | 7788   | SCOTT   | RESEARCH    | ANALYST    |
+| 8        | 7839   | KING    | ACCOUNTING  | PRESIDENT  |
+| 9        | 7844   | TURNER  | SALES       | SALESMAN   |
+| 10       | 7876   | ADAMS   | RESEARCH    | CLERK      |
+| 11       | 7900   | JAMES   | SALES       | CLERK      |
+| 12       | 7902   | FORD    | RESEARCH    | ANALYST    |
+| 13       | 7934   | MILLER  | ACCOUNTING  | CLERK      |
++----------+--------+---------+-------------+------------+
+</pre>
+<p>Note the surrogate key sequence in the emp_key column.
+</p>
+<h2> <span class="mw-headline" id="Run_Analysis_Queries"> Run Analysis Queries </span></h2>
+<p>At last we're ready to run real queries:
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/runAnalytics.sql
+set schema 'warehouse';
+
+-- average hours worked by employee
+select ename, avg(hours_worked) as avg_hours
+from timesheet_fact t, employee_dimension e
+where t.emp_key=e.emp_key
+group by ename;
++---------+------------+
+|  ENAME  | AVG_HOURS  |
++---------+------------+
+| BLAKE   | 7          |
+| MARTIN  | 11         |
+| CLARK   | 7          |
+| SMITH   | 8          |
+| FORD    | 11         |
+| MILLER  | 7          |
+| ALLEN   | 13         |
+| WARD    | 10         |
+| KING    | 4          |
+| SCOTT   | 11         |
+| JONES   | 7          |
+| ADAMS   | 7          |
+| TURNER  | 11         |
+| JAMES   | 7          |
++---------+------------+
+</pre>
+<p>Hmmm...that's a wide range.  Does it have anything to do with the job they're doing?
+</p>
+<pre>
+-- average hours worked by job
+select job, avg(hours_worked) as avg_hours
+from timesheet_fact t, employee_dimension e
+where t.emp_key=e.emp_key
+group by job;
++------------+------------+
+|    JOB     | AVG_HOURS  |
++------------+------------+
+| SALESMAN   | 11         |
+| ANALYST    | 11         |
+| CLERK      | 7          |
+| MANAGER    | 7          |
+| PRESIDENT  | 4          |
++------------+------------+
+</pre>
+<p>Someone should check the president's golf logs instead.
+</p>
+<pre>
+-- who works on weekends?
+select distinct ename, job
+from timesheet_fact t, employee_dimension e, calendar_dimension c
+where t.emp_key=e.emp_key
+and t.workday_key=c.calendar_key
+and c.is_weekend;
++---------+-----------+
+|  ENAME  |    JOB    |
++---------+-----------+
+| ALLEN   | SALESMAN  |
+| MARTIN  | SALESMAN  |
+| TURNER  | SALESMAN  |
+| WARD    | SALESMAN  |
++---------+-----------+
+</pre>
+<p>Guess those salespeople must have had crazy quotas in 2005!
+</p>
+<h2> <span class="mw-headline" id="Run_Incremental_Load"> Run Incremental Load </span></h2>
+<p>The last script gives a quick look at LucidDB's upsert feature:
+</p>
+<pre>
+0: jdbc:luciddb:&gt;&#160;!run examples/etl/sql/runIncrementalLoad.sql
+select * from extraction_schema.emp2;
++--------+--------+-------------+------+-------------+-------+-------+---------+
+| EMPNO  | ENAME  |     JOB     | MGR  |  HIREDATE   |  SAL  | COMM  | DEPTNO  |
++--------+--------+-------------+------+-------------+-------+-------+---------+
+| 7839   | REX    | EL SUPREMO  |      | 1981-11-17  | 5000  |       | 40      |
+| 7999   | KEATS  | ANALYST     |      | 1981-09-07  | 3200  |       | 10      |
++--------+--------+-------------+------+-------------+-------+-------+---------+
+</pre>
+<p>The EMP2 source table has two rows.  The first one corresponds to an existing empno, the employee formerly known as KING.  Apparently he is suffering from delusions of grandeur, and has also been reassigned to a different department.  The second row is a new one which didn't appear in the original table at all.
+</p><p>To perform an incremental load, the script first creates a new transform view to represent the extra rows.  (In a real application it would usually just be reloading from an updated state of the EMP table, but we have to fake it here with a separate table.)
+</p>
+<pre>
+create view transform_schema.emp2_view as
+select e.empno, e.ename, d.dname, e.job
+from extraction_schema.emp2 e inner join extraction_schema.dept d
+on e.deptno=d.deptno;
+</pre>
+<p>Next, the actual upsert:
+</p>
+<pre>
+merge into warehouse.employee_dimension tgt
+using transform_schema.emp2_view src
+on src.empno=tgt.empno
+when matched then
+update set ename=src.ename, dname=src.dname, job=src.job
+when not matched then
+insert(empno, ename, dname, job)
+values(src.empno, src.ename, src.dname, src.job);
+</pre>
+<p>The merge statement tells LucidDB what to do based on whether the incoming row matches an existing one on empno; if it does, update the existing row (leaving the empno and emp_key alone), if it doesn't, insert it as a new row (assigning it a brand new surrogate key):
+</p>
+<pre>
+select * from warehouse.employee_dimension;
++----------+--------+---------+-------------+-------------+
+| EMP_KEY  | EMPNO  |  ENAME  |    DNAME    |     JOB     |
++----------+--------+---------+-------------+-------------+
+| 0        | 7369   | SMITH   | RESEARCH    | CLERK       |
+| 1        | 7499   | ALLEN   | SALES       | SALESMAN    |
+| 2        | 7521   | WARD    | SALES       | SALESMAN    |
+| 3        | 7566   | JONES   | RESEARCH    | MANAGER     |
+| 4        | 7654   | MARTIN  | SALES       | SALESMAN    |
+| 5        | 7698   | BLAKE   | SALES       | MANAGER     |
+| 6        | 7782   | CLARK   | ACCOUNTING  | MANAGER     |
+| 7        | 7788   | SCOTT   | RESEARCH    | ANALYST     |
+| 9        | 7844   | TURNER  | SALES       | SALESMAN    |
+| 10       | 7876   | ADAMS   | RESEARCH    | CLERK       |
+| 11       | 7900   | JAMES   | SALES       | CLERK       |
+| 12       | 7902   | FORD    | RESEARCH    | ANALYST     |
+| 13       | 7934   | MILLER  | ACCOUNTING  | CLERK       |
+| 8        | 7839   | REX     | OPERATIONS  | EL SUPREMO  |
+| 14       | 7999   | KEATS   | ACCOUNTING  | ANALYST     |
++----------+--------+---------+-------------+-------------+
+</pre>
+<p>KING/REX kept his EMP_KEY and EMPNO, whereas KEATS was assigned a new EMP_KEY.   But why did KING's position in the table move?  Because LucidDB physically implements UPSERT via a combination of DELETE and INSERT, and rows are always inserted at the end.
+</p>
+<h2> <span class="mw-headline" id="Exercise"> Exercise </span></h2>
+<p>To get a better understanding of everything above, it might help to try to make some changes on your own.
+</p><p>Here's your challenge:  find out the average number of hours worked by employee <i>per week</i> rather than <i>per day</i>.
+</p><p>Hint:  the applib.time_dimension function produces a column called WEEK_NUMBER_IN_YEAR.
+</p>
+<h2> <span class="mw-headline" id="Error_Handling"> Error Handling </span></h2>
+<p>Often during ETL, a few "bad apple" rows will cause the whole operation to fail.  LucidDB provides facilities for dealing with this situation; see <a href="/wiki/LucidDbErrorHandling" title="LucidDbErrorHandling">LucidDbErrorHandling</a>.
+</p>
+<h2> <span class="mw-headline" id="OLAP"> OLAP </span></h2>
+<p>Once you've got your data into a LucidDB star schema, read about <a href="/wiki/LucidDbOlap" title="LucidDbOlap">LucidDbOlap</a> to learn how to analyze it using a multi-dimensional query language.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 250/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1385-0!*!0!!en!*!* and timestamp 20140414191029 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbEtlTutorial&amp;oldid=7095">http://luciddb.org/wiki/index.php?title=LucidDbEtlTutorial&amp;oldid=7095</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbEtlTutorial" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbEtlTutorial&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbEtlTutorial&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbEtlTutorial&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbEtlTutorial&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbEtlTutorial" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbEtlTutorial" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbEtlTutorial&amp;oldid=7095" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 15 October 2011, at 03:45.</li>
+		<li id="viewcount">This page has been accessed 30,245 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.137 secs. --></body></html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>EnkiRepositoryUpgrade - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "EnkiRepositoryUpgrade", "wgTitle": "EnkiRepositoryUpgrade", "wgCurRevisionId": 5675, "wgArticleId": 1910, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-EnkiRepositoryUpgrade action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">EnkiRepositoryUpgrade</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>Under Construction: Details on how to manage repository upgrades
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Table_Modification_DDL"><span class="tocnumber">2</span> <span class="toctext">Table Modification DDL</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Manual_Upgrade"><span class="tocnumber">2.1</span> <span class="toctext">Manual Upgrade</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Automated_Upgrade"><span class="tocnumber">2.2</span> <span class="toctext">Automated Upgrade</span></a>
+<ul>
+<li class="toclevel-3 tocsection-5"><a href="#Trivial_Version"><span class="tocnumber">2.2.1</span> <span class="toctext">Trivial Version</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#Advanced_Version"><span class="tocnumber">2.2.2</span> <span class="toctext">Advanced Version</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#View_Modification_DDL"><span class="tocnumber">3</span> <span class="toctext">View Modification DDL</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Manual"><span class="tocnumber">3.1</span> <span class="toctext">Manual</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Automated"><span class="tocnumber">3.2</span> <span class="toctext">Automated</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>Upgrading repository versions without using XMI import and export requires modification of Enki/Hibernate's per-metamodel database schema.  In addition it must be possible to upgrade an Enki/Hiberate schema by direct manipulation of the database rather than via XMI import/export.  This page documents the tools necessary to accomplish the upgrade.
+</p>
+<h1> <span class="mw-headline" id="Table_Modification_DDL"> Table Modification DDL </span></h1>
+<h2> <span class="mw-headline" id="Manual_Upgrade"> Manual Upgrade </span></h2>
+<p>The basic steps are:
+</p>
+<ol><li> Generate an Enki/Hibernate schema for the old version of your metamodel.
+</li><li> Generate the same for the new version of your metamodel.
+</li><li> Write a DDL script that make the necessary modifications to table structures and indexes.
+</li></ol>
+<p>In addition, if the multiplicity or ordering of any association end was modified, you'll need to write DML statements to move the associated associations data to the correct table.  Likewise if any association had the <a href="/wiki/EnkiHighCardinalityAssociation" title="EnkiHighCardinalityAssociation">high-cardinality association tag</a> added or removed, data will need to be transferred.  See the section on <a href="#Advanced_Version">advanced, automated upgrade</a> for some examples.
+</p><p>The best way to determine how to transfer the data is to identify the same associations in both models and examine the data in the association tables.
+</p>
+<h2> <span class="mw-headline" id="Automated_Upgrade"> Automated Upgrade </span></h2>
+<p>This section outlines the requirements for a Schema Delta Tool that can automate all or part of the manual steps described above.
+</p><p>The purpose of the Schema Delta Tool is to generate the necessary SQL statements to convert version A of an Enki/Hiberate repository to version B.  It must not destroy any data.
+</p><p>New attributes and associations on an existing class cause the corresponding table to be altered to include new columns representing the attributes and associations. The <a href="/wiki/FarragoCatalogChangeRules" title="FarragoCatalogChangeRules">FarragoCatalogChangeRules</a> forbids adding new required (e.g. multiplicity 1) attributes unless they are numeric or boolean values.  The tool can support these by providing a default value for the column.  The default value should be zero (0) for numeric types and false for boolean types.
+</p>
+<h3> <span class="mw-headline" id="Trivial_Version"> Trivial Version </span></h3>
+<p>A trivial version of a Schema Delta Tool can be implemented by using the existing Enki Ant task and the org.eigenbase.enki.hibernate.ant.ExportSchemaSubTask.  The tool should generate the complete schema DDL for the old metamodel version.  It may obtain the UML from source control or require that the user retrieve the file and specify its location.  Once the schema DDL is generated it is applied to the database.  Next the tool generates the schema DDL for the new metamodel version using the <code>ExportSchemaSubTask</code>'s <code>update</code> mode.  This will use Hibernate's internal tools to generate only the necessary changes to support the new metamodel version.
+</p><p>This is referred to as the trivial version because it cannot handle any modifications to association end multiplicity and ordering or the application or removal of the <a href="/wiki/EnkiHighCardinalityAssociation" title="EnkiHighCardinalityAssociation">high-cardinality association tag</a>.
+</p>
+<h3> <span class="mw-headline" id="Advanced_Version"> Advanced Version </span></h3>
+<p>A more advanced version of the Schema Delta Tool can be implemented by comparing the old and new metamodel versions.  Some possible mechanisms for this are:
+</p>
+<ol><li> Import both models into Netbeans MDR and look for identically named associations with different parameters.
+</li><li> By inspecting the UML files via XSLT or a custom XML comparison tool.
+</li></ol>
+<p>Once the association changes are known, it is possible to generate DML statements to copy data for existing associations to the correct association tables.
+</p><p><i>Example 1:</i> 1-to-1 becomes 1-to-many, unordered:
+</p>
+<blockquote><pre>
+insert into FEM_AssocOneToMany (mofId, type, reversed, parentType, parentId) 
+    select mofId, type, false, parentType, parentId from FEM_AssocOneToOne where type = 'abc';
+
+insert into FEM_AssocOneToManyChildren (mofId, childType, childId) 
+    select mofId, childType, childId from FEM_AssocOneToOne where type = 'abc';
+
+delete from FEM_AssocOneToOne where type = 'abc';
+</pre></blockquote>
+<p>Note that the reversed flag is false because the second end of the association is the many end.  Otherwise, the 1-to-1 child data would become the 1-to-many parent data, the 1-to-1 parent data would become the 1-to-many child data and reversed would be true.
+</p><p><br />
+<i>Example 2:</i> 1-to-many unordered becomes 1-to-many unordered, high cardinality:
+</p>
+<blockquote><pre>
+insert into FEM_AssocOneToManyHC (mofId, type, reversed, parentType, parentId) 
+    select mofId, type, reversed, parentType, parentId from FEM_AssocOneToMany where type = 'abc';
+
+insert into FEM_AssocOneToManyHCChildren (mofId, childType, childId) 
+    select mofId, childType, childId from FEM_AssocOneToManyChildren where type = 'abc';
+
+delete from FEM_AssocOneToManyChildren where mofId in (select mofId from FEM_AssocOneToMany where type = 'abc');
+
+delete from FEM_AssocOneToMany where type = 'abc';
+</pre></blockquote>
+<p>1-to-many to many-to-many conversions are also possible. Note that Enki/Hibernate stores many-to-many associations as a one-to-many relationship for each object that belongs to the associations first end and again as a one-to-many relationship for each object that belongs to the association's second end.  As in the manual case generating some actual data in a metamodel will be instructive.
+</p><p><br />
+The advanced version of the tool should block some type of changes:
+</p>
+<ul><li> Unordered associations cannot be converted to ordered associations deterministically.
+</li><li> Association ends with an upper bound greater than 1 (e.g., "many" ends) cannot be converted to ends with an upper bound equal to 1 (e.g., "single" ends).
+</li></ul>
+<p>There may be other restrictions.
+</p>
+<h1> <span class="mw-headline" id="View_Modification_DDL"> View Modification DDL </span></h1>
+<h2> <span class="mw-headline" id="Manual"> Manual </span></h2>
+<p>Upgrade steps:
+</p>
+<ol><li> Drop the all-of-type/class views.  
+</li><li> Modify tables as necessary (See <a href="#Table_Modification_DDL">#Table Modification DDL</a>).
+</li><li> Regenerate view creation DDL from metamodel
+</li><li> Recreate views.
+</li></ol>
+<h2> <span class="mw-headline" id="Automated"> Automated </span></h2>
+<p>If Enki/Hibernate is running with the <code>org.eigenbase.enki.hibernate.createSchema</code> option set to <code>AUTO_VIEW</code>, the views will be updated automatically when the repository is started.  Note however, that any views that correspond to classes removed from the model will not be deleted.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 53/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1910-0!*!0!!en!*!* and timestamp 20140414194451 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=EnkiRepositoryUpgrade&amp;oldid=5675">http://luciddb.org/wiki/index.php?title=EnkiRepositoryUpgrade&amp;oldid=5675</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/EnkiRepositoryUpgrade" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:EnkiRepositoryUpgrade&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=EnkiRepositoryUpgrade&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=EnkiRepositoryUpgrade&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=EnkiRepositoryUpgrade" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/EnkiRepositoryUpgrade" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/EnkiRepositoryUpgrade" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=EnkiRepositoryUpgrade&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=EnkiRepositoryUpgrade&amp;oldid=5675" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 27 January 2009, at 20:05.</li>
+		<li id="viewcount">This page has been accessed 4,472 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.173 secs. --></body></html>

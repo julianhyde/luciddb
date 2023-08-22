@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbErrorHandling - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbErrorHandling", "wgTitle": "LucidDbErrorHandling", "wgCurRevisionId": 7097, "wgArticleId": 1664, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbErrorHandling action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbErrorHandling</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Logfiles"><span class="tocnumber">2</span> <span class="toctext">Logfiles</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Interpreting_the_Detailed_Log_Files"><span class="tocnumber">3</span> <span class="toctext">Interpreting the Detailed Log Files</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Unique_Constraint_Violations"><span class="tocnumber">3.1</span> <span class="toctext">Unique Constraint Violations</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Expression_Evaluation_Errors"><span class="tocnumber">3.2</span> <span class="toctext">Expression Evaluation Errors</span></a>
+<ul>
+<li class="toclevel-3 tocsection-6"><a href="#Expression_Evaluation_Error_Example"><span class="tocnumber">3.2.1</span> <span class="toctext">Expression Evaluation Error Example</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-7"><a href="#Row_Constraint_Violations"><span class="tocnumber">3.3</span> <span class="toctext">Row Constraint Violations</span></a>
+<ul>
+<li class="toclevel-3 tocsection-8"><a href="#Row_Constraint_Violation_Example"><span class="tocnumber">3.3.1</span> <span class="toctext">Row Constraint Violation Example</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-9"><a href="#Rejected_row_count"><span class="tocnumber">4</span> <span class="toctext">Rejected row count</span></a>
+<ul>
+<li class="toclevel-2 tocsection-10"><a href="#Example"><span class="tocnumber">4.1</span> <span class="toctext">Example</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Configuration"><span class="tocnumber">5</span> <span class="toctext">Configuration</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction">Introduction</span></h1>
+<p>All LucidDB statements either execute to completion or are rolled back if an error occurs.  This can be quite cumbersome if you have a DML statement that affects a large number of rows, a few of which have errors in them.  To address this, LucidDB provides a mechanism that allows errors to be logged while still allowing the statement to run through to completion.  This mechanism only applies to errors that can later be corrected by modifying the input rows.  These are errors that occur during the actual runtime execution of the statement while individual rows are being processed.  Syntax and statement validation errors do not apply, since those are statement-level errors.  Severe errors, such as encountering a corrupted index, also are not covered by this mechanism.
+</p><p>Errors are logged so after the statement has completed, you can identify the cause of each error.  The information includes the source of each error, and the inputs and/or outputs applicable to the error.  Currently, only two general categories of errors are logged explicitly by LucidDB:
+</p>
+<ul><li> Unique constraint violations
+</li><li> Expression evaluation errors
+</li></ul>
+<p>It's also possible to log errors and warnings associated with application-specific constraints using the UDX <a href="/wiki/LucidDbAppLib_ENFORCE_ROW_CONSTRAINTS" title="LucidDbAppLib ENFORCE ROW CONSTRAINTS" class="mw-redirect"> APPLIB.ENFORCE_ROW_CONSTRAINTS</a>.
+</p><p>To enable error logging, at a minimum, you need to execute the following statement:
+</p>
+<pre> alter session set "errorMax" = &lt;number&gt;;
+</pre>
+<p>where <i>&lt;number&gt;</i> refers to the maximum number of errors that can be logged before the statement fails.
+</p>
+<h1> <span class="mw-headline" id="Logfiles">Logfiles</span></h1>
+<p>The error logs are placed in a log directory.  By default, this directory is named <b>log</b> and is located in the directory where your LucidDB instance is installed.  You can change the default log directory by issuing the following statement:
+</p>
+<pre>  alter session set "logDir" = '&lt;log-directory&gt;';
+</pre>
+<p>If any errors are encountered, a summary record is inserted into the file <b>Summary.log</b> in the specified or default log directory.  The first record in the file is a header record that labels the comma-separated entries in the file.  They are as follows:
+</p>
+<ul><li> <b>LE_TIMESTAMP</b> - Timestamp indicating when the error occurred
+</li><li> <b>PROCESS_ID</b> - Identifier corresponding to the session that caused the error.  This defaults to an internal session id and will look like <b>Sess</b> followed by a number.
+</li><li> <b>ACTION_ID</b> - Action id corresponding to the statement that caused the error.  This defaults to an internal statement id and will look like <b>Stmt</b> followed by a number.
+</li><li> <b>ERROR_COUNT</b> - Number of errors of a specific type encountered by the statement.
+</li><li> <b>WARNING_COUNT</b> - Number of warnings encountered by the statement.
+</li><li> <b>FILENAME</b> - Name of the file containing error details.
+</li><li> <b>SQL</b> - Text of the SQL statement that caused the error.
+</li></ul>
+<p>The name of the file containing error details is also located in the specified log directory.  Its name follows the following format:
+</p>
+<pre>  &lt;PROCESS_ID&gt;_&lt;ACTION_ID&gt;_&lt;ACTION_TAG&gt;.log
+</pre>
+<p><i>&lt;PROCESS_ID&gt;</i> and <i>&lt;ACTION_ID&gt;</i> are as described above.  <i>&lt;ACTION_TAG&gt;</i> is a unique tag that's intended to provide information on the source of the error.  More details will be provided below.  
+</p><p>Again, the first line in the detailed log file is a header record, indicating the following:
+</p>
+<ul><li> <b>LE_TIMESTAMP</b> - Timestamp indicating when the error occurred
+</li><li> <b>LE_LEVEL </b> - Set to either <b>Error</b> or <b>Warning</b>, depending on whether the row corresponds to an error or warning entry.
+</li><li> <b>LE_EXCEPTION</b> - The specific error message.  E.g., <i>Unique constraint violation</i> or <i>Overflow during calculation or cast.</i>
+</li><li> <b>LE_TARGET_COLUMN</b> - If available, either an ordinal indicating the column number that caused the error, or possibly the name of column.  If not available, -1.
+</li><li> <b>&lt;column names&gt;</b> - One or more columns corresponding to the input that caused the error.
+</li></ul>
+<h1> <span class="mw-headline" id="Interpreting_the_Detailed_Log_Files">Interpreting the Detailed Log Files</span></h1>
+<p>The name and content in the detailed log files depends on the type of error and the context in which in the error occurred.  This section details the different scenarios.
+</p>
+<h2> <span class="mw-headline" id="Unique_Constraint_Violations">Unique Constraint Violations</span></h2>
+<p>The <i>&lt;ACTION_TAG&gt;</i> in the detailed log filename for unique constraint violations either will be
+</p>
+<pre>  LcsTableMergeRel.#&lt;id1&gt;:&lt;id2&gt;_&lt;timestamp&gt;
+</pre>
+<p>for violations that occurred during a MERGE or UPDATE statement, or
+</p>
+<pre>  LcsTableAppendRel.#&lt;id1&gt;:&lt;id2&gt;_&lt;timestamp&gt;
+</pre>
+<p>for errors that occurred during an INSERT statement.
+</p><p><i>&lt;id1&gt;</i> and <i>&lt;id2&gt;</i> are internal ids, and <i>&lt;timestamp&gt;</i> is the timestamp corresponding to when the error occurred.
+</p><p>The <b>LE_TARGET_COLUMN</b> field for unique constraint violations will be -1, since a unique constraint violation can span more than one column.  The names of the columns that comprise the unique constraint appear starting at the 5th column.  The values in those columns correspond to the values that caused the unique constraint violation.  At the very end of each record is a <b>SRID</b> column.  This is the rowid of the row that caused the violation.  You probably won't need to use this value.
+</p><p>For example, if you have the following entry in a detailed file named Sess2_Stmt8_<b>LcsTableAppendRel</b>.#96:904_2007-10-02_09_55_36.log
+</p>
+<pre>  LE_TIMESTAMP,LE_LEVEL,LE_EXCEPTION,LE_TARGET_COLUMN,<b>A</b>,<b>B</b>,SRID
+  2007-10-02 09:55:36,Error,<b>Unique constraint violation</b>,-1,<b>100</b>,<b>101</b>,1
+</pre>
+<p>then you can conclude the following:
+</p>
+<ul><li> The violating statement was an INSERT.
+</li><li> The error was a unique constraint violation.
+</li><li> The unique constraint is on columns (A, B).
+</li><li> The duplicate key values are (100, 101).
+</li></ul>
+<h2> <span class="mw-headline" id="Expression_Evaluation_Errors">Expression Evaluation Errors</span></h2>
+<p>Expression evaluation errors are a bit more complicated to interpret.  Since expression evaluation can occur in a number of places in a query execution plan, the name of the detailed error log file is intended to provide more context on the source of the error.  The following table outlines the naming conventions for the different expression evaluation instances.
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<caption style="font-size:12pt"> &lt;ACTION_TAG&gt; for Expression Evaluation Errors
+</caption>
+<tr>
+<th width="500"> Expression Evaluation Context
+</th>
+<th width="200"> &lt;ACTION_TAG&gt;
+</th></tr>
+<tr>
+<td> Occurs on the result of a table scan.  Table scans include scans of column store tables as well as flatfile tables. </td>
+<td> Read.&lt;tablename&gt;.&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr>
+<tr>
+<td> Occurs on the result of data accessed from a JDBC data source  </td>
+<td> JdbcIterCalcRel&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr>
+<tr>
+<td> Occurs on the result of a UDX call </td>
+<td> JavaUdxIterCalcRel&lt;relId&gt;_timestamp
+</td></tr>
+<tr>
+<td> Computes the column values for the rows to be inserted by an INSERT statement </td>
+<td> Insert.&lt;tablename&gt;.&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr>
+<tr>
+<td> Computes the insert and update rows for a MERGE statement </td>
+<td> Merge.&lt;tablename&gt;.&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr>
+<tr>
+<td> Occurs post-join processing </td>
+<td> PostJoinIterCalcRel&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr>
+<tr>
+<td> All other expression evaluation not covered above </td>
+<td> IterCalcRel&lt;relId&gt;_&lt;timestamp&gt;
+</td></tr></table>
+<p><i>&lt;relId&gt;</i> is an internal runtime id.  <i>&lt;tablename&gt;</i> is the target table of the operation.
+</p><p>Additional conventions are:
+</p>
+<ul><li> <b>LE_TARGET_COLUMN</b>
+<ul><li> If the specific expression that caused the error is a conditional expression originating from a WHERE clause, then <b>LE_TARGET_COLUMN</b> is set to <b>CONDITION</b>.
+</li><li> If the error is associated with an INSERT or MERGE, then <b>LE_TARGET_COLUMN</b> is set to the name of the target column that the expression is being computed for.
+</li><li> Otherwise, <b>LE_TARGET_COLUMN</b> refers to the column ordinal in the <i>output</i> row of the expression evaluator that contains the faulty expression.  Note that this column ordinal is 1-based, not 0-based.
+</li></ul>
+</li><li> <b>Column names</b> - The column names and values correspond to the <i>input</i> row passed into the expression evaluator.
+</li></ul>
+<p>In the cases where the error log record references ordinals instead of column names, you likely will have to run <a href="/wiki/FarragoExplainPlanExplained" title="FarragoExplainPlanExplained"> EXPLAIN PLAN</a> and interpret the contents of the <b>IterCalcRel</b> that contains the faulty expression.  The input and output rows noted above refer to the input and output of an <b>IterCalcRel</b>.  These are recorded in the explain plan output.
+</p>
+<h3> <span class="mw-headline" id="Expression_Evaluation_Error_Example">Expression Evaluation Error Example</span></h3>
+<p>Here's a very simple example.  Assume that the proper error logging parameters have been enabled.
+</p>
+<pre>  CREATE TABLE t(a INT, b INT, c INT);
+  INSERT INTO t VALUES(100, 200, 300);
+  SELECT b, CAST(a*c AS TINYINT) FROM t;
+</pre>
+<p>The SELECT statement above generates an overflow error.  The error is recorded in a file named <b>Sess2_Stmt13_Read.T.184_2007-10-02_12_40_33.log</b>.  The contents of the file is as follows:
+</p>
+<pre>  LE_TIMESTAMP,LE_LEVEL,LE_EXCEPTION,LE_TARGET_COLUMN,A,B,C
+  2007-10-02 12:40:34,Error,Overflow during calculation or cast.,2,100,200,300
+</pre>
+<p>The explain plan output for the SELECT statement is:
+</p>
+<pre>
+ 'column0'
+ 'IterCalcRel(expr#0..2=[{inputs}], expr#3=[*($t0, $t2)], expr#4=[CAST($t3):TINYINT], B=[$t1], EXPR$1=[$t4])'
+ '  FennelToIteratorConverter'
+ '    LcsRowScanRel(table=[[LOCALDB, S, T]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$T$A, SYS$CLUSTERED_INDEX$T$B, SYS$CLUSTERED_INDEX$T$C]])'
+</pre>
+<p>The error is in column ordinal 2 in the output row.  From the explain plan, this corresponds to <b>EXPR$1</b>, since the column ordinal from the error log is 1-based, but the explain output ordinals are 0-based.  Working backwards through the explain output, we know that <b>EXPR$1</b> eventually maps to:
+</p>
+<pre>  CAST(*($t0, $t2):TINYINT)
+</pre>
+<p><b>$t0</b> and <b>$t2</b> refer to columns in the input row.  Since the input into the <b>IterCalcRel</b> is a scan of table T where all columns are referenced, we can conclude that <b>$t0</b> refers to the first column in T, which is A, and <b>$t2</b> refers to the 3rd column, column C.  Therefore, this corresponds to the following expression from the original statement:
+</p>
+<pre>  CAST(a*c AS TINYINT)
+</pre>
+<p>We can then match the identified column names against the column names/values in the error log record and conclude that the input row that caused the error is the one where A = 100 and C = 300.
+</p>
+<h2> <span class="mw-headline" id="Row_Constraint_Violations">Row Constraint Violations</span></h2>
+<p>This section describes errors and warnings logged by <a href="/wiki/LucidDbAppLib_ENFORCE_ROW_CONSTRAINTS" title="LucidDbAppLib ENFORCE ROW CONSTRAINTS" class="mw-redirect"> APPLIB.ENFORCE_ROW_CONSTRAINTS</a>.  This UDX takes an optional '<b>tag'</b> parameter.  The value of that parameter is used as the <i>&lt;ACTION_TAG&gt;</i> in the detailed log filename for violations generated by the UDX.  If the parameter is not specified, then the tag defaults to:
+</p>
+<pre>  EnforceRowConstraintsUDX_&lt;id&gt;_&lt;timestamp&gt;
+</pre>
+<p>where <i>&lt;id&gt;</i> is an internally generated unique identifier.
+</p><p>Additional conventions are:
+</p>
+<ul><li> <b>LE_TARGET_COLUMN</b> - This field contains the name of the constraint check column corresponding to the violation
+</li><li> <b>Column names</b> - All column names and values passed in as input via the cursor parameter in the UDX are recorded in the log file, except for columns corresponding to constraint check columns.
+</li></ul>
+<h3> <span class="mw-headline" id="Row_Constraint_Violation_Example">Row Constraint Violation Example</span></h3>
+<p>To better understand what the contents of the detailed logfile look like, here's a simple example. 
+</p><p>Suppose, you have a table named <b>EMPS</b> with the following columns and values:
+</p>
+<pre>
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+----------------+
+| EMPNO  | FNAME  |   LNAME   | SEX  | DEPTNO  | MANAGER  | LOCID  |  SAL   | COMMISSION  |     HOBBY      |
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+----------------+
+| 100    | Bill   | Bush      | M    | 30      |          | HQ     | 50000  |             | Piano          |
+| 101    | Bob    | Brown     | M    | 50      | 100      | SJ     | 50000  |             | Skiing         |
+| 102    | Julie  | Andrews   | F    | 30      | 104      | MP     | 50000  |             | Rugby          |
+| 103    | Frank  | Webber    | M    | 20      | 102      | MP     | 50000  |             | Piano          |
+| 104    | Fritz  | Fratz     | M    | 10      | 100      | HQ     | 50000  |             | Rugby          |
+| 105    | Rich   | Guy       | M    | 30      | 102      | HQ     | 50000  |             | Gambling       |
+| 106    | Rob    | Roy       | M    | 40      | 102      | SF     | 50000  | 7           | Karate         |
+| 107    | Robin  | Williams  | M    | 40      | 103      | HQ     | 50000  | 10          | Telling Jokes  |
+| 108    | Mary   | Reynolds  | F    | 50      | 104      | SF     | 50000  |             |                |
+| 109    | Jack   | Nife      | M    | 40      | 100      | SF     | 50000  | 5           |                |
+| 110    | Jill   | Jones     | F    | 30      | 101      | MP     | 50000  |             |                |
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+----------------+
+</pre>
+<p>Suppose you want to log errors for all rows in <b>EMPS</b> where <b>LOCID</b> is equal to <b>HQ</b>.  The following select, which includes a call to APPLIB.ENFORCE_ROW_CONSTRAINTS(), will do so.
+</p>
+<pre>  select * from table(
+     APPLIB.ENFORCE_ROW_CONSTRAINTS(
+        cursor(
+           select *,
+              case
+                 when LOCID = 'HQ' then 'RejHQErr'
+                 else cast(null as varchar(128))
+              end as LOCCHECK
+           from EMPS),
+        row(LOCCHECK),
+        'MsgCatalog',
+        'HQConstraint'));
+</pre>
+<p><b>RejHQErr</b> is an error code defined in the resource jar file named <b>MsgCatalog</b>.  The text of that error is:
+</p>
+<pre>  Location Id is head quarters
+</pre>
+<p>Therefore, the contents of the detailed log named <b>Sess2_Stmt10_HQConstraint.log</b> is as follows:
+</p>
+<pre>
+LE_TIMESTAMP,LE_LEVEL,LE_ERROR_CODE,LE_EXCEPTION,LE_TARGET_COLUMN,EMPNO,FNAME,LNAME,SEX,DEPTNO,MANAGER,LOCID,SAL,COMMISSION,HOBBY
+2007-10-10 11:07:00,Error,RejHQErr,Location Id is head quarters,LOCCHECK,100,Bill,Bush,M,30,,HQ,50000,,Piano
+2007-10-10 11:07:00,Error,RejHQErr,Location Id is head quarters,LOCCHECK,104,Fritz,Fratz,M,10,100,HQ,50000,,Rugby
+2007-10-10 11:07:00,Error,RejHQErr,Location Id is head quarters,LOCCHECK,105,Rich,Guy,M,30,102,HQ,50000,,Gambling
+2007-10-10 11:07:00,Error,RejHQErr,Location Id is head quarters,LOCCHECK,107,Robin,Williams,M,40,103,HQ,50000,10,Telling Jokes
+</pre>
+<p>All of the columns and values passed in as input via the cursor parameter in the UDX, excluding the constraint checking columns, are recorded in the file.  I.e., in our example, this includes all columns from <b>EMPS</b> but excludes the <b>LOCCHECK</b> constraint column.  Instead, that column name  populates the <b>LE_TARGET_COLUMN</b> field, indicating that the errors are associated with that constraint.
+</p><p>The query, on the other hand, returns all rows where <b>LOCID</b> is not equal to <b>HQ</b>:
+</p>
+<pre>
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+---------+-----------+
+| EMPNO  | FNAME  |   LNAME   | SEX  | DEPTNO  | MANAGER  | LOCID  |  SAL   | COMMISSION  |  HOBBY  | LOCCHECK  |
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+---------+-----------+
+| 101    | Bob    | Brown     | M    | 50      | 100      | SJ     | 50000  |             | Skiing  |           |
+| 102    | Julie  | Andrews   | F    | 30      | 104      | MP     | 50000  |             | Rugby   |           |
+| 103    | Frank  | Webber    | M    | 20      | 102      | MP     | 50000  |             | Piano   |           |
+| 106    | Rob    | Roy       | M    | 40      | 102      | SF     | 50000  | 7           | Karate  |           |
+| 108    | Mary   | Reynolds  | F    | 50      | 104      | SF     | 50000  |             |         |           |
+| 109    | Jack   | Nife      | M    | 40      | 100      | SF     | 50000  | 5           |         |           |
+| 110    | Jill   | Jones     | F    | 30      | 101      | MP     | 50000  |             |         |           |
++--------+--------+-----------+------+---------+----------+--------+--------+-------------+---------+-----------+
+</pre>
+<h1> <span class="mw-headline" id="Rejected_row_count"> Rejected row count </span></h1>
+<p>If an INSERT, UPDATE, MERGE, or DELETE statement encounters erroneous rows (for example, rows that violate a constraint), the statement will still go through <i>if</i> <b>errorMax</b> is set to a value greater than or equal to the number of such bad rows. The count of such rejected rows can be fetched after any DML statement by querying the session parameters view:
+</p>
+<pre>select * from sys_boot.mgmt.session_parameters_view where param_name = 'lastRowsRejected';
+</pre>
+<h2> <span class="mw-headline" id="Example"> Example </span></h2>
+<p>Consider the following SQL example:
+</p>
+<pre>
+alter session set &quot;errorMax&quot; = 1;
+create schema s;
+set schema 's';
+create table t(col1 int, col2 int unique);
+insert into t values (1, 1);
+insert into t values (2, 1);
+</pre>
+<p>Now, the second insert will violate the unique constraint on column "col2", but since <b>errorMax</b> is set to 1, the statement will not fail. Instead, the row will be considered <i>rejected</i>, and the query below, executed after the second insert, will return a non-zero value.
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select * from sys_boot.mgmt.session_parameters_view where param_name = 'lastRowsRejected';
++-------------------+--------------+
+|    PARAM_NAME     | PARAM_VALUE  |
++-------------------+--------------+
+| lastRowsRejected  | 1            |
++-------------------+--------------+
+1 row selected (0.186 seconds)
+0: jdbc:luciddb:&gt; 
+</pre>
+<h1> <span class="mw-headline" id="Configuration">Configuration</span></h1>
+<p>In addition to <b>errorMax</b> and <b>logDir</b>, other <a href="/wiki/LucidDbSessionParameters" title="LucidDbSessionParameters">session parameters</a> also affect error logging.  The following table summarizes these parameters.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<caption align="center" style="background:#f0f0f0;"> Error Logging Parameters
+</caption>
+<tr>
+<th width="120" align="left" style="background:#f0f0f0;"> Parameter Name
+</th>
+<th width="200" align="center" style="background:#f0f0f0;"> Default Value
+</th>
+<th width="400" align="center" style="background:#f0f0f0;"> Description
+</th></tr>
+<tr>
+<td> logDir </td>
+<td> SERVER_INSTALL_ROOT/log </td>
+<td> The logical root directory in which to store all log files
+</td></tr>
+<tr>
+<td> etlProcessId </td>
+<td> System-generated session id </td>
+<td> An identifier for an ETL process instance
+</td></tr>
+<tr>
+<td> etlActionId </td>
+<td> System-generated statement id </td>
+<td> An identifier for an action within an ETL process
+</td></tr>
+<tr>
+<td> errorMax </td>
+<td> 0 </td>
+<td> The number of errors to allow before a statement fails. 0 means allow no errors.
+</td></tr>
+<tr>
+<td> errorLogMax </td>
+<td> null </td>
+<td> The maximum number of errors to log for a statement. 0 means to log no errors; null means to log all errors.
+</td></tr></table>
+<p>To modify these parameters, execute:
+</p>
+<pre>  ALTER SESSION SET "&lt;parameter-name&gt;" = &lt;value&gt;;
+</pre>
+<!-- 
+NewPP limit report
+Preprocessor node count: 98/1000000
+Post-expand include size: 126/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1664-0!*!0!!en!*!* and timestamp 20140414191040 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbErrorHandling&amp;oldid=7097">http://luciddb.org/wiki/index.php?title=LucidDbErrorHandling&amp;oldid=7097</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbErrorHandling" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbErrorHandling&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbErrorHandling&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbErrorHandling&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbErrorHandling&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbErrorHandling" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbErrorHandling" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbErrorHandling&amp;oldid=7097" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 15 October 2011, at 03:57.</li>
+		<li id="viewcount">This page has been accessed 8,633 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.363 secs. --></body></html>

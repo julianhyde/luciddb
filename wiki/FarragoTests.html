@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoTests - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoTests", "wgTitle": "FarragoTests", "wgCurRevisionId": 6041, "wgArticleId": 1506, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoTests action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoTests</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Unit_Test_Overview"><span class="tocnumber">1</span> <span class="toctext">Unit Test Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Diff-based_Tests"><span class="tocnumber">2</span> <span class="toctext">Diff-based Tests</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#SQL_Tests"><span class="tocnumber">3</span> <span class="toctext">SQL Tests</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Specialized_Tests"><span class="tocnumber">4</span> <span class="toctext">Specialized Tests</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Test_Context"><span class="tocnumber">5</span> <span class="toctext">Test Context</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Dependence_on_Native_Code"><span class="tocnumber">6</span> <span class="toctext">Dependence on Native Code</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Test_Invocation"><span class="tocnumber">7</span> <span class="toctext">Test Invocation</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Checkin_Acceptance_Tests"><span class="tocnumber">8</span> <span class="toctext">Checkin Acceptance Tests</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Test_Tracing"><span class="tocnumber">9</span> <span class="toctext">Test Tracing</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Test_Data"><span class="tocnumber">10</span> <span class="toctext">Test Data</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Test_Metadata"><span class="tocnumber">11</span> <span class="toctext">Test Metadata</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Unit_Test_Overview"> Unit Test Overview </span></h2>
+<p><br />
+The Farrago unit test framework is based on <a rel="nofollow" class="external text" href="http://www.junit.org">JUnit</a>. All test cases subclass <strong>net.sf.farrago.test.FarragoTestCase</strong>, which provides Farrago-specific infrastructure methods (e.g. starting up and shutting down a database instance automatically).<br />
+<br />
+Unit tests can be divided into a number of categories:<br />
+<br />
+</p>
+<ul>
+
+    <li>Component tests are standard JUnit tests which exercise a single component in isolation (e.g. <strong>FennelTupleTest</strong> for package <strong>net.sf.farrago.fennel.tuple</strong>).</li>
+    <li>API tests (e.g. <strong>net.sf.farrago.test.FarragoJdbcTest</strong> for the JDBC API) are standard black-box JUnit tests.</li>
+    <li>SQL-based tests have no associated Java code (other than a generic harness class). Instead, they are implemented as SQL script files together with reference files containing the expected results. More details on their operation are provided below. SQL-based tests can be used to test classes which are very difficult to test in isolation due to large numbers of dependencies. For example, EXPLAIN PLAN is a good way to verify that optimizer transformation rules are firing as expected.</li>
+</ul>
+<p><br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Diff-based_Tests"> Diff-based Tests </span></h2>
+<p><br />
+In many cases, desired functionality can be verified by producing a string representing the test result and comparing this with another string which defines the expected results. <strong>org.eigenbase.test.DiffTestCase</strong> provides generic diff-based testing infrastructure. A specific test case calls the <strong>DiffTestCase.openTestLog()</strong> method to get a <strong>java.io.Writer</strong>, and writes its output to this Writer. The test case then calls the <strong>DiffTestCase.diffTestLog()</strong> method to compare the results. Normally, the test output is written to the directory <strong>dev/farrago/testlog/TestClassName</strong>, with the filename <strong>testMethodName.log</strong>. The expected results must be checked into source control as a file with the same name except with the extension <strong>.ref</strong> instead of <strong>.log</strong>. If the test passes, the <strong>.log</strong> file is deleted automatically. If the test fails, the <strong>.log</strong> file is left behind for diagnostic purposes. (Old log files are automatically deleted before testing starts.) No <strong>.dif</strong> file is ever generated; the comparison is performed by Java code.<br />
+</p><p><br />
+TBD: <strong>org.eigenbase.test.DiffRepository</strong> as an alternative.<br />
+<br />
+When designing diff-based tests, it's important to control for all variables which could cause spurious failures. Possible problems are algorithm non-determinism (for example, a non-stable sort may produce different sort orders on different machines) and environmental differences (e.g. a reference to the local machine's name). Whenever possible, a diff-based test must prevent these (e.g. by specifying an ORDER BY clause with a full key for each SQL statement). (If there are too many, it's a sign that diff-based testing is inappropriate for the test case.) FarragoTestCase also provides a workaround in the form of the <strong>addDiffMask</strong> method, which allows the caller to specify a regular expression to be masked out before diffing. This should only be used sparingly.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="SQL_Tests"> SQL Tests </span></h2>
+<p><br />
+The harness class <strong>net.sf.farrago.test.FarragoSqlTest</strong> works together with the ant build to find and execute the set of all SQL scripts to be run. The ant build defines a fileset containing all <strong>.sql</strong> files under the <strong>dev/farrago/unitsql</strong> directory. This is passed as a multi-line string of filenames to FarragoSqlTest via the property <strong>net.sf.farrago.fileset.unitsql</strong>. For each script, FarragoSqlTest invokes &lt;a class="wiki_link_ext" href="<a rel="nofollow" class="external free" href="http://sqlline.sf.net">http://sqlline.sf.net</a>" rel="nofollow"&gt;SqlLine&lt;/a&gt; to produce a <strong>.log</strong> file. This is diffed against the <strong>.ref</strong> file using the diff-based testing support described above. However, the <strong>.log</strong> and <strong>.ref</strong> files for SQL tests are stored in the same directory as the source <strong>.sql</strong> file (rather than under the src directory).<br />
+</p><p><br />
+Here's an example test script and its expected output:<br />
+</p>
+<pre>
+set schema sales;
+-- test DISTINCT on a single column
+select distinct gender from emps order by 1;
+</pre>
+<p><br />
+</p>
+<table border="1">
+    <tr>
+        <td>GENDER</td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td>F</td>
+    </tr>
+    <tr>
+
+        <td>M</td>
+    </tr>
+</table>
+<p>For tests dealing with Unicode data, see <a rel="nofollow" class="external text" href="http://n2.nabble.com/Unicode-status-update-td2276835.html">this thread</a> regarding rules for .sql/.ref file encodings.
+</p>
+<h2> <span class="mw-headline" id="Specialized_Tests"> Specialized Tests </span></h2>
+<p><br />
+</p>
+<ul>
+    <li>Matrix tests are intended to be run multiple times with different configurations. For example, the SQL-based tests under the <strong>regressionsql</strong> directory are run twice, once with the Fennel calculator implementation and once with the Java calculator implementation.</li>
+    <li>Concurrency tests run with multiple threads. A generic framework for concurrent SQL testing is provided by <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/test/concurrent/package-summary.html#package_description">package <strong>net.sf.farrago.test.concurrent</strong></a>. The <strong>.mtsql</strong> scripts under the <strong>unitsql/concurrent</strong> directory are interpreted by this framework.  There is also an <a rel="nofollow" class="external text" href="http://n2.nabble.com/proposal%3A-independent-client-mtsql-tool-td2271537.html">mtsql utility</a> for running them as client programs.</li>
+</ul>
+<p><br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Test_Context"> Test Context </span></h2>
+<p><br />
+Persistent test fixtures such as the schema <strong>SALES</strong> are created and populated by all developer builds. See script <strong>dev/farrago/initsql/createSalesSchema.sql</strong> for an example. Such objects can be referenced (but should not be modified) by any test case as global fixtures. The complete list of fixtures is provided in this table:<br />
+<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td><em>Type</em></td>
+        <td><em>Name</em></td>
+    </tr>
+    <tr>
+        <td>Schema</td>
+        <td>LOCALDB.SALES</td>
+    </tr>
+    <tr>
+
+        <td>Schema</td>
+        <td>LOCALDB.SQLJ</td>
+    </tr>
+    <tr>
+        <td>Schema</td>
+        <td>LOCALDB.INFORMATION_SCHEMA</td>
+    </tr>
+
+    <tr>
+        <td>Data Wrapper</td>
+        <td>SYS_*</td>
+    </tr>
+    <tr>
+        <td>User</td>
+        <td>_SYSTEM</td>
+    </tr>
+    <tr>
+        <td>User</td>
+        <td>sa</td>
+    </tr>
+    <tr>
+        <td>Role</td>
+        <td>PUBLIC</td>
+    </tr>
+</table>
+<p><br />
+At the beginning of each test suite (but not each test case), <strong>FarragoTestCase</strong> takes care of dropping (with CASCADE) all top-level objects other than these fixtures<strong>.</strong> This means that tests can rely on being able to use any other object names, and do not have to worry about dropping test objects on exit. Tests should not use these fixtures as parents for new objects, since children of permanent fixtures will not be dropped automatically.<br />
+<br />
+</p><p>For SQL-based tests, each script is its own test suite. For Java-based tests, each test class is normally a single suite, while each method is a test case. Besides dropping objects at the beginning of each suite, <strong>FarragoTestCase</strong> also restores system parameters to their pre-test state at the end of each test.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Dependence_on_Native_Code"> Dependence on Native Code </span></h2>
+<p><br />
+Tests must run successfully when the Fennel native code library is available. Without Fennel, many tests are expected to fail.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Test_Invocation"> Test Invocation </span></h2>
+<p><br />
+The <strong>ant test</strong> target rebuilds the catalog and runs all unit tests. You can also run a single unit test via the <strong>junitSingle</strong> script located in <strong>dev/farrago</strong>. This script takes a single argument. If the argument is the name of an existing file, the file is assumed to be an SQL script and is executed as a diff-based test. Otherwise, the argument is assumed to be the unqualified name of a JUnit test class to be run.<br />
+<br />
+Test results and error details are written to the <strong>dev/farrago/testlog</strong> directory; a summary of tests run is available in the ant console output.<br />
+</p><p><br />
+The <strong>junitDebug</strong> script operates like the <strong>junitSingle</strong> script but brings up the <a rel="nofollow" class="external text" href="http://www.bluemarsh.com/java/jswat/">JSwat</a> debugger as well.<br />
+<br />
+IDE's with built-in JUnit integration (e.g. Eclipse and IDEA) can also be used to run or debug most tests. In order to allow for IDE execution of SQL scripted tests, the build generates a test class <strong>net.sf.farrago.test.FarragoSqlTestWrapper</strong> with one method for each <strong>.sql</strong> file under <strong>unitsql</strong>. This class is generated during <strong>ant createCatalog</strong>; it can be regenerated at any time with <strong>ant generateSqlTestWrapper</strong>.<br />
+</p><p><br />
+Once you do that, you can further run tests using naked java by:<br />
+java -classpath `cat classpath.gen` junit.textui.TestRunner net.sf.farrago.test.FarragoSqlTestWrapper<br />
+<br />
+If you want to run tests using custom JVM settings, you can do this with by creating a file named <strong>dev/farrago/customBuild.properties</strong> and adding a line as follows (this example sets the maximum heap size to 512 megabytes):<br />
+<br />
+</p>
+<pre class="text">farrago.test.jvmargs= -Xmx512M</pre>
+<p><br />
+Note that this only affects tests run from ant (including Blackhawk); it does not take affect for commands such as <strong>sqllineEngine</strong>.<br />
+<br />
+See <a href="/wiki/FarragoTestMachineSharing" title="FarragoTestMachineSharing">FarragoTestMachineSharing</a> for how to set up a sandbox to avoid port conflicts with other Farrago sandboxes on the same test machine.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Checkin_Acceptance_Tests"> Checkin Acceptance Tests </span></h2>
+<p><br />
+</p><p>The <a href="/wiki/FarragoCheckinAcceptance" title="FarragoCheckinAcceptance">FarragoCheckinAcceptance</a> page describes the tests which must be successfully run by developers before any checkin. Currently the full test suite is used; we plan to develop a faster acceptance suite which runs only a subset of the full suite.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Test_Tracing"> Test Tracing </span></h2>
+<p><br />
+Besides test log output, test execution also produces trace information in the normal location, <strong>dev/farrago/trace/FarragoTrace.log</strong>. (This trace log is truncated automatically at the beginning of a full run.) FarragoTestCase inserts trace messages for the beginning and ending of each test case, making it easier to find a problem in the middle of a long run.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Test_Data"> Test Data </span></h2>
+<p><br />
+Some tests may require external data; there are several ways to handle this:<br />
+<br />
+</p>
+<ul>
+    <li>Check in external datafiles. For an example, see <strong>dev/farrago/unitsql/med/csv.sql</strong>, which reads data from <strong>example.csv</strong> in the same directory. But please don't check in large datafiles.</li>
+    <li>Generate external datafiles from the build. For an example, see <strong>dev/farrago/unitsql/ddl/med.sql</strong>, which reads data from the <strong>mdr</strong> files in the same directory (generated by <strong>ant createMdrTestData</strong>). This option isn't a good general solution since it couples the build with testing (TODO: decouple it and make it easier to use).</li>
+    <li>Generate external datafiles from the test itself. This is the recommended approach whenever it makes sense (i.e. generated data can provide the required coverage). For an example, see <strong>net.sf.farrago.test.regression.FarragoSorterTest</strong>. This test also demonstrates how a Java-based test can use a companion <strong>.sql</strong> script for setup-only purposes. Data should be generated in a test-specific directory under <strong>dev/farrago/testgen</strong>.</li>
+</ul>
+<h2> <span class="mw-headline" id="Test_Metadata"> Test Metadata </span></h2>
+<p><i>(This section is currently only a proposal)</i>
+</p><p>Some tests may be relevant only to a particular configuration.  Configuration aspects can include:
+</p>
+<ul><li> personality {farrago, luciddb, aspen}
+</li><li> platform {linux, windows}
+</li><li> test thoroughness {checkin, nightly}
+</li><li> component choice during matrix testing
+<ul><li> calculator {javacalc, fennelcalc, autocalc}
+</li><li> optimizer {hep, volcano}
+</li></ul>
+</li><li> availability of SQL/MED test datasource {sqlserver, oracle, mysql, postgresql, ... }
+</li><li> repository implementation {mdr, hibernate}
+</li><li> repository storage {hsqldb,mysql}
+</li><li> Farrago default character set {ISO-8859-1, UCS-2}
+</li><li> JVM {JRockit, Hotspot}
+</li><li> JVM default character set encoding
+</li></ul>
+<p>We may want these to be registered explicitly somewhere (properties file included by build?) so that we can catch typos in metadata.
+</p><p>In the past, we have discussed using <a href="/wiki/BlackhawkDocs" title="BlackhawkDocs">Blackhawk</a>'s metadata capability for test selection filtering purposes.  However, so far we haven't invested in an effort to base Farrago testing on Blackhawk.  If we want to start adding test metadata without moving to Blackhawk (or an equivalent such as <a rel="nofollow" class="external text" href="http://testng.org/doc/">TestNG</a>), we'll need some other mechanism.
+</p>
+<ul><li> For JUnit tests, Julian suggested using annotations.  This could look something like the next example (which also uses JUnit4 annotations for test declarations, although that may not be required):
+</li></ul>
+<pre>
+    @Test
+    @TestForPersonalities('farrago,luciddb')
+    @TestForPlatforms('!windows')
+    public void testBackupRestore()
+    {
+        ...
+    }
+</pre>
+<p>This would mean the test should only be run only for Farrago and LucidDB personalities, on any platform other than Windows.  Alternatively, we could just lump everything into generic tags:
+</p>
+<pre>
+    @Test
+    @TestForTags('farrago,luciddb,!windows')
+    public void testBackupRestore()
+    {
+        ...
+    }
+</pre>
+<p>Either way, implementing these annotations requires suite filtering.  Note that the presence of multiple tags does not mean to run the test more than once; it just means that the test is compatible with those tags.  A matrix test runner could iterate through various predefined combinations of tags (like Mondrian's megatest).
+</p>
+<ul><li> For SQL-based tests, Julian suggested using comments.  We might require the tags to appear in the first block of SQL-style comments in a .sql file; the test runner would process this block looking for tags, and skip the rest of the test as needed.
+</li></ul>
+<pre>
+-- $Id:...$
+-- Backup/restore tests
+-- @TestForPersonalities('farrago,luciddb')
+-- @TestForPlatforms('!windows')
+
+...
+</pre>
+<p>Existing tests which mix personalities will need to be refactored, e.g. so that LucidDB-specific tests aren't run against SQLstream.  When doing this, care should be taken to coordinate on integrations via farrago-dev to avoid causing unnecessary conflicts.
+</p><p>Test invocation methods such as <b>ant test</b> and <b>junitSingle</b> will need a way to configure desired test tags, e.g.
+</p>
+<pre>
+ant -Dfarrago.test.tags=javacalc,aspen test
+</pre>
+<p>--<a href="/wiki/index.php?title=User:Szuercher&amp;action=edit&amp;redlink=1" class="new" title="User:Szuercher (page does not exist)">Szuercher</a> 12:05, 10 November 2008 (EST) Perhaps for extra credit: Allow tests to be tagged with bug report ID and provide a mode to run all tests related to a particular bug, overriding the fact that the test is disabled.  Use-case: There are three tests disabled due to bug FRG-111. I'm working on a fix and want to run all the related tests.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 148/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1506-0!*!0!!en!*!* and timestamp 20140414194544 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoTests&amp;oldid=6041">http://luciddb.org/wiki/index.php?title=FarragoTests&amp;oldid=6041</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoTests" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoTests&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoTests&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoTests&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoTests" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoTests" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoTests" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoTests&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoTests&amp;oldid=6041" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 23 May 2009, at 04:23.</li>
+		<li id="viewcount">This page has been accessed 4,899 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.256 secs. --></body></html>

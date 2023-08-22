@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbUniqueConstraints - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbUniqueConstraints", "wgTitle": "LucidDbUniqueConstraints", "wgCurRevisionId": 5532, "wgArticleId": 1456, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbUniqueConstraints action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbUniqueConstraints</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Syntax"><span class="tocnumber">1</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Constraint_Types"><span class="tocnumber">2</span> <span class="toctext">Constraint Types</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Indexing"><span class="tocnumber">3</span> <span class="toctext">Indexing</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Bulk_Load_and_Upsert_Semantics"><span class="tocnumber">4</span> <span class="toctext">Bulk Load and Upsert Semantics</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Examples"><span class="tocnumber">5</span> <span class="toctext">Examples</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<p>Uniqueness constraints are defined during table creation, as part of the <a href="/wiki/LucidDbCreateTable" title="LucidDbCreateTable">CREATE TABLE</a> statement.
+</p><p>Example:
+</p>
+<pre>
+CREATE TABLE employee_dimension(
+    emp_key INT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    empno INT NOT NULL,
+    ename VARCHAR(128) NOT NULL,
+    dname VARCHAR(128) NOT NULL,
+    job VARCHAR(128) NOT NULL,
+CONSTRAINT ed_empno_unique UNIQUE(empno)
+)
+CREATE INDEX ed_names ON employee_dimension(ename, dname)
+;
+</pre>
+<p>Results of the <a href="/wiki/LucidDbUpsert" title="LucidDbUpsert">MERGE</a>, <a href="/wiki/LucidDbUpdate" title="LucidDbUpdate">UPDATE</a>, and <a href="/wiki/LucidDbInsert" title="LucidDbInsert">INSERT</a> statements are affected by the presence of uniqueness constraints as described in the following sections.
+</p>
+<h2> <span class="mw-headline" id="Constraint_Types"> Constraint Types </span></h2>
+<p>The two types of uniqueness constraints are (1) PRIMARY KEY constraints and (2) UNIQUE constraints. Uniqueness constraints may apply to a single column or to several columns. In general, the constraints guarantee that no two rows will have the same key value, but the two types of constraints differ slightly with regard to the handling of null values. While SQL:2003 describes a deferred constraint enforcement feature, LucidDB does not yet support this (constraints are always active).
+</p>
+<ul><li> <b>PRIMARY KEY</b> constraints do not permit any key column to be null.
+</li><li> <b>UNIQUE</b> constraints do permit key columns to be null (unless explicitly declared as NOT NULL). Unique constraints do not apply to rows where any key columns are null.
+</li></ul>
+<p>Example:
+</p>
+<pre>
+PRIMARY KEY
+  null           [not allowed]
+  null, 23, foo  [not allowed]
+
+UNIQUE
+  null           [allowed]
+  null           [allowed to repeat]
+
+  null, 23, foo  [allowed]
+  null, 23, foo  [allowed to repeat]
+  null, 23, null [allowed]
+</pre>
+<h2> <span class="mw-headline" id="Indexing"> Indexing </span></h2>
+<p>A system-defined index is created automatically for each uniqueness constraint defined; this allows LucidDB to enforce constraints efficiently.  For multi-column constraints, index column order matches constraint column order.  Note that column order is not significant for constraint semantics, e.g. a constraint on (A,B) is logically equivalent to a constraint on (B,A).  But column order is significant to the optimizer for the automatically-created indexes, so take this into account when declaring a constraint over multiple columns.
+</p><p>LucidDB does not support a CREATE UNIQUE INDEX command; use a constraint for this purpose instead.
+</p>
+<h2> <span class="mw-headline" id="Bulk_Load_and_Upsert_Semantics"> Bulk Load and Upsert Semantics </span></h2>
+<p><i>Warning: LucidDB diverges from the SQL:2003 specification in this area</i> 
+</p><p>SQL:2003 specifies the following rules for predictable behavior:
+</p>
+<table border="1">
+<tr>
+<th> SQL:2003 Rule </th>
+<th> LucidDB Enforcement
+</th></tr>
+<tr>
+<td> Constraints are evaluated only on the net effect of a DML statement (avoiding ambiguities due to intermediate states, e.g. update before insert vs. insert before update)
+</td>
+<td> LucidDB always follows this rule
+</td></tr>
+<tr>
+<td> DML statements are ACID (either all requested modifications are performed without error, or the entire statement is rolled back)
+</td>
+<td> LucidDB follows this rule by default, but allows for more permissive behavior (while still preserving constraint integrity) via the non-standard <a href="/wiki/LucidDbAlterSession" title="LucidDbAlterSession">ALTER SESSION</a> command (the "errorMax" parameter described in <a href="/wiki/LucidDbSessionParameters" title="LucidDbSessionParameters">LucidDbSessionParameters</a> controls this behavior, as described in <a href="/wiki/LucidDbErrorHandling" title="LucidDbErrorHandling">LucidDbErrorHandling</a>)
+</td></tr>
+<tr>
+<td> An upsert attempt in which multiple source rows match the same target row results in an error
+</td>
+<td> LucidDB only follows this rule when there is a uniqueness constraint defined on the columns of the target table used in the ON clause of the MERGE statement; it treats violations the same as any other uniqueness violations.  Forgetting to define a uniqueness constraint will lead to surprising results (multiplication of rows in the target table).
+</td></tr></table>
+<p>The rules above are useful in transactional applications, but often too inflexible in data warehousing ETL scenarios.  So, when LucidDB detects constraint violations and other errors during bulk load, it is capable of rejecting them and continuing ("keep-going" behavior) up to a user-specified error limit, rather than failing with a rollback ("fail-fast" behavior).
+</p><p>In keep-going mode, LucidDB uses the following rules:
+</p>
+<ul><li> The SET clause of an UPDATE or MERGE WHEN MATCHED statement is not allowed to update any column which participates in at least one uniqueness constraint.  Any such attempt will be rejected by the SQL validator.  This eliminates many possible anomalies which would otherwise prevent LucidDB from efficiently enforcing uniqueness constraints during bulk load.
+</li></ul>
+<ul><li> During MERGE, when multiple source rows match the same target row, and a uniqueness constraint is defined on the match key, one of the source rows is arbitrarily chosen to replace the target row.  All other source rows are rejected.
+</li></ul>
+<ul><li> During MERGE or INSERT, when multiple new rows (non-matching for MERGE) have the same new key value, one of the new rows is chosen arbitrarily and inserted.  All other source rows with the same key value are rejected.  (If the arbitrarily chosen new row happens to be rejected due to some other error, then all of them are rejected; no "standby" is chosen.)  New rows which contain keys conflicting with existing rows are always rejected.
+</li></ul>
+<p>Note that in fail-fast mode, a MERGE or UPDATE statement is free to update columns which participate in uniqueness constraints, and the SQL:2003 "net effect" rule applies.  This makes it possible to perform an operation such as SET K = K + 1 (without the net-effect rule, this can cause spurious failures, e.g. if existing values of K are 1,2,3).
+</p>
+<h2> <span class="mw-headline" id="Examples"> Examples </span></h2>
+<p>Example (MERGE on primary key EMPID):
+</p>
+<pre>
+[ORIGINAL DATA]
+EMPID, NAME
+1, Harry Osborn
+2, Mary Jane
+
+[UPSERTS]
+EMPID, NAME
+1, Peter Parker
+1, John Jameson
+2, Mary Parker
+3, Drake Roberts
+4, Anjelica Jones
+4, Johnny Storm
+
+[HYPOTHETICAL SQL:2003 RESULT, IF RULES WERE CHANGED TO SUPPORT KEEP-GOING BEHAVIOR, ALL-OR-NOTHING PER KEY]
+EMPID, NAME
+1, Harry Osborn
+2, Mary Parker
+3, Drake Roberts
+[Multiple updates on EMPID 1 are rejected]
+[Multiple inserts to EMPID 4 are rejected]
+
+[LUCIDDB RESULT WITH KEEP-GOING BEHAVIOR]
+EMPID, NAME
+1, Peter Parker    [LucidDB arbitrarily selects first update]
+2, Mary Parker
+3, Drake Roberts
+4, Anjelica Jones  [LucidDB arbitrarily selects first insert]
+</pre>
+<p>Example (MERGE on primary key EMPID, unique constraint on NAME):
+</p>
+<pre>
+[ORIGINAL DATA]
+EMPID, NAME, INFO
+1, Harry Osborn, Wealthy teenager
+
+[UPSERTS]
+EMPID, NAME, INFO
+1, Harry Osborn, President of Osborn Inc
+2, Harry Osborn, Hobgoblin
+
+[LUCIDDB RESULT WITH KEEP-GOING BEHAVIOR]
+EMPID, NAME, INFO
+1, Harry Osborn, President of Osborn Inc  [new Hobgoblin row is rejected because value for NAME conflicts with existing key]
+</pre>
+<p>On insertion, LucidDB accepts at most one row per unique key. A complex pattern of constraint failures may lead to more rows being rejected than is strictly required (due to the "no standby" policy).
+</p><p>Example (primary key EMPID, unique constraints on NAME and ALIAS):
+</p>
+<pre>
+[ORIGINAL DATA]
+EMPID, NAME, ALIAS, INFO
+5, Dr Otto Octavius, Doctor Octopus, Scientist
+
+[INSERTS]
+EMPID, NAME, ALIAS
+6, Dr Otto Octavius, Doc Oct         [fails NAME constraint due to conflict with existing EMPID 5]
+7, Dr Octavius, Doc Oct              [fails ALIAS constraint due to conflict with previous new row]
+8, Otto, Doc Oct                     [fails ALIAS constraint due to conflict with previous new rows]
+
+[LUCIDDB RESULT]
+EMPID, NAME, ALIAS, INFO
+5, Dr Otto Octavius, Doctor Octopus, Scientist
+</pre>
+<p>If instead the rows had been processed in the order 7, 6, 8, then row 7 could have been accepted.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 45/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1456-0!*!0!!en!*!* and timestamp 20140414191720 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbUniqueConstraints&amp;oldid=5532">http://luciddb.org/wiki/index.php?title=LucidDbUniqueConstraints&amp;oldid=5532</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbUniqueConstraints" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbUniqueConstraints&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbUniqueConstraints&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbUniqueConstraints&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbUniqueConstraints" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbUniqueConstraints" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbUniqueConstraints" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbUniqueConstraints&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbUniqueConstraints&amp;oldid=5532" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 15 December 2008, at 03:07.</li>
+		<li id="viewcount">This page has been accessed 7,458 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.196 secs. --></body></html>

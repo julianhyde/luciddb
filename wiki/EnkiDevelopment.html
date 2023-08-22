@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>EnkiDevelopment - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "EnkiDevelopment", "wgTitle": "EnkiDevelopment", "wgCurRevisionId": 6894, "wgArticleId": 1929, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-EnkiDevelopment action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">EnkiDevelopment</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page explains the mechanics for how to get started working on <a href="/wiki/Enki" title="Enki">Enki</a> development.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Get_Source_Code"><span class="tocnumber">1</span> <span class="toctext">Get Source Code</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Configure_Workspace"><span class="tocnumber">2</span> <span class="toctext">Configure Workspace</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Build_and_Test"><span class="tocnumber">3</span> <span class="toctext">Build and Test</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Sample_Metamodel"><span class="tocnumber">4</span> <span class="toctext">Sample Metamodel</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Switch_to_Hibernate"><span class="tocnumber">5</span> <span class="toctext">Switch to Hibernate</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Checkin_Guidelines"><span class="tocnumber">6</span> <span class="toctext">Checkin Guidelines</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Release_Build"><span class="tocnumber">7</span> <span class="toctext">Release Build</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Eclipse_Environment"><span class="tocnumber">8</span> <span class="toctext">Eclipse Environment</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Writing_Unit_Tests"><span class="tocnumber">9</span> <span class="toctext">Writing Unit Tests</span></a>
+<ul>
+<li class="toclevel-2 tocsection-10"><a href="#Package"><span class="tocnumber">9.1</span> <span class="toctext">Package</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Base_Class"><span class="tocnumber">9.2</span> <span class="toctext">Base Class</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Execution"><span class="tocnumber">9.3</span> <span class="toctext">Execution</span></a>
+<ul>
+<li class="toclevel-3 tocsection-13"><a href="#Ant_Target:_test"><span class="tocnumber">9.3.1</span> <span class="toctext">Ant Target: test</span></a></li>
+<li class="toclevel-3 tocsection-14"><a href="#Ant_Target:_test-all-impls"><span class="tocnumber">9.3.2</span> <span class="toctext">Ant Target: test-all-impls</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-15"><a href="#Tracing_Hibernate_and_MySQL"><span class="tocnumber">10</span> <span class="toctext">Tracing Hibernate and MySQL</span></a></li>
+<li class="toclevel-1 tocsection-16"><a href="#More_Resources"><span class="tocnumber">11</span> <span class="toctext">More Resources</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Get_Source_Code"> Get Source Code </span></h1>
+<p>You can pull the latest Enki code from the <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org">Eigenbase Perforce server</a>.  If you're new to Perforce, you might want to read the official <a rel="nofollow" class="external text" href="http://www.perforce.com/perforce/doc.022/manuals/boilerplates/quickstart.html">Perforce Quick Start</a>. If you don't already have a p4 client program, download the <a rel="nofollow" class="external text" href="http://www.perforce.com/perforce/loadprog.html">appropriate binary from Perforce</a> (you only need the free-as-in-beer client, not the server).
+</p><p>There are a number of ways to configure Perforce depending on the platform (on Windows through the GUI, on Unix through environment variables or a .p4env file). The essential information you need to provide is:
+</p>
+<ul><li> P4PORT=perforce.eigenbase.org:1666
+</li><li> P4USER=your-user-name
+</li><li> P4CLIENT=your-user-name.your-hostname 
+</li></ul>
+<p>You can use "guest" for the user name if you don't have commit access to Eigenbase yet.
+</p><p>Once you've got Perforce set up, run <b>p4 client</b> (or edit your default clientspec from P4WIN). Map your view to match this example:
+</p>
+<pre>
+View:
+        //open/enki/... //YOURCLIENT/enki/...
+</pre>
+<p>While editing your client, you should also set the <b>LineEnd</b> attribute to <b>share</b> if you are developing on Windows or using Samba. This prevents DOS CRLF's from getting checked in.
+</p><p>Finally, run <b>p4 sync</b> to get all the source files and thirdparty distributions into your client workspace. This may take a while because some of the thirdparty distributions are large.
+</p><p>We'll refer to the workspace directory created by this as <b>enki</b>.
+</p><p>If you want to skip Perforce setup and instead start from a fairly recent distribution tarball, download it <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org/open/dev/thirdparty/eigenbase-enki-0.1.0.tar.gz">here</a> (and the thirdparty libraries from <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org/open/dev/thirdparty/eigenbase-enki-0.1.0-libs.tar.gz">here</a>).
+</p>
+<h1> <span class="mw-headline" id="Configure_Workspace"> Configure Workspace </span></h1>
+<p>The next step after pulling the code is to do some one-time setup for your workspace.
+</p><p>Unpack the thirdparty distributions:
+</p>
+<pre>
+cd enki/thirdparty
+make all
+</pre>
+<p>Next in the <b>enki</b> directory, create a new file <b>customBuild.properties</b> as follows:
+</p>
+<pre>
+enki.impl.default=netbeans
+</pre>
+<p>This will get you started testing against the Netbeans MDR implementation, using hsqldb for persistence.  Below we'll explain how to switch to the Hibernate implementation.
+</p>
+<h1> <span class="mw-headline" id="Build_and_Test"> Build and Test </span></h1>
+<p>You must have <a rel="nofollow" class="external text" href="http://ant.apache.org">Apache ant</a> installed, and in particular you should be using <a href="/wiki/FarragoBuild#Environment_Variables" title="FarragoBuild">the same one as the rest of Eigenbase</a>.
+The first thing to try is a full build followed by running all tests applicable to Netbeans:
+</p>
+<pre>
+ant test
+</pre>
+<p>Unit test results get written to <b>enki/test/results</b>.
+</p><p>After that, if you make some code changes and want to just build them without running tests:
+</p>
+<pre>
+ant compile
+</pre>
+<p>(Or just run <b>ant</b> since <b>compile</b> is the default target.)
+</p><p>Finally, if you make changes to the Sample Metamodel or to the way that Enki generates code for metamodels, you can rebuild the Sample Metamodel without running tests:
+</p>
+<pre>
+ant createSampleRepository
+</pre>
+<p>If you care about the Sample Plugin Metamodel, that can be rebuilt (usually after a rebuild of the Sample Metamodel) as well:
+</p>
+<pre>
+ant createSamplePluginRepository
+</pre>
+<p><a rel="nofollow" class="external text" href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/logging/package-summary.html">java.util.logging</a> trace output is written to <b>enki/trace/EnkiTrace.log</b>, with verbosity controlled by <b>enki/trace/EnkiTrace.properties</b>.
+</p><p>You can run a single test class from the command line as follows:
+</p>
+<pre>
+jvs@bagheera:~/open/enki$ junitSingle JmiTest
+Buildfile: build.xml
+
+test-only:
+     [echo] **********************************************
+     [echo] Testing hibernate implementation
+     [echo] **********************************************
+    [junit] Running org.eigenbase.enki.test.JmiTest
+    [junit] Tests run: 15, Failures: 0, Errors: 0, Time elapsed: 5.585 sec
+
+test-plugin-only:
+
+BUILD SUCCESSFUL
+Total time: 8 seconds
+</pre>
+<p>The <b>enki/junitSingle</b> script uses the ant pattern <b>**/JmiTest.class</b> to find the class regardless of which package it lives in.
+</p>
+<h1> <span class="mw-headline" id="Sample_Metamodel"> Sample Metamodel </span></h1>
+<p>Enki comes with a sample metamodel on which its unit tests are based.  It's named "EEM" for Enki Extension Metamodel, and is defined in <b>enki/test/sample/catalog/xmi/Sample.uml</b>.
+</p><p>You can edit it using <a rel="nofollow" class="external text" href="http://argouml.tigris.org">ArgoUML</a>.  Here's one of the diagrams (the actual model is much bigger for covering lots of corner cases):
+</p><p><a href="/wiki/File:EemSampleDiagram.png" class="image"><img alt="EemSampleDiagram.png" src="/wiki/upload/d/dc/EemSampleDiagram.png" width="658" height="425" /></a>
+</p><p>For the first build after saving the new model, you'll need to run <b>ant createSampleRepository</b> instead of a normal compile so that Enki will regenerate all of the code and persistence derived from the UML.  This is also a quick way to get back to a clean state after dirtying the sample repository during testing and debugging.
+</p>
+<h1> <span class="mw-headline" id="Switch_to_Hibernate"> Switch to Hibernate </span></h1>
+<p>To switch to the Hibernate+MySQL implementation for testing, edit <b>customBuild.properties</b> again:
+</p>
+<pre>
+enki.impl.default=hibernate
+</pre>
+<p>For the default settings, you'll need a MySQL instance running on your same machine, with MySQL user <b>root</b> and no password, and with the InnoDB storage engine available.  Tests will drop+create a MySQL database named <b>ENKI</b>.  Run <b>ant test</b> again to create the MySQL repository and run all the Hibernate tests; this time it will take longer.
+</p><p>You can also use the Hibernate implementation against HSQLDB by editing <b>customBuild.properties</b> to look like this:
+</p>
+<pre>
+enki.impl.default=hibernate-hsqldb
+</pre>
+<h1> <span class="mw-headline" id="Checkin_Guidelines"> Checkin Guidelines </span></h1>
+<p>If you have Perforce submit access, or are sending patches to the project, here are some guidelines to follow for a successful submission:
+</p>
+<ul><li> follow the <a href="/wiki/CodingConventions" title="CodingConventions">Eigenbase coding conventions</a>; if you use Emacs, set it up to load Eigenbase <a href="/wiki/EmacsCustomizations" title="EmacsCustomizations">EmacsCustomizations</a>
+</li><li> run all tests for both Netbeans, Hibernate and Transient and resolve any failures (<b>ant test-all-impls</b> can run through all of them automatically)
+</li><li> <b>ant test</b> will also verify that Javadoc can be built with zero errors/warnings; be sure to fix any problems it identifies (you can also run <b>ant checkJavadoc</b> to verify this in isolation, and <b>ant javadoc</b> to actually generate the Javadoc without deleting it)
+</li><li> add <a href="#Writing_Unit_Tests">new unit test coverage</a> for all changes, including new features and bugfixes
+</li></ul>
+<p>If your checkin causes any problems the next time an Enki release is integrated into a dependent project such as Farrago, you'll be asked to help resolve that.
+</p><p>There are also some optional tests (<b>ant test-umlm2</b>) which aren't currently integrated into the main unit tests; if these break, they'll need to be fixed once someone notices.
+</p>
+<h1> <span class="mw-headline" id="Release_Build"> Release Build </span></h1>
+<p>The official release process for Enki as a standalone subproject of Eigenbase has not yet been defined, but there have already been internal releases into other projects such Farrago and argouml-enki.
+</p><p>Building a release requires you to first create a file <b>enki/dist/EnkiRelease.properties</b>:
+</p>
+<pre>
+package.name=eigenbase-enki
+product.name=Eigenbase Metadata Repository
+product.version.major=0
+product.version.minor=1
+product.version.point=0
+</pre>
+<p>For now we use version "0.1.0" until official releases start.
+</p><p>Next, make sure you have no files checked out from Perforce, and have sync'd to the latest code to be released.
+</p><p>In the enki directory, run the <b>distBuild.sh</b> script.  It will query Perforce to figure out the revision number for the latest change and include that metadata in the released package (as a file named LAST_CHANGE).  Don't use the <b>ant dist</b> target directly unless you want to bypass the Perforce query, e.g. to build a release from something other than the latest code.  In that case, you'll need to create the <b>enki/dist/LAST_CHANGE</b> file yourself.
+</p><p>A successful distribution build will produce the following in the <b>enki/dist</b> directory:
+</p>
+<ul><li> <b>eigenbase-enki-0.1.0-doc.jar</b>:  the generated Javadoc
+</li><li> <b>eigenbase-enki-0.1.0-findbugs.jar</b>:  the findbugs plugin for detecting errors in applications built on Enki 
+</li><li> <b>eigenbase-enki-0.1.0.jar</b>:  the compiled classes for Enki
+</li><li> <b>eigenbase-enki-0.1.0-libs.tar.gz</b>:  redistribution of thirdparty libraries required by Enki
+</li><li> <b>eigenbase-enki-0.1.0-src.jar</b>:  source code for Enki
+</li><li> <b>LAST_CHANGE</b>:  metadata about the build version, which is also included in most of the files above (along with a copy of the LGPL) to make them independently redistributable
+</li><li> <b>eigenbase-enki-0.1.0.tar.gz</b>:  a tarball containing all of the files above
+</li></ul>
+<h1> <span class="mw-headline" id="Eclipse_Environment"> Eclipse Environment </span></h1>
+<p>Enki (as of change 12238) has an Ant target to generate a basic Eclipse project.
+</p><p>After building and running unit tests via Ant (or at least executing <code>ant createSampleRepository createSamplePluginRepository</code>), you can create an eclipse project by running <code>ant createEclipseProject</code>.
+</p><p>To configure a non-plugin JUnit test to run with Eclipse, use the JUnit 4 Test Runner and specify the following JVM arguments, substituting your project's name for <code>ENKI_PROJECT_NAME</code>:
+</p>
+<blockquote><pre>
+-Denki.home=${workspace_loc:ENKI_PROJECT_NAME}
+-Denki.test.extent=SampleRepository
+</pre></blockquote>
+<p>For plug-in tests (see <a href="#Writing_Unit_Tests">#Writing Unit Tests</a>), the classpath for JUnit tests must include both the <code>sample.jar</code> and <code>sample-plugin.jar</code> JAR files.  The JVM arguments for plugin tests are as follows, again replacing your project's name for <code>ENKI_PROJECT_NAME</code>:
+</p>
+<blockquote><pre>
+-Denki.home=${workspace_loc:ENKI_PROJECT_NAME}
+-Denki.test.extent=SamplePluginRepository
+-Denki.test.storageProps=${workspace_loc:ENKI_PROJECT_NAME}/test/TestPluginStorage.properties
+</pre></blockquote>
+<p>Note that if you make changes to the sample metamodel, you'll need to rebuild them with Ant and refresh the <code>sample.jar</code> and/or <code>sample-plugin.jar</code> JAR files in Eclipse.
+</p><p>Eclipse 3.3 sometimes encounters NullPointerExceptions in its compiler, particularly if you are examining files in Eclipse while building via Ant.  Once in that state, the only solution seems to be to disable automatic building, clean the project, and restart.  A workaround is to always disable automatic building and use the Ant scripts exclusively for compilation.
+</p>
+<h1> <span class="mw-headline" id="Writing_Unit_Tests"> Writing Unit Tests </span></h1>
+<h2> <span class="mw-headline" id="Package"> Package </span></h2>
+<p>New unit tests should be placed in the <code>org.eigenbase.enki.test</code> package.  Several sub-packages exists there which contain specific subsets of tests:
+</p>
+<table border="1" cellspacing="0">
+<caption> Specialized Test Packages
+</caption>
+<tr valign="top" align="left">
+<th> Package
+</th>
+<th> Description
+</th></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.test.performance</code>
+</td>
+<td> Performance related tests.  These tests are not normally executed as part of the <code>test</code> or <code>test-all-impls</code> Ant targets.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.test.plugin</code>
+</td>
+<td> Tests that rely on the sample metamodel plus the sample plug-in extension. These tests must use the reflective JMI interfaces exclusively as the plug-in's interfaces are not available at build time.  Tests in this package are automatically run against a separate repository containing the plug-in's metamodel.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.test.hibernate</code>
+</td>
+<td> Tests that exercise functionality of the Enki/Hibernate provider.  Tests in this package must use the annotation <code>@RunWith(HibernateOnlyTestRunner.class)</code> to avoid being executed with non-Enki/Hibernate repositories.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.test.events</code>
+</td>
+<td> The events package contains infrastructure for testing the MDR Events API and includes no tests.
+</td></tr></table>
+<h2> <span class="mw-headline" id="Base_Class"> Base Class </span></h2>
+<p>Tests that extend <code>org.eigenbase.enki.test.ModelTestBase</code> automatically load the sample or sample plug-in repository.  The repository loaded depends on whether the base class loads the default test storage properties (e.g., <code>test/TestStorage.properties</code>) or if configured to use an alternate location (e.g., <code>test/TestPluginStorage.properties</code>).  Both properties files are copied and have variables resolved by the Ant script from templates under <code>test/config</code>.
+</p><p><code>ModelTestBase</code> also automatically deletes all objects from the repository before any of the concrete test class's setup or test methods are invoked.  The base class also provides convenience methods to manage session and transactions, delete all repository objecgts, reload the extent, or shutdown and restart the repository.  See the javadoc for details.
+</p><p>The test base class <code>org.eigenbase.enki.SampleModelTestBase</code> extends <code>ModelTestBase</code> to provide convenience methods to obtain package interfaces for the sample metamodel's packages.
+</p><p>Each test class configures and starts the repository.  A session is started by <code>ModelTestBase&lt;code&gt; before any sub-class setup or test methods are invoked.  You may end the session (assuming all transactions are also ended), but must start a new session before exiting your method.
+</p><p>All tests must be marked with JUnit 4 annotations: &lt;code&gt;@Test</code> denotes a test.  <code>@Ignore</code> causes a test to be skipped.  
+</p><p>The test class should be marked with <code>@RunWith(LoggingTestRunner.class)</code> to provide automatic logging of the start and end of each test, which makes interpreting the log file much simpler.
+</p><p>You may use the <code>@BeforeClass</code>, <code>@Before</code>, <code>@After</code>, and <code>@AfterClass</code> annotations for per-class and per-test setup and teardown.
+</p>
+<h2> <span class="mw-headline" id="Execution"> Execution </span></h2>
+<p>The Ant build script assumes that all classes in under <code>org.eigenbase.enki.test</code> whose names end with <code>Test</code> are JUnit 4 unit tests.
+</p><p>Tests in the <code>org.eigenbase.enki.test.plugin</code> are executed against a separate plug-in repository.
+</p><p>The script <code>junitSingle</code> can be used to execute a single unit test from the command line.
+</p>
+<h3> <span class="mw-headline" id="Ant_Target:_test"> Ant Target: test </span></h3>
+<p>The Ant target <code>test</code> makes a clean build of the sample and plug-in repositories and then executes all non-plug-in, non-performance unit tests with the <code>sample.jar</code> JAR file on the classpath and the following JVM arguments:
+</p>
+<blockquote><pre>
+-ea 
+-esa
+-Denki.home={enki directory}
+-Denki.test.extent=SampleRepository
+-Djava.util.logging.config.file={enki directory}/trace/EnkiTrace.properties
+</pre></blockquote>
+<p>It then executes the plug-in unit tests with the addition of the <code>sample-plugin.jar</code> JAR file on the classpath, changes the test extent JVM argument and adds an extra JVM argument:
+</p>
+<blockquote><pre>
+-Denki.test.extent=SamplePluginRepository
+-Denki.test.storageProps={enki directory}/test/TestPluginStorage.properties
+</pre></blockquote>
+<p>Finally it verifies that no warnings or errors are emitted as part of JavaDoc generation.
+</p>
+<h3> <span class="mw-headline" id="Ant_Target:_test-all-impls"> Ant Target: test-all-impls </span></h3>
+<p>The Ant target <code>test-all-impls</code> forks an instance of Ant for each standard repository configuration (currently netbeans, hibernate, hibernate-hsqldb, and transient) and runs the same set of tests as the <code>test</code> target.  It then verifies the JavaDoc once after all the tests have passed.
+</p>
+<h1> <span class="mw-headline" id="Tracing_Hibernate_and_MySQL"> Tracing Hibernate and MySQL </span></h1>
+<p>Hibernate SQL statements may be dumped to the standard output by enabling following property in the appropriate storage properites file:
+</p>
+<blockquote><pre>
+hibernate.show_sql=true
+</pre></blockquote>
+<p>Alternatively, you can have the SQL dumped to the trace file by adding this line to <b>trace/EnkiTrace.properties</b>:
+</p>
+<blockquote><pre>
+org.hibernate.SQL.level=FINE
+</pre></blockquote>
+<p>In both cases, you're seeing the SQL statements the Hibernate generates without regard to the second level cache, if any.
+</p><p>Enki's Ant scripts contain several convenience methods to control a local MySQL installation. By default Enki assumes MySQL is installed at the location referenced by the environment variable <b>MYSQL_HOME</b>.  That directory must contain a sub-directory called <b>bin</b> which contains the <b>mysqld</b> executable.  You may alternatively specify MySQL's installation directory via the <b>mysql.inst.dir</b> Ant property in <b>customBuild.properties</b>.
+</p><p>The following targets may be used to control MySQL from Enki's build directory:
+</p>
+<ul><li> <b>start-mysql-server</b> - starts MySQL
+</li><li> <b>stop-mysql-server</b> - stops MySQL
+</li><li> <b>restart-mysql-server</b> - equivalent to <i>ant stop-mysql-server start-mysql-server</i>
+</li><li> <b>start-mysql-server-with-logging</b> - starts MySQL with query logging enabled
+</li><li> <b>restart-mysql-server-with-logging</b> - equivalent to <i>ant stop-mysql-server start-mysql-server-with-logging</i>
+</li></ul>
+<p>MySQL's query logging has the advantage of displaying the values of parameterized SQL statements whereas Hibernate's logging only shows the parameterized SQL.
+</p>
+<h1> <span class="mw-headline" id="More_Resources"> More Resources </span></h1>
+<ul><li> <a href="/wiki/EnkiDocs" title="EnkiDocs">EnkiDocs</a>:  top-level document index for the Enki project
+</li><li> <b>ant etags</b> will generate a TAGS file usable by Emacs
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 216/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1929-0!*!0!!en!2!* and timestamp 20140414194444 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=EnkiDevelopment&amp;oldid=6894">http://luciddb.org/wiki/index.php?title=EnkiDevelopment&amp;oldid=6894</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/EnkiDevelopment" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:EnkiDevelopment&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=EnkiDevelopment&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=EnkiDevelopment&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=EnkiDevelopment" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/EnkiDevelopment" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/EnkiDevelopment" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=EnkiDevelopment&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=EnkiDevelopment&amp;oldid=6894" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 21 January 2011, at 06:08.</li>
+		<li id="viewcount">This page has been accessed 7,887 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.258 secs. --></body></html>

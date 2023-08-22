@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AutoincrementColumns - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AutoincrementColumns", "wgTitle": "AutoincrementColumns", "wgCurRevisionId": 6039, "wgArticleId": 1522, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AutoincrementColumns action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AutoincrementColumns</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#I._Overview"><span class="tocnumber">1</span> <span class="toctext">I. Overview</span></a></li>
+<li class="toclevel-1"><a href="#II._Syntax"><span class="tocnumber">2</span> <span class="toctext">II. Syntax</span></a></li>
+<li class="toclevel-1"><a href="#III._Restrictions"><span class="tocnumber">3</span> <span class="toctext">III. Restrictions</span></a></li>
+<li class="toclevel-1"><a href="#IV._Implementation"><span class="tocnumber">4</span> <span class="toctext">IV. Implementation</span></a>
+<ul>
+<li class="toclevel-2"><a href="#A._General_design"><span class="tocnumber">4.1</span> <span class="toctext">A. General design</span></a></li>
+<li class="toclevel-2"><a href="#B._Catalog"><span class="tocnumber">4.2</span> <span class="toctext">B. Catalog</span></a></li>
+<li class="toclevel-2"><a href="#C._Updates"><span class="tocnumber">4.3</span> <span class="toctext">C. Updates</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#V._External_Interfaces"><span class="tocnumber">5</span> <span class="toctext">V. External Interfaces</span></a>
+<ul>
+<li class="toclevel-2"><a href="#A._Views"><span class="tocnumber">5.1</span> <span class="toctext">A. Views</span></a></li>
+<li class="toclevel-2"><a href="#B._JDBC_API"><span class="tocnumber">5.2</span> <span class="toctext">B. JDBC API</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#VI._References"><span class="tocnumber">6</span> <span class="toctext">VI. References</span></a></li>
+</ul>
+</td></tr></table>
+<h2 id="tocAutoincrementColumns0"> <span class="mw-headline" id="I._Overview">I. Overview</span></h2>
+<p><br />
+One might choose to define a table as follows:<br />
+<br />
+</p>
+<pre class="text">create table product (
+    product_id int primary key,
+    &lt;other fields&gt;
+);</pre>
+<p><br />
+</p><p>Such a table requires supplying a unique empno to be<br />
+the primary key for every record. To save the effort,<br />
+SQL 2003 supports the identity column:<br />
+<br />
+</p>
+<pre class="text">create table product (
+    product_id int generated always as identity,
+    &lt;other fields&gt;
+);</pre>
+<p><br />
+An identity column is an autoincrement column. It generates<br />
+</p><p>a sequence of values (such as 1,2,3 ...) that may be used as<br />
+a primary key.<br />
+<br />
+Internally, an identity column references an anonymous SQL<br />
+sequence object. It supports all of the options for sequences.<br />
+A statement with more options might be:<br />
+<br />
+</p>
+<pre class="text">create table product (
+    product_id decimal(10,0) generated always as identity
+        ( start with 1000 increment by 10
+        maxvalue 1000000 no minvalue no cycle ),
+    &lt;other fields&gt;
+
+);</pre>
+<p><br />
+Options of an autoincrement column include:<br />
+<br />
+<em>Table 1. Autoincrement options</em><br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td><strong>Field</strong></td>
+        <td><strong>Default</strong></td>
+        <td><strong>Comments</strong></td>
+    </tr>
+    <tr>
+        <td>data type</td>
+        <td>-</td>
+        <td>required, must have scale 0</td>
+    </tr>
+    <tr>
+        <td>generated by default</td>
+        <td>-</td>
+        <td>allows a value to be explicitly inserted into the column</td>
+    </tr>
+    <tr>
+
+        <td>start value</td>
+        <td>min or max</td>
+        <td>specifies the first value to use for the sequence</td>
+    </tr>
+    <tr>
+        <td>increment</td>
+        <td>1</td>
+        <td>must not be 0, and can be negative</td>
+    </tr>
+    <tr>
+        <td>maxvalue</td>
+        <td>highest value of type</td>
+        <td>an upper limit for returned by the sequence</td>
+    </tr>
+
+    <tr>
+        <td>minvalue</td>
+        <td>0</td>
+        <td>the least value of the sequence</td>
+    </tr>
+    <tr>
+        <td>cycle</td>
+        <td>false</td>
+        <td>whether to cycle once all values have been used</td>
+    </tr>
+</table>
+<p>Note: min and max are implementation defined.<br />
+<br />
+</p>
+<h2 id="tocAutoincrementColumns1"> <span class="mw-headline" id="II._Syntax">II. Syntax</span></h2>
+<p><br />
+The full syntax of an identity column is as follows:<br />
+</p><p><br />
+</p>
+<pre class="text">&lt;identity column definition&gt;&#160;:=
+    &lt;column name&gt; &lt;data type&gt; &lt;identity column specification&gt;
+&#160;
+&lt;identity column specification&gt;&#160;:=
+    GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY
+    [ LPAREN &lt;common sequence generator option&gt; ... RPAREN ]
+
+&#160;
+&lt;common sequence generator option&gt;&#160;:=
+    START WITH &lt;value&gt;
+    |
+    &lt;basic sequence generator option&gt;
+&#160;
+&lt;basic sequence generator option&gt;&#160;:=
+    INCREMENT BY &lt;value&gt;
+    |
+    { MAXVALUE &lt;value&gt; | NO MAXVALUE }
+    |
+    { MINVALUE &lt;value&gt; | NO MINVALUE }
+    |
+    { CYCLE | NO CYCLE }
+
+&#160;
+ALTER TABLE &lt;table name&gt;
+    ALTER COLUMN &lt;column name&gt; &lt;alter identity column spec&gt;
+&#160;
+&lt;alter identity column spec&gt;&#160;:=
+    (
+        RESTART WITH &lt;value&gt;
+        | SET &lt;basic sequence generator option&gt;
+
+    )+
+&#160;
+Example:
+alter table product alter column product_id
+    restart with 10 set increment by 10;</pre>
+<p><br />
+<br />
+</p>
+<h2 id="tocAutoincrementColumns2"> <span class="mw-headline" id="III._Restrictions">III. Restrictions</span></h2>
+<p><br />
+Some of the restrictions are as follows:<br />
+</p>
+<ul>
+    <li>There may be at most one identity column for a table</li>
+    <li>The data type must have a scale of 0</li>
+    <li>Values are signed integers, representable by data type</li>
+    <li>Increment must not be 0</li>
+    <li>MIN &lt;= START &lt;= MAX</li>
+    <li>Each kind of option (ex: MINVALUE, NO MINVALUE) is specified only once</li>
+    <li>When &quot;generated always&quot; is specified, explicit values may not be inserted into identity columns</li>
+</ul>
+<p><br />
+The behavior of sequences include:<br />
+</p>
+<ul>
+    <li>Sequences are updated independently of transaction rollback or commit</li>
+    <li>Sequences may have gaps in some situations</li>
+    <li>When a sequence has ended and cycles are not allowed a data exception is thrown</li>
+    <li>(For named sequences): multiple references in a single row have the same value</li>
+</ul>
+<p><br />
+Alter sequence is a bit tricky, because sequences become somewhat<br />
+undefined after they have expired. Common uses might be to reenable<br />
+the sequence by expanding the range of the sequence or allowing cycles.<br />
+We support the following semantics:<br />
+</p>
+<ul>
+    <li>If the sequence is valid, alter follows the conventions of SQL2003</li>
+    <li>If the sequence expires, set base to last valid value, and set &quot;expired&quot; flag</li>
+    <li>On alter, update the value and expired flag</li>
+</ul>
+<p><br />
+</p>
+<h2 id="tocAutoincrementColumns3"> <span class="mw-headline" id="IV._Implementation">IV. Implementation</span></h2>
+<p><br />
+</p>
+<h3 id="tocAutoincrementColumns4"> <span class="mw-headline" id="A._General_design">A. General design</span></h3>
+<p><br />
+Autoincrement columns become important when inserting into a table.<br />
+To obtain a generated value for the column, ReposDefaultValueFactory is<br />
+asked to generate a new column default value. For sequences, we return<br />
+a RexCall to a new SqlOperator, NextValueOperator. The operator takes<br />
+an argument to identify the sequence. This operator returns a long<br />
+value which is later casted to the appropriate type.<br />
+</p><p>(No overflow check is required.)<br />
+<br />
+</p>
+<pre class="text">public class ReposDefaultValueFactory ...
+{
+    public RexNode newColumnDefaultValue()
+    {
+        if (sequence associated with column) {
+            return rexBuilder.makeCall(
+                NextValueOperator,
+                sequenceMofId);
+        } else {
+            return column default value;
+        }
+    }
+}</pre>
+<p><br />
+This RexCall is then translated into Java code. The translation<br />
+includes two components (1) initialization and (2) value access:<br />
+<br />
+</p>
+<pre class="text">import net.sf.farrago.catalog.FarragoSequenceAccessor;
+...
+class CalcTupleIter
+{
+    static FarragoSequenceAccessor sequence;
+    ...
+    public Object fetchNext()
+    {
+        if (sequence == null) {
+            sequence = connection.getSequenceAccessor(mofId);
+            ...
+            nextValue = sequence.getNext();
+            ...
+        }
+    }
+}</pre>
+<p><br />
+On initialization, a singleton sequence accessor is retrieved from<br />
+the catalog. For value access, a call is made to access the next valuet.<br />
+Both calls are synchronized to allow concurrent access. As a<br />
+result of generating a value,the sequence may update its current base<br />
+value in the catalog.<br />
+<br />
+</p>
+<h3 id="tocAutoincrementColumns5"> <span class="mw-headline" id="B._Catalog">B. Catalog</span></h3>
+<p><a href="/wiki/File:SequenceModel.png" class="image"><img alt="SequenceModel.png" src="/wiki/upload/b/bb/SequenceModel.png" width="503" height="513" /></a>
+</p><p><br />
+FemStoredColumn gets the new attribute generatedAlways, a nullable<br />
+</p><p>value implies no values are generated. False implies it is legal to insert<br />
+into the columns while generatedAlways true implies that it is illegal<br />
+to insert values into the identify column..<br />
+<br />
+SequenceGenerator is a new class in the Farrago catalog. It exists<br />
+as part of the SQL2003 package and contains attributes for name,<br />
+dataType, currentBaseValue, increment, maxValue, minValue, cycle,<br />
+and expired. The attributes are resolved during sequence creation time<br />
+and no fields are nullable.<br />
+</p><p><br />
+A SequenceGenerator has a composite relationship with either a column<br />
+(1 to 0..1) or a schema (1 to *). This allows a SequenceGenerator to<br />
+be owned by (and cleaned up with) either a column or schema but not<br />
+both. (The schema association models named sequences, which we can<br />
+implement later). The specific column is FemStoredColumn. For schema<br />
+it is sufficient to have SequenceGenerator inherit from ModelElement to<br />
+be a child of schema.<br />
+<br />
+FemStoredColumn has an attribute generatedAlways, which describes<br />
+</p><p>whether a value may be inserted. The concept also applies to computed<br />
+columns (which are not implemented yet).<br />
+<br />
+</p>
+<h3 id="tocAutoincrementColumns6"> <span class="mw-headline" id="C._Updates">C. Updates</span></h3>
+<p><br />
+A sequence is guaranteed not to produce duplicate values (until values<br />
+cycle). In order to<br />
+enforce this requirement, the SequenceAccessor updates the catalog<br />
+<em>before</em> uisng values. For example, the accessor increments the<br />
+</p><p>catalog by 1000 on initialization. Then it is able to allocate<br />
+up to 1000 values without worrying about crashes, other statements,<br />
+future constraint violations, etc. After it consumes all of its reserved<br />
+values, it reserves another chunk from the catalog before continuing.<br />
+<br />
+In an effort to reduce gaps in sequences, the unused values are<br />
+returned are unreserved by closing allocation with FarragoRepos.<br />
+<br />
+Access to a sequence generator is synchronized. Only one statement at<br />
+a time may access a sequence generator. However, the retrieval of<br />
+</p><p>individual values is not synchronized.<br />
+<br />
+</p>
+<h2 id="tocAutoincrementColumns7"> <span class="mw-headline" id="V._External_Interfaces">V. External Interfaces</span></h2>
+<p><br />
+</p>
+<h3 id="tocAutoincrementColumns8"> <span class="mw-headline" id="A._Views">A. Views</span></h3>
+<p><br />
+</p>
+<pre class="text">select
+    table_cat, table_schem, table_name, column_name,
+    current, increment, min, max, cycle
+from
+    sys_boot.mgmt.sequences_view;</pre>
+<p>The query returns all fields for sequences.<br />
+<br />
+</p>
+<h3 id="tocAutoincrementColumns9"> <span class="mw-headline" id="B._JDBC_API">B. JDBC API</span></h3>
+<p><br />
+Deferred for contributors to implement on the basis that the API<br />
+would not be required for ETL.<br />
+<br />
+</p>
+<h2 id="tocAutoincrementColumns10"> <span class="mw-headline" id="VI._References">VI. References</span></h2>
+<p><br />
+Taken from an unofficial SQL2003 Part II recommended by Whitemarsh<br />
+<br />
+Table Definition 11.3 (p.525)<br />
+Column Definition 11.4 (p.536)<br />
+</p><p>Creation of sequence generator 9.22 (p.463)<br />
+Sequence generator definition 11.62 (p.727)<br />
+Alter sequence generator statement 11.63 (p.728)<br />
+Alter column definition 11.12 (p.574)<br />
+Alter identity column spec 11.17 (p.580)<br />
+Generation of the next value 9.21 (p.462)
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 195/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1522-0!*!*!!en!2!* and timestamp 20140414194611 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AutoincrementColumns&amp;oldid=6039">http://luciddb.org/wiki/index.php?title=AutoincrementColumns&amp;oldid=6039</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AutoincrementColumns" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AutoincrementColumns&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AutoincrementColumns&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AutoincrementColumns&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AutoincrementColumns" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AutoincrementColumns" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AutoincrementColumns" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AutoincrementColumns&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AutoincrementColumns&amp;oldid=6039" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 22 May 2009, at 20:56.</li>
+		<li id="viewcount">This page has been accessed 3,627 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.242 secs. --></body></html>

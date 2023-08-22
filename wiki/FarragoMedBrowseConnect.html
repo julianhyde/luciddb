@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedBrowseConnect - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedBrowseConnect", "wgTitle": "FarragoMedBrowseConnect", "wgCurRevisionId": 6976, "wgArticleId": 1486, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedBrowseConnect action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedBrowseConnect</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page describes Farrago management support for browsing the available <a href="/wiki/FarragoMedJdbcPlugin" title="FarragoMedJdbcPlugin">SQL/MED</a> foreign data wrappers and interrogating them for connection parameters via SQL statements.<br />
+<br />
+</p>
+<hr />
+<p>Many applications based on SQL/MED require the ability to create new connections to foreign servers via a user interface. When the correct foreign server options (such as wrapper to use, data source URL, and authentication credentials) are not known ahead of time, such a user interface requires &quot;browse connect&quot; functionality from the DBMS. The Farrago SQL/MED SPI allows foreign data wrapper implementations to provide this functionality, and the Farrago management schema exposes this via views and UDX functions:<br />
+</p>
+<ul>
+    <li>view <strong>sys_boot.mgmt.browse_connect_foreign_wrappers</strong>: lists all foreign wrappers which have been tagged as suitable for browse connect interaction</li>
+    <li>UDX <strong>sys_boot.mgmt.browse_connect_foreign_server</strong>: supports iterative interaction for filling in connection parameters against a particular data wrapper, leading up to creation of a foreign server</li>
+    <li>UDX <strong>sys_boot.mgmt.browse_foreign_schemas</strong>: supports retrieval of a list of foreign schemas after a foreign server has been created; these schemas can then be used as the source for the <strong>IMPORT FOREIGN SCHEMA</strong> command</li>
+    <li>UDX <strong>browse_foreign_schema_columns</strong>: supports retrieval of a list of foreign tables and columns of those tables within a foreign schema after a foreign server has been created; they can be used for fine-grained control in <strong>IMPORT FOREIGN SCHEMA</strong>.</li>
+    <li>UDX <strong>browse_foreign_schema_tables</strong>: Same as columns but restricts the information to the table names and descriptions.</li>
+</ul>
+<p>The rest of this page walks through interactions based on these in detail.<br />
+</p>
+<hr />
+<p>When a Farrago catalog is initialized, many foreign data wrappers may be created; some of these may be for internal use by the system, while others are intended for activation by end-users. To discriminate these, Farrago overloads SQL/MED option name/value pairs as a tagging mechanism. A foreign data wrapper with an option named <strong>BROWSE_CONNECT_DESCRIPTION</strong> set is considered to be suitable for exposure to end-users as a candidate for creating new foreign servers. The value of the option becomes the wrapper description presented to an end-user; this may be different from the wrapper's description attribute in the catalog. Suppose the catalog is initialized via the following DDL:<br />
+<br />
+</p>
+<pre class="text">create foreign data wrapper hsqldb_wrapper
+library 'plugin/FarragoMedJdbc.jar'
+language java
+options(
+  browse_connect_description 'Hypersonic Database',
+  driver_class 'org.hsqldb.jdbcDriver',
+  url 'jdbc:hsqldb:path/to/data'
+);
+&#160;
+create foreign data wrapper csv_wrapper
+library 'plugin/FarragoMedJdbc.jar'
+language java
+options(
+  browse_connect_description 'CSV Files',
+  driver_class 'org.relique.jdbc.csv.CsvDriver',
+  url 'jdbc:relique:csv:path/to/data'
+);
+&#160;
+create foreign data wrapper mdr_wrapper
+library 'class net.sf.farrago.namespace.mdr.MedMdrForeignDataWrapper'
+language java;</pre>
+<p><br />
+</p><p>Only <strong>hsqldb_wrapper</strong> and <strong>csv_wrapper</strong> have been tagged as suitable for activation by end-users. Note that both of these are using the same underlying wrapper jar (<strong>FarragoMedJdbc.jar</strong>), but configured with a different description, JDBC driver, and template URL for JDBC connection. To the end users, they will look like completely different animals. To get back the list of tagged wrappers, the UI can query <strong>browse_connect_foreign_wrappers</strong>:<br />
+<br />
+</p>
+<pre class="text">0: jdbc:farrago:&gt; select * from sys_boot.mgmt.browse_connect_foreign_wrappers;
++-----------------------+-----------------------------+
+| FOREIGN_WRAPPER_NAME  | BROWSE_CONNECT_DESCRIPTION  |
++-----------------------+-----------------------------+
+| HSQLDB_WRAPPER        | Hypersonic Database         |
+| CSV_WRAPPER           | CSV Files                   |
++-----------------------+-----------------------------+</pre>
+<hr />
+<p>Now, suppose the user selects <strong>HSQLDB_WRAPPER</strong>, and wants to create a corresponding foreign server. The first step is to get back a list of connection options to be filled in:<br />
+<br />
+</p>
+<pre class="text">0: jdbc:farrago:&gt; select * from table(
+. . . . . . . . &gt;   sys_boot.mgmt.browse_connect_foreign_server(
+. . . . . . . . &gt;     'HSQLDB_WRAPPER',
+. . . . . . . . &gt;     cursor(
+. . . . . . . . &gt;         select '' as option_name, '' as option_value
+. . . . . . . . &gt;         from sys_boot.jdbc_metadata.empty_view)))
+. . . . . . . . &gt; order by option_ordinal, option_choice_ordinal;
++-----------------+-------------------+-----------------------------------------------------+---------------------+------------------------+---------------------------+
+| OPTION_ORDINAL  |    OPTION_NAME    |                 OPTION_DESCRIPTION                  | IS_OPTION_REQUIRED  | OPTION_CHOICE_ORDINAL  |    OPTION_CHOICE_VALUE    |
++-----------------+-------------------+-----------------------------------------------------+---------------------+------------------------+---------------------------+
+| 0               | DRIVER_CLASS      | Fully-qualified class name of JDBC driver to load   | true                | -1                     | org.hsqldb.jdbcDriver     |
+| 1               | URL               | JDBC URL for data source                            | true                | -1                     | jdbc:hsqldb:path/to/data  |
+| 2               | USER_NAME         | User name for authentication in source DBMS         | false               | -1                     |                           |
+| 3               | PASSWORD          | Password for authentication in source DBMS          | false               | -1                     |                           |
+| 4               | EXTENDED_OPTIONS  | Whether driver-specific options should be accepted  | true                | -1                     | FALSE                     |
+| 4               | EXTENDED_OPTIONS  | Whether driver-specific options should be accepted  | true                | 0                      | FALSE                     |
+| 4               | EXTENDED_OPTIONS  | Whether driver-specific options should be accepted  | true                | 1                      | TRUE                      |
++-----------------+-------------------+-----------------------------------------------------+---------------------+------------------------+---------------------------+</pre>
+<p>The results come back in NQNF (not quite normal form) to handle the case where certain options have multiple choices available (in this example, the <strong>EXTENDED_OPTIONS</strong> flag). In such cases, the <strong>OPTIONAL_ORDINAL</strong> column repeats along with other columns, and the <strong>OPTION_CHOICE_ORDINAL</strong> distinguishes the choices. When <strong>OPTION_CHOICE_ORDINAL</strong> is -1, the row represents the &quot;current&quot; setting for the option (so <strong>EXTENDED_OPTIONS</strong> is set to <strong>FALSE</strong>); non-negative choice ordinals represent the available choices. In this case, the &quot;current&quot; settings were chosen by the wrapper itself based on defaults, because the input cursor to the UDX was <strong>empty_view</strong>. Now suppose that the user fills in certain values, providing a real path for the URL and setting <strong>EXTENDED_OPTIONS</strong> to <strong>TRUE</strong>. The UI transmits these choices to the next iteration by passing in a non-empty cursor:<br />
+</p><p><br />
+</p>
+<pre class="text">0: jdbc:farrago:&gt; select option_name, option_choice_ordinal, option_choice_value from table(
+. . . . . . . . &gt;   sys_boot.mgmt.browse_connect_foreign_server(
+. . . . . . . . &gt;     'HSQLDB_WRAPPER',
+. . . . . . . . &gt;     cursor(
+. . . . . . . . &gt;         values ('URL', 'jdbc:hsqldb:testcases/hsqldb/scott'),
+. . . . . . . . &gt;                ('EXTENDED_OPTIONS', 'TRUE'))))
+. . . . . . . . &gt; order by option_ordinal, option_choice_ordinal;
++-------------------+------------------------+-------------------------------------+
+|    OPTION_NAME    | OPTION_CHOICE_ORDINAL  |         OPTION_CHOICE_VALUE         |
++-------------------+------------------------+-------------------------------------+
+| DRIVER_CLASS      | -1                     | org.hsqldb.jdbcDriver               |
+| URL               | -1                     | jdbc:hsqldb:testcases/hsqldb/scott  |
+| USER_NAME         | -1                     |                                     |
+| PASSWORD          | -1                     |                                     |
+| EXTENDED_OPTIONS  | -1                     | TRUE                                |
+| EXTENDED_OPTIONS  | 0                      | FALSE                               |
+| EXTENDED_OPTIONS  | 1                      | TRUE                                |
+| user              | -1                     |                                     |
+| password          | -1                     |                                     |
+| get_column_name   | -1                     | true                                |
+| get_column_name   | 0                      | true                                |
+| get_column_name   | 1                      | false                               |
+| ifexists          | -1                     |                                     |
+| ifexists          | 0                      | true                                |
+| ifexists          | 1                      | false                               |
+| default_schema    | -1                     |                                     |
+| default_schema    | 0                      | true                                |
+| default_schema    | 1                      | false                               |
+| shutdown          | -1                     |                                     |
+| shutdown          | 0                      | true                                |
+| shutdown          | 1                      | false                               |
++-------------------+------------------------+-------------------------------------+</pre>
+<p><br />
+Notice that a number of new options are now present. This is the result of setting <strong>EXTENDED_OPTIONS</strong> to <strong>TRUE</strong>. (These extended options are specific to HSQLDB.) The implication is that the UI may need to be dynamic.<br />
+<br />
+Also note that the URL specified by the user is now reflected in the results.<br />
+<br />
+The <strong>BROWSE_CONNECT_FOREIGN_SERVER</strong> function is based on the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/jdbc/FarragoMedDataWrapperInfo.html#getServerPropertyInfo%28java.util.Locale,%20java.util.Properties,%20java.util.Properties%29">FarragoMedDataWrapperInfo.getServerPropertyInfo</a> SPI call. If the foreign data wrapper does not support this call, it should not be tagged for browse connect.<br />
+</p>
+<hr />
+<p>After a series of such interactions, the user may finally accept the option settings, resulting in the creation of a new foreign server:<br />
+<br />
+</p>
+<pre class="text">0: jdbc:farrago:&gt; create server hsqldb_server
+. . . . . . . . &gt; foreign data wrapper hsqldb_wrapper
+. . . . . . . . &gt; options(
+. . . . . . . . &gt;     url 'jdbc:hsqldb:testcases/hsqldb/scott',
+. . . . . . . . &gt;     user_name 'SA');</pre>
+<p><br />
+The UI can now display the foreign schemas available for import via a query like this:<br />
+<br />
+</p>
+<pre class="text">0: jdbc:farrago:&gt; select * from table(sys_boot.mgmt.browse_foreign_schemas('HSQLDB_SERVER'))
+. . . . . . . . &gt; order by schema_name;
++---------------------+--------------+
+|     SCHEMA_NAME     | DESCRIPTION  |
++---------------------+--------------+
+| INFORMATION_SCHEMA  |              |
+| PUBLIC              |              |
+| SALES               |              |
++---------------------+--------------+</pre>
+<p><br />
+This call relies on the foreign data wrapper supporting the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/namespace/FarragoMedNameDirectory.html#queryMetadata%28net.sf.farrago.namespace.FarragoMedMetadataQuery,%20net.sf.farrago.namespace.FarragoMedMetadataSink%29">FarragoMedNameDirectory.queryMetadata</a> SPI call with the result object type being <strong>OTN_SCHEMA</strong>.
+</p><p>When browse_foreign_schemas is supported, so too are browse_foreign_schema_tables and browse_foreign_schema_columns.
+</p>
+<pre>&gt; select * from table(sys_boot.mgmt.browse_foreign_schema_tables('HSQLDB_DEMO', 'SALES'));
++-------------+--------------+
+| TABLE_NAME  | DESCRIPTION  |
++-------------+--------------+
+| BITFLIP     |              |
+| DEPT        |              |
+| EMP         |              |
+| SALGRADE    |              |
++-------------+--------------+
+&gt; 
+&gt; select * from table(sys_boot.mgmt.browse_foreign_schema_columns('HSQLDB_DEMO', 'SALES'));
++-------------+--------------+----------+-----------+------------+-------------+--------------+---------------------+--------------+----------------+
+| TABLE_NAME  | COLUMN_NAME  | ORDINAL  | DATATYPE  | PRECISION  | DEC_DIGITS  | IS_NULLABLE  | FORMATTED_DATATYPE  | DESCRIPTION  | DEFAULT_VALUE  |
++-------------+--------------+----------+-----------+------------+-------------+--------------+---------------------+--------------+----------------+
+| BITFLIP     | B1           | 0        | BOOLEAN   | 1          | 0           | true         | BOOLEAN             |              |                |
+| BITFLIP     | B2           | 1        | BOOLEAN   | 1          | 0           | false        | BOOLEAN             |              |                |
+| DEPT        | DEPTNO       | 0        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| DEPT        | DNAME        | 1        | VARCHAR   | 1024       | 0           | true         | VARCHAR(1024)       |              |                |
+| DEPT        | LOC          | 2        | VARCHAR   | 1024       | 0           | true         | VARCHAR(1024)       |              |                |
+| EMP         | EMPNO        | 0        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| EMP         | ENAME        | 1        | VARCHAR   | 1024       | 0           | true         | VARCHAR(1024)       |              |                |
+| EMP         | JOB          | 2        | VARCHAR   | 1024       | 0           | true         | VARCHAR(1024)       |              |                |
+| EMP         | MGR          | 3        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| EMP         | HIREDATE     | 4        | DATE      | 0          | 0           | true         | DATE                |              |                |
+| EMP         | SAL          | 5        | DECIMAL   | 19         | 0           | true         | DECIMAL(19, 0)      |              |                |
+| EMP         | COMM         | 6        | DECIMAL   | 19         | 0           | true         | DECIMAL(19, 0)      |              |                |
+| EMP         | DEPTNO       | 7        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| SALGRADE    | GRADE        | 0        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| SALGRADE    | LOSAL        | 1        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
+| SALGRADE    | HISAL        | 2        | INTEGER   | 10         | 0           | true         | INTEGER             |              |                |
++-------------+--------------+----------+-----------+------------+-------------+--------------+---------------------+--------------+----------------+
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 51/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1486-0!*!0!*!*!*!* and timestamp 20140414194618 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedBrowseConnect&amp;oldid=6976">http://luciddb.org/wiki/index.php?title=FarragoMedBrowseConnect&amp;oldid=6976</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedBrowseConnect" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedBrowseConnect&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedBrowseConnect&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedBrowseConnect&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedBrowseConnect" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedBrowseConnect" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedBrowseConnect" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedBrowseConnect&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedBrowseConnect&amp;oldid=6976" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 July 2011, at 18:15.</li>
+		<li id="viewcount">This page has been accessed 2,754 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.166 secs. --></body></html>

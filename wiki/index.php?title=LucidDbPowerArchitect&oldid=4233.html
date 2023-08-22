@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbPowerArchitect - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbPowerArchitect", "wgTitle": "LucidDbPowerArchitect", "wgCurRevisionId": 6369, "wgArticleId": 1840, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbPowerArchitect action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbPowerArchitect</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 21:56, 6 May 2008 by <a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Zfong (page does not exist)">Zfong</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User talk:Zfong (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Zfong" title="Special:Contributions/Zfong">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;diff=prev&amp;oldid=4233" title="LucidDbPowerArchitect">diff</a>) <a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;direction=prev&amp;oldid=4233" title="LucidDbPowerArchitect">← Older revision</a> | <a href="/wiki/LucidDbPowerArchitect" title="LucidDbPowerArchitect">Latest revision</a> (<a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;diff=cur&amp;oldid=4233" title="LucidDbPowerArchitect">diff</a>) | <a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;direction=next&amp;oldid=4233" title="LucidDbPowerArchitect">Newer revision →</a> (<a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;diff=next&amp;oldid=4233" title="LucidDbPowerArchitect">diff</a>)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><a rel="nofollow" class="external text" href="http://www.sqlpower.ca/page/architect">Power*Architect</a> (from the SQL Power Group) is an open-source cross-platform data modeling tool.  This page explains how to set it up for use with LucidDB.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Install"><span class="tocnumber">1</span> <span class="toctext">Install</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Connect"><span class="tocnumber">2</span> <span class="toctext">Connect</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Reverse_Engineer"><span class="tocnumber">3</span> <span class="toctext">Reverse Engineer</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Forward_Engineer"><span class="tocnumber">4</span> <span class="toctext">Forward Engineer</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Profile_Data"><span class="tocnumber">5</span> <span class="toctext">Profile Data</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Compare_Data_Models"><span class="tocnumber">6</span> <span class="toctext">Compare Data Models</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Run_SQL"><span class="tocnumber">7</span> <span class="toctext">Run SQL</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Caveats"><span class="tocnumber">8</span> <span class="toctext">Caveats</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Install"> Install </span></h1>
+<p>First, <a rel="nofollow" class="external text" href="http://download.sqlpower.ca/architect/current.html">download and install a copy</a>.  The version against which these instructions were developed was Power*Architect 0.9.10 running on Linux.
+</p><p>The first time you start it up, it will tell you that it is going to create a file named <b>pl.ini</b>.  Write down the location of this new file, since later on you're going to need to edit it.
+</p>
+<h1> <span class="mw-headline" id="Connect"> Connect </span></h1>
+<p>Assuming you already have a LucidDB server <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">up and running</a>, let's connect to it.  From the <b>Connections</b> menu, choose <b>Database Connection Manager</b>, and then <b>JDBC Drivers</b>.  Click the <b>+</b> button to create a new driver, and then fill in the dialog as follows, using the <b>Add JAR...</b> button to locate your LucidDB JDBC client driver .jar:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectDriver.png" class="image"><img alt="LucidDbPowerArchitectDriver.png" src="/wiki/upload/4/4e/LucidDbPowerArchitectDriver.png" width="726" height="509" /></a>
+</p><p>Click <b>OK</b>, and then back in the connection manager dialog, click <b>New...</b> to create a connection using the new driver:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectConnection.png" class="image"><img alt="LucidDbPowerArchitectConnection.png" src="/wiki/upload/1/1a/LucidDbPowerArchitectConnection.png" width="643" height="403" /></a>
+</p><p>Click <b>OK</b> to save it.  Then, shut down Power*Architect, because we need to give it some information about LucidDB before continuing.  After shutting down, open the <b>pl.ini</b> file in a text editor and look for a section like this one:
+</p>
+<pre>
+[Database Types_10]
+JDBC URL=jdbc:luciddb:rmi://localhost
+JDBC JAR_0=/home/jvs/open/luciddb/plugin/LucidDbClient.jar
+JDBC JAR Count=1
+Name=LucidDB
+JDBC Driver Class=com.lucidera.jdbc.LucidDbRmiDriver
+</pre>
+<p>Edit the section, adding lines as follows:
+</p>
+<pre>
+[Database Types_10]
+JDBC URL=jdbc:luciddb:rmi://localhost
+JDBC JAR_0=/home/jvs/open/luciddb/plugin/LucidDbClient.jar
+JDBC JAR Count=1
+Name=LucidDB
+JDBC Driver Class=com.lucidera.jdbc.LucidDbRmiDriver
+ca.sqlpower.architect.profile.ColumnProfileResult$StringLengthSQLFunction=LENGTH(:)
+ca.sqlpower.architect.profile.ColumnProfileResult$AverageSQLFunction=AVG(:)
+ca.sqlpower.architect.profile.ColumnProfileResult$CaseWhenNullSQLFunction=CASE WHEN&#160;: IS NULL THEN&#160;: END
+DDL Generator=ca.sqlpower.architect.ddl.GenericDDLGenerator
+</pre>
+<p>Now restart Power*Architect, right-click on the <b>Project</b> icon in the tree view, choose <b>Add Source Connection</b> and then your new LucidDB connection name.  You should now be able to browse the tree.  Here's what it looks like if you expand the LOCALDB catalog and then the SYS_ROOT schema:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectTree.png" class="image"><img alt="LucidDbPowerArchitectTree.png" src="/wiki/upload/a/a9/LucidDbPowerArchitectTree.png" width="928" height="460" /></a>
+</p>
+<h1> <span class="mw-headline" id="Reverse_Engineer"> Reverse Engineer </span></h1>
+<p>Now let's do some reverse engineering.  Drag DBA_SCHEMAS and DBA_TABLES from the tree into the right-hand diagram.
+</p><p><i>Note:  If you are using a version of LucidDB earlier than 0.7.4 (currently under development), you will get a spurious error at this point because LucidDB does not currently support foreign keys, and the 0.7.3 JDBC driver throws an unsupported operation exception.  You can just ignore this error!  In version 0.7.4, the JDBC driver was changed to return empty result sets for the corresponding metadata calls, which is the correct behavior since no keys can exist.</i>
+</p><p>Since these are views, there is no primary key information to be obtained via reverse engineering, but you can augment it by right-clicking the columns and editing their properties.  You can also document the foreign keys implicit in the data.  Here's an example:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectTables.png" class="image"><img alt="LucidDbPowerArchitectTables.png" src="/wiki/upload/1/13/LucidDbPowerArchitectTables.png" width="1053" height="547" /></a>
+</p>
+<h1> <span class="mw-headline" id="Forward_Engineer"> Forward Engineer </span></h1>
+<p>At this point, you can also do things like forward-engineering to generate a CREATE TABLE script corresponding to the diagram above.  Use the <b>Tools</b> menu, <b>Forward Engineer...</b> command, and when prompted, use <b>Generic SQL-92</b> for the dialect.  Here's an example of the output:
+</p>
+<pre>
+CREATE TABLE DBA_SCHEMAS (
+                CATALOG_NAME VARCHAR(128) NOT NULL,
+                SCHEMA_NAME VARCHAR(128) NOT NULL,
+                CREATOR VARCHAR(128) NOT NULL,
+                CREATION_TIMESTAMP TIMESTAMP NULL,
+                LAST_MODIFIED_TIMESTAMP TIMESTAMP NULL,
+                REMARKS VARCHAR(65535) NULL,
+                MOF_ID VARCHAR(128) NULL,
+                LINEAGE_ID VARCHAR(128) NULL,
+                CONSTRAINT DBA_SCHEMAS_pk PRIMARY KEY (CATALOG_NAME, SCHEMA_NAME)
+);
+
+CREATE TABLE DBA_TABLES (
+                CATALOG_NAME VARCHAR(128) NOT NULL,
+                SCHEMA_NAME VARCHAR(128) NOT NULL,
+                TABLE_NAME VARCHAR(128) NOT NULL,
+                TABLE_TYPE VARCHAR(128) NULL,
+                CREATOR VARCHAR(128) NOT NULL,
+                CREATION_TIMESTAMP TIMESTAMP NULL,
+                LAST_MODIFIED_TIMESTAMP TIMESTAMP NULL,
+                REMARKS VARCHAR(128) NULL,
+                MOF_ID VARCHAR(128) NULL,
+                LINEAGE_ID VARCHAR(128) NULL,
+                CONSTRAINT DBA_TABLES_pk PRIMARY KEY (CATALOG_NAME, SCHEMA_NAME, TABLE_NAME)
+);
+
+ALTER TABLE DBA_TABLES ADD CONSTRAINT DBA_SCHEMAS_DBA_TABLES_fk
+FOREIGN KEY (CATALOG_NAME, SCHEMA_NAME)
+REFERENCES DBA_SCHEMAS (CATALOG_NAME, SCHEMA_NAME)
+NOT DEFERRABLE;
+</pre>
+<p>Note that you would not actually be able to execute the last command due to the lack of support for foreign keys in LucidDB, as well as the <b>NULL</b> declarations in the column specifications.
+</p>
+<h1> <span class="mw-headline" id="Profile_Data"> Profile Data </span></h1>
+<p>Power*Architect has support for data profiling.  It relies on the <b>pl.ini</b> information entered above, so be sure you did not skip that step before continuing, otherwise you'll end up with a NullPointerException.
+</p><p>Select a table in the tree, and then use the <b>Profile</b> menu to sample it.  The queries issued are heavy-duty (and Power*Architect is not aware of LucidDB's TABLESAMPLE support), so if you have a lot of data, this may take a long time.  Here's an example of the results:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectProfile.png" class="image"><img alt="LucidDbPowerArchitectProfile.png" src="/wiki/upload/2/29/LucidDbPowerArchitectProfile.png" width="1141" height="605" /></a>
+</p>
+<h1> <span class="mw-headline" id="Compare_Data_Models"> Compare Data Models </span></h1>
+<p>Now let's try Power*Architect's feature for comparing data models.  It relies on the <b>pl.ini</b> information entered above, so be sure you did not skip that step before continuing, otherwise you'll end up with a NullPointerException.  In sqllineClient, execute the following script:
+</p>
+<pre>
+create schema s1;
+create table s1.t1(i int);
+create table s1.t2(a int, b varchar(2));
+create schema s2;
+create table s2.t2(a int, b varchar(2), c double);
+create table s2.t3(k timestamp);
+</pre>
+<p>From the <b>Tools</b> menu, choose <b>Compare DM</b>, and then fill in the form as follows:
+</p><p><a href="/wiki/File:LucidDbPowerArchitectCompare.png" class="image"><img alt="LucidDbPowerArchitectCompare.png" src="/wiki/upload/7/77/LucidDbPowerArchitectCompare.png" width="834" height="601" /></a>
+</p><p><i>Note: If you are using a version of LucidDB earlier than 0.7.4 (currently under development), you will get an error at the next step because LucidDB does not currently support foreign keys, and the 0.7.3 JDBC driver throws an unsupported operation exception. In version 0.7.4, the JDBC driver was changed to return empty result sets for the corresponding metadata calls, which is the correct behavior since no keys can exist.</i>
+</p><p>Click the <b>Start</b> button, and you should get output as follows:
+</p>
+<pre>
+DROP TABLE LOCALDB.S1.T1;
+
+ ALTER TABLE LOCALDB.S1.T2 ADD COLUMN C DOUBLE NULL;
+
+CREATE TABLE LOCALDB.S1.T3 (
+                K TIMESTAMP NULL
+);
+</pre>
+<p>You can also choose to get an English description instead:
+</p>
+<pre>
+Table T1 should be removed
+Table T2 needs no changes
+	Column A needs no changes
+	Column B needs no changes
+	Column C should be added
+Table T3 should be added
+</pre>
+<h1> <span class="mw-headline" id="Run_SQL"> Run SQL </span></h1>
+<p>You can use the SQL Runner to execute ad hoc SQL statements.  (When it asks you for a password, you can type anything, unless you have actually set up security on LucidDB.  Don't leave it blank, otherwise it will keep asking you for every execution.)
+</p><p><i>Note: If you are using a version of LucidDB earlier than 0.7.4 (currently under development), you will get an error when trying to use the SQL Runner because LucidDB's 0.7.3 JDBC driver was being strict about requests for scroll cursors.  In version 0.7.4, the JDBC driver was changed to be lenient in this case.</i>
+</p>
+<h1> <span class="mw-headline" id="Caveats"> Caveats </span></h1>
+<p>Power*Architect only knows about indexes, but not UNIQUE constraints (other than PRIMARY KEY).  LucidDB only supports SQL:2003 standard UNIQUE constraints (not the rather common but non-standard CREATE UNIQUE INDEX).
+</p><p>Some operations are known not to work due to LucidDB limitations:
+</p>
+<ul><li> Copy Table (tries to use a prepared update statement, which would be very slow anyway due to single-row inserts)
+</li><li> ETL integration (Kettle doesn't know about LucidDB yet)
+</li><li> Anything to do with ALTER TABLE or foreign keys, neither of which LucidDB supports yet
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 85/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbPowerArchitect&amp;oldid=4233">http://luciddb.org/wiki/index.php?title=LucidDbPowerArchitect&amp;oldid=4233</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbPowerArchitect" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbPowerArchitect&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;action=edit&amp;oldid=4233" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbPowerArchitect&amp;returntoquery=oldid%3D4233" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbPowerArchitect" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbPowerArchitect" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;oldid=4233&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbPowerArchitect&amp;oldid=4233" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.201 secs. --></body></html>

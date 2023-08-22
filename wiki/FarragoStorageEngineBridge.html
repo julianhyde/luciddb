@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoStorageEngineBridge - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoStorageEngineBridge", "wgTitle": "FarragoStorageEngineBridge", "wgCurRevisionId": 6324, "wgArticleId": 1999, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoStorageEngineBridge action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoStorageEngineBridge</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page documents some experimental work being undertaken to bridge Farrago's local data wrapper SPI to allow MySQL storage engines to be plugged in.
+</p><p><b>NOTE jvs 11-Oct-2009:</b>  the experimental code mentioned here has been deleted from the head revision due to lack of interest, but it can be resurrected by sync'ing to eigenchange 13089.
+</p><p>The first cut is a proof of concept to directly bridge to a specific storage engine (<a rel="nofollow" class="external text" href="http://www.scaledb.com">ScaleDB</a>).  Followups would be to make this more robust and then introduce a generic storage engine interface (independent of both ScaleDB and MySQL).
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Build"><span class="tocnumber">1</span> <span class="toctext">Build</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Configure"><span class="tocnumber">2</span> <span class="toctext">Configure</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Run"><span class="tocnumber">3</span> <span class="toctext">Run</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Restore"><span class="tocnumber">4</span> <span class="toctext">Restore</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Implementation"><span class="tocnumber">5</span> <span class="toctext">Implementation</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Build"> Build </span></h1>
+<p><i>For now, use Linux, not Windows.</i>
+</p><p>After syncing the Eigenbase codebase as described in <a href="/wiki/FarragoBuild" title="FarragoBuild">FarragoBuild</a>, but before running <b>initBuild.sh</b>, perform the following steps to add in the ScaleDB libraries:
+</p>
+<ol><li> <b>cd dev/fennel/seb</b>
+</li><li> <b>svn co <a rel="nofollow" class="external free" href="http://scaledb-interfaces.googlecode.com/svn/trunk">http://scaledb-interfaces.googlecode.com/svn/trunk</a> interface</b>
+</li><li> obtain a copy of <b>libscaledb.so</b> and place it in the new <b>seb/interface</b> directory (for this binary, you'll need to talk to the ScaleDB folks)
+</li></ol>
+<p>Now run the Farrago <b>initBuild.sh</b>; it will automatically detect the presence of the ScaleDB interfaces and attempt to build the bridge code.
+</p>
+<h1> <span class="mw-headline" id="Configure"> Configure </span></h1>
+<p>In <b>dev/farrago/catalog</b>, create a file <b>scaledb.cnf</b>, based on <b>dev/fennel/seb/interface/docs/scaledb.cnf</b>; edit all paths to be absolute paths rooted at some place we'll call <b>data</b>, e.g.
+</p>
+<pre>
+data_directory = /home/test/data/scaledb/
+</pre>
+<p>Then, use a script like this one to create the corresponding empty <b>data</b> directory structure:
+</p>
+<pre>
+cd /home/test
+rm -rf data
+mkdir data
+mkdir data/scaledb
+mkdir data/scaledb/sdb_system
+mkdir data/scaledb/test
+mkdir data/scaledb_logs
+</pre>
+<h1> <span class="mw-headline" id="Run"> Run </span></h1>
+<p>In <b>dev/farrago</b>, create a script like the following, call it sqllineSeb, and chmod it to be executable:
+</p>
+<pre>
+#!/bin/bash
+# $Id: //open/dev/farrago/sqllineEngine#3 $
+# Run the sqlline command-line SQL interpreter 
+# with an embedded Farrago engine
+
+source ./defineFarragoRuntime.sh
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/dev/fennel/seb:/path/to/dev/fennel/seb/interface
+
+if java ${SERVER_JAVA_ARGS} \
+    -Dnet.sf.farrago.defaultSessionFactoryLibraryName=class:net.sf.farrago.defimpl.FarragoSebSessionFactory \
+    ${SQLLINE_JAVA_ARGS} \
+    -u jdbc:farrago: -d net.sf.farrago.jdbc.engine.FarragoJdbcEngineDriver \
+    -n sa $*;
+then
+    echo
+else
+    tset
+    echo &quot;Terminal reset because sqlline crashed&quot;
+fi
+</pre>
+<p>Then use this instead of the normal <b>sqllineEngine</b> script so that the storage engine bridge will be used for tables instead of the default FTRS row-store.
+</p><p>You should be able to create a table, insert some rows, and select them back:
+</p>
+<pre>
+jvs@bagheera:~/open/dev/farrago$ ./sqllineSeb 
+Connecting to jdbc:farrago:
+Connected to: Farrago (version 0.1.0)
+Driver: FarragoJdbcDriver (version 0.1)
+Autocommit status: true
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+sqlline version 1.0.7-eb by Marc Prud'hommeaux
+0: jdbc:farrago:&gt; create schema x;
+No rows affected (0.608 seconds)
+0: jdbc:farrago:&gt; create table x.t(i int not null primary key, c char(10));
+No rows affected (0.493 seconds)
+0: jdbc:farrago:&gt; insert into x.t values (1, 'hi');
+1 row affected (0.858 seconds)
+0: jdbc:farrago:&gt; insert into x.t values (2, 'bye');
+1 row affected (0.142 seconds)
+0: jdbc:farrago:&gt; select * from x.t;
++----+-------------+
+| I  |      C      |
++----+-------------+
+| 1  | hi          |
+| 2  | bye         |
++----+-------------+
+2 rows selected (0.1 seconds)
+</pre>
+<p>Some things won't work; for example, attempting to look up a row using an index will cause a crash since the corresponding access method hasn't been developed yet:
+</p>
+<pre>
+0: jdbc:farrago:&gt; select * from x.t where i=1;
+java: /home/jvs/open/dev/fennel/segment/RandomAllocationSegmentBase.cpp:380: virtual fennel::BlockId fennel::RandomAllocationSegmentBase::translatePageId(fennel::PageId): Assertion `const_cast&lt;RandomAllocationSegmentBase *&gt;(this)-&gt;isPageIdValid(pageId)' failed.
+*** CAUGHT SIGNAL 6; BACKTRACE:
+...
+</pre>
+<p>This is one way to verify that you're actually using the storage engine bridge&#160;:)
+</p>
+<h1> <span class="mw-headline" id="Restore"> Restore </span></h1>
+<p>To restore to a clean database, e.g. after a crash, first run <b>ant restoreCatalog</b> from <b>dev/farrago</b>, then run the script from the <a href="#Configure">#Configure</a> instructions to delete and recreate the ScaleDB data directory.
+</p>
+<h1> <span class="mw-headline" id="Implementation"> Implementation </span></h1>
+<p>You can browse the <a rel="nofollow" class="external text" href="http://perforce.eigenbase.org/svn/trunk/open/dev/fennel/seb/">C++ code</a> and the <a rel="nofollow" class="external text" href="http://perforce.eigenbase.org/svn/trunk/open/dev/farrago/src/net/sf/farrago/defimpl/FarragoSebSessionFactory.java">Java code</a>.  It's very much quick-and-dirty (e.g. when a table is created, its ID is combined with the ID of the primary key index and stored as a fake PageID in the catalog); a lot of refactoring work has to take place to support the bridge for real.
+</p>
+<ul><li> Currently, the only datatypes tested are the integer types of various width, and fixed-width CHAR.  VARCHAR is not working correctly yet, nor are null values.
+</li><li> A table has to have a primary key defined, but unique constraints and secondary indexes are not yet supported.
+</li><li> Only sequential scans are supported.
+</li><li> Savepoints are not yet supported.  Concurrency is unknown until the correct binding between threads and user ID's has been discussed.
+</li><li> ScaleDB API return values are not yet checked, so errors are silently ignored.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 64/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1999-0!*!0!!en!*!* and timestamp 20140414194631 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoStorageEngineBridge&amp;oldid=6324">http://luciddb.org/wiki/index.php?title=FarragoStorageEngineBridge&amp;oldid=6324</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoStorageEngineBridge" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoStorageEngineBridge&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoStorageEngineBridge&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoStorageEngineBridge&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoStorageEngineBridge" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoStorageEngineBridge" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoStorageEngineBridge" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoStorageEngineBridge&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoStorageEngineBridge&amp;oldid=6324" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 11 October 2009, at 21:45.</li>
+		<li id="viewcount">This page has been accessed 3,084 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.180 secs. --></body></html>

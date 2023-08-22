@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoSortOrder - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoSortOrder", "wgTitle": "FarragoSortOrder", "wgCurRevisionId": 5866, "wgArticleId": 1531, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoSortOrder action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoSortOrder</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Farrago_Sort_Order"><span class="tocnumber">1</span> <span class="toctext">Farrago Sort Order</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Overview"><span class="tocnumber">1.1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Current_state_of_sort_order"><span class="tocnumber">1.2</span> <span class="toctext">Current state of sort order</span></a>
+<ul>
+<li class="toclevel-3 tocsection-4"><a href="#Physical_Rels"><span class="tocnumber">1.2.1</span> <span class="toctext">Physical Rels</span></a></li>
+<li class="toclevel-3 tocsection-5"><a href="#Logical_Rels"><span class="tocnumber">1.2.2</span> <span class="toctext">Logical Rels</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#Integration"><span class="tocnumber">1.2.3</span> <span class="toctext">Integration</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-7"><a href="#Better_sort_optimization"><span class="tocnumber">1.3</span> <span class="toctext">Better sort optimization</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#JVS_Notes"><span class="tocnumber">2</span> <span class="toctext">JVS Notes</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Farrago_Sort_Order">Farrago Sort Order</span></h1>
+<h2> <span class="mw-headline" id="Overview">Overview</span></h2>
+<p>Sorting is useful for certain tasks (such as merge join) and is required for other tasks (such as aggregating sorted data and order by). At the same time, sorting large data sets can be expensive, so it should be avoided if possible.
+</p><p>The initial policy for sorting was to request a sort whenever one was needed. For example, one Fennel implementation of aggregation requires group by keys to appear in the first columns of its input. It wants data to be sorted for easy aggregation, so it <i>always</i> sorts the input. (see FennelAggRule.java) This example highlights two problems. First, if data is already sorted, then there would be no need to sort it again. A smart sort could alleviate this problem by optimizing trivial sorts, but it should not be there at all. Second, recognizing the desired sort order could help the optimizer search for efficient data access paths.
+</p><p>Addressing the first problem is somewhat straightforward. It mainly involves recognizing the sort order of any given relation. In general, sort order propagates from bottom up, from child to parent. For example, if a filter's input is sorted, then the filter is likely to preserve the input's sorting. We can calculate a relation's sort order when it is constructed, based on its input's sort order. Whenever a sort is redundant, it can be removed.
+</p><p>Choosing between access paths can be a bit trickier. Suppose we want to implement an aggregate and have two options (1) hash aggregate and (2) sorted aggregate. In general, hash aggregate wins over the combination of sorting and sorted aggregate. However, if there is no need for sorting, then sorted aggregate wins. To choose between the two aggregation schemes, we can passively detect the input sort order.
+</p><p>On the other hand, sort requirements generally flow from top down. A relation may require a sort order of its child. But the child's sort order may result from it's own child, which may eventually result from a decision made far beneath. A more general solution to sorting would allow a relation to identify its desired sort order and the cost of doing without it (for example the cost of hash aggregate vs sorted aggregate).
+</p><p>In perspective, various implementations of input streams may rarely differ in the sort order they produce. One situation in which this arises is in index selection. Since indexes are sorted, we may want to take advantage of their sorting. But due to later joins and transformations, we are often not able to. So smart sorting decisions are a nice to have but are perhaps not so urgent (as far as this author knows).
+</p>
+<h2> <span class="mw-headline" id="Current_state_of_sort_order">Current state of sort order</span></h2>
+<p>This section discusses work to identify the sort order of relations. (This would help with the first problem discussed in the overview.)
+</p>
+<h3> <span class="mw-headline" id="Physical_Rels">Physical Rels</span></h3>
+<p>Initially JVS put sort order in physical (Fennel) Rels (since logical Rels might result in multiple sort orders). The following method was introduced to the FennelRel interface.
+</p>
+<pre>
+public interface FennelRel
+{
+    /**
+     * @return the sort order produced by this FennelRel, or an empty array if
+     * the output is not guaranteed to be in any particular order.
+     */
+    public RelFieldCollation [] getCollations();
+}
+</pre>
+<p>A corresponding rule, FennelRemoveRedundantSortRule, was written in order to cleanup extra sorts.
+</p>
+<h3> <span class="mw-headline" id="Logical_Rels">Logical Rels</span></h3>
+<p>Julian broadened sorts to logical (org.eigenbase.rel) Rels. He also extended the notion of sort order to include direction and multiple collations. (For example, a dataset might satisfy three separate sort orders. For its first sort order, the dataset could be descending on c2, then ascending on c3. Other sort orders would be on different columns. Note that for a standard RDBMS, it is usually sufficient to have one collation.)
+</p>
+<pre>
+public interface RelNode
+{
+    /**
+     * Returns a description of the physical ordering (or orderings) of this
+     * relational expression.
+     *
+     * @post return&#160;!= null
+     */
+    public List&lt;RelCollation&gt; getCollationList();
+}
+</pre>
+<p>Table columns could also be described as monotonic (presumably making them a potential collation).
+</p>
+<pre>
+/**
+ * Supplies a {@link SqlValidator} with the metadata for a table.
+ */
+public interface SqlValidatorTable
+{
+    /**
+     * Returns whether a given column is monotonic.
+     */
+    boolean isMonotonic(String columnName);
+}
+</pre>
+<h3> <span class="mw-headline" id="Integration">Integration</span></h3>
+<p>Each approach (physical and logical) was pursued to an extent, though neither was implemented for all relations. Given that all relations now describe collations, Fennel relations will be moved over to the generalized interface. The following is a catalog of Fennel Rels and their sort behaviors.
+</p>
+<ul><li> CalcRel:
+</li><li> output sorting is deduced from inputs (for simple projections)
+</li><li> FennelAggRel:
+<ul><li> input must be sorted by group count prefix
+</li><li> todo: output is sorted by group count prefix (perhaps trivially sorted)
+</li></ul>
+</li><li> FennelCartesianProduct
+<ul><li> todo: output is sorted by left input, if join remains row-wise
+</li></ul>
+</li><li> FennelMergeRel: none (alternates between two input buffers)
+</li><li> FennelRenameRel:
+<ul><li> todo: output sort order is same as input
+</li></ul>
+</li><li> FennelSortRel:
+<ul><li> output is sorted by sort keys
+</li></ul>
+</li><li> FennelValuesRel:
+<ul><li> todo: identify trivial sorting
+</li></ul>
+</li><li> FtrsIndexScanRel (or FtrsIndexSearchRel)
+<ul><li> output is sorted by projected keys
+</li></ul>
+</li><li> FlatFileFennelRel: none
+</li><li> LcsIndexRel(Intersect | Minus | Merge | Rowscan):
+<ul><li> todo: output is sorted by RID
+</li></ul>
+</li><li> LcsIndexSearchRel (or LcsIndexOnlyScanRel or LcsNormalizer)
+<ul><li> sorted by index keys
+</li></ul>
+</li><li> LcsSortedAggRel: same as FennelAggRel
+</li><li> LhxJoinRel: none
+</li><li> FennelPullCorrelatorRel
+</li><li> FennelPullCollectRel
+</li><li> FennelPullUncollectRel
+</li><li> FennelWindowRel
+</li></ul>
+<h2> <span class="mw-headline" id="Better_sort_optimization">Better sort optimization</span></h2>
+<p>This section discusses the second problem from the overview. In general, sorting presents a challenge for the optimizer.
+</p><p>The Heuristic planner would find it hard to handle sorting perfectly, because it only considers one part of one plan at any time. It might be possible for the top part of a plan (result) to prefer a sorting of the bottom part (inputs). This would help, though different overall strategies might want different sort orders to a different degree.
+</p><p>The Volcano planner does consider multiple plans, though sorting could add a new dimension of complexity. Volcano considers different "equivalence classes" for relations. Within an equivalence class, relations are more or less interchangable. This helps to narrow down the complexity of it's search space. It would be nice to use sort order as a factor to differentiate two equivalence classes. But that would slow down the already burdened volcano.
+</p>
+<h1> <span class="mw-headline" id="JVS_Notes"> JVS Notes </span></h1>
+<p>John Pham wrote up the summary above; here's my take.
+</p><p>My position has always been that for SQL conformance, sortedness has to be treated as a physical property rather than a logical property.  This means
+</p>
+<ul><li> for a physical expression, we can ask for sortedness metadata (like we do for stats), and the interpretation is clear
+</li><li> for an arbitrary RelNode, we can ask for sortedness metadata (similar to asking for stats), but there's no guarantee that it's not going to change as the planner continues to apply rules
+</li></ul>
+<p>Julian's position has been that as an extension (particularly relevant to streaming), sortedness could be treated as a logical property, implying that rules would be constrained to preserve it (like datatype).
+</p><p>I have never understood how that is supposed to work with a Volcano-based planner.  If you start out with a logical table access (no sortedness), and then recognize that you could replace it with an index-ordered access, how do you expose the potential sortedness without changing the overall sortedness of the equivalence class (going from no sortedness to some)?  However, treating sortedness as a physical trait should theoretically work fine with Volcano, although it would make plan space explosion even worse.
+</p><p>With a Hep-based planner, the situation is a little more tractable.  There are no parallel worlds, and rules can be written which are allowed to assume that they will only be fired at a point where the planner will be making no more changes to anything underneath them.  These rules then become very much planner-dependent (leading to a more brittle optimizer), but that may be acceptable for some use cases.  However, as noted by John Pham above, it is difficult to come up with optimal global sort order using Hep, so attempts to take advantage of interesting orderings will be opportunistic at best.
+</p><p>The RelNode.getCollationsList method is currently ambiguous as to interpretation, and we do not have any general law in place to require rules to preserve its result.  So it is up to developers of specific optimizer implementations to decide whether a particular combination of planner, ruleset, and rel definitions safely accomplishes their purposes, per <a href="/wiki/HowToWriteAnOptimizer" title="HowToWriteAnOptimizer">HowToWriteAnOptimizer</a>.
+</p><p>Regardless of those issues, there would be no harm in unifying FennelRel.getCollations with RelNode.getCollationList (or eventually phasing out both in favor of a RelMetadataQuery to make it possible to factor out some of the optimizer-specifics to plugins, noted in <a href="/wiki/FarragoRelCleanup" title="FarragoRelCleanup">FarragoRelCleanup</a> and similar to what was halfway done for RelNode.getRows).
+</p><p>--<a href="/wiki/index.php?title=User:Rchen&amp;action=edit&amp;redlink=1" class="new" title="User:Rchen (page does not exist)">Rchen</a> 14:30, 10 March 2009 (EDT) Two questions:
+</p>
+<ol><li>How will the sortedness be maintained by the parallel executor?
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 23:52, 12 March 2009 (EDT):  For horizontal parallelism, the merge ExecStream would need to perform a heap-based ordered merge.  For vertical parallelism, there shouldn't be any issues, except in cases where a UNION ALL is being used to concatenate in a particular order (I think this is an issue already for when we construct ordered sets of index search keys).
+</li></ul>
+</li><li>Can additional property/requirement be incorporated in the solution, such as one to indicate the "clustering" of data(weaker than sort) for hash aggregation?
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 23:52, 12 March 2009 (EDT):  At Broadbase we used to call this "clumping" to differentiate it from clustering and GROUP BY.  (It was in the BB codebase for a while but we never exposed/maintained it properly.)  Yes, certainly anything written about sortedness above applies to optimizing/preserving clumping as well.
+</li></ul>
+</li></ol>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 57/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1531-0!*!0!!en!*!* and timestamp 20140414193817 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoSortOrder&amp;oldid=5866">http://luciddb.org/wiki/index.php?title=FarragoSortOrder&amp;oldid=5866</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoSortOrder" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoSortOrder&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoSortOrder&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoSortOrder&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoSortOrder" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoSortOrder" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoSortOrder" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoSortOrder&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoSortOrder&amp;oldid=5866" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 13 March 2009, at 03:52.</li>
+		<li id="viewcount">This page has been accessed 3,380 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.184 secs. --></body></html>

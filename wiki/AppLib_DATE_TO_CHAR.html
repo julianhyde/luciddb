@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib DATE TO CHAR - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib_DATE_TO_CHAR", "wgTitle": "AppLib DATE TO CHAR", "wgCurRevisionId": 6740, "wgArticleId": 1468, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib_DATE_TO_CHAR action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib DATE TO CHAR</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Syntax"><span class="tocnumber">1</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Purpose"><span class="tocnumber">2</span> <span class="toctext">Purpose</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Parameters"><span class="tocnumber">3</span> <span class="toctext">Parameters</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Format_string_syntax"><span class="tocnumber">3.1</span> <span class="toctext">Format string syntax</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Example"><span class="tocnumber">4</span> <span class="toctext">Example</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Untried.2FUntested_Functionality"><span class="tocnumber">5</span> <span class="toctext">Untried/Untested Functionality</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Source_Code"><span class="tocnumber">6</span> <span class="toctext">Source Code</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<pre>
+APPLIB.DATE_TO_CHAR ( format, date )
+</pre>
+<h2> <span class="mw-headline" id="Purpose"> Purpose </span></h2>
+<p>Uses a format string to format a date.  Returns the formatted date or portion of date as a string.
+</p>
+<h2> <span class="mw-headline" id="Parameters"> Parameters </span></h2>
+<ul><li> format: format string used to format the date. [VARCHAR] 
+</li><li> date: the date to be formatted [DATE]
+</li><li> RETURN: formatted date or portion of a date [VARCHAR]
+</li></ul>
+<h3> <span class="mw-headline" id="Format_string_syntax"> Format string syntax </span></h3>
+<p>A format string is a combination of date/time patterns.  Only certain combinations of date/time patterns are supported.  The date/time patterns are  case-sensitive sequences of letters which represent a time or date field.  
+</p>
+<ul><li> format strings which contain year, month, and the day of month
+<ul><li> examples are yyyy-M-d or MMddyyyy
+</li><li> this will return the date on the specified day, month, and year
+</li></ul>
+</li><li> format strings which contain month in year and year
+<ul><li> examples are yyyy-M or MMyyyy
+</li><li> this will return the date of the first day of the specified month and year 
+</li></ul>
+</li></ul>
+<table border="1" style="text-align:left">
+<caption> <b>Date/Time Pattern table</b>
+</caption>
+<tr>
+<th> Field </th>
+<th> Form/Pattern </th>
+<th> Notes
+</th></tr>
+<tr>
+<td> Year </td>
+<td> yyyy (4 digits) </td>
+<td>
+</td></tr>
+<tr>
+<td> Month </td>
+<td> MM (2 digits) or M (1 or 2 digits) </td>
+<td> if using 2 digit form, single digit months will be preceded by a 0
+</td></tr>
+<tr>
+<td> Day of month </td>
+<td> dd (2 digits) or d (1 or 2 digits) </td>
+<td> if using 2 digit form , single digit days will be preceded by a 0
+</td></tr></table>
+<h2> <span class="mw-headline" id="Example"> Example </span></h2>
+<pre>
+VALUES( APPLIB.DATE_TO_CHAR('MMM d - EEEE #F yyyy', DATE'2006-10-4'),
+    APPLIB.DATE_TO_CHAR('MM', DATE'2006-10-4'),
+    APPLIB.DATE_TO_CHAR('ww-yyyy', DATE'2007-7-3'),
+    APPLIB.DATE_TO_CHAR('yyyy-M', DATE'2007-7-3') )
+</pre>
+<p><b>RETURNS:</b>
+</p>
+<table border="1" style="text-align:center">
+<tr>
+<th> APPLIB.DATE_TO_CHAR('MMM d - EEEE #F yyyy', DATE'2006-10-4')
+</th>
+<th> APPLIB.DATE_TO_CHAR('MM', DATE'2006-10-4')
+</th>
+<th> APPLIB.DATE_TO_CHAR('ww-yyyy', DATE'2007-7-3')
+</th>
+<th> APPLIB.DATE_TO_CHAR('yyyy-M', DATE'2007-7-3')
+</th></tr>
+<tr>
+<td> Oct 4 - Wednesday #1 2006  </td>
+<td> 10 </td>
+<td> 27-2007 </td>
+<td> 2007-7
+</td></tr></table>
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="Untried.2FUntested_Functionality"> Untried/Untested Functionality </span></h2>
+<p>The functionality listed under this section has not been fully tested and is not considered supported at this time.  The expected behavior for the usage patterns below have not been well-specified and they should be used at your own risk.
+</p>
+<ul><li> Any format strings which use combinations of date/time patterns other than the ones listed above in the Format String Syntax section.
+</li><li> Additional date/time patterns in the table below.
+</li></ul>
+<p>Any combination of the following fields in the table below can be added to a format string. <b>NOTE: the format string fields are case sensitive.</b>
+</p>
+<table border="1" style="text-align:left">
+<tr>
+<th> Field </th>
+<th> Long Form </th>
+<th> Short Form
+</th></tr>
+<tr>
+<td> Year </td>
+<td> yy (2 digits) </td>
+<td>
+</td></tr>
+<tr>
+<td> Month </td>
+<td> MMM (name) </td>
+<td>
+</td></tr>
+<tr>
+<td> Day of week </td>
+<td> EEEE </td>
+<td> EE
+</td></tr>
+<tr>
+<td> Day of week in month </td>
+<td> F (e.g., 3rd Thursday) </td>
+<td>
+</td></tr>
+<tr>
+<td> Day in year </td>
+<td> DDD (3 digits) </td>
+<td> D (1, 2, or 3 digits)
+</td></tr>
+<tr>
+<td> Week in month </td>
+<td> WW </td>
+<td>
+</td></tr>
+<tr>
+<td> Week in year </td>
+<td> ww </td>
+<td>
+</td></tr>
+<tr>
+<td> Era (BC/AD) </td>
+<td> G </td>
+<td>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Source_Code"> Source Code </span></h2>
+<p><a rel="nofollow" class="external free" href="http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/datetime/StdConvertDateUdf.java">http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/datetime/StdConvertDateUdf.java</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 44/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1468-0!*!*!!en!*!* and timestamp 20140414192737 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;oldid=6740">http://luciddb.org/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;oldid=6740</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib_DATE_TO_CHAR" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib_DATE_TO_CHAR&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib+DATE+TO+CHAR" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib_DATE_TO_CHAR" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib_DATE_TO_CHAR" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib_DATE_TO_CHAR&amp;oldid=6740" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 16 August 2010, at 05:56.</li>
+		<li id="viewcount">This page has been accessed 4,071 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.189 secs. --></body></html>

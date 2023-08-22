@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoCharacterSets - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoCharacterSets", "wgTitle": "FarragoCharacterSets", "wgCurRevisionId": 5983, "wgArticleId": 1950, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoCharacterSets action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoCharacterSets</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page tracks the status of character set support in Farrago and related projects such as Fennel and LucidDB.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Background"><span class="tocnumber">1</span> <span class="toctext">Background</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Unicode_Representation"><span class="tocnumber">2</span> <span class="toctext">Unicode Representation</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Character_Set_Names"><span class="tocnumber">3</span> <span class="toctext">Character Set Names</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Default_Character_Set"><span class="tocnumber">4</span> <span class="toctext">Default Character Set</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Unicode_Literals"><span class="tocnumber">5</span> <span class="toctext">Unicode Literals</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Unicode_Identifiers"><span class="tocnumber">6</span> <span class="toctext">Unicode Identifiers</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Fennel_Unicode_Support"><span class="tocnumber">7</span> <span class="toctext">Fennel Unicode Support</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Farrago_Unicode_Support"><span class="tocnumber">8</span> <span class="toctext">Farrago Unicode Support</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#LucidDB_Unicode_Support"><span class="tocnumber">9</span> <span class="toctext">LucidDB Unicode Support</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Background"> Background </span></h1>
+<p>Through release 0.8.0, the only character set supported has been ISO-8859-1, an 8-bit (single-byte) character set which covers most Western European alphabets.
+</p><p>In <a rel="nofollow" class="external text" href="http://n2.nabble.com/Unicode-support-in-Farrago-Fennel-LucidDB-td1391386.html">this thread</a>, Julian sketched out what it will take to add Unicode support, and JVS filled in some of the details in the followup.
+</p><p>There are currently no plans to add support for additional character sets beyond ISO-8859-1 and Unicode.
+</p>
+<h1> <span class="mw-headline" id="Unicode_Representation"> Unicode Representation </span></h1>
+<p>The encoding to be used for Unicode character data is UCS-2, which is a subset of <a href="http://en.wikipedia.org/wiki/UTF-16" class="extiw" title="wikipedia:UTF-16">UTF-16</a>.  UCS-2 is strictly fixed-width doublebyte, whereas in UTF16, the full range of 4-byte characters can be expressed via a variable-width encoding scheme.  This is a reasonable simplification because <a rel="nofollow" class="external text" href="http://java.sun.com/developer/technicalArticles/Intl/Supplementary/">Java characters are 16-bit only</a>.
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 13:59, 21 January 2009 (EST) So, this means that Farrago will not support supplementary characters, which UCS-2 cannot represent.  Correct?
+<dl><dd> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 14:11, 21 January 2009 (EST):  Correct.  Basically, this means that they will pass through uninterpreted, meaning for example that the UPPER function may not do the right thing in their presence.
+</dd></dl>
+</dd></dl>
+<p>As with integer datatypes, the encoding is tied to the endianness of the platform, so on Intel chips, UCS-2LE (little endian) format is used.  Hence, no byte order mark is needed for tuple data.
+</p>
+<h1> <span class="mw-headline" id="Character_Set_Names"> Character Set Names </span></h1>
+<p>In Part 2, Section 4.2, SQL:2003 defines a number of SQL-standard character set names.  These are used as part of datatype specifications, e.g. <b>VARCHAR(10) CHARACTER SET "LATIN1"</b>.  It also allows for system-specific character set names.
+</p><p>Java's <a rel="nofollow" class="external text" href="http://java.sun.com/j2se/1.5.0/docs/api/java/nio/charset/Charset.html">java.nio.charset.Charset</a> class defines a number of Java-standard character set names.
+</p><p>Farrago supports a subset of the union of both, internally converting the SQL-level character set names into corresponding Java character set names (method <b>SqlUtil.translateCharacterSetName</b>):
+</p>
+<table border="1">
+<tr>
+<th> SQL Character Set </th>
+<th> Java Character Set </th>
+<th> Notes
+</th></tr>
+<tr>
+<td> LATIN1 </td>
+<td> ISO-8859-1 </td>
+<td> single-byte
+</td></tr>
+<tr>
+<td> UTF16 </td>
+<td> UTF-16LE or UTF-16BE </td>
+<td> double-byte (depends on platform endianness)
+</td></tr></table>
+<p>So in a CHARACTER SET clause, the user can specify any of { LATIN1, ISO-8859-1, UTF16, UTF-16xE } where "x" matches the system on which Farrago is running.
+</p><p>Comments:
+</p>
+<ul><li> In SQL:2003, ISO8BIT is defined as ISO-8859-1 plus non-printing control characters, which are currently NOT supported by Farrago.  If this kind of data needs to be stored, use BINARY or VARBINARY instead.
+</li><li> Java's US-ASCII is a subset of ISO-8859-1, so it doesn't need to be supported explicitly
+</li><li> We should probably define mappings for the SQL:2003 standard SQL_CHARACTER_SET, SQL_TEXT, and SQL-IDENTIFIER character sets
+</li><li> Should we prevent usage of the underlying Java character set names, and require usage of the SQL names instead?  We should probably at least be sure to preserve the SQL-level names in all stored metadata.
+</li></ul>
+<h1> <span class="mw-headline" id="Default_Character_Set"> Default Character Set </span></h1>
+<p>Farrago supports a system-wide default character set which is applied to character data types for which no character set is specified explicitly.  For example, if the default is changed to Unicode, then an expression like <b>CAST(c AS VARCHAR(20))</b> will imply Unicode for the target character set of the cast.
+</p><p>This default is stored in the catalog as the <b>defaultCharacterSetName</b> attribute of the instance of <b>CwmCatalog</b> corresponding to <b>LOCALDB</b>.  A vanilla build of Farrago has this default set to ISO-8859-1.
+</p><p>The setting can be changed to Unicode via
+</p>
+<pre>
+call sys_boot.mgmt.change_default_character_set_to_unicode();
+</pre>
+<p>An additional effect of the call is that the character set attribute of all existing columns, routine parameters, etc (e.g. for system-defined views and procedures) will <i>also</i> be changed to Unicode.  Consequently, this system procedure can only be called before the first local table has been defined, otherwise it will fail, since updating the encoding for all existing data would be very expensive.
+</p><p>The intention is that this procedure can be called automatically by an installer in response to the character set choice of the system administrator carrying out the installation.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:52, 20 January 2009 (EST):  According to Stephan, Enki should already support Unicode if the underlying DBMS is configured correctly.  This will be tested out as part of release.
+</p>
+<h1> <span class="mw-headline" id="Unicode_Literals"> Unicode Literals </span></h1>
+<p>As of eigenchange 12329, Farrago supports Unicode literals as follows:
+</p>
+<ul><li> _UTF16'ανθρωπος'
+</li><li> U&amp;'ανθρωπος'
+</li><li> U&amp;'\03B1\03BD\03B8\03C1\03C9\03C0\03BF\03C2'
+</li><li> U&amp;'!03B1!03BD!03B8!03C1!03C9!03C0!03BF!03C2' UESCAPE '!'
+</li></ul>
+<p>The four above are all equivalent.
+</p><p>Note that escaping is only processed with the U&amp; introducer; _UTF16'\03B1\03BD\03B8\03C1\03C9\03C0\03BF\03C2' won't be processed (the resulting literal will still have backslashes and hex digits instead of the desired Unicode characters).  The default escape caharacter is backslash, but this can be overridden with the UESCAPE syntax; per SQL:2003 a single character must be specified (e.g. a string like '\u' cannot be specified in an attempt to match Java conventions), and it cannot be any hex digit, whitespace, plus sign, or double-quote.
+</p><p>Also note that if you attempt to use Unicode characters in a literal string without the introducer, e.g. just plain 'ανθρωπος', an encoding failure exception will be thrown unless Farrago's default encoding has already been changed to Unicode.
+</p><p>SQL:2003 provides for specifying both the U&amp; introducer AND an explicit character set name, but Farrago does not yet support this; for now, U&amp; always implies UTF16.
+</p><p>For tests dealing with Unicode data, see <a rel="nofollow" class="external text" href="http://n2.nabble.com/Unicode-status-update-td2276835.html">this thread</a> regarding rules for .sql/.ref file encodings.
+</p>
+<h1> <span class="mw-headline" id="Unicode_Identifiers"> Unicode Identifiers </span></h1>
+<p>As of eigenchange 12366, Farrago supports Unicode identifiers as follows:
+</p>
+<ul><li> "ανθρωπος"
+</li><li> U&amp;"ανθρωπος"
+</li><li> U&amp;"\03B1\03BD\03B8\03C1\03C9\03C0\03BF\03C2"
+</li><li> U&amp;"!03B1!03BD!03B8!03C1!03C9!03C0!03BF!03C2" UESCAPE '!'
+</li></ul>
+<p>The four above are all equivalent.  For the last one, note that the UESCAPE uses single-quotes even though the identifier body uses double-quotes.
+</p>
+<h1> <span class="mw-headline" id="Fennel_Unicode_Support"> Fennel Unicode Support </span></h1>
+<p>Fennel tuple support for Unicode data has been added as mentioned in <a rel="nofollow" class="external text" href="http://n2.nabble.com/Unicode-support-in-fennel-tuple-td2158377.html">this thread</a>.
+</p><p>Remaining changes known to be required include:
+</p>
+<ul><li> add Unicode support in the Fennel calc
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:22, 7 February 2009 (EST):  for now, since this is not available, we just tell the optimizer to avoid usage of the Fennel calc for any expressions involving Unicode data (as of eigenchange 12337)
+</li></ul>
+</li><li> deal with executor special cases like in hash join/agg where we have to trim VARCHAR before key comparison.
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:19, 7 February 2009 (EST):  implemented in eigenchange 12337
+</li></ul>
+</li><li> network byte order support (only needed by extension projects which transmit tuples over the wire between hosts with different endianness)
+</li></ul>
+<h1> <span class="mw-headline" id="Farrago_Unicode_Support"> Farrago Unicode Support </span></h1>
+<p>Below are a number of changes and investigations (not including testing) that need to be undertaken beyond the ones already mentioned in the sections above:
+</p>
+<ul><li> study <a href="http://en.wikipedia.org/wiki/Unicode_collation_algorithm" class="extiw" title="wikipedia:Unicode collation algorithm">wikipedia:Unicode collation algorithm</a>; comparison operators are currently just comparing 16-bit characters as integers, which is probably not good enough
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 15:07, 9 February 2009 (EST):  I'm going to defer any work on collation support for now; binary comparison is no worse than what we already have for ISO-8859-1 (where it's not yet possible to do case-insensitive sort).  So Java calc and Fennel calc will both (consistently) do binary comparison for now (plus the usual PAD SPACE rules for implicit RTRIM-before-comparison).
+</li></ul>
+</li><li> parser support for unicode string literals
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 16:10, 7 February 2009 (EST):  implemented as described in the <a href="#Unicode_Literals">section above</a>
+</li></ul>
+</li><li> study the rules for conversion between character sets (and other operations such as comparison), and either implement them, or add validation to prevent them
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:27, 10 February 2009 (EST):  implemented in eigenchange 12343; note that many cases remain where error messages omit the character set in the type string, leading to confusing messages such as "can't convert VARCHAR to CHAR" where what it really means is "can't convert VARCHAR CHARACTER SET UTF16 to CHAR CHARACTER SET LATIN1"
+</li></ul>
+</li><li> implement Unicode support in Java calc (and other areas of Java-level execution, including Janino compilation)
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 18:05, 2 February 2009 (EST):  added support in eigenchange 12301; there are some FIXME's remaining for big-endian architectures; functions such as SUBSTRING do not yet support the USING {CHARACTERS|OCTETS} clause (not sure what the point of this is)
+</li></ul>
+</li><li> propagate character set correctly in type derivation for views, UNION, etc
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:24, 7 February 2009 (EST):  done in eigenchange 12337, but needs more thorough testing
+</li></ul>
+</li><li> review SQL/MED and JDBC driver and figure out what needs to be done
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:16, 11 February 2009 (EST):  looks like nothing special is needed; for SQL/MED, either declare the foreign columns explicitly as UTF16, or else set the Farrago default to Unicode (tested with the CSVJDBC driver)
+</li></ul>
+</li><li> (maybe) support Unicode in identifiers
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 18:14, 12 February 2009 (EST):  implemented in eigenchange 12366
+</li></ul>
+</li><li> investigate csvjdbc wrapper and see if it can be used as a Unicode stand-in for the flatfile wrapper
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:43, 9 February 2009 (EST):  yes, it can, at least with a UTF-8 encoded flatfile; see farrago/unitsql/expressions/unicode.sql for how to set this up
+</li><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:14, 6 March 2009 (EST):  I also had to make some changes to the flatfile reader in order for it to work correctly on single-byte data after change_default_character_set_to_unicode has been called; as of eigenchange 12410, this works by declaring the flatfile result type as single-byte, but then adding a cast to UTF16 on top
+</li></ul>
+</li><li> investigate sqlline, vjdbc
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:43, 9 February 2009 (EST):  from cursory testing, vjdbc seems to have no problem.  sqlline works fine with Unicode in both input and output when the invoking shell's LANG variable is set to en_US.UTF-8
+</li></ul>
+</li><li> catalog export:  use UTF-8 for XMI encoding
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:27, 27 April 2009 (EDT):  oops, forgot about this one...this means we won't be able to use XMI export/import as a migration mechanism from 0.9.0 to later releases
+</li></ul>
+</li></ul>
+<h1> <span class="mw-headline" id="LucidDB_Unicode_Support"> LucidDB Unicode Support </span></h1>
+<p>Work items:
+</p>
+<ul><li> Add installer support
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 21:13, 11 February 2009 (EST):  we don't actually have a reall installer yet, but an administrator can do <b>call sys_root.change_default_character_set_to_unicode()</b> immediately after running <b>install.sh</b>
+</li></ul>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 44/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1950-0!*!0!!en!*!* and timestamp 20140414192925 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoCharacterSets&amp;oldid=5983">http://luciddb.org/wiki/index.php?title=FarragoCharacterSets&amp;oldid=5983</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoCharacterSets" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoCharacterSets&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoCharacterSets&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoCharacterSets&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoCharacterSets" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoCharacterSets" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoCharacterSets" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoCharacterSets&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoCharacterSets&amp;oldid=5983" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 28 April 2009, at 00:27.</li>
+		<li id="viewcount">This page has been accessed 7,751 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.229 secs. --></body></html>

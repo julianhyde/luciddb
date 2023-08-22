@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Jdbc4Transition - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "Jdbc4Transition", "wgTitle": "Jdbc4Transition", "wgCurRevisionId": 5971, "wgArticleId": 1597, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Jdbc4Transition action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Jdbc4Transition</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Background"><span class="tocnumber">1</span> <span class="toctext">Background</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Proposed_Approach"><span class="tocnumber">2</span> <span class="toctext">Proposed Approach</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Build_Details"><span class="tocnumber">3</span> <span class="toctext">Build Details</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Client_Compatibility"><span class="tocnumber">4</span> <span class="toctext">Client Compatibility</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Mailing_List_Discussions"><span class="tocnumber">5</span> <span class="toctext">Mailing List Discussions</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Other_Approaches"><span class="tocnumber">6</span> <span class="toctext">Other Approaches</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Background"> Background </span></h1>
+<p>Breaking changes from JDBC 3 to JDBC 4 are hindering Farrago's transition from JDK 1.5 to JDK 1.6.  We would like to have a transition period during which both JDK's are supported.
+</p><p>The challenge is that in JDBC 4, some existing java.sql interfaces have new methods added, and those new methods reference new java.sql interfaces.  When we add references to those new interfaces in our JDBC classes, then our code becomes incompatible with JDK 1.5.  If we omit the new methods, then our code remains incompatible with JDK 1.6.  See <a rel="nofollow" class="external free" href="http://blog.punchbarrel.com/2008/09/23/java-6-breaks-jdbc">http://blog.punchbarrel.com/2008/09/23/java-6-breaks-jdbc</a> for more.
+</p><p>There have been various attacks on this (see <a href="#Mailing_List_Discussions">#Mailing List Discussions</a>).  The next section documents the approach we are actually planning to take.
+</p>
+<h1> <span class="mw-headline" id="Proposed_Approach"> Proposed Approach </span></h1>
+<p>To solve the problem above, we are going to use a slightly shady build hack.
+</p><p>Let's consider one of the affected Farrago classes:
+</p>
+<pre>
+import java.sql.*;
+...
+public class FarragoJdbcEnginePreparedStatement implements PreparedStatement
+{
+...
+    public void setRowId(int i, RowId rowid)
+        throws SQLException
+    {
+        throw new UnsupportedOperationException(&quot;setRowId&quot;);
+    }
+}
+</pre>
+<p>java.sql.RowId is one of the new interfaces introduced in JDBC 4.
+</p><p>First, add another entry to the import list above:
+</p>
+<pre>
+import java.sql.*;
+import org.eigenbase.jdbc4.*;
+...
+</pre>
+<p>(Note that it's necessary to import by .* here, for reasons which should become clear soon.)
+</p><p>Now, change the Farrago build so that for JDK 1.5, we create a source file as follows:
+</p>
+<pre>
+package org.eigenbase.jdbc4.RowId;
+
+public interface RowId
+{
+}
+</pre>
+<p>But for JDK 1.6, do not create any such source file.  (Otherwise, attempting to compile FarragoJdbcEnginePreparedStatement will result in an import ambiguity error.)
+</p><p>Now, when we compile under 1.5, we'll pick up the org.eigenbase.jdbc4 dummy.  When we compile under 1.6, we'll pick up the real java.sql.RowId.
+</p>
+<h1> <span class="mw-headline" id="Build_Details"> Build Details </span></h1>
+<p>To implement the above approach, I'm creating a new farrago/jdbc4 directory containing the dummy source files.  Farrago's build.xml checks property ant.java.version, and copies the source files to farrago/src/org/eigenbase/jdbc4 only if the version is JDK 1.5.
+</p><p>For now, the dummies are just empty interfaces; if we actually want to start implementing some of JDBC 4, we can copy the necessary declarations from java.sql on demand.
+</p><p>Once we drop support for JDK 1.5, we can eliminate package org.eigenbase.jdbc4 altogether.
+</p><p><a href="http://issues.eigenbase.org/browse/FRG-372" class="extiw" title="eigenjira:FRG-372">eigenjira:FRG-372</a> describes a known issue running on 1.6; this needs to be investigated and fixed.
+</p>
+<h1> <span class="mw-headline" id="Client_Compatibility"> Client Compatibility </span></h1>
+<p>The general policy for Farrago is to segregate client driver dependencies (enforced via macker) so that these can be compiled to target older JVM's.  The rationale is that we would like to be able to support connectivity from as many applications as possible, even older ones stuck on legacy JVM's.
+</p><p>For Farrago builds on JDK 1.5, we'll continue to support JVM 1.4 client compatibility.
+</p><p>For Farrago builds on JDK 1.6, we'll support JVM 1.5 client compatibility.
+</p><p>This means that if we start implementing any of the new JDBC 4 functionality, we'll need to either compile multiple client driver versions, or figure out how to make a one-size-fits-all client, maybe using the olap4j factory technique described by Julian.
+</p>
+<h1> <span class="mw-headline" id="Mailing_List_Discussions"> Mailing List Discussions </span></h1>
+<ul><li> <a href="/wiki/Jdbc4TransitionViaProxy" title="Jdbc4TransitionViaProxy" class="mw-redirect">Backchannel discussion on proxy/factory approach</a>
+</li><li> <a rel="nofollow" class="external free" href="http://sourceforge.net/mailarchive/forum.php?thread_name=46398E40.4010506%40gmail.com&amp;forum_name=farrago-developers">http://sourceforge.net/mailarchive/forum.php?thread_name=46398E40.4010506%40gmail.com&amp;forum_name=farrago-developers</a>
+</li><li> <a rel="nofollow" class="external free" href="http://sourceforge.net/mailarchive/message.php?msg_name=47325657.4060604%40sitegear.com">http://sourceforge.net/mailarchive/message.php?msg_name=47325657.4060604%40sitegear.com</a>
+</li><li> <a rel="nofollow" class="external free" href="http://sourceforge.net/mailarchive/forum.php?thread_name=46677D77.8020205%40sitegear.com&amp;forum_name=farrago-developers">http://sourceforge.net/mailarchive/forum.php?thread_name=46677D77.8020205%40sitegear.com&amp;forum_name=farrago-developers</a>
+</li><li> <a rel="nofollow" class="external free" href="http://sourceforge.net/mailarchive/forum.php?thread_name=48ED33AF.9040300%40gmail.com&amp;forum_name=farrago-developers">http://sourceforge.net/mailarchive/forum.php?thread_name=48ED33AF.9040300%40gmail.com&amp;forum_name=farrago-developers</a>
+</li></ul>
+<h1> <span class="mw-headline" id="Other_Approaches"> Other Approaches </span></h1>
+<p>hersker did some quick research on approaches to the transition from JDBC3 to JDBC4. This is by no means exhaustive or ironclad:
+</p><p>Derby 10.2 seems to expect developers to build the JDBC 4.0 drivers themselves.
+<a rel="nofollow" class="external free" href="http://wiki.apache.org/db-derby/TenTwoRelease#head-780ae0f319ba5551646bfad39c8cdb6cb1e019f2">http://wiki.apache.org/db-derby/TenTwoRelease#head-780ae0f319ba5551646bfad39c8cdb6cb1e019f2</a>
+</p><p>Postgres 8.2 and 8.3 offer distinct JDBC 3- and 4-compatible driver JARs for download.
+<a rel="nofollow" class="external free" href="http://jdbc.postgresql.org/download.html">http://jdbc.postgresql.org/download.html</a>
+According the download page, " JDK 1.6 - JDBC4. Support for JDBC4 methods is limited. The driver builds, but the majority of new methods are stubbed out."
+</p><p>Older versions of postgres appear to use the dynamic proxy approach. However, bugs like this
+<a rel="nofollow" class="external free" href="http://archives.postgresql.org/pgsql-jdbc/2007-04/msg00007.php">http://archives.postgresql.org/pgsql-jdbc/2007-04/msg00007.php</a>
+indicate that the JDBC 4.0 methods were not implemented, causing runtime errors.
+</p><p>HSQLDB website does not mention anything beyond JDBC 2 support. I grepped around in the 1.8.0 source we are currently using for Farrago and found no advanced JDBC methods.
+</p><p>Oracle's 10.2g driver download page references JDK compatibility up to 1.5. No mention of 1.6.
+<a rel="nofollow" class="external free" href="http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/htdocs/jdbc_10201.html">http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/htdocs/jdbc_10201.html</a>
+</p><p>The SQLServer download page
+<a rel="nofollow" class="external free" href="http://www.microsoft.com/downloads/details.aspx?familyid=f914793a-6fb4-475f-9537-b8fcb776befd&amp;displaylang=en">http://www.microsoft.com/downloads/details.aspx?familyid=f914793a-6fb4-475f-9537-b8fcb776befd&amp;displaylang=en</a>
+says "JDK 1.4 or later" but I suspect this is stale. I used javap to look at some of the classes in open/thirdparty/sqlserverjdbc/enu/sqljdbc.jar and I don't see any JDBC 4 extensions methods.
+</p><p>The jTDS driver
+<a rel="nofollow" class="external free" href="http://sourceforge.net/project/showfiles.php?group_id=33291">http://sourceforge.net/project/showfiles.php?group_id=33291</a>
+seems to only offer JDBC 3-compatible version. I could not find mention of JDBC 4.0 on their site.
+</p><p>MySQL's Connector/J download page
+<a rel="nofollow" class="external free" href="http://www.mysql.com/products/connector/j/">http://www.mysql.com/products/connector/j/</a>
+refers to JDBC 3.0 but nothing newer.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 49/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1597-0!*!0!!en!*!* and timestamp 20140414194626 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=Jdbc4Transition&amp;oldid=5971">http://luciddb.org/wiki/index.php?title=Jdbc4Transition&amp;oldid=5971</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/Jdbc4Transition" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:Jdbc4Transition&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=Jdbc4Transition&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=Jdbc4Transition&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=Jdbc4Transition" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Jdbc4Transition" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Jdbc4Transition" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=Jdbc4Transition&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=Jdbc4Transition&amp;oldid=5971" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 21 April 2009, at 16:33.</li>
+		<li id="viewcount">This page has been accessed 3,981 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.188 secs. --></body></html>

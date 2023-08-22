@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedJdbcFilterPushdown - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedJdbcFilterPushdown", "wgTitle": "FarragoMedJdbcFilterPushdown", "wgCurRevisionId": 6046, "wgArticleId": 1526, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedJdbcFilterPushdown action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedJdbcFilterPushdown</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Translation_from_RexNode_tree_to_SqlNode_tree"><span class="tocnumber">2</span> <span class="toctext">Translation from RexNode tree to SqlNode tree</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Pushdown_Disablement"><span class="tocnumber">3</span> <span class="toctext">Pushdown Disablement</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Projection_Pushdown"><span class="tocnumber">4</span> <span class="toctext">Projection Pushdown</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>This page describes enhancements to the <a href="/wiki/FarragoMedJdbcPlugin" title="FarragoMedJdbcPlugin">SQL/MED JDBC foreign data wrapper</a> for pushing filters down into the source DBMS.
+</p><p>A new wrapper-specific optimizer rule will match a FilterRel on top of a MedJdbcQueryRel and then
+</p>
+<ol><li> attempt to translate the RexNode representation of the filter back into SqlNode form
+</li><li> unparse the SQL using the appropriate dialect
+</li><li> attempt to prepare the unparsed SQL against the source connection to verify that the translation was acceptable
+</li></ol>
+<p>If either of the "attempt" steps fails, the optimizer rule will swallow the exception and return, leaving the filter to be evaluated locally.
+</p><p>For the first cut, the rule will not attempt to decompose the filter into portions which can be translated and portions which cannot.  Nor will it rely on any metadata from the source JDBC driver for governing the dialect; instead, it will just use SQL:2003 standard dialect.
+</p>
+<h2> <span class="mw-headline" id="Translation_from_RexNode_tree_to_SqlNode_tree"> Translation from RexNode tree to SqlNode tree </span></h2>
+<p>There is some very very old commented-out code for this in org.eigenbase.rex.RexToSqlTranslator, from back in the day before the RexNode framework was added.
+</p><p>The cleanest way to replace that is to follow the pattern for translation from SqlNode to RexNode in org.eigenbase.sql2rel.  There, interface SqlRexConvertlet defines an abstract mapping from a SqlCall to a RexNode; we need a new interface org.eigenbase.rex.RexSqlConvertlet which defines the reverse mapping from a RexCall to a SqlNode.  The rest of the pattern can be followed as well (a new RexSqlConvertletTable interface for looking up convertlets, plus a RexSqlStandardConvertletTable supplying the mapping implementations for standard operators).  All of this can live in package org.eigenbase.rex.
+</p><p>Once SQL/MED routine mapping support (SQL:2003 Part 9 Section 12.8) is added, we'll need an implementation of RexSqlConvertletTable which knows how to look up mappings for UDF invocations from Farrago's catalog.  (This can't live in package org.eigenbase.rex; the generic functionality for looking up a routine mapping should go in FarragoStmtValidator, whereas the specifics should go into the JDBC connector itself.)
+</p>
+<h2> <span class="mw-headline" id="Pushdown_Disablement"> Pushdown Disablement </span></h2>
+<p>In some cases, pushdown may be attempted in such a way that a source SQL incompatibility is not detected until execution time, meaning it is too late to skip the pushdown attempt, leading to an error.  To provide the user control in this case, the connector will support an override option to explicitly disable pushdown.
+</p><p>The corresponding SQL/MED option name is DISABLED_PUSHDOWN_REL_PATTERN, and the value is a regular expression matching the names of logical relational expressions for which pushdown should be disabled.  To enable all pushdown, the value can be left as empty string (the default).  To disable all pushdown, the value can be set to a match-anything regular expression ('.*').  To disable a particular expression, the value can be set to the corresponding optimizer RelNode class name, e.g. 'FilterRel'.  This specification is intended to cover pushdown of other operators such as join and aggregation in the future.
+</p>
+<h2> <span class="mw-headline" id="Projection_Pushdown"> Projection Pushdown </span></h2>
+<p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 16:40, 27 May 2009 (EDT):  This section documents an enhancement for the way projections are pushed down (the code for this is necessarily intertwined with the filter pushdown).
+</p><p>The original projection pushdown does not reorder fields, meaning that it's possible that a reordering projection may be left on top:
+</p>
+<pre>
+0: jdbc:farrago:&gt; explain plan for select sal,deptno from hsqldb_demo.sales.emp;
++-------------------------------------------------------+
+|                        column0                        |
++-------------------------------------------------------+
+| ResultSetToFarragoIteratorConverter                   |
+|   MedJdbcQueryRel(foreignSql=[SELECT &quot;SAL&quot;, &quot;DEPTNO&quot;  |
+| FROM &quot;SALES&quot;.&quot;EMP&quot;])                                  |
++-------------------------------------------------------+
+0: jdbc:farrago:&gt; explain plan for select deptno,sal from hsqldb_demo.sales.emp; 
++-------------------------------------------------------------------------------------------------------------------+
+|                                                      column0                                                      |
++-------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                         |
+|   FennelReshapeRel(projection=[[1, 0]], outputRowType=[RecordType(INTEGER DEPTNO, DECIMAL(19, 0) SAL) NOT NULL])  |
+|     IteratorToFennelConverter                                                                                     |
+|       ResultSetToFarragoIteratorConverter                                                                         |
+|         MedJdbcQueryRel(foreignSql=[SELECT &quot;SAL&quot;, &quot;DEPTNO&quot;                                                        |
+| FROM &quot;SALES&quot;.&quot;EMP&quot;])                                                                                              |
++-------------------------------------------------------------------------------------------------------------------+
+</pre>
+<p>(Planner tracing shows that the reordering ProjectRel is inserted in both cases, but in the first case, it is later removed by RemoveTrivialProjectRule.)
+</p><p>For this pushdown in isolation, production of the reordering ProjectRel is OK, since the main intention is to minimize the width of rows fetched from the remote server.  However, if another rule is going to fire afterwards (e.g. pushing down an aggregation on top of the projection), then the presence of the reordering ProjectRel complicates the subsequent rule unnecessarily, so it would be preferable to avoid generating it in the first place:  instead, generate the remote SELECT list in the desired order.  However, in doing this, we have to make sure that the original top projection was purely reordering
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 16:40, 27 May 2009 (EDT): I don't think there are any positional dependencies on the fields produced, since the filter is below the top project.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 17/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1526-0!*!0!!en!*!* and timestamp 20140414194620 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;oldid=6046">http://luciddb.org/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;oldid=6046</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedJdbcFilterPushdown" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedJdbcFilterPushdown&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedJdbcFilterPushdown" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedJdbcFilterPushdown" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedJdbcFilterPushdown" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedJdbcFilterPushdown&amp;oldid=6046" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 27 May 2009, at 20:40.</li>
+		<li id="viewcount">This page has been accessed 2,708 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.161 secs. --></body></html>

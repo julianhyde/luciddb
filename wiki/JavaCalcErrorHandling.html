@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>JavaCalcErrorHandling - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "JavaCalcErrorHandling", "wgTitle": "JavaCalcErrorHandling", "wgCurRevisionId": 3941, "wgArticleId": 1536, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-JavaCalcErrorHandling action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">JavaCalcErrorHandling</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1"><a href="#Requirements"><span class="tocnumber">2</span> <span class="toctext">Requirements</span></a></li>
+<li class="toclevel-1"><a href="#Interface"><span class="tocnumber">3</span> <span class="toctext">Interface</span></a></li>
+<li class="toclevel-1"><a href="#Implementations"><span class="tocnumber">4</span> <span class="toctext">Implementations</span></a></li>
+<li class="toclevel-1"><a href="#Old_Work"><span class="tocnumber">5</span> <span class="toctext">Old Work</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Overview_2"><span class="tocnumber">5.1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-2"><a href="#Current_implementation"><span class="tocnumber">5.2</span> <span class="toctext">Current implementation</span></a></li>
+<li class="toclevel-2"><a href="#Proposed_implementation"><span class="tocnumber">5.3</span> <span class="toctext">Proposed implementation</span></a>
+<ul>
+<li class="toclevel-3"><a href="#Rel_construction_code"><span class="tocnumber">5.3.1</span> <span class="toctext">Rel construction code</span></a></li>
+<li class="toclevel-3"><a href="#IterCalcRel_implementation"><span class="tocnumber">5.3.2</span> <span class="toctext">IterCalcRel implementation</span></a></li>
+<li class="toclevel-3"><a href="#Runtime_libraries"><span class="tocnumber">5.3.3</span> <span class="toctext">Runtime libraries</span></a></li>
+<li class="toclevel-3"><a href="#Sample_extension_.28user_level_configuration.29"><span class="tocnumber">5.3.4</span> <span class="toctext">Sample extension (user level configuration)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2"><a href="#Previous_review_comments"><span class="tocnumber">5.4</span> <span class="toctext">Previous review comments</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2 id="tocJavaCalcErrorHandling0"> <span class="mw-headline" id="Overview">Overview</span></h2>
+<p><br />
+This page discusses error handling, with a focus on Java calculator streams. This allows us to deal with errors such as arithmetic overflow or casting errors, and in some cases, not null constraints. Errors from other streams will be handled as required, and can be processed by a common error handling framework. This work supports LucidDb requirements, but does not change Farrago's existing behavior or hinder other extensions. Because error handling can vary so widely, this spec is fairly abstract, containing high level interfaces. The bulk of implementation actually occurs at a lower level.<br />
+<br />
+</p>
+<h2 id="tocJavaCalcErrorHandling1"> <span class="mw-headline" id="Requirements">Requirements</span></h2>
+<p><br />
+A Java calculator stream (IterCalcRel) processes one row at a time. The stream reads a row of input, calculates output columns sequentially, then writes a row of output. In this context, error handling consists of catching RuntimeExceptions and acting upon the exceptions. Two configuration points are whether to catch exceptions and when they are caught, what to do with them.<br />
+<br />
+Farrago does not catch exceptions. For extensions, it is usually sufficient to catch exceptions on a row by row basis. Catching exceptions on a column basis has not been required and would probably be slow.<br />
+<br />
+</p><p>When exceptions are caught, one Farrago extension might send them to log files. Another might send exceptions to an error stream for further processing. Any two Java calc stream can have the same target or different targets.<br />
+<br />
+</p>
+<h2 id="tocJavaCalcErrorHandling2"> <span class="mw-headline" id="Interface">Interface</span></h2>
+<p><br />
+By themselves calculator streams are not configured to handle errors. Calculator streams arise from a combination of filters and projections, through many rules. Rather than consider error configuration in every calculator rule, we consider error configuration once, with a Java calc stream decoration rule. A Farrago extension with rule set A would generate a different decoration than a Farrago extension with rule set B.<br />
+<br />
+<a href="/wiki/File:IterCalcRelDecoration.jpg" class="image"><img alt="IterCalcRelDecoration.jpg" src="/wiki/upload/8/82/IterCalcRelDecoration.jpg" width="388" height="239" /></a><br />
+<br />
+Note: To avoid doubling the optimization search space, a system based on a Volcano optimizer could configure errors during the calc to Java calc stage.<br />
+<br />
+For simplicity, Java calc streams are decorated with a string TAG. Tags should be logical and are mainly used to differentiate between possible targets (log file A vs. log file B or stream A vs. stream B.)<br />
+<br />
+</p><p>All errors are published to a connection variable (better known as the runtime context). The actual action to be taken depends on how the context is set up and how it interprets tags. The context arises from a FarragoSessionPersonality and can be extended through that interface.<br />
+<br />
+If a Java stream has been decorated with a tag, it generates the following Java code to support error handling. (PLACE_HOLDERS are shown rather than actual identifiers.)<br />
+<br />
+</p>
+<pre class="text">SyntheticObject INPUT_ROW = ...;
+try {
+    COLUMN_INDEX = 1;
+    // calculate first output column ...
+    COLUMN_INDEX++;
+    // calculate second output column ...
+    // ...
+} catch (RuntimeException ex) {
+    // TAG is a hardcoded string, mapped to an error configuration
+    CONNECTION.handleRowError(ex, TAG, COLUMN_INDEX, INPUT_ROW);
+    // NOTE: if error could not be handled due to NoDataReason
+    // keep track of error and handle it next time
+}</pre>
+<p><br />
+Connections (a.k.a. runtime contexts) have a new method for handling row errors. If possible, we want to find the output column for which the error occured.<br />
+<br />
+</p>
+<h2 id="tocJavaCalcErrorHandling3"> <span class="mw-headline" id="Implementations">Implementations</span></h2>
+<p><br />
+<strong>Farrago</strong>. The default Farrago implementation does not supply IterCalcRel decorations. When error handling is activated via IterCalcRel.setAbortOnError(false), a null tag is passed to the runtime context. The only action taken is to trace via a statement tracer.<br />
+<br />
+<strong>LucidDb</strong>. In short, this database is configured via session parameters and records errors in specific log files. LucidDbSessionPersonality extends the default personality and returns a LucidDbRuntimeContext to handle errors. LucidDb is optimized by a heuristic planner and tags are assigned late in optimization by rules that operate on IterCalcRel. Based on a combination of session parameters and tags, a log file is chosen for logging. Individual log file writers are wrapped with a quota object to limit the number of errors.<br />
+<br />
+<strong>Error stream</strong>. SWZ describes a scheme where errors are sent to an error stream. The target stream is selected via an extension to the SQL language. Presumably, during the Sql2Rel translation phase, the error target is saved as part of the statement. A rule is later able to use this error target to decorate an IterCalcRel. Presumably the runtime context will be equipped an adapter which can send errors detected to the desired output stream.<br />
+<br />
+Note. In supporting both log files and streams, we have at least two main options. Here we chose to handle errors one by one and require a converter to translate them into streams. Alternatively we could have chosen to allow a Java stream to generate multiple outputs, with one output being the error stream. Such an approach would be flexible and beneficial to Java in the long run, but would require a significant change to the Java runtime infrastructure.<br />
+<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h1 id="tocJavaCalcErrorHandling4"> <span class="mw-headline" id="Old_Work">Old Work</span></h1>
+<p><br />
+</p>
+<h2 id="tocJavaCalcErrorHandling5"> <span class="mw-headline" id="Overview_2">Overview</span></h2>
+<p><br />
+This page covers runtime error handling in generated Java calculator code.<br />
+<br />
+A Farrago statement usually fails when an error is detected. This includes cancelling a million row statement if the millionth row fails. Extensions of Farrago may want to refine their error handling behavior. For example, in the case of large or long running statements, we may want to recover from errors and track them.<br />
+<br />
+</p>
+<pre class="text">select cast (EMP_CODE as int) from EMPS;
+&#160;
+
+EMP_CODE
+'002'
+'007'
+'MI5'
+'009'</pre>
+<p><br />
+could return:<br />
+<br />
+</p>
+<pre class="text">2
+7
+9</pre>
+<p><br />
+along with tracking the failed input &quot;MI5&quot;.<br />
+</p><p><br />
+</p>
+<h2 id="tocJavaCalcErrorHandling6"> <span class="mw-headline" id="Current_implementation">Current implementation</span></h2>
+<p><br />
+Currently, error handling depends on a global server parameter. This parameter is not meant to change while the server is running. (The calculator portion of statements is compiled to Java code through an IterCalcRel.)<br />
+<br />
+</p>
+<pre class="text">class IterCalcRel
+{
+    static boolean abortOnError;
+    ...
+    if (!abortOnError)
+        // generate exception handling code
+}</pre>
+<p><br />
+This generated code handles exceptions:<br />
+<br />
+</p>
+<pre class="text">try {
+    /* calculator statements */
+}
+catch (RuntimeException ex) {
+    EigenbaseTrace.getStatementTracer().log(...)
+}</pre>
+<p><br />
+The statement tracer is a Java class-specific statement tracer:<br />
+<br />
+</p>
+<pre class="text">public static Logger getStatementTracer()
+{
+    return Logger.getLogger(OJPreparingStmt.class.getName());
+}</pre>
+<p><br />
+</p>
+<h2 id="tocJavaCalcErrorHandling7"> <span class="mw-headline" id="Proposed_implementation">Proposed implementation</span></h2>
+<p><br />
+</p><p>Error handling will be standardized as follows:<br />
+<br />
+</p>
+<ul>
+    <li>IterCalcRel generates code to publish all errors to error handlers</li>
+    <li>Error handlers are obtained through the FarragoRuntimeContext</li>
+</ul>
+<p><br />
+Various aspects of error handling, such as whether to fail after 5 errors, or whether to sends results to an error table, are encapsulated in an error handler. The runtime context may be configured to return different handlers, depending on:<br />
+<br />
+</p>
+<ul>
+    <li>Session parameters, such as logical job id. For example, a job may have an id of &quot;LoadOpportunity&quot; or &quot;S&quot;.</li>
+    <li>Within a job, each instance of IterCalcRel may be given a tag</li>
+</ul>
+<p><br />
+For example, in the context of a particular statement, a logical job id has been defined. None of the IterCalcRel instances have been given a tag. As a result, all instances of IterCalcRel would rely on the same error handler. All errors related to the statement are piped to the same place. In Farrago, the default error handler re-throws exceptions it receives (to abort on error).<br />
+</p><p><br />
+Error handlers can take various actions. For example:<br />
+<br />
+</p>
+<ul>
+    <li>An error handler may choose to pipe its results to a specific table, such as &quot;S errors&quot;. The (psuedo) table may be registered and recognized for later queries &quot;select * from S errors&quot; including one with transformations on the columns &quot;select func(col) from S errors&quot;.</li>
+</ul>
+<p><br />
+<em>(Does the correct producer/consumer interaction require registering the error stream as a consumer of the original stream?)</em><br />
+<br />
+</p>
+<h3 id="tocJavaCalcErrorHandling8"> <span class="mw-headline" id="Rel_construction_code">Rel construction code</span></h3>
+<p><br />
+The Farrago planner tags an IterCalcRel for rel-specific error handling as follows:<br />
+<br />
+</p>
+<pre class="text">String tag = ...;
+calcRel.setErrorHandlerTag(tag);</pre>
+<p><br />
+</p><p>By default, CalcRels will not receive a tag when they are generated from random projections or filters. CalcRels cannot be merged when their tags differ.<br />
+<br />
+As specified, the tags are open to interpretation. One Farrago extension may use them as a key from which to lookup an error log table. Another Farrago extension may use them to decide whether an error is recoverable.<br />
+<br />
+</p>
+<h3 id="tocJavaCalcErrorHandling9"> <span class="mw-headline" id="IterCalcRel_implementation">IterCalcRel implementation</span></h3>
+<p><br />
+IterCalcRel generates the following Java calculator code<br />
+<br />
+</p>
+<pre class="text">try {
+    // calculator statements
+} catch (RunTimeException ex) {
+    ErrorHandler handler = runtimeContext.getErrorHandler(tag);
+    RelDataType rowType = runtimeContext.getRowType(relId);
+    Object status = handler.handle(ex, rowType, syntheticObject);
+    if (status instanceof TupleIter.NoDataReason) {
+        return status;
+    }
+}</pre>
+<p><br />
+<em>(Would an array of fields be better than a single syntheticObject?)</em><br />
+<br />
+</p>
+<h3 id="tocJavaCalcErrorHandling10"> <span class="mw-headline" id="Runtime_libraries">Runtime libraries</span></h3>
+<p><br />
+The Farrago runtime context is configured by session parameters. It in turn configures and returns error handlers.<br />
+<br />
+</p>
+<pre class="text">class FarragoRuntimeContext {
+    /**
+     * Returns an environment specific error handler. The default
+     * implementation returns a handler that aborts on failure.
+     *
+     * @param relTag a rel specific tag; may be null
+     */
+    ErrorHandler getErrorHandler(String relTag);
+}</pre>
+<p><br />
+Error handlers take actions upon receiving exceptions.<br />
+</p><p><br />
+</p>
+<pre class="text">class ErrorHandler {
+    /**
+     * Processes a runtime exception
+     *
+     * @param ex  the exception encountered
+     * @param tuple the row currently being processed
+     *
+     * @return status code, may be TupleIter.NoDataReason to
+     * signal that no more rows should be processed until consumers
+     * have proceeded, may be null
+     */
+    Object  handle(RunTimeException ex, TupleData tuple)
+}</pre>
+<p><br />
+<em>JVS: That should be FarragoSessionRuntimeErrorHandler, right? This is going to be exposed at the FarragoSessionRuntimeContext level, so macker will insist. Also, what is the actual type of TupleData? This method definition doesn't match the example invocation above, which takes both rowType and syntheticObject.</em><br />
+<br />
+</p>
+<h3 id="tocJavaCalcErrorHandling11"> <span class="mw-headline" id="Sample_extension_.28user_level_configuration.29">Sample extension (user level configuration)</span></h3>
+<p><br />
+An ETL process may be concerned with allowing nightly data loads to proceed in the absence of exceptional conditions (for example, when most rows are errors). Logs are helpful to use as a diagnostic feature, and preserving the data is not as important as viewing it in an intelligible way. (All error logs are stored in a directory for easy access, for a specific job, all errors are stored in the same file.)<br />
+<br />
+Parameters such as log directory, job id, and etl process id, are set using sql. Statements on the same connection will inherit these attributes:<br />
+</p><p><br />
+</p>
+<pre class="text">call sys_root.set_session_log_dir('/home/luciddb/log');
+call sys_root.set_session_etl_proc_id('14612');
+call sys_root.set_session_job_id('LoadOpportunity');
+...
+insert into staging_table select * from external table
+abort after 100 errors;</pre>
+<p><br />
+<em>JVS: Rather than mucking up the INSERT syntax with extra options like ABORT AFTER 100 ERRORS, let's just set these via new procedures such as sys_root.set_session_dml_err_abort_threshold.</em><br />
+<br />
+Internally, a table is maintained to keep track of all error logs. Note that a single log file is generated for each logical job.<br />
+<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+
+        <td>Date</td>
+        <td>Link</td>
+        <td>Statement</td>
+    </tr>
+    <tr>
+        <td>06-13-2001</td>
+        <td>LoadOpportunity14612</td>
+        <td>insert into staging_table ...</td>
+    </tr>
+</table>
+<p><br />
+A user interface is able to display the contents of this table. When a user clicks on a link, the interface opens the associated log file. All error logs are stored to a single directory (for access by a single flatfile server.) Errors logs are named as follows (sorted by job id, then etl process id):<br />
+<br />
+</p>
+<pre class="text">server_log_directory/&lt;job_id&gt;&lt;etl_proc_id&gt;.log</pre>
+<p><br />
+Log files contain the following information:<br />
+<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td>Tag</td>
+        <td>Exception</td>
+        <td>Row</td>
+    </tr>
+    <tr>
+        <td>Flatfile2</td>
+        <td>Unable to convert MI5 to integer</td>
+        <td>MI5, Female, 32, UK</td>
+    </tr>
+</table>
+<p><br />
+Note that the &quot;row&quot; column of a particular log file contains entries for multiple rels. Therefore its contents are not in a consistent format. This makes for easier viewing, but perhaps not for recovery. (One cannot do the following:)<br />
+<br />
+</p>
+<pre class="text">insert into recovery_table
+select col3, col4, col5 from errorlog;
+&#160;
+insert into staging_table
+select clean_phone(col3), col4, col5 from recovery_table;</pre>
+<p><br />
+<em>JVS: I guess someone must not have liked my multi-file-in-a-subdirectory idea? Was that Tai?</em><br />
+</p><p><br />
+</p>
+<h2 id="tocJavaCalcErrorHandling12"> <span class="mw-headline" id="Previous_review_comments">Previous review comments</span></h2>
+<p><br />
+<em>SWZ: Note that error handling is not currently turned on or off per-statement. Flipping abortOnError back and forth while Farrago (or an extension project) is running will probably cause weird behavior. Some of the code below implies that abortOnError isn't going away -- if that's actually the case maybe its value should be loaded from the session personality?</em><br />
+<br />
+<em>JVS: This makes it sound like IterCalcRel is where the configurability will be, but actually we'll be putting that in FarragoRuntimeContext, right? IterCalcRel will just publish the error events, and what gets done with them depends on how the logger created by the runtime context is configured.</em><br />
+<br />
+<em>JVS: Note that &quot;type&quot; here is a forward reference to something you define below, which is a little confusing. Calling the method setExceptionLogger makes it sound like it's going to take a java.util.logging.Logger, which isn't the case. Any attributes set on the rel need to be something that can be part of its digest (and therefore will show up in EXPLAIN PLAN). Maybe we can combine these two (i.e. if type=NONE then no recovery).</em><br />
+<br />
+<em>SWZ: Another concern is that, by default, multiple CalcRels with different recovery flags can be consolidated into a single CalcRel by the planner. As I mention below we're interested in something like diverting errors into an error table. We'd like to configure the error table either as part of a select statement (imagine &quot;select * from s errors to s_errors&quot;) and/or as part of a view (&quot;create view v as ... errors to v_errors&quot;). Thus, &quot;select someOperator(v.someCol) from v errors to my_errors&quot; would divert different errors to different error tables. For this to work, we'd need the sql to rel conversion to configure at least some of the recovery information and planner rules would need to know not to combine rels with different recovery information.</em><br />
+</p><p><br />
+<em>SWZ: Doesn't the recovery flag subsume abortOnError? (Maybe this is just showing that abortOnError will live on until no one's using it?)</em><br />
+<br />
+<em>JVS: Do we actually need an EigenbaseLogger class? See &quot;Subclassing Information&quot; in Javadoc for java.util.logging.Logger. If we provide a runtime library method which converts tuple data into a LogRecord, then we could just use Logger.log(LogRecord). The format string can be generated as part of codegen and burned into the generated Java class.</em><br />
+<br />
+<em>SWZ</em>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 265/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1536-0!*!*!!en!2!* and timestamp 20140414194644 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=JavaCalcErrorHandling&amp;oldid=3941">http://luciddb.org/wiki/index.php?title=JavaCalcErrorHandling&amp;oldid=3941</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/JavaCalcErrorHandling" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:JavaCalcErrorHandling&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=JavaCalcErrorHandling&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=JavaCalcErrorHandling&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=JavaCalcErrorHandling" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/JavaCalcErrorHandling" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/JavaCalcErrorHandling" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=JavaCalcErrorHandling&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=JavaCalcErrorHandling&amp;oldid=3941" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 25 February 2008, at 08:05.</li>
+		<li id="viewcount">This page has been accessed 1,882 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.248 secs. --></body></html>

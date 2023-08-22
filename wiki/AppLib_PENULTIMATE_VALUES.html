@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib PENULTIMATE VALUES - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib_PENULTIMATE_VALUES", "wgTitle": "AppLib PENULTIMATE VALUES", "wgCurRevisionId": 6784, "wgArticleId": 1849, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib_PENULTIMATE_VALUES action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib PENULTIMATE VALUES</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Syntax"><span class="tocnumber">1</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Purpose"><span class="tocnumber">2</span> <span class="toctext">Purpose</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Parameters"><span class="tocnumber">3</span> <span class="toctext">Parameters</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Example"><span class="tocnumber">4</span> <span class="toctext">Example</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Source_Code"><span class="tocnumber">5</span> <span class="toctext">Source Code</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<pre>
+select * from table(
+    applib.penultimate_values(
+        cursor( SQL_QUERY ),
+        row( GROUPING_COLUMNS ),
+        row( DESIGNATED_VALUE_AND_TIMESTAMP )
+    )
+);
+</pre>
+<h2> <span class="mw-headline" id="Purpose"> Purpose </span></h2>
+<p>The Penultimate values UDX takes in a sorted input table which has a timestamp column, a designated column, and grouping column(s), among other columns, and returns a table with the same columns as the input table, plus an additional timestamp column. One row per group is outputted - it contains the next to last value change for each column other than the grouping column and the timestamp column. Since each column does not necessarily change per row, the output row for a grouping may not be an actual row in the input table. The timestamp column contains the timestamp value taken from the input row for which the next to last value change occurred for the designated column. The additional timestamp column is calculated by looking at the last value change for the designated column and taking the timestamp from that row in the input table.
+</p>
+<h2> <span class="mw-headline" id="Parameters"> Parameters </span></h2>
+<p><b>Input:</b>
+</p>
+<ul><li> <b>SQL_QUERY:</b> rows to be aggregated, presorted on GROUPING_COLUMNS plus timestamp value from DESIGNATED_VALUE_AND_TIMESTAMP.
+</li><li> <b>GROUPING_COLUMNS:</b> - one or more columns of the input which are used to form the key of the output (input rows will be grouped accordingly)
+</li><li> <b>DESIGNATED_VALUE_AND_TIMESTAMP:</b> - exactly two columns from the input; the first (of any datatype) is used for determining which rows timestamps are taken from; the second selects the timestamp column
+</li></ul>
+<p><b>Output:</b>
+</p>
+<ul><li> a table with the same columns as the input table, plus one additional UNTIL_TIMESTAMP column of type TIMESTAMP
+</li></ul>
+<p><b>Calculation:</b>
+</p><p>The output contains one row per distinct key from GROUPING_COLUMNS, in the same order as the input.
+</p>
+<ul><li> For GROUPING_COLUMNS, the output values for a given group are the same as the input values (which are the same for the entire group).
+</li><li> For the timestamp column, the output value for a given group is determined as follows. First, find the penultimate value of the designated column. (If the group contains only one value for the designated column, then the penultimate value will be NULL.) Next, find the last run of contiguous rows within the group which have that penultimate value for the designated column. Take the timestamp from the first row within that run. If the penultimate value of the designated column is NULL, the timestamp value is also NULL.
+</li><li> For the UNTIL_TIMESTAMP column, the output value for a given group is determined by taking the timestamp value from the next row following the penultimate value run defined in the previous bullet. If the group contains only one distinct value for the designated column, then return the timestamp of the first row of the group for UNTIL_TIMESTAMP instead.
+</li><li> For any other column, the output value for a given group is equal to the penultimate value in the input for that group according to the timestamp ordering. If the group contains only one value for that column, then the output value is NULL. 
+</li></ul>
+<p><b>Boundary cases:</b>
+</p>
+<ul><li> Empty input will return an empty table with the additional UNTIL_TIMESTAMP column
+</li><li> There is no special handling for null values in columns other than the timestamp column
+<ul><li> This means that if a penultimate value for a column is a null, it will be outputted as is.
+</li><li> The same goes for nulls in the grouping column - null is a valid group 
+</li></ul>
+</li><li> all string fields are right trimmed prior to comparison for equality.  This means that 'Field' is the same as 'Field  ', and strings that consist of spaces are equivalent to the empty string.
+</li></ul>
+<p><b>Exceptions:</b>
+</p><p>A fatal exception is thrown under any of the following conditions:
+</p>
+<ul><li> DESIGNATED_VALUE_AND_TIMESTAMP is not a row of exactly two columns
+</li><li> Second column of DESIGNATED_VALUE_AND_TIMESTAMP is not a TIMESTAMP
+</li><li> Input table not presorted correctly in ascending order of group keys plus timestamp (as defined by SQL:2003 ORDER BY semantics, with NULLS FIRST, and PAD SPACE collation characteristic for group keys of VARCHAR datatype)
+<ul><li> for rules related to NULLS FIRST ordering, see SQL:2003 Part 2 Section 10.10 General Rule 1.e
+</li><li> for specifics of VARCHAR with PAD SPACE, see SQL:2003 Part 2 Section 4.2.2 
+</li></ul>
+</li><li> If any of the columns in DESIGNATED_VALUE_AND_TIMESTAMP are in GROUPING_COLUMNS
+</li><li> If the timestamp input column (2nd column of DESIGNATED_VALUE_AND_TIMESTAMP) contains a NULL value
+</li></ul>
+<h2> <span class="mw-headline" id="Example"> Example </span></h2>
+<pre>
+select 
+    &quot;OpportunityId&quot;, 
+    &quot;OpportunityChangeTimestamp&quot; as &quot;PreviousStageStart&quot;,
+    &quot;Stage&quot; as &quot;PreviousStage&quot;, 
+    &quot;Amount&quot; as &quot;PreviousAmount&quot;,
+    &quot;ExpectedRevenue&quot; as &quot;PreviousExpectedRevenue&quot; 
+    until_timestamp as &quot;PreviousStageEnd&quot;
+from table(
+    penultimate_values(
+        cursor(
+            select * from opportunity_change_history
+            order by &quot;OpportunityId&quot;, &quot;OpportunityChangeTimestamp&quot;
+        ), 
+        row(&quot;OpportunityId&quot;),
+        row(&quot;Stage&quot;, &quot;OpportunityChangeTimestamp&quot;)));
+</pre>
+<table border="1">
+<caption> opportunity_change_history input table
+</caption>
+<tr>
+<th> OpportunityId </th>
+<th> OpportunityChangeTimestamp </th>
+<th> Stage </th>
+<th> Amount </th>
+<th> ExpectedRevenue
+</th></tr>
+<tr>
+<td> (null) </td>
+<td> 1800-01-01 00:00:00 </td>
+<td> (null) </td>
+<td> 0 </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> (null) </td>
+<td> 1802-01-01 00:00:00 </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> 0
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-12 12:23:41 </td>
+<td> F </td>
+<td> 100 </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-14 00:00:00 </td>
+<td> F </td>
+<td> 150 </td>
+<td> 100
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 09:00:00 </td>
+<td> G </td>
+<td> 150 </td>
+<td> 200
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> F </td>
+<td> (null) </td>
+<td> 100
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-29 11:45:00 </td>
+<td> H </td>
+<td> 200 </td>
+<td> 100
+</td></tr>
+<tr>
+<td> B </td>
+<td> 2007-09-09 04:00:23 </td>
+<td> (null) </td>
+<td> 10 </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> B </td>
+<td> 2007-09-09 05:00:23 </td>
+<td> F </td>
+<td> 10 </td>
+<td> 90
+</td></tr>
+<tr>
+<td> C </td>
+<td> 2008-01-01 07:27:00 </td>
+<td> G </td>
+<td> 900 </td>
+<td> 2000
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-04 16:56:09 </td>
+<td> F </td>
+<td> 10 </td>
+<td> 15
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> G </td>
+<td> 10 </td>
+<td> 15
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 01:00:00 </td>
+<td> H </td>
+<td> 15 </td>
+<td> 15
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 05:00:00 </td>
+<td> H </td>
+<td> 20 </td>
+<td> 20
+</td></tr></table>
+<p><br />
+</p>
+<table border="1">
+<caption> Output table
+</caption>
+<tr>
+<th> OpportunityId </th>
+<th> PreviousStageStart </th>
+<th> PreviousStage </th>
+<th> PreviousAmount </th>
+<th> PreviousExpectedRevenue </th>
+<th> PreviousStageEnd
+</th></tr>
+<tr>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> 0 </td>
+<td> (null) </td>
+<td> 1800-01-01 00:00:00
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> F </td>
+<td> (null) </td>
+<td> 200 </td>
+<td> 2007-12-29 11:45:00
+</td></tr>
+<tr>
+<td> B </td>
+<td> 2007-09-09 04:00:23 </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> 2007-09-09 05:00:23
+</td></tr>
+<tr>
+<td> C </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> 2008-01-01 07:27:00
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> G </td>
+<td> 15 </td>
+<td> 15 </td>
+<td> 2007-12-05 01:00:00
+</td></tr></table>
+<h2> <span class="mw-headline" id="Source_Code"> Source Code </span></h2>
+<p><a rel="nofollow" class="external free" href="http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/cursor/PenultimateValuesUdx.java">http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/cursor/PenultimateValuesUdx.java</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 36/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1849-0!*!*!!en!*!* and timestamp 20140414192832 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;oldid=6784">http://luciddb.org/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;oldid=6784</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib_PENULTIMATE_VALUES" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib_PENULTIMATE_VALUES&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib+PENULTIMATE+VALUES" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib_PENULTIMATE_VALUES" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib_PENULTIMATE_VALUES" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib_PENULTIMATE_VALUES&amp;oldid=6784" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 16 August 2010, at 06:01.</li>
+		<li id="viewcount">This page has been accessed 4,105 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.185 secs. --></body></html>

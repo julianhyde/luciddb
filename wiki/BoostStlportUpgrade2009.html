@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>BoostStlportUpgrade2009 - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "BoostStlportUpgrade2009", "wgTitle": "BoostStlportUpgrade2009", "wgCurRevisionId": 6402, "wgArticleId": 1908, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-BoostStlportUpgrade2009 action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">BoostStlportUpgrade2009</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Summary"><span class="tocnumber">1</span> <span class="toctext">Summary</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Branching"><span class="tocnumber">2</span> <span class="toctext">Branching</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Testing"><span class="tocnumber">3</span> <span class="toctext">Testing</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Boost_Patch"><span class="tocnumber">4</span> <span class="toctext">Boost Patch</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Boost_Trimming"><span class="tocnumber">5</span> <span class="toctext">Boost Trimming</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Boost_Configuration"><span class="tocnumber">6</span> <span class="toctext">Boost Configuration</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#STLport_Patch"><span class="tocnumber">7</span> <span class="toctext">STLport Patch</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Boost_Threads_Breaking_Changes"><span class="tocnumber">8</span> <span class="toctext">Boost Threads Breaking Changes</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Miscellaneous_Changes"><span class="tocnumber">9</span> <span class="toctext">Miscellaneous Changes</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Enhancements"><span class="tocnumber">10</span> <span class="toctext">Enhancements</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Summary"> Summary </span></h1>
+<p>This page is for planning and tracking the progress of upgrading the following Fennel thirdparty dependencies:
+</p>
+<ul><li> Boost 1.33 -&gt; 1.40
+</li><li> STLport 5.0.2 (or 4.6.2 for Windows) -&gt; 5.1.6
+</li></ul>
+<p>We have deferred upgrades on these for far too long, making it harder and harder to maintain builds and patchsets with each new g++ release.
+</p><p>To facilitate this work, we ended up overhauling the Fennel build system to use cmake instead of autotools (and MSVC instead of mingw g++ on Windows).  For details, see <a href="/wiki/FennelBuildSystem" title="FennelBuildSystem">FennelBuildSystem</a>.
+</p>
+<h1> <span class="mw-headline" id="Branching"> Branching </span></h1>
+<p>The 1.38 upgrade existed for some time and has been integrated up to //open/dev and to other branches.  The upgrade to 1.40 currently exists only 
+on the //open/dt/dev branch.
+</p><p>The upgrade to 1.38 is checked into the branch as eigenchange 11811.
+The upgrade to 1.40 is checked into the branch as eigenchange 13228 (currenly only on //open/dt/dev) and there is a fix to the patch at 13230.
+</p>
+<h1> <span class="mw-headline" id="Testing"> Testing </span></h1>
+<p>We would like to get the upgrade tested with as many configurations as possible before integrating it to <b>//open/dev</b>.  If you are testing a configuration, please record your results here so that we know what has been covered:
+</p>
+<ul><li> 64-bit Jaunty Jackalope (GCC) gcc version 4.1.3 20080623 (prerelease) (Ubuntu 4.1.2-ubuntu1) all Fennel and Farrago checkin acceptance tests are passing for HCP
+<ul><li> optimized build and tests work as of eigenchange 13230
+</li></ul>
+</li><li> Windows:  definitely broken at the moment; JVS is working on it
+</li><li> 64-bit CentOS (GCC) gcc version 4.1.2 20070925 (Red Hat 4.1.2-33)
+</li><li> 32-bit CentOS (GCC) gcc version 4.1.2 20071124 (Red Hat 4.1.2-42)
+</li><li> 64-bit CentOS (GCC) gcc version 4.1.2 20071124 (Red Hat 4.1.2-42)
+</li></ul>
+<h1> <span class="mw-headline" id="Boost_Patch"> Boost Patch </span></h1>
+<p>One Boost patch is still needed:
+</p>
+<pre>
+diff -ur boost-orig/boost/test/unit_test_suite_impl.hpp boost/boost/test/unit_test_suite_impl.hpp
+--- boost-orig/boost/test/unit_test_suite_impl.hpp	2008-10-13 01:20:26.000000000 -0700
++++ boost/boost/test/unit_test_suite_impl.hpp	2009-04-19 00:48:10.000000000 -0700
+@@ -72,7 +72,7 @@
+     void                                increase_exp_fail( unsigned num );
+ 
+ protected:
+-    ~test_unit();
++    virtual ~test_unit();
+ 
+ private:
+     // Data members
+</pre>
+<p>See <a rel="nofollow" class="external text" href="http://www.nabble.com/-Boost.Test--valgrind-complains-about-invalid-reads-td20500154.html">this mailing list thread</a> for (so-far-unresolved) discussion.
+</p><p>These patches were added in this integration:
+</p><p>--- boost-new/boost/exception/detail/exception_ptr_base.hpp	2009-05-20 12:41:20.000000000 -0700
++++ boost/boost/exception/detail/exception_ptr_base.hpp	2009-12-12 17:44:16.000000000 -0800
+@@ -16,7 +16,7 @@
+</p>
+<pre>                exception_ptr_base
+                        {
+                        public:
+</pre>
+<p>-
++                        virtual ~exception_ptr_base() { }
+</p>
+<pre>                        virtual void _rethrow() const=0;
+                        virtual bool _empty() const=0;
+                        };
+</pre>
+<p>diff -Naur boost-new/boost/memory_order.hpp boost/boost/memory_order.hpp
+--- boost-new/boost/memory_order.hpp	2008-07-12 05:21:19.000000000 -0700
++++ boost/boost/memory_order.hpp	2009-12-12 17:42:54.000000000 -0800
+@@ -27,6 +27,7 @@
+</p>
+<pre>    memory_order_acquire = 1,
+    memory_order_release = 2,
+    memory_order_acq_rel = 3, // acquire | release
+</pre>
+<p>+    memory_order_consume = 4,
+</p>
+<pre>    memory_order_seq_cst = 7  // acq_rel | 4
+};
+</pre>
+<h1> <span class="mw-headline" id="Boost_Trimming"> Boost Trimming </span></h1>
+<p>The Boost source tarball size has grown by a huge amount from 1.33 (11MB) to 1.38 (29MB).  Consequently, the checked in source tarball has been put on a diet, bringing it down to 13MB.  This was done by deleting the following directories:
+</p>
+<pre>
+doc
+libs/{math,spirit,gil,mpl,serialization,fusion,python,asio,iterator,wave}
+</pre>
+<p>The documentation is all available online at www.boost.org (and you can download the full tarball from there if you need it).  The deleted libraries are unlikely to be used by Fennel; if we end up needing them, we can update the tarball.
+</p><p>The checked-in tarball is named <b>boost_1_40_0-slimfast.tar.bz2</b> and is 15MB even after the trimming.
+</p><p>Besides the tarball, one further reduction happens in <b>fennel/build/buildBoostLibs.sh</b>:  after "installing" Boost, a redundant copy of the header files are created under boost/include, but we don't need these eating disk space, and their presence is confusing, so we delete them.  (Is there a way to suppress the copy in the first place?)
+</p>
+<h1> <span class="mw-headline" id="Boost_Configuration"> Boost Configuration </span></h1>
+<p>The same configuration options from 1.33 are carried over (debug+release builds, dynamic link, multithreaded, STLport support).  One new Boost library ("system") needs to be built.
+</p><p>In addition, the new option --layout=system is used so that library filenames come out like this:
+</p>
+<pre>
+libboost_date_time-mt-gdp.so
+</pre>
+<p>instead of like this
+</p>
+<pre>
+libboost_date_time-gcc41-mt-gdp-1_38.so
+</pre>
+<p>We don't want the version info (particularly the compiler version) in the library name, since that way Fennel doesn't have to figure out what to link with.  --layout=tagged also gets rid of all of those symlinks for which we had no use.
+</p>
+<h1> <span class="mw-headline" id="STLport_Patch"> STLport Patch </span></h1>
+<p>Some STLport patches remain necessary even after the upgrade:
+</p>
+<pre>
+jvs@bagheera:~/open/tpu/thirdparty$ cat STLport-fennel.patch 
+# patch STLport for backwards compatibility with a Fennel dependency
+# $Id: //open/users/jvs/tpu/thirdparty/STLport-fennel.patch#2 $
+diff -ur stlport-orig/stlport/stl/_threads.h stlport/stlport/stl/_threads.h 
+--- stlport-orig/stlport/stl/_threads.h	2008-10-06 23:44:37.000000000 -0700
++++ stlport/stlport/stl/_threads.h	2008-11-01 20:01:08.000000000 -0700
+@@ -57,7 +57,7 @@
+  * does *__target = *__target + __val and returns the old *__target value
+  */
+ 
+-#if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
++#if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS) || defined(__GNUC__)
+ typedef long __stl_atomic_t;
+ #else
+ /* Don't import whole namespace!!!! - ptr */
+@@ -458,6 +458,8 @@
+   // The data member _M_ref_count
+ #if defined (__DMC__)
+ public:
++#else
++protected:
+ #endif
+   _STLP_VOLATILE __stl_atomic_t _M_ref_count;
+
+diff -ur stlport-orig/stlport/stl/debug/_string.h stlport/stlport/stl/debug/_string.h
+--- stlport-orig/stlport/stl/debug/_string.h	2008-10-06 23:44:37.000000000 -0700
++++ stlport/stlport/stl/debug/_string.h	2009-04-20 15:45:40.000000000 -0700
+@@ -347,7 +347,6 @@
+   _Self&amp; assign(const _CharT* __s, size_type __n) {
+     _STLP_FIX_LITERAL_BUG(__s)
+     _STLP_VERBOSE_ASSERT((__s&#160;!= 0), _StlMsg_INVALID_ARGUMENT)
+-    _M_check_assign((min) (_Traits::length(__s), __n));
+     _M_non_dbg_impl.assign(__s, __s + __n);
+     return *this;
+   }
+</pre>
+<p>Long term, we need to stop doing the protected hack, but Boost still hasn't added the necessary atomic counter support.  (There is a boost::detail::atomic_counter internal implementation, but it does not provide a way to reset the counter.)  There was an atomic package added in this patch to support lockfree data structures.  This library is very new and not used by Fennel itself.  After a time, we should consider using this
+boost.atomic library when its included in boost itself.
+</p><p>The other changes are
+</p>
+<ul><li> avoid "type punning" warnings from the -fstrict-aliasing optimization 
+</li><li> fix for <a rel="nofollow" class="external text" href="http://sourceforge.net/tracker/?func=detail&amp;atid=766244&amp;aid=2495252&amp;group_id=146814">STLport bug 2495252</a>, about which the STLport developers seem to be in denial the last time I checked
+</li></ul>
+<p>On Windows, stlport-msvc9-r3503.patch is also needed for MSVC build support.
+</p>
+<h1> <span class="mw-headline" id="Boost_Threads_Breaking_Changes"> Boost Threads Breaking Changes </span></h1>
+<p>See <a rel="nofollow" class="external free" href="http://www.boost.org/doc/libs/1_36_0/doc/html/thread/changes.html">http://www.boost.org/doc/libs/1_36_0/doc/html/thread/changes.html</a> for some breaking changes we are dealing with as part of this upgrade.
+</p><p>typedef <b>LocalCondition</b> now maps to <b>boost::condition_variable</b>.  It used to be <b>boost::condition</b>, but that now maps to <b>boost::condition_variable_any</b>, which is less efficient.
+</p><p>The "Try" variants of mutexes and guards are no longer distinguished from the normal variants; instead the try specification is on the lock attempt where it always should have been.
+</p><p>Where we would formerly have written this to take a lock on a try-mutex and wait for it (instead of returning immediately):
+</p>
+<pre>
+    StrictMutexTryGuard pageGuard(page.mutex,true);
+</pre>
+<p>We now use a normal guard:
+</p>
+<pre>
+    StrictMutexGuard pageGuard(page.mutex);
+</pre>
+<p>Where we would formerly have written this to use the "try" semantics for the lock:
+</p>
+<pre>
+    StrictMutexTryGuard pageGuard(page.mutex);
+</pre>
+<p>We now write this:
+</p>
+<pre>
+    StrictMutexGuard pageGuard(page.mutex, boost::try_to_lock);
+</pre>
+<p>Finally, where we would formerly have written this to check whether a guard's lock has been taken:
+</p>
+<pre>
+     if (!pageGuard.locked()) {
+</pre>
+<p>We now write this:
+</p>
+<pre>
+     if (!pageGuard.owns_lock()) {
+</pre>
+<p>Note that these breaking changes mean the Fennel code can no longer be compatible with the old Boost version.  So if we end up stuck on that for Windows, some conditional compilation will need to be added.
+</p><p>Besides Fennel, extension projects with thread dependencies will also have to make corresponding changes before we can integrate the Boost upgrade to <b>//open/dev</b>.
+</p>
+<h1> <span class="mw-headline" id="Miscellaneous_Changes"> Miscellaneous Changes </span></h1>
+<p>A few other changes were required to build Fennel with the upgrade:
+</p>
+<ul><li> #include &lt;stdexcept&gt; in CommonPreamble.h; previously it must have been getting included implicitly by some other header
+</li><li> in configure.in, use the presence of $stlport_location/stlport/stl/_vector.h as the AC_CHECK_FILE for the existence of STLport; we used to use _config.h, but it is gone now
+</li><li> also in configure.in, match the new library filenames for STLport
+</li><li> when passing integer arguments to math functions like log10, have to explicitly cast to double since they are overloaded now
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 18:10, 26 October 2008 (PDT):  for the ones under disruptivetech, I have integrated these back to //open/dev already so that moved files don't cause complications in <a href="/wiki/EigenbaseCodeReorg2008" title="EigenbaseCodeReorg2008">EigenbaseCodeReorg2008</a>
+</li></ul>
+</li></ul>
+<p>For details, see eigenchange 11811.
+</p>
+<h1> <span class="mw-headline" id="Enhancements"> Enhancements </span></h1>
+<p>There have been many enhancements in boost.  We can start taking advantage of these on the tpu branch, but that should not be a dependency for the integration; we can do these after integration (or never) if we choose.
+</p>
+<ul><li> the thread library finally provides a portable means of obtaining the current thread's ID
+</li><li> thread library now uses datetime library for timeouts
+</li><li> we can get rid of the warning suppression in configure.in (the one where we kept adding new compiler versions to the list)
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 137/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1908-0!*!0!!en!*!* and timestamp 20140414194717 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=BoostStlportUpgrade2009&amp;oldid=6402">http://luciddb.org/wiki/index.php?title=BoostStlportUpgrade2009&amp;oldid=6402</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/BoostStlportUpgrade2009" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:BoostStlportUpgrade2009&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=BoostStlportUpgrade2009&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=BoostStlportUpgrade2009&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=BoostStlportUpgrade2009" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/BoostStlportUpgrade2009" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/BoostStlportUpgrade2009" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=BoostStlportUpgrade2009&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=BoostStlportUpgrade2009&amp;oldid=6402" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 19 December 2009, at 22:09.</li>
+		<li id="viewcount">This page has been accessed 9,088 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.203 secs. --></body></html>

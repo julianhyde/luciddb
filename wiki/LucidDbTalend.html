@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbTalend - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbTalend", "wgTitle": "LucidDbTalend", "wgCurRevisionId": 3964, "wgArticleId": 1677, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbTalend action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbTalend</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Setup"><span class="tocnumber">2</span> <span class="toctext">Setup</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Connect"><span class="tocnumber">3</span> <span class="toctext">Connect</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Extract_Metadata"><span class="tocnumber">4</span> <span class="toctext">Extract Metadata</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Create_an_ETL_Job"><span class="tocnumber">5</span> <span class="toctext">Create an ETL Job</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Create_an_ELT_Job"><span class="tocnumber">6</span> <span class="toctext">Create an ELT Job</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Improvements_Needed"><span class="tocnumber">7</span> <span class="toctext">Improvements Needed</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This page describes experimental integration of <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a> with <a rel="nofollow" class="external text" href="http://www.talend.com">Talend Open Studio</a>.  Talend looks like a good match for LucidDB since it supports an "ELT" model (pushing the execution down to the DBMS), but some contributions to Talend will be needed to make it aware of LucidDB and to take advantage of advanced capabilities such as <a href="/wiki/LucidDbUdxJavaHowto" title="LucidDbUdxJavaHowto">UDX</a>'s and <a href="/wiki/LucidDbUpsert" title="LucidDbUpsert">upserts</a>.
+</p><p>Readers are encouraged to first work through the <a href="/wiki/LucidDbEtlTutorial" title="LucidDbEtlTutorial">LucidDbEtlTutorial</a> to get an idea for the LucidDB approach to data integration before moving on to usage of a generic system such as Talend.
+</p>
+<h1> <span class="mw-headline" id="Setup"> Setup </span></h1>
+<p>Download a copy of Talend Open Studio and browse through the documentation and tutorials.  The version of Talend used for the experiments described in this page was 2.3.0M2, Build id: r7640-20071218-1716 (the latest milestone build available at the time).
+</p><p>Start the LucidDB server as described in <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a>, and then using sqllineClient, populate some sample metadata as below:
+</p>
+<pre>
+create schema talend_test;
+
+create view talend_test.date_view as
+select
+time_key as calendar_date,
+case when weekend='Y' then true else false end as is_weekend
+from table(applib.time_dimension(2005, 1, 1, 2005, 12, 31));
+
+create table talend_test.date_list(
+    calendar_key int generated always as identity not null primary key,
+    calendar_date date not null,
+    is_weekend boolean not null,
+unique(calendar_date)
+);
+</pre>
+<h1> <span class="mw-headline" id="Connect"> Connect </span></h1>
+<p>Currently, Talend does not officially support usage of arbitrary JDBC drivers for extracting metadata.  The real solution to this would be to make Talend aware of LucidDB, but in the meantime, a trick is required.
+</p><p>First, make sure you are using LucidDB 0.7.3 or later (the JDBC driver was modified as part of making the trick work).
+</p><p>Next, edit the configuration for the launcher script you use to start Talend.  On Linux, <b>TalendOpenStudio-linux-gtk-x86.ini</b> looks like this by default:
+</p>
+<pre>
+-vmargs
+-Xms40m
+-Xmx500m
+-XX:MaxPermSize=128m
+</pre>
+<p>Edit it as follows:
+</p>
+<pre>
+-vmargs
+-Xbootclasspath/a:/path/to/where/you/downloaded/modified/version/of/LucidDbClient.jar
+-Xms40m
+-Xmx500m
+-XX:MaxPermSize=128m
+-Djdbc.drivers=com.lucidera.jdbc.LucidDbRmiDriver
+</pre>
+<p>This puts the LucidDB client driver on the bootstrap classpath, and tells the JDBC Driver Manager to load it automatically.  The reason it has to be on the bootstrap classpath (rather than the normal system classpath) is that Talend is Eclipse-based, and Eclipse loads each plugin in a private classloader which can't see the system classpath--but it can see the bootstrap classpath.  There's probably a cleaner way to accomplish this if you know Eclipse well.
+</p><p>Now, close Talend if it's already open, and then re-launch it.  Create a new project, or open an existing one.
+</p><p>In the tree, open the <b>Metadata</b> node, and then right-click on the <b>Db Connections</b> node and choose <b>Create connection</b>.  Fill in "LucidDB Integration" for the connection name, and then click <b>Next</b>.
+</p><p>Fill in the info as in the following screenshot.  Start by choosing <b>Generic ODBC</b> for <b>DB Type</b>, and then override the <b>String of Connection</b> to use a LucidDB-specific URL rather than the ODBC bridge driver.  Be sure to include the port number (5434) and schema name.  Click the <b>Check</b> button to confirm that the connection is working successfully.
+</p><p><a href="/wiki/File:TalendConnection.png" class="image"><img alt="TalendConnection.png" src="/wiki/upload/8/8c/TalendConnection.png" width="1065" height="837" /></a>
+</p><p>Click <b>Finish</b> to complete the creation of the connection in the repository.
+</p>
+<h1> <span class="mw-headline" id="Extract_Metadata"> Extract Metadata </span></h1>
+<p>Now, extract the metadata for the table and view we created earlier in LucidDB.
+</p><p>Right-click on the new <b>LucidDB Integration 0.1</b> connection node in the tree, and choose <b>Retrieve Schema</b>.  Click <b>Next</b> past the first empty filter screen (not sure what that is for or why it's not working).  On the next screen, in the <b>Name Filter</b> box, type in <b>DATE_</b> and you should see the list narrow to just our <b>DATE_LIST</b> and <b>DATE_VIEW</b>.  Check the two boxes and then hit <b>Next</b>.  On the next screen, you should see the correct column names and types for the two objects.  Click <b>Finish</b> and the two objects will be added to the tree (one under <b>Table schemas</b>, and one under <b>View schemas</b>).
+</p><p>Try out the query editor; right-click <b>LucidDB Integration 0.1</b> again, and this time click <b>Edit queries</b>.  You can type in a SQL-query in the text box, and it should provide auto-complete based on the available metadata.  Click the little running-man icon to execute your query:
+</p><p><a href="/wiki/File:TalendQuery.png" class="image"><img alt="TalendQuery.png" src="/wiki/upload/6/6e/TalendQuery.png" width="800" height="693" /></a>
+</p><p>You can also try the graphical query designer by clicking on the <b>Designer</b> tab.
+</p><p>When you're done, click OK to save your query, and give it the name <b>Lots of Dates</b>.  It should appear in the tree under the <b>Queries</b> node.
+</p>
+<h1> <span class="mw-headline" id="Create_an_ETL_Job"> Create an ETL Job </span></h1>
+<p>Now, create a job which will read rows from the query we just defined, transform each row by computing its CRC value and appending that as an extra column, and then write the result to a flat file.
+</p><p>In the tree, right-click <b>Job Designs</b>, choose <b>Create job</b>, and name the new job <b>ComputeCRC</b>.
+</p><p>The first step (reading rows from the query) is harder than it should be due to missing LucidDB awareness.  You can try dragging the metadata you extracted before (the DATE_LIST view) into the job designer view, and it will create something automatically, but unfortunately it still thinks it is supposed to be using the ODBC bridge (despite our override of the URL).  So don't do this.
+</p>
+<ol><li> Instead, in the palette on the right, click <b>Databases</b>, and then <b>DB JDBC</b>.  Select the <b>tJDBCInput</b> tool, and then click to the left in the job designer view to instantiate it.  Now you have to fill in the URL (<b>jdbc:luciddb:rmi://localhost:5434;schema=TALEND_TEST</b>), class name (<b>com.lucidera.jdbc.LucidDbRmiDriver</b>), driver JAR (use the file chooser to browse wherever you saved it) and user name (<b>sa</b>) redundantly.  The Driver JAR box may not auto-refresh; don't worry about it.
+</li><li> For <b>Schema</b>, choose <b>Repository</b>, and then choose <b>DATE_VIEW</b> from the new combo box which appears.
+</li><li> For <b>Query Type</b>, choose <b>Repository</b>, and then choose <b>Lots of Dates</b> from the new combo box which appears.
+</li></ol>
+<p>Next, create the CRC generator.  It's <b>tAddCRCRow</b> in the palette under <b>Data Quality</b>.  Instantiate it in the design view.  Link up its input by right-clicking on the JDBC input, choosing <b>Row</b> and then <b>Main</b>, and dragging the link over to the CRC generator.  Click on the CRC generator to view its properties, and click <b>Sync columns</b> to get it to read its input metadata from the query.  (You may have to click away and back to get it to refresh.)  Select <b>CALENDAR_DATE</b> and <b>IS_WEEKEND</b> for the <b>Use in CRC</b> property.
+</p><p>At this point, you can actually run the job already (from the <b>Run</b> tab below the designre), although the output isn't going anywhere yet.  Talend has a cool feature for watching the rows as they are computed; click the <b>Traces</b> checkbox before running to see this in action.  It slows things down to a crawl, so if you try it with this job, you'll probably want to kill the job after a bit.
+</p><p>For the final step of writing the rows out to a file, browse <b>File</b> and <b>Output</b> in the palette, choose <b>tFileOutputDelimited</b> (or whatever you want), and link it up from the output of the CRC generator.  Set the properties on the CRC generator to the desired output location, run the job, and verify that the file got created and the contents are what you'd expect.  Here's Talend in action:
+</p><p><a href="/wiki/File:TalendJob.png" class="image"><img alt="TalendJob.png" src="/wiki/upload/f/fb/TalendJob.png" width="1126" height="750" /></a>
+</p><p>Note that you would not want to use tJDBCOutput since row-at-a-time inserts into LucidDB are not an efficient way to load data.
+</p>
+<h1> <span class="mw-headline" id="Create_an_ELT_Job"> Create an ELT Job </span></h1>
+<p>Now let's try to tell LucidDB to move some data via ELT.  Talend doesn't have any generic JDBC ELT, so we'll fake it with the Teradata ELT instead.
+</p><p>Create a new job, and using the <b>ELT</b> palette, add the input, map, and output from under <b>Teradata</b> to the design view.  These are fairly straightforward to set up, so we won't go into the details here; for the input, use the repository to pick DATE_VIEW, and for the output, pick DATE_LIST (the table we'll populate).  Add dataflow links from input to map to output, giving them names as requested; make sure you match the actual object names DATE_VIEW and DATE_LIST.
+</p><p>Now, double-click on the map, and in the left-hand pane, click the green plus button to select the input.  Hit the <b>Auto map!</b> button to set up the mapping.  Then, select the <b>CALENDAR_KEY</b> in the bottom-right schema pane and click the delete key; we want to leave this column unmapped so that LucidDB can fill it in automatically (it is a generated identity column).
+</p><p>Unfortunately, now you're stuck, because if you click on the <b>Code</b> tab to browse the generated code, you'll notice that the code has been generated to use a Teradata JDBC URL instead of LucidDB.  And the code is read-only since it's generated.  So at this point, if you actually want to run the job, you have to figure out how to modify and compile the generated code.  (Or copy the generated SELECT statement out, prepend the INSERT portion from the generated Java code, and execute it via sqlline.)
+</p><p>Well, we got pretty close.  Here's a screenshot:
+</p><p><a href="/wiki/File:TalendElt.png" class="image"><img alt="TalendElt.png" src="/wiki/upload/0/04/TalendElt.png" width="1140" height="858" /></a>
+</p><p>Here's what the generated SQL would do:
+</p>
+<pre>
+INSERT INTO DATE_LIST (CALENDAR_DATE,IS_WEEKEND)
+SELECT
+DATE_VIEW.CALENDAR_DATE, DATE_VIEW.IS_WEEKEND
+FROM
+ DATE_VIEW
+</pre>
+<h1> <span class="mw-headline" id="Improvements_Needed"> Improvements Needed </span></h1>
+<p>Clearly, some basic improvements are needed for this integration to be usable; at a bare minimum:
+</p>
+<ul><li> Add LucidDB to Talend as a supported DBMS
+</li><li> Clone the Teradata ELT palette for use with LucidDB (or better, reuse a common factor if it exists)
+</li></ul>
+<p>Beyond that:
+</p>
+<ul><li> Look into DBMS schema support (in the sense of table name qualifier) for Talend.  Currently, Talend doesn't seem to have such a concept, but SQL:2003 does, and LucidDB does too.  Without this, everything needs to be under the same qualifier (that's why we used the TALEND_TEST schema in the LucidDB JDBC URL).  Note that when Talend refers to a schema, it just means the column names and types of a particular table or view.
+</li><li> Contribute support for upsert ELT mappings to Talend.  Upsert is very important for incremental loads; LucidDB has support for it, as do others such as Oracle.
+</li><li> Improve support for complex nested queries; LucidDB's optimizer excels at processing long-chain dataflow.  This kind of pipelining is much more efficient than executing many individual mappings with intermediate tables.
+</li><li> Add LucidDB palette items for the UDX transformations available in <a href="/wiki/LucidDbAppLib" title="LucidDbAppLib" class="mw-redirect">LucidDbAppLib</a>, e.g. <a href="/wiki/LucidDbAppLib_SPLIT_STRINGS" title="LucidDbAppLib SPLIT STRINGS" class="mw-redirect">SPLIT_STRINGS</a>, plus other operations such as ANALYZE, TRUNCATE, REBUILD, and DEALLOCATE OLD.
+</li><li> Expose SQL expression-builder metadata for UDF's available in <a href="/wiki/LucidDbAppLib" title="LucidDbAppLib" class="mw-redirect">LucidDbAppLib</a>, e.g. <a href="/wiki/LucidDbAppLib_STR_REPLACE" title="LucidDbAppLib STR REPLACE" class="mw-redirect">STR_REPLACE</a>.
+</li><li> Find a way to make it easy to establish SQL/MED connectivity to foreign data servers.
+</li></ul>
+<p>It may also be possible to create a UDX coupled with a palette tool for piping row-at-a-time output from normal Talend ETL operators (such as CRC generation) into a corresponding LucidDB bulk-load.  This would allow developers to choose between ETL and ELT based on the best available tool for the job.  A simpler alternative is to have the ETL dump to flat files, and then map those into LucidDB via ELT.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 62/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1677-0!*!0!!en!2!* and timestamp 20140414191716 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbTalend&amp;oldid=3964">http://luciddb.org/wiki/index.php?title=LucidDbTalend&amp;oldid=3964</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbTalend" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbTalend&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbTalend&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbTalend&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbTalend" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbTalend" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbTalend" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbTalend&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbTalend&amp;oldid=3964" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 22 March 2008, at 23:54.</li>
+		<li id="viewcount">This page has been accessed 6,406 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.277 secs. --></body></html>

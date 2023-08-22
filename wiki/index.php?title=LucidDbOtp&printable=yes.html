@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbOtp - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbOtp", "wgTitle": "LucidDbOtp", "wgCurRevisionId": 6355, "wgArticleId": 2008, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbOtp action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbOtp</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page provides instructions for setting up LucidDB to load and query the Bureau of Transportation Statistics (BTS) air traffic data described in <a rel="nofollow" class="external text" href="http://www.mysqlperformanceblog.com/2009/10/02/analyzing-air-traffic-performance-with-infobright-and-monetdb">this blog post</a>.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#File_Setup"><span class="tocnumber">1</span> <span class="toctext">File Setup</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#DDL"><span class="tocnumber">2</span> <span class="toctext">DDL</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#View_DDL"><span class="tocnumber">3</span> <span class="toctext">View DDL</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Load"><span class="tocnumber">4</span> <span class="toctext">Load</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Debugging"><span class="tocnumber">4.1</span> <span class="toctext">Debugging</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Indexing_and_Statistics"><span class="tocnumber">5</span> <span class="toctext">Indexing and Statistics</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Queries"><span class="tocnumber">6</span> <span class="toctext">Queries</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Q1"><span class="tocnumber">6.1</span> <span class="toctext">Q1</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Q2"><span class="tocnumber">6.2</span> <span class="toctext">Q2</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Q3"><span class="tocnumber">6.3</span> <span class="toctext">Q3</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Q4"><span class="tocnumber">6.4</span> <span class="toctext">Q4</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Q5"><span class="tocnumber">6.5</span> <span class="toctext">Q5</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Q6"><span class="tocnumber">6.6</span> <span class="toctext">Q6</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Q7"><span class="tocnumber">6.7</span> <span class="toctext">Q7</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Q8"><span class="tocnumber">6.8</span> <span class="toctext">Q8</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Q9"><span class="tocnumber">6.9</span> <span class="toctext">Q9</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-17"><a href="#Tuning"><span class="tocnumber">7</span> <span class="toctext">Tuning</span></a></li>
+<li class="toclevel-1 tocsection-18"><a href="#Index_Only_Scans"><span class="tocnumber">8</span> <span class="toctext">Index Only Scans</span></a></li>
+<li class="toclevel-1 tocsection-19"><a href="#Parallel_Load"><span class="tocnumber">9</span> <span class="toctext">Parallel Load</span></a></li>
+<li class="toclevel-1 tocsection-20"><a href="#Amazon_EC2_Large_Testing"><span class="tocnumber">10</span> <span class="toctext">Amazon EC2 Large Testing</span></a></li>
+<li class="toclevel-1 tocsection-21"><a href="#System_Profiling"><span class="tocnumber">11</span> <span class="toctext">System Profiling</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="File_Setup"> File Setup </span></h1>
+<p>The .sql scripts below assume a file system structure as follows:
+</p>
+<ul><li> /path/to/bts:  root
+</li><li> /path/to/bts/downloadzip:  contains the downloaded .zip files
+</li><li> /path/to/bts/sql:  contains .sql scripts
+</li><li> /path/to/bts/OTP:  contains unzipped .csv files, as well as supplementary .bcp control files
+</li></ul>
+<p>The shell commands below will unzip whatever files you have downloaded:
+</p>
+<pre>
+cd /path/to/bts/downloadzip
+for i in `ls *.zip`; do unzip -o $i -d ../OTP; done
+</pre>
+<p>Next, it's necessary to clone a .bcp control file template once for each data file.  (There are other ways to accomplish the same effect without duplicate control files, but this or sym-linking is the simplest.)
+</p>
+<pre>
+for i in `ls *.csv`&#160;; do v=`echo &quot;$i&quot; | sed -e 's/\.csv$//'`; cp On_Time_Template_BCP.bcp $v.bcp; done
+</pre>
+<p>Here's the On_Time_Template_BCP.bcp file to put in the OTP directory before running the command above:
+</p>
+<pre>
+6.0
+93
+1       SQLINT          0       4       &quot;,&quot;     1       &quot;Year&quot;
+2       SQLINT          0       4       &quot;,&quot;     2       &quot;Quarter&quot;
+3       SQLINT          0       4       &quot;,&quot;     3       &quot;Month&quot;
+4       SQLINT          0       4       &quot;,&quot;     4       &quot;DayofMonth&quot;
+5       SQLINT          0       4       &quot;,&quot;     5       &quot;DayOfWeek&quot;
+6       SQLDATE         0       4       &quot;,&quot;     6       &quot;FlightDate&quot;
+7       SQLCHAR         0       7       &quot;,&quot;     7       &quot;UniqueCarrier&quot;
+8       SQLBIGINT       0       16      &quot;,&quot;     8       &quot;AirlineID&quot;
+9       SQLVARCHAR      0       2       &quot;,&quot;     9       &quot;Carrier&quot;
+10      SQLVARCHAR      0       50      &quot;,&quot;     10      &quot;TailNum&quot;
+11      SQLVARCHAR      0       10      &quot;,&quot;     11      &quot;FlightNum&quot;
+12      SQLVARCHAR      0       5       &quot;,&quot;     12      &quot;Origin&quot;
+13      SQLVARCHAR      0       100     &quot;,&quot;     13      &quot;OriginCityName&quot; 
+14      SQLVARCHAR      0       2       &quot;,&quot;     14      &quot;OriginState&quot; 
+15      SQLVARCHAR      0       10      &quot;,&quot;     15      &quot;OriginStateFips&quot; 
+16      SQLVARCHAR      0       100     &quot;,&quot;     16      &quot;OriginStateName&quot; 
+17      SQLBIGINT       0       16      &quot;,&quot;     17      &quot;OriginWac&quot;
+18      SQLVARCHAR      0       5       &quot;,&quot;     18      &quot;Dest&quot; 
+19      SQLVARCHAR      0       100     &quot;,&quot;     19      &quot;DestCityName&quot; 
+20      SQLVARCHAR      0       2       &quot;,&quot;     20      &quot;DestState&quot; 
+21      SQLVARCHAR      0       10      &quot;,&quot;     21      &quot;DestStateFips&quot; 
+22      SQLVARCHAR      0       11      &quot;,&quot;     22      &quot;DestStateName&quot; 
+23      SQLBIGINT       0       16      &quot;,&quot;     23      &quot;DestWac&quot;
+24      SQLVARCHAR      0       16      &quot;,&quot;     24      &quot;CRSDepTime&quot;
+25      SQLVARCHAR      0       16      &quot;,&quot;     25      &quot;DepTime&quot;
+26      SQLBIGINT       0       16      &quot;,&quot;     26      &quot;DepDelay&quot;
+27      SQLBIGINT       0       16      &quot;,&quot;     27      &quot;DepDelayMinutes&quot;
+28      SQLBIGINT       0       16      &quot;,&quot;     28      &quot;DepDel15&quot;
+29      SQLBIGINT       0       16      &quot;,&quot;     29      &quot;DepartureDelayGroups&quot;
+30      SQLVARCHAR      0       20      &quot;,&quot;     30      &quot;DepTimeBlk&quot;
+31      SQLBIGINT       0       16      &quot;,&quot;     31      &quot;TaxiOut&quot;
+32      SQLVARCHAR      0       16      &quot;,&quot;     32      &quot;WheelsOff&quot;
+33      SQLVARCHAR      0       16      &quot;,&quot;     33      &quot;WheelsOn&quot; 
+34      SQLBIGINT       0       16      &quot;,&quot;     34      &quot;TaxiIn&quot; 
+35      SQLVARCHAR      0       16      &quot;,&quot;     35      &quot;CRSArrTime&quot;
+36      SQLVARCHAR      0       16      &quot;,&quot;     36      &quot;ArrTime&quot; 
+37      SQLBIGINT       0       16      &quot;,&quot;     37      &quot;ArrDelay&quot; 
+38      SQLBIGINT       0       16      &quot;,&quot;     38      &quot;ArrDelayMinutes&quot; 
+39      SQLBIGINT       0       16      &quot;,&quot;     39      &quot;ArrDel15&quot; 
+40      SQLBIGINT       0       16      &quot;,&quot;     40      &quot;ArrivalDelayGroups&quot;
+41      SQLVARCHAR      0       20      &quot;,&quot;     41      &quot;ArrTimeBlk&quot; 
+42      SQLINT          0       4       &quot;,&quot;     42      &quot;Cancelled&quot; 
+43      SQLVARCHAR      0       1       &quot;,&quot;     43      &quot;CancellationCode&quot; 
+44      SQLINT          0       4       &quot;,&quot;     44      &quot;Diverted&quot; 
+45      SQLBIGINT       0       16      &quot;,&quot;     45      &quot;CRSElapsedTime&quot; 
+46      SQLBIGINT       0       16      &quot;,&quot;     46      &quot;ActualElapsedTime&quot;
+47      SQLBIGINT       0       16      &quot;,&quot;     47      &quot;AirTime&quot; 
+48      SQLBIGINT       0       16      &quot;,&quot;     48      &quot;Flights&quot; 
+49      SQLBIGINT       0       16      &quot;,&quot;     49      &quot;Distance&quot; 
+50      SQLINT          0       4       &quot;,&quot;     50      &quot;DistanceGroup&quot; 
+51      SQLBIGINT       0       16      &quot;,&quot;     51      &quot;CarrierDelay&quot; 
+52      SQLBIGINT       0       16      &quot;,&quot;     52      &quot;WeatherDelay&quot; 
+53      SQLBIGINT       0       16      &quot;,&quot;     53      &quot;NASDelay&quot; 
+54      SQLBIGINT       0       16      &quot;,&quot;     54      &quot;SecurityDelay&quot; 
+55      SQLBIGINT       0       16      &quot;,&quot;     55      &quot;LateAircraftDelay&quot; 
+56      SQLVARCHAR      0       10      &quot;,&quot;     56      &quot;FirstDepTime&quot; 
+57      SQLVARCHAR      0       10      &quot;,&quot;     57      &quot;TotalAddGTime&quot;
+58      SQLVARCHAR      0       10      &quot;,&quot;     58      &quot;LongestAddGTime&quot; 
+59      SQLVARCHAR      0       10      &quot;,&quot;     59      &quot;DivAirportLandings&quot; 
+60      SQLVARCHAR      0       10      &quot;,&quot;     60      &quot;DivReachedDest&quot; 
+61      SQLVARCHAR      0       10      &quot;,&quot;     61      &quot;DivActualElapsedTime&quot; 
+62      SQLVARCHAR      0       10      &quot;,&quot;     62      &quot;DivArrDelay&quot; 
+63      SQLVARCHAR      0       10      &quot;,&quot;     63      &quot;DivDistance&quot; 
+64      SQLVARCHAR      0       10      &quot;,&quot;     64      &quot;Div1Airport&quot; 
+65      SQLVARCHAR      0       10      &quot;,&quot;     65      &quot;Div1WheelsOn&quot; 
+66      SQLVARCHAR      0       10      &quot;,&quot;     66      &quot;Div1TotalGTime&quot; 
+67      SQLVARCHAR      0       10      &quot;,&quot;     67      &quot;Div1LongestGTime&quot; 
+68      SQLVARCHAR      0       10      &quot;,&quot;     68      &quot;Div1WheelsOff&quot; 
+69      SQLVARCHAR      0       10      &quot;,&quot;     69      &quot;Div1TailNum&quot; 
+70      SQLVARCHAR      0       10      &quot;,&quot;     70      &quot;Div2Airport&quot; 
+71      SQLVARCHAR      0       10      &quot;,&quot;     71      &quot;Div2WheelsOn&quot; 
+72      SQLVARCHAR      0       10      &quot;,&quot;     72      &quot;Div2TotalGTime&quot; 
+73      SQLVARCHAR      0       10      &quot;,&quot;     73      &quot;Div2LongestGTime&quot; 
+74      SQLVARCHAR      0       10      &quot;,&quot;     74      &quot;Div2WheelsOff&quot; 
+75      SQLVARCHAR      0       10      &quot;,&quot;     75      &quot;Div2TailNum&quot; 
+76      SQLVARCHAR      0       10      &quot;,&quot;     76      &quot;Div3Airport&quot; 
+77      SQLVARCHAR      0       10      &quot;,&quot;     77      &quot;Div3WheelsOn&quot; 
+78      SQLVARCHAR      0       10      &quot;,&quot;     78      &quot;Div3TotalGTime&quot; 
+79      SQLVARCHAR      0       10      &quot;,&quot;     79      &quot;Div3LongestGTime&quot; 
+80      SQLVARCHAR      0       10      &quot;,&quot;     80      &quot;Div3WheelsOff&quot; 
+81      SQLVARCHAR      0       10      &quot;,&quot;     81      &quot;Div3TailNum&quot; 
+82      SQLVARCHAR      0       10      &quot;,&quot;     82      &quot;Div4Airport&quot; 
+83      SQLVARCHAR      0       10      &quot;,&quot;     83      &quot;Div4WheelsOn&quot; 
+84      SQLVARCHAR      0       10      &quot;,&quot;     84      &quot;Div4TotalGTime&quot; 
+85      SQLVARCHAR      0       10      &quot;,&quot;     85      &quot;Div4LongestGTime&quot; 
+86      SQLVARCHAR      0       10      &quot;,&quot;     86      &quot;Div4WheelsOff&quot; 
+87      SQLVARCHAR      0       10      &quot;,&quot;     87      &quot;Div4TailNum&quot; 
+88      SQLVARCHAR      0       10      &quot;,&quot;     88      &quot;Div5Airport&quot; 
+89      SQLVARCHAR      0       10      &quot;,&quot;     89      &quot;Div5WheelsOn&quot; 
+90      SQLVARCHAR      0       10      &quot;,&quot;     90      &quot;Div5TotalGTime&quot; 
+91      SQLVARCHAR      0       10      &quot;,&quot;     91      &quot;Div5LongestGTime&quot; 
+92      SQLVARCHAR      0       10      &quot;,&quot;     92      &quot;Div5WheelsOff&quot; 
+93      SQLVARCHAR      0       10      &quot;,\n&quot;   93      &quot;Div5TailNum&quot;               
+</pre>
+<h1> <span class="mw-headline" id="DDL"> DDL </span></h1>
+<p>The script below creates the schema, source data server, foreign tables corresponding to flatfiles, and target column store table.  Note that for the source data server, you have to edit the path to match your file system.
+</p><p><b>NOTE:</b>  If you are trying to import the full data set, the <b>import foreign schema</b> command may run out of memory with the default LucidDB settings due to the large Hibernate transaction size.  To avoid this, there are several options:
+</p>
+<ul><li> increase the JVM's heap size by editing <b>luciddb/bin/defineFarragoRuntime.sh</b> and adjusting the -Xms and -Xmx parameters
+</li><li> skip the <b>import foreign schema</b> statement and instead reference the flatfiles directly later, e.g. <b>FROM ff_otp_server."BCP"."On_Time_On_Time_Performance_1988_1"</b>
+</li><li> execute the imports year by year (e.g. using the <b>LIMIT TO TABLE_NAME LIKE</b> '%1988%' pattern); see <a href="/wiki/LucidDbImportForeignSchema" title="LucidDbImportForeignSchema">LucidDbImportForeignSchema</a>
+</li><li> preconcatenate the files to reduce the number of external tables 
+</li></ul>
+<pre>
+create schema otp;
+
+create or replace server ff_otp_server
+foreign data wrapper sys_file_wrapper
+options(
+    directory '/path/to/bts/OTP',
+    file_extension '.csv',
+    ctrl_file_extension '.bcp',
+    field_delimiter ',',
+    line_delimiter '\n',
+    quote_char '&quot;',
+    escape_char '',
+    with_header 'yes',
+    lenient 'yes',
+    num_rows_scan '1'
+);
+
+import foreign schema &quot;BCP&quot; from server ff_otp_server into otp;
+
+create table otp.&quot;ontime&quot; (
+  &quot;Year&quot; int,
+  &quot;Quarter&quot; tinyint ,
+  &quot;Month&quot; tinyint ,
+  &quot;DayofMonth&quot; tinyint ,
+  &quot;DayOfWeek&quot; tinyint ,
+  &quot;FlightDate&quot; date ,
+  &quot;UniqueCarrier&quot; varchar(7) ,
+  &quot;AirlineID&quot; bigint ,
+  &quot;Carrier&quot; varchar(2) ,
+  &quot;TailNum&quot; varchar(50) ,
+  &quot;FlightNum&quot; varchar(10) ,
+  &quot;Origin&quot; varchar(5) ,
+  &quot;OriginCityName&quot; varchar(100) ,
+  &quot;OriginState&quot; varchar(2) ,
+  &quot;OriginStateFips&quot; varchar(10) ,
+  &quot;OriginStateName&quot; varchar(100) ,
+  &quot;OriginWac&quot; bigint ,
+  &quot;Dest&quot; varchar(5) ,
+  &quot;DestCityName&quot; varchar(100) ,
+  &quot;DestState&quot; char(2) ,
+  &quot;DestStateFips&quot; varchar(10) ,
+  &quot;DestStateName&quot; varchar(100) ,
+  &quot;DestWac&quot; bigint ,
+  &quot;CRSDepTime&quot; bigint ,
+  &quot;DepTime&quot; bigint ,
+  &quot;DepDelay&quot; bigint ,
+  &quot;DepDelayMinutes&quot; bigint ,
+  &quot;DepDel15&quot; bigint ,
+  &quot;DepartureDelayGroups&quot; bigint ,
+  &quot;DepTimeBlk&quot; varchar(20) ,
+  &quot;TaxiOut&quot; bigint ,
+  &quot;WheelsOff&quot; bigint ,
+  &quot;WheelsOn&quot; bigint ,
+  &quot;TaxiIn&quot; bigint ,
+  &quot;CRSArrTime&quot; bigint ,
+  &quot;ArrTime&quot; bigint ,
+  &quot;ArrDelay&quot; bigint ,
+  &quot;ArrDelayMinutes&quot; bigint ,
+  &quot;ArrDel15&quot; bigint ,
+  &quot;ArrivalDelayGroups&quot; bigint ,
+  &quot;ArrTimeBlk&quot; varchar(20) ,
+  &quot;Cancelled&quot; tinyint ,
+  &quot;CancellationCode&quot; char(1) ,
+  &quot;Diverted&quot; tinyint ,
+  &quot;CRSElapsedTime&quot; bigint ,
+  &quot;ActualElapsedTime&quot; bigint ,
+  &quot;AirTime&quot; bigint ,
+  &quot;Flights&quot; bigint ,
+  &quot;Distance&quot; bigint ,
+  &quot;DistanceGroup&quot; tinyint ,
+  &quot;CarrierDelay&quot; bigint ,
+  &quot;WeatherDelay&quot; bigint ,
+  &quot;NASDelay&quot; bigint ,
+  &quot;SecurityDelay&quot; bigint ,
+  &quot;LateAircraftDelay&quot; bigint ,
+  &quot;FirstDepTime&quot; varchar(10) ,
+  &quot;TotalAddGTime&quot; varchar(10) ,
+  &quot;LongestAddGTime&quot; varchar(10) ,
+  &quot;DivAirportLandings&quot; varchar(10) ,
+  &quot;DivReachedDest&quot; varchar(10) ,
+  &quot;DivActualElapsedTime&quot; varchar(10) ,
+  &quot;DivArrDelay&quot; varchar(10) ,
+  &quot;DivDistance&quot; varchar(10) ,
+  &quot;Div1Airport&quot; varchar(10) ,
+  &quot;Div1WheelsOn&quot; varchar(10) ,
+  &quot;Div1TotalGTime&quot; varchar(10) ,
+  &quot;Div1LongestGTime&quot; varchar(10) ,
+  &quot;Div1WheelsOff&quot; varchar(10) ,
+  &quot;Div1TailNum&quot; varchar(10) ,
+  &quot;Div2Airport&quot; varchar(10) ,
+  &quot;Div2WheelsOn&quot; varchar(10) ,
+  &quot;Div2TotalGTime&quot; varchar(10) ,
+  &quot;Div2LongestGTime&quot; varchar(10) ,
+  &quot;Div2WheelsOff&quot; varchar(10) ,
+  &quot;Div2TailNum&quot; varchar(10) ,
+  &quot;Div3Airport&quot; varchar(10) ,
+  &quot;Div3WheelsOn&quot; varchar(10) ,
+  &quot;Div3TotalGTime&quot; varchar(10) ,
+  &quot;Div3LongestGTime&quot; varchar(10) ,
+  &quot;Div3WheelsOff&quot; varchar(10) ,
+  &quot;Div3TailNum&quot; varchar(10) ,
+  &quot;Div4Airport&quot; varchar(10) ,
+  &quot;Div4WheelsOn&quot; varchar(10) ,
+  &quot;Div4TotalGTime&quot; varchar(10) ,
+  &quot;Div4LongestGTime&quot; varchar(10) ,
+  &quot;Div4WheelsOff&quot; varchar(10) ,
+  &quot;Div4TailNum&quot; varchar(10) ,
+  &quot;Div5Airport&quot; varchar(10) ,
+  &quot;Div5WheelsOn&quot; varchar(10) ,
+  &quot;Div5TotalGTime&quot; varchar(10) ,
+  &quot;Div5LongestGTime&quot; varchar(10) ,
+  &quot;Div5WheelsOff&quot; varchar(10) ,
+  &quot;Div5TailNum&quot; varchar(10) 
+);
+</pre>
+<h1> <span class="mw-headline" id="View_DDL"> View DDL </span></h1>
+<p>Multiple source files can be loaded in a single INSERT statement by using a UNION ALL.  (As described further on, this also allows for parallelization.)  To simplify this, it's helpful to create views.  For example, to combine all of the source files for the year 2009:
+</p>
+<pre>
+create view otp.concat_source_2009_files as
+select * from otp.&quot;On_Time_On_Time_Performance_2009_1&quot;
+UNION ALL
+select * from otp.&quot;On_Time_On_Time_Performance_2009_2&quot;
+UNION ALL
+select * from otp.&quot;On_Time_On_Time_Performance_2009_3&quot;
+...
+UNION ALL
+select * from otp.&quot;On_Time_On_Time_Performance_2009_12&quot;
+</pre>
+<p>Note that there is no hard limit on view complexity, although trying to load all of the years in one go may hit other practical limits--this remains to be tested.
+</p><p>There are other ways to achieve the combination effect, e.g pre-concatenating the files, or piping them one after the other into a <a href="/wiki/LucidDbStreamingLoad" title="LucidDbStreamingLoad">fifo</a> from which LucidDB is reading.
+</p>
+<h1> <span class="mw-headline" id="Load"> Load </span></h1>
+<p>As part of the load, it's necessary to perform some data cleansing in order to replace blanks with nulls for some of the fields.  (LucidDB is strict about this kind of conversion.)  The INSERT below shows how to perform this cleansing over the view created above:
+</p>
+<pre>
+insert into otp.&quot;ontime&quot;
+select 
+&quot;Year&quot;                      
+,&quot;Quarter&quot;                
+,&quot;Month&quot;                     
+,&quot;DayofMonth&quot;             
+,&quot;DayOfWeek&quot;                 
+,&quot;FlightDate&quot;             
+,&quot;UniqueCarrier&quot;             
+,&quot;AirlineID&quot;                 
+,&quot;Carrier&quot;                   
+,&quot;TailNum&quot;                   
+,&quot;FlightNum&quot;                 
+,&quot;Origin&quot;                    
+,&quot;OriginCityName&quot;            
+,&quot;OriginState&quot;               
+,&quot;OriginStateFips&quot;           
+,&quot;OriginStateName&quot;           
+,&quot;OriginWac&quot;                 
+,&quot;Dest&quot;                      
+,&quot;DestCityName&quot;              
+,&quot;DestState&quot;                 
+,&quot;DestStateFips&quot;             
+,&quot;DestStateName&quot;             
+,&quot;DestWac&quot;                   
+,CASE WHEN &quot;CRSDepTime&quot; &lt;&gt; '' THEN CAST(&quot;CRSDepTime&quot; as BIGINT) ELSE NULL END as &quot;CRSDepTime&quot;
+,CASE WHEN &quot;DepTime&quot; &lt;&gt; '' THEN CAST(&quot;DepTime&quot; as BIGINT) ELSE NULL END as &quot;DepTime&quot;                  
+,&quot;DepDelay&quot;                  
+,&quot;DepDelayMinutes&quot;           
+,&quot;DepDel15&quot;                  
+,&quot;DepartureDelayGroups&quot;      
+,&quot;DepTimeBlk&quot;                
+,&quot;TaxiOut&quot;                   
+,CASE WHEN &quot;WheelsOff&quot; &lt;&gt; '' THEN CAST(&quot;WheelsOff&quot; as BIGINT) ELSE NULL END as &quot;WheelsOff&quot;
+,CASE WHEN &quot;WheelsOn&quot; &lt;&gt; '' THEN CAST(&quot;WheelsOn&quot; as BIGINT) END as &quot;WheelsOn&quot;                
+,&quot;TaxiIn&quot;                    
+,CASE WHEN &quot;CRSArrTime&quot; &lt;&gt; '' THEN CAST (&quot;CRSArrTime&quot; as BIGINT) END as &quot;CRSArrTime&quot;
+,CASE WHEN &quot;ArrTime&quot; &lt;&gt; '' THEN CAST (&quot;ArrTime&quot; as BIGINT) END as &quot;ArrTime&quot;
+,&quot;ArrDelay&quot;                  
+,&quot;ArrDelayMinutes&quot;           
+,&quot;ArrDel15&quot;                  
+,&quot;ArrivalDelayGroups&quot;        
+,&quot;ArrTimeBlk&quot;                
+,&quot;Cancelled&quot;                 
+,&quot;CancellationCode&quot;          
+,&quot;Diverted&quot;                  
+,&quot;CRSElapsedTime&quot;            
+,&quot;ActualElapsedTime&quot;         
+,&quot;AirTime&quot;                   
+,&quot;Flights&quot;                   
+,&quot;Distance&quot;                  
+,&quot;DistanceGroup&quot;             
+,&quot;CarrierDelay&quot;              
+,&quot;WeatherDelay&quot;              
+,&quot;NASDelay&quot;                  
+,&quot;SecurityDelay&quot;             
+,&quot;LateAircraftDelay&quot;         
+,&quot;FirstDepTime&quot;              
+,&quot;TotalAddGTime&quot;             
+,&quot;LongestAddGTime&quot;           
+,&quot;DivAirportLandings&quot;        
+,&quot;DivReachedDest&quot;            
+,&quot;DivActualElapsedTime&quot;      
+,&quot;DivArrDelay&quot;               
+,&quot;DivDistance&quot;               
+,&quot;Div1Airport&quot;               
+,&quot;Div1WheelsOn&quot;              
+,&quot;Div1TotalGTime&quot;            
+,&quot;Div1LongestGTime&quot;          
+,&quot;Div1WheelsOff&quot;             
+,&quot;Div1TailNum&quot;               
+,&quot;Div2Airport&quot;               
+,&quot;Div2WheelsOn&quot;              
+,&quot;Div2TotalGTime&quot;            
+,&quot;Div2LongestGTime&quot;          
+,&quot;Div2WheelsOff&quot;             
+,&quot;Div2TailNum&quot;               
+,&quot;Div3Airport&quot;               
+,&quot;Div3WheelsOn&quot;              
+,&quot;Div3TotalGTime&quot;            
+,&quot;Div3LongestGTime&quot;          
+,&quot;Div3WheelsOff&quot;             
+,&quot;Div3TailNum&quot;               
+,&quot;Div4Airport&quot;               
+,&quot;Div4WheelsOn&quot;              
+,&quot;Div4TotalGTime&quot;            
+,&quot;Div4LongestGTime&quot;          
+,&quot;Div4WheelsOff&quot;             
+,&quot;Div4TailNum&quot;               
+,&quot;Div5Airport&quot;               
+,&quot;Div5WheelsOn&quot;              
+,&quot;Div5TotalGTime&quot;            
+,&quot;Div5LongestGTime&quot;          
+,&quot;Div5WheelsOff&quot;             
+,&quot;Div5TailNum&quot;
+from OTP.concat_source_2009_files;
+</pre>
+<h2> <span class="mw-headline" id="Debugging"> Debugging </span></h2>
+<p>If problems are encountered due to bad source data, you can use the commands below to enable row rejection.  Before re-running the load, create the log directory which will receive summary information and rejected row details.
+</p>
+<pre>
+alter session set &quot;errorMax&quot; = 30;
+alter session set &quot;logDir&quot; = '/path/to/bts/log';
+</pre>
+<h1> <span class="mw-headline" id="Indexing_and_Statistics"> Indexing and Statistics </span></h1>
+<p>After loading data, the script below can be used to create indexes and gather stats useful to the optimizer.
+</p>
+<pre>
+create index year_idx on otp.&quot;ontime&quot;(&quot;Year&quot;);
+create index depdelay_idx on otp.&quot;ontime&quot;(&quot;DepDelay&quot;);
+create index dayofweek_idx on otp.&quot;ontime&quot;(&quot;DayOfWeek&quot;);
+create index destcityname_idx on otp.&quot;ontime&quot;(&quot;DestCityName&quot;);
+create index origincityname_idx on otp.&quot;ontime&quot;(&quot;OriginCityName&quot;);
+
+analyze table otp.&quot;ontime&quot; estimate statistics for columns (&quot;Year&quot;, &quot;DepDelay&quot;, &quot;DayOfWeek&quot;, &quot;DestCityName&quot;, &quot;OriginCityName&quot;);
+</pre>
+<h1> <span class="mw-headline" id="Queries"> Queries </span></h1>
+<p>Here are versions of the first six queries with the standard SQL:2003 identifier quoting used by LucidDB.
+</p>
+<h2> <span class="mw-headline" id="Q1"> Q1 </span></h2>
+<pre>
+SELECT &quot;DayOfWeek&quot;, count(*) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
+</pre>
+<h2> <span class="mw-headline" id="Q2"> Q2 </span></h2>
+<pre>
+SELECT &quot;DayOfWeek&quot;, count(*) AS c 
+FROM OTP.&quot;ontime&quot; 
+WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 
+GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
+</pre>
+<h2> <span class="mw-headline" id="Q3"> Q3 </span></h2>
+<pre>
+!set rowlimit 10
+SELECT &quot;Origin&quot;, count(*) AS c FROM OTP.&quot;ontime&quot; 
+WHERE 
+      &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 
+GROUP BY &quot;Origin&quot; ORDER BY c;
+</pre>
+<h2> <span class="mw-headline" id="Q4"> Q4 </span></h2>
+<pre>
+SELECT &quot;Carrier&quot;, count(*) as c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot; ORDER BY c DESC;
+</pre>
+<h2> <span class="mw-headline" id="Q5"> Q5 </span></h2>
+<pre>
+SELECT t.&quot;Carrier&quot;, c, c2, c*1000/c2 as c3 
+FROM 
+     (SELECT &quot;Carrier&quot;, count(*) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t 
+JOIN (SELECT &quot;Carrier&quot;, count(*) AS c2 FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t2 ON (t.&quot;Carrier&quot;=t2.&quot;Carrier&quot;) 
+ORDER BY c3 DESC;
+</pre>
+<h2> <span class="mw-headline" id="Q6"> Q6 </span></h2>
+<pre>
+SELECT t.&quot;Year&quot;, c1/c2 
+FROM 
+     (select &quot;Year&quot;, count(*)*1000 as c1 from OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t 
+JOIN (select &quot;Year&quot;, count(*) as c2 from OTP.&quot;ontime&quot;
+GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
+</pre>
+<h2> <span class="mw-headline" id="Q7"> Q7 </span></h2>
+<pre>
+SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;, count(&quot;Year&quot;)*1000 as c1 from OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;, count(*) as c2 from OTP.&quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
+</pre>
+<h2> <span class="mw-headline" id="Q8"> Q8 </span></h2>
+<pre>
+SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2001 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2002 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2003 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2004 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 1999 and 2008 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+</pre>
+<h2> <span class="mw-headline" id="Q9"> Q9 </span></h2>
+<pre>
+select &quot;Year&quot; ,count(&quot;Year&quot;) as c1 from &quot;ontime&quot; group by &quot;Year&quot;;
+</pre>
+<h1> <span class="mw-headline" id="Tuning"> Tuning </span></h1>
+<p>The following tuning items from <a href="/wiki/LucidDbTpch" title="LucidDbTpch">LucidDbTpch</a> are relevant for getting the best timing for your hardware:
+</p>
+<ul><li> <a href="/wiki/LucidDbTpch#LucidDB_Buffer_Pool_Size" title="LucidDbTpch">set the buffer pool size</a> based on the amount of RAM you have
+</li><li> <a href="/wiki/LucidDbTpch#LucidDB_Prefetch" title="LucidDbTpch">increase the prefetch rate</a> based on your disk bandwidth (this requires experimentation)
+</li><li> <a href="/wiki/LucidDbTpch#LucidDB_Concurrency" title="LucidDbTpch">set concurrency to 1</a> to give each statement execution maximum memory
+</li><li> <a href="/wiki/LucidDbTpch#LucidDB_Storage_Preallocation" title="LucidDbTpch">preallocate storage</a> to avoid the ext3 penalty for growing db.dat with direct I/O during the load (this requires one dry run to determine the amount of storage needed)
+</li></ul>
+<p>It's no longer necessary to change LucidDB's I/O scheduler.
+</p>
+<h1> <span class="mw-headline" id="Index_Only_Scans"> Index Only Scans </span></h1>
+<p>LucidDB has experimental support for index-only scans, which can speed up simple GROUP+COUNT queries (applicable here).  To enable it, execute the following command before running the queries:
+</p>
+<pre>
+alter session implementation set jar sys_boot.sys_boot.luciddb_index_only_plugin;
+</pre>
+<h1> <span class="mw-headline" id="Parallel_Load"> Parallel Load </span></h1>
+<p>LucidDB also has experimental support for parallel execution.  To enable it, execute the following command before running INSERT statements:
+</p>
+<pre>
+alter session set &quot;degreeOfParallelism&quot; = 2;
+</pre>
+<p>Adjust the DOP based on the number of cores available.
+</p><p>Best results are obtained with the UNION ALL views described above, since this balances reading source files in parallel against writing target columns in parallel (without a UNION ALL on the input, reading the source files may become a bottleneck).
+</p><p>Important notes:
+</p>
+<ul><li> when switching between parallel and non-parallel, it's best to shut down the server in between runs, since there are some issues with plan caching lacking sensitivity to the parallelism setting; these remain to be fixed
+</li><li> don't enable parallelism for running the queries; some query operators are not yet parallel-safe and you may get crashes or wrong results
+</li></ul>
+<h1> <span class="mw-headline" id="Amazon_EC2_Large_Testing"> Amazon EC2 Large Testing </span></h1>
+<ul><li> Loaded all years, 1998 to 2000
+</li><li> Followed above procedure, except view was too big for parallel loading.  Created an external (datafile) at a time INSERT.  
+</li><li> All records loaded excepting 9 rows.
+</li><li> In general, IO is really quiet (and this makes sense with the buffer pool, memory, and index/sizes)
+</li></ul>
+<p>Results:
+</p>
+<pre>
+0: jdbc:luciddb:http://localhost&gt;&#160;!run /otp/run_queries.sql
+1/62         alter session implementation set jar sys_boot.sys_boot.luciddb_index_only_plugin;
+No rows affected (0.239 seconds)
+2/62         set schema 'OTP';
+No rows affected (0.042 seconds)
+3/62         
+4/62         -- Q1
+5/62         -- PLAN
+6/62         EXPLAIN PLAN FOR SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                           column0                                                                      |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[1 Descending]], discardDuplicates=[false])                                                                                                       |
+|     LhxAggRel(groupCount=[1], C=[COUNT($0)])                                                                                                                           |
+|       LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[4]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$Year, SYS$CLUSTERED_INDEX$ontime$DayOfWeek]], res |
+|         FennelValuesRel(tuples=[[{ '[', 2000, ']', 2008 }]])                                                                                                           |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+5 rows selected (0.195 seconds)
+7/62         -- QUERY
+8/62         SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
++------------+----------+
+| DayOfWeek  |    C     |
++------------+----------+
+| 5          | 8732424  |
+| 1          | 8730614  |
+| 4          | 8710843  |
+| 3          | 8685624  |
+| 2          | 8639632  |
+| 7          | 8274365  |
+| 6          | 7514194  |
++------------+----------+
+7 rows selected (54.804 seconds)
+9/62         
+10/62        -- Q2
+11/62        -- PLAN
+12/62        EXPLAIN PLAN FOR SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                               column0                                                  |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[1 Descending]], discardDuplicates=[false])                                                                                                       |
+|     LhxAggRel(groupCount=[1], C=[COUNT($0)])                                                                                                                           |
+|       LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[4]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Year, SYS$CL |
+|         FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                             |
+|         FennelValuesRel(tuples=[[{ '[', 2000, ']', 2008 }]])                                                                                                           |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+6 rows selected (0.265 seconds)
+13/62        -- QUERY
+14/62        SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
++------------+----------+
+| DayOfWeek  |    C     |
++------------+----------+
+| 5          | 2088300  |
+| 4          | 1918325  |
+| 1          | 1795120  |
+| 7          | 1782292  |
+| 3          | 1640796  |
+| 2          | 1538291  |
+| 6          | 1391984  |
++------------+----------+
+7 rows selected (21.531 seconds)
+15/62        
+16/62        -- Q3
+17/62        -- PLAN
+18/62        explain plan for SELECT &quot;Origin&quot;, count(*) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;Origin&quot; ORDER BY c;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                              column0                                                   |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[1]], discardDuplicates=[false])                                                                                                                  |
+|     LhxAggRel(groupCount=[1], C=[COUNT()])                                                                                                                             |
+|       LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[11]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Year, SYS$C |
+|         FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                             |
+|         FennelValuesRel(tuples=[[{ '[', 2000, ']', 2008 }]])                                                                                                           |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+6 rows selected (0.236 seconds)
+19/62        -- QUERY
+20/62       &#160;!set rowlimit 10
+21/62        SELECT &quot;Origin&quot;, count(&quot;Origin&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;Origin&quot; ORDER BY c;
++---------+----+
+| Origin  | C  |
++---------+----+
+| BFF     | 1  |
+| RDR     | 2  |
+| CYS     | 2  |
+| FMN     | 3  |
+| PUB     | 3  |
+| CKB     | 4  |
+| MKK     | 5  |
+| PIR     | 5  |
+| OGD     | 5  |
+| LNY     | 6  |
++---------+----+
+10 rows selected (23.931 seconds)
+22/62        
+23/62        -- Q4
+24/62        -- PLAN
+25/62        explain plan for SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) as c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot; ORDER BY c DESC;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                            column0                                                                     |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[1 Descending]], discardDuplicates=[false])                                                                                                       |
+|     LhxAggRel(groupCount=[1], C=[COUNT($0)])                                                                                                                           |
+|       LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[8]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Carrier]], r |
+|         LcsIndexSearchRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[*], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], startRidParamId=[0], r |
+|           FennelValuesRel(tuples=[[{ '[', 2007, ']', 2007 }]])                                                                                                         |
+|         FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                             |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+7 rows selected (0.228 seconds)
+26/62        -- QUERY
+27/62        SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) as c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot; ORDER BY c DESC;
++----------+---------+
+| Carrier  |    C    |
++----------+---------+
+| WN       | 296293  |
+| AA       | 176203  |
+| MQ       | 145630  |
+| US       | 135987  |
+| UA       | 128174  |
+| OO       | 127426  |
+| EV       | 101796  |
+| XE       | 99915   |
+| DL       | 93675   |
+| NW       | 90429   |
++----------+---------+
+10 rows selected (2.95 seconds)
+28/62        
+29/62        -- Q5
+30/62        -- PLAN
+31/62        explain plan for SELECT t.&quot;Carrier&quot;, c, c2, c*1000/c2 as c3 FROM (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t JOIN (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c2 FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t2 ON (t.&quot;Carrier&quot;=t2.&quot;Carrier&quot;) ORDER BY c3 DESC;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                                                                             column0    |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[3 Descending]], discardDuplicates=[false])                                                                                                       |
+|     IteratorToFennelConverter                                                                                                                                          |
+|       IterCalcRel(expr#0..3=[{inputs}], expr#4=[1000], expr#5=[*($t3, $t4)], expr#6=[CAST($t5):DOUBLE NOT NULL], expr#7=[CAST($t1):DOUBLE NOT NULL], expr#8=[/($t6, $t |
+|         FennelToIteratorConverter                                                                                                                                      |
+|           LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])                                                                                                |
+|             LhxAggRel(groupCount=[1], C2=[COUNT($0)])                                                                                                                  |
+|               LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[8]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$Carrier]])                                |
+|                 LcsIndexSearchRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[*], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], startRidParamI |
+|                   FennelValuesRel(tuples=[[{ '[', 2007, ']', 2007 }]])                                                                                                 |
+|             LhxAggRel(groupCount=[1], C=[COUNT($0)])                                                                                                                   |
+|               LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[8]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Carr |
+|                 LcsIndexSearchRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[*], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], startRidParamI |
+|                   FennelValuesRel(tuples=[[{ '[', 2007, ']', 2007 }]])                                                                                                 |
+|                 FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                     |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+15 rows selected (0.262 seconds)
+32/62        -- QUERY
+33/62        SELECT t.&quot;Carrier&quot;, c, c2, c*1000/c2 as c3 FROM (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t JOIN (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c2 FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t2 ON (t.&quot;Carrier&quot;=t2.&quot;Carrier&quot;) ORDER BY c3 DESC;
++----------+---------+----------+-------------+
+| Carrier  |    C    |    C2    |     C3      |
++----------+---------+----------+-------------+
+| EV       | 101796  | 286234   | 355.639092  |
+| US       | 135987  | 485447   | 280.127388  |
+| AA       | 176203  | 633857   | 277.985413  |
+| MQ       | 145630  | 540494   | 269.438699  |
+| AS       | 42830   | 160185   | 267.378344  |
+| B6       | 50740   | 191450   | 265.030034  |
+| UA       | 128174  | 490002   | 261.578524  |
+| WN       | 296293  | 1168871  | 253.486484  |
+| OH       | 59034   | 236032   | 250.110155  |
+| CO       | 76662   | 323151   | 237.232749  |
++----------+---------+----------+-------------+
+10 rows selected (9.704 seconds)
+34/62        
+35/62        -- Q6
+36/62        -- PLAN
+37/62        explain plan for SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;, count(&quot;Year&quot;)*1000 as c1 from OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;, count(*) as c2 from OTP.&quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                                                                 column0                |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| IterCalcRel(expr#0..3=[{inputs}], expr#4=[1000], expr#5=[*($t1, $t4)], expr#6=[CAST($t5):DOUBLE NOT NULL], expr#7=[CAST($t3):DOUBLE NOT NULL], expr#8=[/($t6, $t7)], e |
+|   FennelToIteratorConverter                                                                                                                                            |
+|     LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])                                                                                                      |
+|       LhxAggRel(groupCount=[1], agg#0=[COUNT($0)])                                                                                                                     |
+|         LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Year]], re |
+|           FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                           |
+|       LcsIndexAggRel(groupCount=[1], C2=[COUNT()])                                                                                                                     |
+|         LcsIndexOnlyScanRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[[0, 1, 2, 3]])                                                               |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+8 rows selected (0.21 seconds)
+38/62        -- QUERY
+39/62        SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;, count(&quot;Year&quot;)*1000 as c1 from OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;, count(*) as c2 from OTP.&quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
++-------+-------------+
+| Year  |   EXPR$1    |
++-------+-------------+
+| 1998  | 193.563789  |
+| 1999  | 200.874150  |
+| 2000  | 231.716718  |
+| 2001  | 189.058075  |
+| 2002  | 162.376913  |
+| 2003  | 150.245379  |
+| 2004  | 192.483803  |
+| 2005  | 207.592843  |
+| 2006  | 231.559936  |
+| 2007  | 245.348710  |
++-------+-------------+
+10 rows selected (22.643 seconds)
+40/62        
+41/62        -- Q7
+42/62        -- PLAN
+43/62        explain plan for SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;,count(&quot;Year&quot;)*1000 as c1 from &quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;,count(&quot;Year&quot;) as c2 from &quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                                                                 column0                |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| IterCalcRel(expr#0..3=[{inputs}], expr#4=[1000], expr#5=[*($t1, $t4)], expr#6=[CAST($t5):DOUBLE NOT NULL], expr#7=[CAST($t3):DOUBLE NOT NULL], expr#8=[/($t6, $t7)], e |
+|   FennelToIteratorConverter                                                                                                                                            |
+|     LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])                                                                                                      |
+|       LhxAggRel(groupCount=[1], agg#0=[COUNT($0)])                                                                                                                     |
+|         LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DepDelay, SYS$CLUSTERED_INDEX$ontime$Year]], re |
+|           FennelValuesRel(tuples=[[{ '(', 10, '+', null }]])                                                                                                           |
+|       LcsIndexAggRel(groupCount=[1], C2=[COUNT($0)])                                                                                                                   |
+|         LcsIndexOnlyScanRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[[0, 1, 2, 3]])                                                               |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+8 rows selected (0.212 seconds)
+44/62        -- QUERY
+45/62        SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;,count(&quot;Year&quot;)*1000 as c1 from &quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;,count(&quot;Year&quot;) as c2 from &quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
++-------+-------------+
+| Year  |   EXPR$1    |
++-------+-------------+
+| 1998  | 193.563789  |
+| 1999  | 200.874150  |
+| 2000  | 231.716718  |
+| 2001  | 189.058075  |
+| 2002  | 162.376913  |
+| 2003  | 150.245379  |
+| 2004  | 192.483803  |
+| 2005  | 207.592843  |
+| 2006  | 231.559936  |
+| 2007  | 245.348710  |
++-------+-------------+
+10 rows selected (22.988 seconds)
+46/62        
+47/62        -- Q8
+48/62        -- PLAN
+49/62       &#160;!set rowlimit 10
+50/62        EXPLAIN PLAN FOR SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2001 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                           column0                                                                      |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                                                                                              |
+|   FennelSortRel(key=[[1 Descending]], discardDuplicates=[false])                                                                                                       |
+|     LhxAggRel(groupCount=[1], EXPR$1=[COUNT($1)])                                                                                                                      |
+|       LhxAggRel(groupCount=[2])                                                                                                                                        |
+|         LcsRowScanRel(table=[[LOCALDB, OTP, ontime]], projection=[[18, 12]], clustered indexes=[[SYS$CLUSTERED_INDEX$ontime$DestCityName, SYS$CLUSTERED_INDEX$ontime$O |
+|           LcsIndexSearchRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[*], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], startRidParamId=[0], |
+|             FennelValuesRel(tuples=[[{ '[', 2001, ']', 2001 }]])                                                                                                       |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+7 rows selected (0.136 seconds)
+51/62        -- QUERY 1 YEAR
+52/62        SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2001 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++----------------------+---------+
+|     DestCityName     | EXPR$1  |
++----------------------+---------+
+| Chicago, IL          | 118     |
+| Dallas/Ft.Worth, TX  | 114     |
+| Atlanta, GA          | 97      |
+| Minneapolis, MN      | 87      |
+| Detroit, MI          | 80      |
+| Houston, TX          | 79      |
+| Charlotte, NC        | 70      |
+| St. Louis, MO        | 70      |
+| Newark, NJ           | 68      |
+| Pittsburgh, PA       | 68      |
++----------------------+---------+
+10 rows selected (9.016 seconds)
+53/62        SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2002 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++----------------------+---------+
+|     DestCityName     | EXPR$1  |
++----------------------+---------+
+| Chicago, IL          | 119     |
+| Dallas/Ft.Worth, TX  | 115     |
+| Atlanta, GA          | 99      |
+| Minneapolis, MN      | 91      |
+| Houston, TX          | 82      |
+| Detroit, MI          | 82      |
+| Charlotte, NC        | 71      |
+| St. Louis, MO        | 70      |
+| Newark, NJ           | 69      |
+| Pittsburgh, PA       | 68      |
++----------------------+---------+
+10 rows selected (16.902 seconds)
+54/62        SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2003 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++----------------------+---------+
+|     DestCityName     | EXPR$1  |
++----------------------+---------+
+| Atlanta, GA          | 147     |
+| Chicago, IL          | 134     |
+| Dallas/Ft.Worth, TX  | 132     |
+| Houston, TX          | 122     |
+| Minneapolis, MN      | 94      |
+| Newark, NJ           | 94      |
+| Cincinnati, OH       | 90      |
+| Detroit, MI          | 87      |
+| Denver, CO           | 86      |
+| Los Angeles, CA      | 79      |
++----------------------+---------+
+10 rows selected (26.798 seconds)
+55/62        SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2001 and 2004 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++----------------------+---------+
+|     DestCityName     | EXPR$1  |
++----------------------+---------+
+| Atlanta, GA          | 152     |
+| Chicago, IL          | 137     |
+| Dallas/Ft.Worth, TX  | 135     |
+| Cincinnati, OH       | 133     |
+| Houston, TX          | 125     |
+| Minneapolis, MN      | 98      |
+| Newark, NJ           | 97      |
+| Denver, CO           | 93      |
+| Detroit, MI          | 89      |
+| Washington, DC       | 85      |
++----------------------+---------+
+10 rows selected (37.97 seconds)
+56/62        SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 1999 and 2008 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
++----------------------+---------+
+|     DestCityName     | EXPR$1  |
++----------------------+---------+
+| Atlanta, GA          | 190     |
+| Chicago, IL          | 159     |
+| Dallas/Ft.Worth, TX  | 151     |
+| Cincinnati, OH       | 139     |
+| Minneapolis, MN      | 131     |
+| Houston, TX          | 127     |
+| Detroit, MI          | 121     |
+| Denver, CO           | 120     |
+| Salt Lake City, UT   | 116     |
+| New York, NY         | 111     |
++----------------------+---------+
+10 rows selected (105.585 seconds)
+57/62        
+58/62        -- Q9
+59/62        -- PLAN
+60/62        explain plan for select &quot;Year&quot; ,count(&quot;Year&quot;) as c1 from &quot;ontime&quot; group by &quot;Year&quot;;
++-------------------------------------------------------------------------------------------------------+
+|                                                column0                                                |
++-------------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                             |
+|   LcsIndexAggRel(groupCount=[1], C1=[COUNT($0)])                                                      |
+|     LcsIndexOnlyScanRel(table=[[LOCALDB, OTP, ontime]], index=[YEAR_IDX], projection=[[0, 1, 2, 3]])  |
++-------------------------------------------------------------------------------------------------------+
+3 rows selected (0.171 seconds)
+61/62        -- QUERY
+62/62        select &quot;Year&quot; ,count(&quot;Year&quot;) as c1 from &quot;ontime&quot; group by &quot;Year&quot;;
++-------+----------+
+| Year  |    C1    |
++-------+----------+
+| 1998  | 5384721  |
+| 1999  | 5527884  |
+| 2000  | 5683047  |
+| 2001  | 5967780  |
+| 2002  | 5271359  |
+| 2003  | 6488539  |
+| 2004  | 7129270  |
+| 2005  | 7140593  |
+| 2006  | 7141922  |
+| 2007  | 7455458  |
++-------+----------+
+10 rows selected (0.916 seconds)
+
+</pre>
+<p>And the system parameters
+</p>
+<pre>
+select * from sys_root.dba_system_parameters order by 1;
++---------------------------------+-------------------------------------+
+|           PARAM_NAME            |             PARAM_VALUE             |
++---------------------------------+-------------------------------------+
+| cachePageSize                   | 32768                               |
+| cachePagesInit                  | 131072                              |
+| cachePagesMax                   | 131072                              |
+| cacheReservePercentage          | 5                                   |
+| calcVirtualMachine              | CALCVM_JAVA                         |
+| checkpointInterval              | 0                                   |
+| codeCacheMaxBytes               | 2000000                             |
+| connectionTimeoutMillis         | 86400000                            |
+| databaseIncrementSize           | 1000                                |
+| databaseInitSize                | 2000                                |
+| databaseMaxSize                 | 0                                   |
+| databaseShadowLogIncrementSize  | 1000                                |
+| databaseShadowLogInitSize       | 2000                                |
+| databaseTxnLogIncrementSize     | 1000                                |
+| databaseTxnLogInitSize          | 2000                                |
+| deviceSchedulerType             | aioLinux                            |
+| expectedConcurrentStatements    | 1                                   |
+| fennelDisabled                  | false                               |
+| freshmenPageQueuePercentage     | 25                                  |
+| groupCommitInterval             | 0                                   |
+| javaCompilerClassName           | org.eigenbase.javac.JaninoCompiler  |
+| jniHandleTraceFile              |                                     |
+| pageHistoryQueuePercentage      | 100                                 |
+| prefetchPagesMax                | 50                                  |
+| prefetchThrottleRate            | 10                                  |
+| processorCacheBytes             | -1                                  |
+| resourceDir                     | ${FARRAGO_HOME}/catalog/fennel      |
+| serverHttpPort                  | -1                                  |
+| serverRmiRegistryPort           | -1                                  |
+| serverSingleListenerPort        | -1                                  |
+| tempIncrementSize               | 1000                                |
+| tempInitSize                    | 3000                                |
+| tempMaxSize                     | 0                                   |
+| userCatalogEnabled              | false                               |
++---------------------------------+-------------------------------------+
+</pre>
+<p>Storage Report:
+</p>
+<pre>
+select table_schem as schema, table_name, index_name, pages*32/1024 as &quot;SizeInMB&quot; from sys_boot.jdbc_metadata.index_info_internal where table_schem = 'OTP' order by 1,2,4 desc;   
++---------+-------------+--------------------------------------------------+-------------+
+| SCHEMA  | TABLE_NAME  |                    INDEX_NAME                    |  SizeInMB   |
++---------+-------------+--------------------------------------------------+-------------+
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$WheelsOn              | 131.562500  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrTime               | 131.531250  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$WheelsOff             | 129.312500  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepTime               | 127.062500  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$TailNum               | 122.781250  |
+| OTP     | ontime      | DEPDELAY_IDX                                     | 110.968750  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$FlightNum             | 110.625000  |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$CRSArrTime            | 90.406250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ActualElapsedTime     | 83.656250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$AirTime               | 82.437500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$CRSDepTime            | 82.031250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrDelay              | 79.468750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepDelay              | 76.562500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrDelayMinutes       | 75.593750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepDelayMinutes       | 75.000000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$CRSElapsedTime        | 70.968750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$TaxiOut               | 68.437500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Distance              | 68.125000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$OriginCityName        | 60.343750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Origin                | 58.437500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$TaxiIn                | 54.031250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DestCityName          | 51.812500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Dest                  | 50.156250   |
+| OTP     | ontime      | DAYOFWEEK_IDX                                    | 47.843750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$OriginStateName       | 46.500000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$OriginState           | 45.937500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$OriginStateFips       | 45.937500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$OriginWac             | 45.906250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrTimeBlk            | 43.875000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepTimeBlk            | 43.687500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DestStateName         | 39.906250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$LateAircraftDelay     | 39.781250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$CarrierDelay          | 39.750000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DestState             | 39.531250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DestStateFips         | 39.531250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DestWac               | 39.375000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$NASDelay              | 39.031250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$FlightDate            | 39.000000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DayofMonth            | 38.812500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepartureDelayGroups  | 35.343750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrivalDelayGroups    | 35.343750   |
+| OTP     | ontime      | DESTCITYNAME_IDX                                 | 34.812500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DistanceGroup         | 31.343750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$WeatherDelay          | 30.375000   |
+| OTP     | ontime      | ORIGINCITYNAME_IDX                               | 29.750000   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DayOfWeek             | 24.468750   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$ArrDel15              | 17.812500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DepDel15              | 17.781250   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$SecurityDelay         | 14.187500   |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$CancellationCode      | 9.906250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$UniqueCarrier         | 9.218750    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$AirlineID             | 9.156250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Carrier               | 9.156250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Cancelled             | 9.156250    |
+| OTP     | ontime      | YEAR_IDX                                         | 9.062500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Diverted              | 8.875000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$FirstDepTime          | 1.406250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$TotalAddGTime         | 1.250000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$LongestAddGTime       | 1.250000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1WheelsOn          | 1.125000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1TotalGTime        | 1.062500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1LongestGTime      | 1.031250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1Airport           | 1.031250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1WheelsOff         | 1.031250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div1TailNum           | 1.031250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DivArrDelay           | 1.000000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DivActualElapsedTime  | 1.000000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DivDistance           | 0.781250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DivReachedDest        | 0.656250    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$DivAirportLandings    | 0.625000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Month                 | 0.500000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Quarter               | 0.375000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2LongestGTime      | 0.375000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2Airport           | 0.375000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2TotalGTime        | 0.375000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2WheelsOn          | 0.375000    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5LongestGTime      | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5TotalGTime        | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5WheelsOn          | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5Airport           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5WheelsOff         | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div5TailNum           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Flights               | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Year                  | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2WheelsOff         | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div2TailNum           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3Airport           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3WheelsOn          | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3TotalGTime        | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3LongestGTime      | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3WheelsOff         | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4TailNum           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4WheelsOff         | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4LongestGTime      | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4TotalGTime        | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4WheelsOn          | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div4Airport           | 0.312500    |
+| OTP     | ontime      | SYS$CLUSTERED_INDEX$ontime$Div3TailNum           | 0.312500    |
+| OTP     | ontime      | SYS$DELETION_INDEX$ontime                        | 0.218750    |
++---------+-------------+--------------------------------------------------+-------------+
+</pre>
+<p>Approx 3GB total size
+</p>
+<h1> <span class="mw-headline" id="System_Profiling"> System Profiling </span></h1>
+<p>Using the Fennel system profiling method described here, the following results were obtained from an oprofile session.
+</p>
+<pre>
+q1.sql: SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+   882625 27.6098 libc-2.5.so
+   815445 25.5083 libfennel_tuple.so
+   732330 22.9084 libfennel_lu_colstore.so
+   612142 19.1487 libfennel_hashexe.so
+    47086  1.4729 no-vmlinux
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+882625   27.6102  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+300909    9.4130  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+168286    5.2643  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+144619    4.5240  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+138238    4.3243  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+133149    4.1652  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+112016    3.5041  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashGenerator::hashOneBuffer(unsigned int&amp;, unsigned char const*, unsigned int)
+78991     2.4710  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleData::projectFrom(fennel::TupleData const&amp;, fennel::TupleProjection const&amp;)
+78054     2.4417  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashTable::findKeyLocation(fennel::TupleData const&amp;, fennel::TupleProjection const&amp;, bool, bool)
+66722     2.0872  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashTable::aggData(unsigned char*, fennel::TupleData const&amp;)
+57577     1.8011  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::getCurrentValueCode() const
+54047     1.6907  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::UnalignedAttributeAccessor::loadValue(fennel::TupleDatum&amp;, unsigned char const*) const
+
+q2.sql: SELECT &quot;DayOfWeek&quot;, count(&quot;DayOfWeek&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;DayOfWeek&quot; ORDER BY c DESC;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+   627981 45.1584 libfennel_lu_colstore.so
+   351426 25.2712 libfennel_tuple.so
+   176962 12.7254 libc-2.5.so
+   128421  9.2348 libfennel_hashexe.so
+    40041  2.8794 libjvm.so
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+176962   12.7257  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+172740   12.4221  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+146233   10.5159  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+136753    9.8342  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+89533     6.4385  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+67823     4.8773  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::UnalignedAttributeAccessor::loadValue(fennel::TupleDatum&amp;, unsigned char const*) const
+51169     3.6797  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::applyFilters(fennel::TupleDescriptor&amp;, fennel::TupleData&amp;)
+48804     3.5096  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::getCurrentValueCode() const
+33576     2.4145  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::catchUp(unsigned int, unsigned long long)
+31066     2.2340  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+31040     2.2321  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::readBitVec8(unsigned short*, unsigned char* const*, unsigned int)
+28086     2.0197  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+
+q3.sql:&#160;!set rowlimit 10 SELECT &quot;Origin&quot;, count(&quot;Origin&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot; BETWEEN 2000 AND 2008 GROUP BY &quot;Origin&quot; ORDER BY c;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+   625319 43.6467 libfennel_lu_colstore.so
+   388966 27.1495 libfennel_tuple.so
+   176506 12.3200 libc-2.5.so
+   137820  9.6197 libfennel_hashexe.so
+    36912  2.5764 libjvm.so
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+178697   12.4732  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+176506   12.3202  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+146946   10.2569  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+137906    9.6259  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+88847     6.2016  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+67519     4.7129  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::UnalignedAttributeAccessor::loadValue(fennel::TupleDatum&amp;, unsigned char const*) const
+50671     3.5369  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::applyFilters(fennel::TupleDescriptor&amp;, fennel::TupleData&amp;)
+48866     3.4109  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::getCurrentValueCode() const
+34154     2.3840  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+33698     2.3521  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::catchUp(unsigned int, unsigned long long)
+32281     2.2532  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::readBitVec8(unsigned short*, unsigned char* const*, unsigned int)
+30806     2.1503  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashGenerator::hashOneBuffer(unsigned int&amp;, unsigned char const*, unsigned int)
+
+q4.sql: SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) as c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot; ORDER BY c DESC;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+    49645 23.7957 libfennel_lu_colstore.so
+    39875 19.1128 libjvm.so
+    37677 18.0592 libfennel_tuple.so
+    26228 12.5715 libc-2.5.so
+    18030  8.6421 libfennel_hashexe.so
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+26228    12.5721  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+15985     7.6622  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+13390     6.4183  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+12601     6.0401  (no location information)   anon (tgid:17394 range:0xb13cb000-0xb160b000) java                     (no symbols)
+9962      4.7752  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+8260      3.9593  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+6223      2.9829  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+5594      2.6814  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+4366      2.0928  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::UnalignedAttributeAccessor::loadValue(fennel::TupleDatum&amp;, unsigned char const*) const
+3946      1.8915  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LbmRidReaderBase::searchForNextRid()
+3618      1.7342  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::fillRidRunBuffer()
+3302      1.5828  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashGenerator::hashOneBuffer(unsigned int&amp;, unsigned char const*, unsigned int)
+
+q5.sql: SELECT t.&quot;Carrier&quot;, c, c2, c*1000/c2 as c3 FROM (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c FROM OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 AND &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t JOIN (SELECT &quot;Carrier&quot;, count(&quot;Carrier&quot;) AS c2 FROM OTP.&quot;ontime&quot; WHERE &quot;Year&quot;=2007 GROUP BY &quot;Carrier&quot;) t2 ON (t.&quot;Carrier&quot;=t2.&quot;Carrier&quot;) ORDER BY c3 DESC;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+   152356 28.0775 libfennel_tuple.so
+   117849 21.7183 libc-2.5.so
+    95902 17.6737 libfennel_hashexe.so
+    92609 17.0668 libfennel_lu_colstore.so
+    36660  6.7560 libjvm.so
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+117849   21.7194  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+46396     8.5507  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+27070     4.9890  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+20574     3.7918  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+19878     3.6635  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+19416     3.5783  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashGenerator::hashOneBuffer(unsigned int&amp;, unsigned char const*, unsigned int)
+16481     3.0374  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+13791     2.5417  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+13512     2.4902  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::VarCharType::compareValues(void const*, unsigned int, void const*, unsigned int) const
+12602     2.3225  (no location information)   anon (tgid:17666 range:0xb138d000-0xb15cd000) java                     (no symbols)
+11989     2.2096  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashTable::findKeyLocation(fennel::TupleData const&amp;, fennel::TupleProjection const&amp;, bool, bool)
+11526     2.1242  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashTable::aggData(unsigned char*, fennel::TupleData const&amp;)
+
+q6.sql: SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;, count(&quot;Year&quot;)*1000 as c1 from OTP.&quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;, count(*) as c2 from OTP.&quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+   606962 34.4595 libfennel_lu_colstore.so
+   459143 26.0673 libfennel_tuple.so
+   283180 16.0772 libc-2.5.so
+   268165 15.2247 libfennel_hashexe.so
+    37933  2.1536 libjvm.so
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+283180   16.0774  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+191368   10.8648  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::unmarshal(fennel::TupleData&amp;, unsigned int) const
+147087    8.3508  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsClusterReader::getFetchRids(fennel::CircularBufferIter&lt;fennel::LcsRidRun&gt;&amp;, unsigned long long&amp;, bool)
+127258    7.2250  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanBaseExecStream::readColVals(boost::shared_ptr&lt;fennel::LcsClusterReader&gt;&amp;, fennel::TupleDataWithBuffer&amp;, unsigned int)
+101351    5.7542  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsRowScanExecStream::execute(fennel::ExecStreamQuantum const&amp;)
+65843     3.7382  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::UnalignedAttributeAccessor::loadValue(fennel::TupleDatum&amp;, unsigned char const*) const
+60206     3.4182  (no location information)   libfennel_hashexe.so     libfennel_hashexe.so     fennel::LhxHashGenerator::hashOneBuffer(unsigned int&amp;, unsigned char const*, unsigned int)
+57639     3.2724  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleAccessor::marshal(fennel::TupleData const&amp;, unsigned char*)
+42068     2.3884  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::applyFilters(fennel::TupleDescriptor&amp;, fennel::TupleData&amp;)
+39872     2.2637  (no location information)   libfennel_lu_colstore.so libfennel_lu_colstore.so fennel::LcsColumnReader::getCurrentValueCode() const
+39411     2.2375  (no location information)   libfennel_tuple.so       libfennel_tuple.so       fennel::TupleData::projectFrom(fennel::TupleData const&amp;, fennel::TupleProjection const&amp;)
+32809     1.8627  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+
+q7.sql: SELECT t.&quot;Year&quot;, c1/c2 FROM (select &quot;Year&quot;,count(&quot;Year&quot;)*1000 as c1 from &quot;ontime&quot; WHERE &quot;DepDelay&quot;&gt;10 GROUP BY &quot;Year&quot;) t JOIN (select &quot;Year&quot;,count(&quot;Year&quot;) as c2 from &quot;ontime&quot; GROUP BY &quot;Year&quot;) t2 ON (t.&quot;Year&quot;=t2.&quot;Year&quot;);
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+    30630 47.9208 libjvm.so
+    14695 22.9904 no-vmlinux
+    13160 20.5889 java
+	GLOBAL_POWER_E...|
+	  samples|     &#160;%|
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+14695    22.9958  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+12004    18.7847  (no location information)   anon (tgid:18214 range:0xb13fc000-0xb163c000) java                     (no symbols)
+2247      3.5163  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+1533      2.3989  (no location information)   libjvm.so                libjvm.so                IndexSetIterator::advance_and_next()
+1085      1.6979  (no location information)   anon (tgid:12740 range:0xb138d000-0xb1f65000) java                     (no symbols)
+942       1.4741  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::build_ifg_physical(ResourceArea*)
+830       1.2988  (no location information)   libzip.so                libzip.so                (no symbols)
+735       1.1502  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::Split(unsigned int)
+700       1.0954  (no location information)   libverify.so             libverify.so             (no symbols)
+699       1.0938  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::gather_lrg_masks(int)
+608       0.9514  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::interfere_with_live(unsigned int, IndexSet*)
+488       0.7637  (no location information)   libjvm.so                libjvm.so                PhaseLive::compute(unsigned int)
+
+q8.sql: SELECT &quot;DestCityName&quot;, COUNT( DISTINCT &quot;OriginCityName&quot;) FROM &quot;ontime&quot; WHERE &quot;Year&quot; BETWEEN 1999 and 2008 GROUP BY &quot;DestCityName&quot; ORDER BY 2 DESC;
+
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+GLOBAL_POWER_E...|
+  samples|     &#160;%|
+------------------
+    35763 51.0222 libjvm.so
+    15142 21.6027 no-vmlinux
+    13112 18.7066 java
+	GLOBAL_POWER_E...|
+	  samples|     &#160;%|
+CPU: P4 / Xeon with 2 hyper-threads, speed 2992.8 MHz (estimated)
+Counted GLOBAL_POWER_EVENTS events (time during which processor is not stopped) with a unit mask of 0x01 (mandatory) count 100000
+samples &#160;%        linenr info                 image name               app name                 symbol name
+15142    21.6083  (no location information)   no-vmlinux               no-vmlinux               (no symbols)
+11968    17.0788  (no location information)   anon (tgid:18487 range:0xb13c1000-0xb1601000) java                     (no symbols)
+2519      3.5947  (no location information)   libc-2.5.so              libc-2.5.so              (no symbols)
+1840      2.6258  (no location information)   libjvm.so                libjvm.so                IndexSetIterator::advance_and_next()
+1290      1.8409  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::build_ifg_physical(ResourceArea*)
+1051      1.4998  (no location information)   anon (tgid:12740 range:0xb138d000-0xb1f65000) java                     (no symbols)
+921       1.3143  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::Split(unsigned int)
+855       1.2201  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::gather_lrg_masks(int)
+795       1.1345  (no location information)   libzip.so                libzip.so                (no symbols)
+707       1.0089  (no location information)   libverify.so             libverify.so             (no symbols)
+694       0.9904  (no location information)   libjvm.so                libjvm.so                PhaseChaitin::interfere_with_live(unsigned int, IndexSet*)
+638       0.9105  (no location information)   libjvm.so                libjvm.so                PhaseLive::compute(unsigned int)
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 284/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2008-0!*!0!!en!*!* and timestamp 20140414191143 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbOtp&amp;oldid=6355">http://luciddb.org/wiki/index.php?title=LucidDbOtp&amp;oldid=6355</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbOtp" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbOtp&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbOtp&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbOtp&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbOtp&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbOtp" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbOtp" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbOtp&amp;oldid=6355" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 29 October 2009, at 04:51.</li>
+		<li id="viewcount">This page has been accessed 10,070 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.154 secs. --></body></html>

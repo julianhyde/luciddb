@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbBufferPoolSizing - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbBufferPoolSizing", "wgTitle": "LucidDbBufferPoolSizing", "wgCurRevisionId": 7167, "wgArticleId": 1607, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbBufferPoolSizing action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbBufferPoolSizing</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page explains how to change the size of the buffer pool LucidDB allocates from available RAM, and why you might need to do that.  For background on the buffer pool, read <a href="/wiki/LucidDbMemoryManagement" title="LucidDbMemoryManagement">LucidDbMemoryManagement</a>.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#What_is_the_Default_Buffer_Pool_Size.3F"><span class="tocnumber">2</span> <span class="toctext">What is the Default Buffer Pool Size?</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#How_Do_I_Change_the_Buffer_Pool_Size.3F"><span class="tocnumber">3</span> <span class="toctext">How Do I Change the Buffer Pool Size?</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#How_Do_I_Convert_From_Bytes_to_Pages.3F"><span class="tocnumber">4</span> <span class="toctext">How Do I Convert From Bytes to Pages?</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#How_High_Can_I_Go.3F"><span class="tocnumber">5</span> <span class="toctext">How High Can I Go?</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#How_Low_Can_I_Go.3F"><span class="tocnumber">6</span> <span class="toctext">How Low Can I Go?</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Could_I_Get_Some_Hard_Numbers.2C_Please.3F"><span class="tocnumber">7</span> <span class="toctext">Could I Get Some Hard Numbers, Please?</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#What_Are_My_Current_Settings.3F"><span class="tocnumber">8</span> <span class="toctext">What Are My Current Settings?</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Reference_table_of_memory_variables"><span class="tocnumber">9</span> <span class="toctext">Reference table of memory variables</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>You should also increase the buffer pool sizing to increase the amount of memory that LucidDB uses to "run queries"
+(the Java adjustments will only increase the catalog/parsing/optimizer memory settings but not the actual execution engine). 
+</p>
+<h1> <span class="mw-headline" id="What_is_the_Default_Buffer_Pool_Size.3F"> What is the Default Buffer Pool Size? </span></h1>
+<p>For standard LucidDB packaging, it's 5000 pages of 32KB each, which works out to a little under 160MB (using the <a rel="nofollow" class="external text" href="http://kb.iu.edu/data/ackw.html">common definition of KB and MB</a>).
+</p>
+<h1> <span class="mw-headline" id="How_Do_I_Change_the_Buffer_Pool_Size.3F"> How Do I Change the Buffer Pool Size? </span></h1>
+<p>The SQL command to change the buffer pool size is as follows, and it takes effect immediately (allocating or freeing the specified number of 32K pages of memory from the OS as needed):
+</p>
+<pre>
+alter system set &quot;cachePagesInit&quot; = 10000;
+</pre>
+<p>However, if you are increasing the buffer pool size above its default for the very first time, it takes a little more work.  The reason is that there is a separate system parameter, <b>cachePagesMax</b>, which imposes an upper bound:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; alter system set &quot;cachePagesInit&quot;=50000;
+Error: Invalid parameter setting.  Setting must be between 1 and 'cachePagesMax'. (state=,code=0)
+</pre>
+<p>In that case, use the following procedure:
+</p><p>1. Raise the ceiling:
+</p>
+<pre>
+alter system set &quot;cachePagesMax&quot; = 10000;
+</pre>
+<p>2. Restart LucidDB
+</p><p>3. Change <b>cachePagesInit</b>:
+</p>
+<pre>
+alter system set &quot;cachePagesInit&quot; = 10000;
+</pre>
+<p>There's no need to restart LucidDB a second time.
+</p>
+<h1> <span class="mw-headline" id="How_Do_I_Convert_From_Bytes_to_Pages.3F"> How Do I Convert From Bytes to Pages? </span></h1>
+<p>This requires a bit of arithmetic (a system procedure taking a string like '512MB' as parameter would be nicer, but doesn't exist yet).
+</p><p>Suppose you would like a 512MB buffer pool size.  That's 512*1048576 bytes = 536870912 bytes.  Since each pages is 32KB=32768 bytes, you want 536870912/32768=16384 pages.  If you're good with powers of two, you can avoid the big numbers (512MB=2^29; 32KB=2^15; 29-15=14; 2^14=16384).
+</p><p>FORMULA SHORTCUTs: 
+</p>
+<ul><li> (Your desired size in MB * 32) = pages.  Example: 512*32 = 16384 (pages). (512MB)
+</li><li> (Your desired size in GB * 32768) = pages.  Example 4*32768 = 131072 (pages). (4GB)
+</li></ul>
+<h1> <span class="mw-headline" id="How_High_Can_I_Go.3F"> How High Can I Go? </span></h1>
+<p>There are a number of hard limits you should be aware of:
+</p>
+<ul><li> On a 32-bit operating system, LucidDB is limited by the size of the virtual address space of the process it runs in.  This varies by operating system, but will always be less than 4GB, possibly much less.  On a 64-bit operating system, the corresponding limit is so high as to be irrelevant.
+<ul><li> 32-bit Linux limits each process to a <a rel="nofollow" class="external text" href="http://lwn.net/Articles/91829/">3 GB address space</a>.
+</li><li> 32-bit Windows limits each process to a 2 GB address space, though some versions provide a <tt><a rel="nofollow" class="external text" href="http://www.microsoft.com/whdc/system/platform/server/PAE/PAEmem.mspx">/3GB</a></tt> switch in <tt>boot.ini</tt>  to switch to a 3 GB address space.
+</li><li> In any event, part of the address space is consumed by application code.
+</li></ul>
+</li><li> Regardless of operating system, LucidDB is limited by the available physical RAM.  <strike>LucidDB intentionally locks buffer pool pages into memory to discourage abuse of virtual memory, so you can't allocate more RAM than you actually have.</strike>  (Locking buffer pool pages requires root access to increase <b>ulimit -l</b>, so this is currently disabled.)
+</li></ul>
+<p>The error message from exceeding a limit varies according to the operating system and type of limit.  In general, it's a good idea to be cautious when trying to set a higher limit (go up by increments).  Prior to version 0.7.1, you may end up with a database image which can't even be successfully started, so <a href="/wiki/LucidDbBackupRestore" title="LucidDbBackupRestore">make a backup first</a>.  More recently, LucidDB will fall back to a relatively small default number of maximum cache pages (currently 1024) in the event that either <tt>cachePagesMax</tt> or <tt>cachePagesInit</tt> is too large.  You should verify that your changes are in effect by examining the <a href="#What_Are_My_Current_Settings.3F">performance counters</a> system view.
+</p><p>Besides hard limits, there are also other considerations to take into account:
+</p>
+<ul><li> Every byte locked up in the buffer pool is unavailable to LucidDB's Java VM (both in terms of available address space and physical RAM).  If the JVM can't allocate enough space for its heap, performance will suffer due to excessive garbage collection; eventually Java out-of-memory errors may also occur, causing SQL execution to fail.  Even if the JVM heap has space left, a huge buffer pool may prevent the JVM from managing native memory effectively, leading to performance problems or even an abrupt end to the process.  For example, Sun's JVM allocates memory from the process heap (in excess of its configured maximum Java heap size) for the purposes of dynamic compilation.  If these allocations fail, the JVM will terminate abruptly.
+</li><li> Besides LucidDB's own JVM, other processes running on the machine will be affected if LucidDB's buffer pool eats up too much of the available RAM.  This <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=622835.33228.qm%40web51303.mail.re2.yahoo.com&amp;forum_name=luciddb-users">mailing list post</a> gives an example where it was no longer possible to start sqllineClient on the same machine to fix the problem!
+</li></ul>
+<h1> <span class="mw-headline" id="How_Low_Can_I_Go.3F"> How Low Can I Go? </span></h1>
+<p>The hard limit is 1 page, but you should never set the buffer pool anywhere near that low; the system is likely to lock up since it needs to keep a few pages in reserve at all times for critical transaction-processing purposes.  As with size increases, <a href="/wiki/LucidDbBackupRestore" title="LucidDbBackupRestore">make a backup first</a>.
+</p><p>Setting the buffer pool size too low will generally lead to poor performance, since many of LucidDB's algorithms perform better when given more scratch memory from the buffer pool.  A bigger buffer pool also allows more stored data to be kept in cache.
+</p><p>Beyond a certain point, statement execution will not even be able to start if not enough scratch memory can be allocated from the buffer pool.  The minimum amount of memory needed per statement is in general proportional to the complexity of the statement; in particular, INSERT and MERGE statement complexity is proportional to the number of columns and indexes defined on the target table.  When you see the error below (<b>Cache scratch memory exhausted</b>), the remedy is to either increase the buffer pool size, or decrease the degree of concurrency.
+</p>
+<pre>
+0: jdbc:luciddb:&gt; create schema s;
+0: jdbc:luciddb:&gt; create table s.t(i int, j int, k int, l int, m int, n int);
+0: jdbc:luciddb:&gt; alter system set &quot;cachePagesInit&quot;=10;
+0: jdbc:luciddb:&gt; insert into s.t values (1,2,3,4,5,6);
+Error: Cache scratch memory exhausted (state=,code=0)
+</pre>
+<h1> <span class="mw-headline" id="Could_I_Get_Some_Hard_Numbers.2C_Please.3F"> Could I Get Some Hard Numbers, Please? </span></h1>
+<p>By this point, you're probably thinking this page is waving its hands a lot.  And you're right.  But it's for a reason...tuning memory settings for a DBMS is very much an application-specific and system-specific activity for which there are only rules of thumb.  Beyond that, there is no substitute for iterative tuning based on empirical results from benchmarking a specific configuration.
+</p><p>LucidDB does provide performance counters such as cache hits; for that, see the <a href="/wiki/LucidDbSystemViews#DBA_PERFORMANCE_COUNTERS" title="LucidDbSystemViews">SYS_ROOT.DBA_PERFORMANCE_COUNTERS</a> system view, and <a href="/wiki/LucidDbMonitor" title="LucidDbMonitor">LucidDbMonitor</a>.  For more information, see <a href="/wiki/LucidDbPerformanceTuning" title="LucidDbPerformanceTuning">LucidDbPerformanceTuning</a>.
+</p>
+<h1> <span class="mw-headline" id="What_Are_My_Current_Settings.3F"> What Are My Current Settings? </span></h1>
+<p>In case you forget what changes you've made to a system, or wish to verify that changes are working correctly:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select * from sys_root.dba_system_parameters where param_name like 'cachePages%';
++-----------------+--------------+
+|   PARAM_NAME    | PARAM_VALUE  |
++-----------------+--------------+
+| cachePagesMax   | 5000         |
+| cachePagesInit  | 2500         |
++-----------------+--------------+
+</pre>
+<h1> <span class="mw-headline" id="Reference_table_of_memory_variables"> Reference table of memory variables </span></h1>
+<p>Reference table clipped from: <a href="/wiki/LucidDbSystemParameters" title="LucidDbSystemParameters"> LucidDbSystemParameters</a> where more variables can be found.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+    <tr>
+        <th align="center" style="background:#f0f0f0;"><b>Category</b></th>
+        <th align="center" style="background:#f0f0f0;"><b>Name</b></th>
+        <th align="center" style="background:#f0f0f0;"><b>Domain</b></th>
+        <th align="center" style="background:#f0f0f0;"><b>Default Value</b></th>
+        <th align="center" style="background:#f0f0f0;"><b>Update Policy</b></th>
+        <th align="center" style="background:#f0f0f0;"><b>Description</b></th>
+    </tr>
+<tr>
+<td rowspan="7">Memory</td>
+</tr>
+    <tr>
+        <td>codeCacheMaxBytes</td>
+        <td>64-bit integer (number of bytes, 0 for disabled, -1 for unlimited)</td>
+        <td>2000000</td>
+        <td>Immediate</td>
+        <td>Sets the size of the LucidDB code cache, which is used for optimizer/executor plan caching and SQL/MED data wrapper pooling. Setting to MAX causes the cache to grow without bound except for the JVM heap size. Setting to MIN disables the code cache, discarding any currently cached entries. Setting to a finite value causes LRU victimization according to rough estimates on per-object memory usage.</td>
+    </tr>
+    <tr>
+        <td>cachePagesMax</td>
+        <td>32-bit integer (number of pages; page size is 32K for all parameters in this table)</td>
+        <td>5000</td>
+        <td>Takes effect on startup.</td>
+        <td>Determines upper bound for number of pages cache can allocate. On startup, actual upper bound is set to the larger of this parameter and cachePagesInit. Subsequently, changes to cachePagesInit are limited by upper bound calculated at startup.</td>
+    </tr>
+    <tr>
+        <td>cachePagesInit</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>5000 (corresponds to 160MB for the default 32K page size)</td>
+        <td>Immediate.</td>
+        <td>Sets number of memory buffers to allocate from the OS for LucidDB's data cache (also used as a pool for volatile scratch memory allocated by ExecStreams). Increasing it after startup causes new free buffers to be allocated; decreasing it causes buffers to be released (flushing them first if they contain dirty data). Note that this memory is NOT part of the JVM heap, although it shares the same virtual memory address space.  See <a href="/wiki/LucidDbMemoryManagement" title="LucidDbMemoryManagement">LucidDbMemoryManagement</a> and <strong class="selflink">LucidDbBufferPoolSizing</strong> for more information.</td>
+    </tr>
+    <tr>
+        <td>cacheReservePercentage</td>
+        <td>32-bit integer (percentage expressed as an integer between 1 and 99, inclusive)</td>
+        <td>5</td>
+        <td>Immediate.</td>
+        <td>The percentage of the LucidDB data cache that should be set aside for global resource usage. The remainder will be available to allocate to individual statements.</td>
+    </tr>
+    <tr>
+        <td>expectedConcurrentStatements</td>
+        <td>32-bit integer (number of statements)</td>
+        <td>4</td>
+        <td>Immediate.</td>
+        <td>Indicates to the resource governor what is expected to be the maximum number of concurrent statements executing at any given time. It is used by the resource governor to determine the maximum resource allocation for each statement.</td>
+    </tr>
+    <tr>
+        <td>processorCacheBytes</td>
+        <td>32-bit integer (number of bytes)</td>
+        <td>-1</td>
+        <td>Takes effect on startup.</td>
+        <td>Controls the amount of last-level CPU cache (typically L2, sometimes L3) to be used by memory-conscious data structures for improved cache coherence.  The default value of -1 requests an automatic setting; currently this is 2MB, but may be changed to hardware autodetect in the future.  <b>This parameter is not available before v0.9.2</b>.</td>
+    </tr>
+</table>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 99/1000000
+Post-expand include size: 126/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1607-0!*!0!!en!*!* and timestamp 20140414191059 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbBufferPoolSizing&amp;oldid=7167">http://luciddb.org/wiki/index.php?title=LucidDbBufferPoolSizing&amp;oldid=7167</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbBufferPoolSizing" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbBufferPoolSizing&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbBufferPoolSizing&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbBufferPoolSizing&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbBufferPoolSizing" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbBufferPoolSizing" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbBufferPoolSizing" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbBufferPoolSizing&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbBufferPoolSizing&amp;oldid=7167" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 14 November 2011, at 16:45.</li>
+		<li id="viewcount">This page has been accessed 7,373 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.191 secs. --></body></html>

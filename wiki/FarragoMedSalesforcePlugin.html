@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedSalesforcePlugin - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedSalesforcePlugin", "wgTitle": "FarragoMedSalesforcePlugin", "wgCurRevisionId": 6680, "wgArticleId": 2055, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedSalesforcePlugin action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedSalesforcePlugin</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Usage"><span class="tocnumber">2</span> <span class="toctext">Usage</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Packaging"><span class="tocnumber">3</span> <span class="toctext">Packaging</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#SFDC_Foreign_Data_Wrapper_Definition"><span class="tocnumber">4</span> <span class="toctext">SFDC Foreign Data Wrapper Definition</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Create_Foreign_Data_Wrapper_Syntax"><span class="tocnumber">4.1</span> <span class="toctext">Create Foreign Data Wrapper Syntax</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#SFDC_Foreign_Server"><span class="tocnumber">5</span> <span class="toctext">SFDC Foreign Server</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Create_Foreign_Server_Syntax"><span class="tocnumber">5.1</span> <span class="toctext">Create Foreign Server Syntax</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#SFDC_Foreign_Table"><span class="tocnumber">6</span> <span class="toctext">SFDC Foreign Table</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Create_Foreign_Table_Syntax"><span class="tocnumber">6.1</span> <span class="toctext">Create Foreign Table Syntax</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#SFDC_Foreign_Schema"><span class="tocnumber">7</span> <span class="toctext">SFDC Foreign Schema</span></a>
+<ul>
+<li class="toclevel-2 tocsection-11"><a href="#Import_Foreign_Schema_Syntax"><span class="tocnumber">7.1</span> <span class="toctext">Import Foreign Schema Syntax</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#Query_Optimization"><span class="tocnumber">8</span> <span class="toctext">Query Optimization</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Change_Data_Capture"><span class="tocnumber">9</span> <span class="toctext">Change Data Capture</span></a>
+<ul>
+<li class="toclevel-2 tocsection-14"><a href="#Deleted_Objects"><span class="tocnumber">9.1</span> <span class="toctext">Deleted Objects</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Updated_Objects"><span class="tocnumber">9.2</span> <span class="toctext">Updated Objects</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-16"><a href="#References_.26_Related_Work"><span class="tocnumber">10</span> <span class="toctext">References &amp; Related Work</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>Eigenbase includes a Salesforce.com (SFDC) web service foreign data wrapper plugin implementing SQL/MED (<a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/sqlmed.html">Management of External Data</a>) access to SFDC data. The SFDC Web Services API allows for access to an organization's information, in the form of objects. From the Eigenbase perspective, each SFDC object is a single table. All SFDC objects can be accessed via a foreign schema.
+</p><p>Objects are determined by the organization (adding custom objects) as well as the logged in user's access permissions (subtracting non-visible objects); therefore, the set of all objects is not necessarily the same across or within organizations.
+</p>
+<h1> <span class="mw-headline" id="Usage"> Usage </span></h1>
+<p>The SFDC wrapper is accessed via the standard SQL/MED interface.
+</p>
+<ol><li> First, a <i>data wrapper</i> is defined. A data wrapper represents a program module for accessing external data.
+</li><li> Second, a <i>foreign server</i> is defined. In this case, a server describes a particular user login to SFDC, and it corresponds to a single schema.
+</li><li> Finally, <i>objects</i> may be accessed in one of two ways:
+<ul><li> One can create a foreign table, corresponding to the metadata for a single object
+</li><li> One can import the metadata for the entire foreign schema (or selected subsets), based on the objects available to that user
+</li></ul>
+</li></ol>
+<p>Typical <a href="/wiki/LucidDbDocs" title="LucidDbDocs">LucidDB</a> use cases include:
+</p>
+<ul><li> Extracting objects in bulk from Salesforce and loading them into column store tables
+</li><li> Selectively querying individual object definitions directly from Salesforce via Eigenbase SQL
+</li></ul>
+<h1> <span class="mw-headline" id="Packaging"> Packaging </span></h1>
+<p>The SFDC connector is not redistributed in binary form since the build depends on proprietary WSDL from Salesforce.  Currently, it is necessary to build it yourself unless you are using some commercial distribution of Eigenbase.
+</p><p>Here are the steps for building it:
+</p>
+<ol><li> Follow the <a href="/wiki/FarragoBuild" title="FarragoBuild">Farrago build instructions</a>, but including <b>//open/dev/extensions</b> in your Perforce client view
+</li><li> If you don't already have one, get a <a rel="nofollow" class="external text" href="https://www.developerforce.com/events/regular/registration.php">Salesforce developer account</a>
+</li><li> Visit <b>login.salesforce.com</b>
+</li><li> Click <b>Setup</b>
+</li><li> Click <b>Develop-&gt;API</b> under <b>App Setup</b>
+</li><li> Generate partner wsdl, saving it to <b>extensions/conn/sfdc/partner.wsdl</b>
+</li><li> Repeat for <b>enterprise.wsdl</b>
+</li><li> Click <b>Reset Security Token</b> and get the new token from the notification email it will send you
+</li><li> In <b>extensions/conn/sfdc</b>, copy <b>build.properties.tmpl</b> to <b>build.properties</b>
+</li><li> In <b>build.properties</b>,
+<ul><li> edit <b>username</b> and <b>username_test</b> to match your Salesforce developer account name
+</li><li> edit <b>password</b> and <b>password_test</b> to match your Salesforce developer account passwords, including the security token suffixes
+</li></ul>
+</li><li> From <b>extensions/conn/sfdc</b>:
+<ul><li> <b>ant clean</b>
+</li><li> <b>ant compile</b>
+</li><li> <b>ant dist</b>
+</li><li> <b>ant test</b>
+</li></ul>
+</li></ol>
+<p>(Note that the Salesforce website content changes periodically, but you should be able to figure out the corresponding steps above on the latest site.)
+</p><p>In order to be able to run queries from sqlline, perform the following additional steps:
+</p>
+<ol><li> <b>ant jarSfdcPluginWithDeps</b>
+</li><li> <b>cd plugin</b>
+</li><li> <b>rm MedSfdc.jar</b>
+</li><li> <b>mv MedSfdcComplete.jar MedSfdc.jar</b>
+</li></ol>
+<h1> <span class="mw-headline" id="SFDC_Foreign_Data_Wrapper_Definition"> SFDC Foreign Data Wrapper Definition </span></h1>
+<h2> <span class="mw-headline" id="Create_Foreign_Data_Wrapper_Syntax"> Create Foreign Data Wrapper Syntax </span></h2>
+<p>The Salesforce foreign data wrapper (named SALESFORCE) is created by the build steps above, so you don't need to do it yourself.
+</p>
+<h1> <span class="mw-headline" id="SFDC_Foreign_Server"> SFDC Foreign Server </span></h1>
+<p>The following options may be specifed at the server definition:
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1">
+<caption style="font-size:12pt">
+</caption>
+<tr>
+<th> Option </th>
+<th width="125">Default </th>
+<th width="225">Description
+</th></tr>
+<tr>
+<td> USER_NAME </td>
+<td> </td>
+<td> username to use to login to SFDC
+</td></tr>
+<tr>
+<td> PASSWORD </td>
+<td> </td>
+<td> password to use to login to SFDC
+</td></tr>
+<tr>
+<td> VARCHAR_FIELD_EXTRA_PRECISION* </td>
+<td> 128 </td>
+<td> extra precision to add to all SFDC object VARCHAR fields
+</td></tr>
+</table>
+<p>* Note: SFDC Wrapper truncates all VARCHAR field data to precision 256. The VARCHAR_FIELD_EXTRA_PRECISION option can be used to increase the VARCHAR precision for all fields.
+</p>
+<h2> <span class="mw-headline" id="Create_Foreign_Server_Syntax"> Create Foreign Server Syntax </span></h2>
+<pre>CREATE SERVER <i>foreign_server_name</i>
+FOREIGN DATA WRAPPER SALESFORCE
+OPTIONS (
+USER_NAME '<i>username</i>',
+PASSWORD '<i>passwd</i>',
+VARCHAR_FIELD_EXTRA_PRECISION '<i>precision</i>')
+</pre>
+<p>Example:
+</p>
+<pre>
+CREATE SERVER sfdc_server
+FOREIGN DATA WRAPPER SALESFORCE
+OPTIONS (
+  USER_NAME 'joe@mac.com',
+  PASSWORD 'sekritjcD8RmGCoXDk6gjmA8Zt3EgX'
+);
+
+SELECT COUNT(*) FROM sfdc_server.sfdc.&quot;Account&quot;;
+</pre>
+<h1> <span class="mw-headline" id="SFDC_Foreign_Table"> SFDC Foreign Table </span></h1>
+<p>You can define SFDC foreign tables that pertain to a specific SFDC foreign server. A foreign table is a schema object, meaning you must create it under a schema. The required table option is OBJECT, which is the name of the object in SFDC (accessible to the user whose credentials were supplied to CREATE SERVER).
+</p>
+<h2> <span class="mw-headline" id="Create_Foreign_Table_Syntax"> Create Foreign Table Syntax </span></h2>
+<pre>CREATE FOREIGN TABLE <i>table_name</i>
+SERVER <i>foreign_server_name</i>
+OPTIONS (
+OBJECT '<i>object_name</i>')
+</pre>
+<p>Example:
+</p>
+<pre>
+CREATE SCHEMA SFDC_OBJECTS;
+
+CREATE FOREIGN TABLE sfdc_objects.accounts(
+  &quot;Id&quot; varchar(17),
+  &quot;Name&quot; varchar(25),
+  &quot;Type&quot; varchar(25),
+  &quot;ParentId&quot; varchar(25),
+  &quot;BillingStreet&quot; varchar(100),
+  &quot;Sic&quot; varchar(50)
+)
+SERVER sfdc_server
+OPTIONS (
+  object 'Account'
+);
+
+SELECT COUNT(*) FROM sfdc_objects.accounts;
+</pre>
+<h1> <span class="mw-headline" id="SFDC_Foreign_Schema"> SFDC Foreign Schema </span></h1>
+<p>The metadata from an SFDC foreign server can be imported into a local schema in the Eigenbase catalog, using the fixed foreign schema name 'SFDC'.
+</p>
+<h2> <span class="mw-headline" id="Import_Foreign_Schema_Syntax"> Import Foreign Schema Syntax </span></h2>
+<pre>IMPORT FOREIGN SCHEMA SFDC
+<i>[import_qualification]</i>
+FROM SERVER <i>foreign_server_name</i>
+INTO <i>local_schema_name</i>
+
+Where:
+<i>import_qualification</i>&#160;::=
+LIMIT TO | EXCEPT
+(<i>table_name_list</i>) | TABLE_NAME LIKE expression
+
+<i>table_name_list</i>&#160;::= <i>table_name</i> [ { comma table_name } ...]
+</pre>
+<p>Example:
+</p>
+<pre>
+CREATE SCHEMA imported_sfdc_objects;
+
+IMPORT FOREIGN SCHEMA SFDC LIMIT TO (&quot;Account&quot;, &quot;Opportunity&quot;)
+FROM SERVER sfdc_server
+INTO imported_sfdc_objects;
+
+SELECT COUNT(*) FROM imported_sfdc_objects.&quot;Account&quot;;
+</pre>
+<h1> <span class="mw-headline" id="Query_Optimization"> Query Optimization </span></h1>
+<p>The plugin is capable of pushing down both projections and filters:
+</p>
+<pre>
+0: jdbc:farrago:&gt; explain plan for select &quot;Id&quot;, &quot;Name&quot; from sfdc_server.sfdc.&quot;Account&quot; where &quot;Type&quot; = 'Customer - Channel';
++--------------------------------------------------------------------------------------------------------------------------------------
+|                                                                                                                                                                                                                          column0                                                                                                                                                                                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------
+| FennelToIteratorConverter                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|   FennelReshapeRel(projection=[[0, 1]], ...                                                                                                                                                                                                              |
+|     IteratorToFennelConverter                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|       FarragoJavaUdxRel(invocation=[CAST(SFDC_QUERY(CAST('select Id, Name, Type from Account where Type = ''Customer - Channel'''):...
++---------------------------------------------------------------------------------------------------------------------------------------
+</pre>
+<p>You can see the actual SOQL issued in the <b>invocation</b> attribute of the <b>FarragoJavaUdxRel</b> node in the plan.
+</p>
+<h1> <span class="mw-headline" id="Change_Data_Capture"> Change Data Capture </span></h1>
+<h2> <span class="mw-headline" id="Deleted_Objects"> Deleted Objects </span></h2>
+<p>Syntax to get the deleted records of an SFDC object:
+</p>
+<pre>SELECT * FROM <i>objectname</i>_deleted where "DeleteStamp" between TIMESTAMP'yyyy-mm-dd HH:MM:SS' and TIMESTAMP'yyyy-mm-dd HH:MM:SS'
+
+Where:
+the starting TIMESTAMP must be within the last thirty (30) days.
+</pre>
+<p>The output table will have two columns, "Id" and "DeleteStamp", where "Id" is the ID of the record that was deleted between the two specified timestamps, and "DeleteStamp" is the timestamp of when the record was deleted.
+</p>
+<h2> <span class="mw-headline" id="Updated_Objects"> Updated Objects </span></h2>
+<p>Most objects have a "SystemModstamp" field, so a user can filter on this to get the changed data.
+</p>
+<h1> <span class="mw-headline" id="References_.26_Related_Work"> References &amp; Related Work </span></h1>
+<p><a rel="nofollow" class="external text" href="http://www.salesforce.com/us/developer/docs/sforce70/wwhelp/wwhimpl/js/html/wwhelp.htm">SFDC API Documentation</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 179/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2055-0!*!0!!en!*!* and timestamp 20140414191137 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;oldid=6680">http://luciddb.org/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;oldid=6680</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedSalesforcePlugin" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedSalesforcePlugin&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedSalesforcePlugin" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedSalesforcePlugin" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedSalesforcePlugin" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedSalesforcePlugin&amp;oldid=6680" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 12 July 2010, at 06:14.</li>
+		<li id="viewcount">This page has been accessed 5,376 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.197 secs. --></body></html>

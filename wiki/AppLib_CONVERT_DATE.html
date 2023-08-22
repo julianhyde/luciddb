@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib CONVERT DATE - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib_CONVERT_DATE", "wgTitle": "AppLib CONVERT DATE", "wgCurRevisionId": 6736, "wgArticleId": 1609, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib_CONVERT_DATE action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib CONVERT DATE</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Syntax"><span class="tocnumber">1</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Purpose"><span class="tocnumber">2</span> <span class="toctext">Purpose</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Parameters"><span class="tocnumber">3</span> <span class="toctext">Parameters</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Mask_Elements_.5BNote:_only_standard_masking_works_at_the_moment.5D"><span class="tocnumber">3.1</span> <span class="toctext">Mask Elements [Note: only standard masking works at the moment]</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Output"><span class="tocnumber">4</span> <span class="toctext">Output</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Example"><span class="tocnumber">5</span> <span class="toctext">Example</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Source_Code"><span class="tocnumber">6</span> <span class="toctext">Source Code</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<pre>
+APPLIB.CONVERT_DATE ( date_string, mask [, reject] )
+</pre>
+<h2> <span class="mw-headline" id="Purpose"> Purpose </span></h2>
+<p>Converts a character representation of a date to the date datatype. The date_string parameter's syntax varies depending on the use of the optional mask parameter.
+</p><p><br />
+</p>
+<h2> <span class="mw-headline" id="Parameters"> Parameters </span></h2>
+<ul><li> date_string [VARCHAR(128)]: 
+<ul><li> If the mask parameter is not specified, the representation of the date in the date_string parameter must be in the standard ODBC format, that is, YYYY-MM-DD. You may have single digits for the month and year. '1998-03-06' and '1998-3-6' are both valid strings that describe the same date.
+</li><li> If the mask parameter is specified, the date_string parameter consists of
+<ul><li> One each of the date elements year, month and day in one of the allowable forms.
+</li><li> Optional separator and "noise" characters that cannot include any of the letters d, m, y, D, M or Y.
+</li></ul>
+</li></ul>
+</li></ul>
+<table border="1" style="text-align:center">
+<caption>Allowable forms for date_string parameter:
+</caption>
+<tr>
+<th> Date element </th>
+<th> Allowed
+</th></tr>
+<tr>
+<td rowspan="3"> Year </td>
+<td> Four digit number = the exact year
+</td></tr>
+<tr>
+<td> Two digit number 00-49 represents the years 2000-2049
+<p>50-99 represents the years 1950-1999
+</p>
+</td></tr>
+<tr>
+<td> Note: A two-digit year number is only allowed if you specify a mask
+</td></tr>
+<tr>
+<td rowspan="4"> Month </td>
+<td> a one or two digit month number
+</td></tr>
+<tr>
+<td> <strike>one of the following short month names: JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC</strike>
+</td></tr>
+<tr>
+<td> <strike>one of the following full month names: JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER</strike>
+</td></tr>
+<tr>
+<td> <strike>Note: the short or full month names are case insensitive.</strike>
+</td></tr>
+<tr>
+<td> Day </td>
+<td> A one or two digit day number
+</td></tr></table>
+<ul><li> mask [VARCHAR(50)]: The mask parameter describes the format of the date in the parameter date_string and consists of
+<ul><li> One or more occurrences of each of the mask token letters D, M and Y (the mask token letters may be in lower or upper case)
+</li><li> Optional separator and noise characters - these correspond exactly to the separator and noise characters in the date_string parameter
+</li></ul>
+</li><li> reject [BOOLEAN]: optional parameter; if true, throws an exception on invalid date otherwise returns null
+</li></ul>
+<h3> <span class="mw-headline" id="Mask_Elements_.5BNote:_only_standard_masking_works_at_the_moment.5D"> Mask Elements [Note: only standard masking works at the moment] </span></h3>
+<p>The way you represent the mask is different when the data elements in the date_string parameter are delimited compared to when the date elements in the date_string parameter are combined (that is, non-delimited).
+</p>
+<ul><li> <strike> Mask Tokens to Represent Delimited Date Elements -- When the date elements are fully delimited in the date string, they can be represented in the mask by the single characters D, M and Y (or for readability, multiple occurrences of the appropriate letters).
+</li></ul>
+<pre>   For example:
+</pre>
+<pre>   The standard mask for the date string 1998/12/25 is Y/M/D.
+   The standard mask for the date string JAN 14, 2003 is M D,
+   (You could also use the masks YY/MM/DD and YYYY/MM/DD to represent 1998/12/25.) </strike>
+</pre>
+<ul><li> Mask Tokens to Represent Non-Delimited Date Elements
+</li></ul>
+<pre>   When date elements are not delimited, (as in 980416), then the number of characters and digits in the string are significant. In this case, you must show the exact number of digits in the mask for each date element.
+</pre>
+<pre>   For example:
+</pre>
+<pre>   The only allowed mask for the date string 980416 is YYMMDD
+   For 23JAN-1998, you must specify 2 digits for the day, and three for the month; the year, is delimited (by the preceding -), and so does not require multiple letters in the mask.
+   The standard mask for 23JAN-1998 is DDMMM-Y (but could also be DDMMM-YYYY).
+</pre>
+<h2> <span class="mw-headline" id="Output"> Output </span></h2>
+<ul><li> [DATE] Date indicated by date_string
+</li></ul>
+<h2> <span class="mw-headline" id="Example"> Example </span></h2>
+<h2> <span class="mw-headline" id="Source_Code"> Source Code </span></h2>
+<p><a rel="nofollow" class="external free" href="http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/datetime/ConvertDateUdf.java">http://p4web.eigenbase.org/open/dev/luciddb/src/com/lucidera/luciddb/applib/datetime/ConvertDateUdf.java</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 35/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1609-0!*!*!!en!*!* and timestamp 20140414192734 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib_CONVERT_DATE&amp;oldid=6736">http://luciddb.org/wiki/index.php?title=AppLib_CONVERT_DATE&amp;oldid=6736</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib_CONVERT_DATE" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib_CONVERT_DATE&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib_CONVERT_DATE&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib_CONVERT_DATE&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib+CONVERT+DATE" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib_CONVERT_DATE" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib_CONVERT_DATE" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib_CONVERT_DATE&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib_CONVERT_DATE&amp;oldid=6736" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 16 August 2010, at 05:55.</li>
+		<li id="viewcount">This page has been accessed 2,293 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.202 secs. --></body></html>

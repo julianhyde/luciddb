@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelMerokaDocs - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelMerokaDocs", "wgTitle": "FennelMerokaDocs", "wgCurRevisionId": 6700, "wgArticleId": 2017, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelMerokaDocs action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelMerokaDocs</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><b>NOTE: Project Meroka is dead in the water.  This page is simply archived here</b>
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Project_Meroka"><span class="tocnumber">1</span> <span class="toctext">Project Meroka</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Links"><span class="tocnumber">1.1</span> <span class="toctext">Links</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Source_and_Infrastructure"><span class="tocnumber">1.2</span> <span class="toctext">Source and Infrastructure</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Sponsorship_and_Timeline"><span class="tocnumber">1.3</span> <span class="toctext">Sponsorship and Timeline</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Project_Success_Criteria"><span class="tocnumber">1.4</span> <span class="toctext">Project Success Criteria</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#People_and_Involvement"><span class="tocnumber">1.5</span> <span class="toctext">People and Involvement</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Headline_text"><span class="tocnumber">1.6</span> <span class="toctext">Headline text</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Project_Meroka"> Project Meroka </span></h1>
+<p>An R&amp;D project to explore the viability, suitability and performance of Fennel enhancements for query processing on commodity compute devices exposed using OpenCL standards.  OpenCL presents a unique opportunity to fully exploit CPU and GPU resources to perform extraordinarily fast data processing using both Task and Data parallelism available on specialized devices (GPUs with hundreds of processors) and generalized devices (CPUs utilizing L2 cache effectively).
+</p><p>Meroka could, eventually and upon satisfying criteria listed below, find its way into the mainline LucidDB Fennel branch if the general x86 OpenCL libraries prove to be worthwhile, in and of themselves.
+</p><p>The project is named after an abbreviation of the German word, <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Meroka_CIWS">Mehrrohrkanone</a>, meaning multi-barrelled gun.  The SIMD capabilities of OpenCL allow data processing in batches, effectively triggering and firing in parallel.
+</p>
+<h2> <span class="mw-headline" id="Links"> Links </span></h2>
+<ul><li> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/OpenCL">OpenCL Wikipedia article</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.khronos.org/developers/library/overview/opencl_overview.pdf">OpenCL Overview Slides</a>
+</li><li> <a rel="nofollow" class="external text" href="http://developer.amd.com/gpu/ATIStreamSDK/Pages/default.aspx">AMD StreamSDK w/ OpenCL for GPUs/CPUs</a>
+</li><li> <a rel="nofollow" class="external text" href="http://developer.apple.com/mac/library/documentation/Performance/Conceptual/OpenCL_MacProgGuide/Introduction/Introduction.html">OSX OpenCL</a>
+</li><li> MORE
+</li></ul>
+<h2> <span class="mw-headline" id="Source_and_Infrastructure"> Source and Infrastructure </span></h2>
+<p>To ensure that this R&amp;D project does not interfere with normal build, QA, collaboration we've setup google code SVN repository and issue tracking.
+</p>
+<dl><dd> SVN: hosted at code.google.com <a rel="nofollow" class="external free" href="https://meroka.googlecode.com/svn/trunk/">https://meroka.googlecode.com/svn/trunk/</a> (//open/dev@13357 branched)
+</dd><dd> ISSUE TRACKING: <a rel="nofollow" class="external free" href="http://code.google.com/p/meroka/issues/list">http://code.google.com/p/meroka/issues/list</a>
+</dd><dd> WIKI: Eigenpedia <strong class="selflink">FennelMerokaDocs</strong>
+</dd><dd> EMAIL LIST:
+</dd></dl>
+<h2> <span class="mw-headline" id="Sponsorship_and_Timeline"> Sponsorship and Timeline </span></h2>
+<p>DynamoBI is the primary sponsor on the project, along with support from Eigenbase and SQLstream architects for design, architectural, and code reviews.  Two research students from <a rel="nofollow" class="external text" href="http://www.inria.fr/recherche/equipes/alchemy.en.html">Alchemy research team at INRIA</a> will be the primary developers/researchers on the project.
+</p><p>Each Milestone will include a review, comment, and analysis period by all stakeholders.
+</p><p>Feb / Mar 2010
+</p>
+<dl><dd> Milestone 1: Inclusion of OpenCL and internal use in one <a href="/wiki/FennelMerokaXO" title="FennelMerokaXO">XO</a>
+</dd><dd> Milestone 2: Use of OpenCL in approx 3 <a href="/wiki/FennelMerokaXO" title="FennelMerokaXO">XOs</a>
+</dd></dl>
+<p>Jun / Jul 2010:
+</p>
+<dl><dd> Milestone 3: Experimentation and prototype of OpenCL aware scheduler enhancements (<a href="/wiki/index.php?title=FennelMerokaScheduler&amp;action=edit&amp;redlink=1" class="new" title="FennelMerokaScheduler (page does not exist)">FennelMerokaScheduler</a>)
+</dd><dd> Milestone 4: Enhancements to <a href="/wiki/index.php?title=FennelMerokaScheduler&amp;action=edit&amp;redlink=1" class="new" title="FennelMerokaScheduler (page does not exist)">FennelMerokaScheduler</a> to handle <a href="/wiki/FennelMerokaDeviceMemoryEnhancements" title="FennelMerokaDeviceMemoryEnhancements">task/memory affinity</a> for OpenCL algorithms
+</dd><dd> Milestone 5: Wrap up, documentation, testing on other <a href="/wiki/index.php?title=FennelMerokaOpenCLImplementations&amp;action=edit&amp;redlink=1" class="new" title="FennelMerokaOpenCLImplementations (page does not exist)">devices</a>
+</dd></dl>
+<p>NOTE: Milestones 1 and 2 will run on OpenCL x86, and GPU chosen by researchers.  Milestones 3-4 will run on GPU chosen by researchers.  Milestone 5: will run on as many reasonable implementations on our <a href="/wiki/index.php?title=FennelMerokaOpenCLImplementations&amp;action=edit&amp;redlink=1" class="new" title="FennelMerokaOpenCLImplementations (page does not exist)">device list</a>.
+</p>
+<h2> <span class="mw-headline" id="Project_Success_Criteria"> Project Success Criteria </span></h2>
+<ul><li> Large improvements in individual XO performance (5-20X improvement)
+</li><li> Aggregate SSB benchmark improvements, using <a href="/wiki/index.php?title=FennelMerokaScheduler&amp;action=edit&amp;redlink=1" class="new" title="FennelMerokaScheduler (page does not exist)">FennelMerokaScheduler</a>, of at least 5x on x86 and 20x on GPU.
+</li><li> Ability to run, seamlessly, OpenCL x86 implementations on any machine (win32, lin32, lin64, OSX).  Primary goal is to avoid having to maintain two implementations of an XO object.
+</li><li> Ability to mix OpenCL enabled and standard XO objects in the scheduler, easily
+</li></ul>
+<h2> <span class="mw-headline" id="People_and_Involvement"> People and Involvement </span></h2>
+<ul><li> Nicholas Goodman of DynamoBI - Project Lead and Sponsor
+</li><li> Soufiane Baghdadi of INRIA, FR - Primary Researcher/Developer
+</li><li> Baghdadi Riyadh of INRIA, FR - Primary Researcher/Developer
+</li><li> John V. Sichi of Eigenbase - Technical Reviewer, LucidDB data/storage/executor/scheduler expert
+</li><li> Julian Hyde of SQLstream  - Technical Reviewer, Scheduler/Optimizer expert
+</li></ul>
+<h2> <span class="mw-headline" id="Headline_text"> Headline text </span></h2>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 27/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2017-0!*!0!!en!*!* and timestamp 20140414194721 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelMerokaDocs&amp;oldid=6700">http://luciddb.org/wiki/index.php?title=FennelMerokaDocs&amp;oldid=6700</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelMerokaDocs" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelMerokaDocs&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelMerokaDocs&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelMerokaDocs&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelMerokaDocs" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelMerokaDocs" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelMerokaDocs" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelMerokaDocs&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelMerokaDocs&amp;oldid=6700" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 10 August 2010, at 16:01.</li>
+		<li id="viewcount">This page has been accessed 3,340 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.175 secs. --></body></html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>EigenbaseCodeReorg2008 - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "EigenbaseCodeReorg2008", "wgTitle": "EigenbaseCodeReorg2008", "wgCurRevisionId": 5887, "wgArticleId": 1891, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-EigenbaseCodeReorg2008 action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">EigenbaseCodeReorg2008</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Reorg_List"><span class="tocnumber">2</span> <span class="toctext">Reorg List</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Yellow_To_Green_Movement"><span class="tocnumber">3</span> <span class="toctext">Yellow To Green Movement</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Rezoning"><span class="tocnumber">3.1</span> <span class="toctext">Rezoning</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Plan"><span class="tocnumber">4</span> <span class="toctext">Plan</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Integration_Notes"><span class="tocnumber">5</span> <span class="toctext">Integration Notes</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This is the planning page for some code reorganizations taking place across the Eigenbase codebase during Q4 2008.  We would like to carry these out with as few integration hiccups as possible across branches.
+</p>
+<h1> <span class="mw-headline" id="Reorg_List"> Reorg List </span></h1>
+<p>The following are the reorgs to be carried out:
+</p>
+<ul><li> Bring all Farrago, Fennel, and Saffron files into conformance with <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=4897FFBB.7010702%40gmail.com&amp;forum_name=farrago-developers">checkFile</a> and enable the trigger for all subsequent checkins on all branches
+</li><li> Update year in copyright notices (this has not been done for 2008 yet)
+</li><li> Globally rename Disruptive Tech to SQLstream anywhere it appears, including in copyright notices
+<ul><li> But the Perforce tree will still be named //open/dt for old time's sake
+</li></ul>
+</li><li> Run Jalopy on all Farrago code
+</li><li> Movement of a number of components from yellow-zone to green-zone (see next section); this will have impact on both LucidEra and SQLstream red-zone code
+</li><li> If possible, JVS would also like to carry out the first two items from <a href="/wiki/FarragoRelCleanup" title="FarragoRelCleanup">FarragoRelCleanup</a>; this would have impact on SQLstream red-zone code
+</li></ul>
+<h1> <span class="mw-headline" id="Yellow_To_Green_Movement"> Yellow To Green Movement </span></h1>
+<p>Negotiations between SQLstream and LucidEra have resulted in an agreement to move the following components from yellow-zone to green-zone:
+</p>
+<ul><li> hash join/agg
+</li><li> external sort
+</li><li> flatfile reader
+</li><li> LURQL
+</li><li> applib
+</li><li> Fennel calc
+</li><li> Volcano
+</li></ul>
+<p>In each case, either the corresponding source files need to be moved into an existing green zone location, or the entire directory in which they live needs to be redefined as green zone.  In addition, the copyright notices need to be updated to include all three entities (Eigenbase, LucidEra, and SQLstream).
+</p><p>Details of code movement:
+</p>
+<table border="1">
+<tr>
+<th> Origin </th>
+<th> Destination </th>
+<th> Notes
+</th></tr>
+<tr>
+<td>fennel/disruptivetech/calc </td>
+<td> fennel/calculator
+</td></tr>
+<tr>
+<td> fennel/disruptivetech/xo </td>
+<td> fennel/exec </td>
+<td> (except Calc{ExecStream/Excn}, which will go to fennel/calculator)
+</td></tr>
+<tr>
+<td> fennel/disruptivetech/libfennel_dt </td>
+<td> fennel/libfennel
+</td></tr>
+<tr>
+<td> fennel/disruptivetech/test </td>
+<td> fennel/calctest </td>
+<td> (except {Collect/CorrelationJoin}ExecStreamTest{Suite}, which will go to fennel/test)
+</td></tr>
+<tr>
+<td> fennel/disruptivetech/farrago </td>
+<td> fennel/farrago
+</td></tr>
+<tr>
+<td> fennel/disruptivetech </td>
+<td> <b>deleted</b>
+</td></tr>
+<tr>
+<td> fennel/lucidera/hashexe </td>
+<td> fennel/hashexe
+</td></tr>
+<tr>
+<td> fennel/lucidera/flatfile </td>
+<td> fennel/flatfile
+</td></tr>
+<tr>
+<td> fennel/lucidera/sorter </td>
+<td> fennel/sorter
+</td></tr>
+<tr>
+<td> relevant portions of fennel/lucidera/test </td>
+<td> fennel/test
+</td></tr>
+<tr>
+<td> relevant portions of fennel/lucidera/farrago </td>
+<td> fennel/farrago
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/calc </td>
+<td> farrago/src/net/sf/farrago/fennel/calc
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/fennel </td>
+<td> farrago/src/net/sf/farrago/defimpl
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/rel </td>
+<td> farrago/src/net/sf/farrago/fennel/rel </td>
+<td> this is also the destination package for the second item in <a href="/wiki/FarragoRelCleanup" title="FarragoRelCleanup">FarragoRelCleanup</a>
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/sql/advise </td>
+<td> farrago/src/org/eigenbase/sql/advise
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/test </td>
+<td> farrago/src/org/eigenbase/sql/test, farrago/src/net/sf/farrago/test </td>
+<td> other options are sql/advise, sql/advise/test, farrago/src/net/sf/farrago/fennel/calc(/test)
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech/farrago/volcano </td>
+<td> farrago/src/org/eigenbase/relopt/volcano
+</td></tr>
+<tr>
+<td> farrago/src/com/disruptivetech </td>
+<td> <b>deleted</b>
+</td></tr>
+<tr>
+<td> farrago/src/com/lucidera/lurql </td>
+<td> farrago/src/org/eigenbase/lurql </td>
+<td> perhaps eventually to enki; LucidEra has red-zone dependencies on this so we may need to let the old and new copies coexist for a short while
+</td></tr>
+<tr>
+<td> farrago/src/com/lucidera/opt/Lhx* </td>
+<td> farrago/src/net/sf/farrago/fennel/rel
+</td></tr>
+<tr>
+<td> farrago/src/com/lucidera/farrago/namespace/flatfile </td>
+<td> farrago/src/net/sf/farrago/namespace/flatfile
+</td></tr></table>
+<h2> <span class="mw-headline" id="Rezoning"> Rezoning </span></h2>
+<p>Everything under the //open/dev/luciddb project gets reclassified from yellow to green (with corresponding copyright change), but does not move anywhere.  We can work on moving the relevant applib code to farrago/src/net/sf/farrago/applib, but it remains to be worked out how to do that with backwards compatibility for LucidDB's existing applib jar, and we may actually want applib as an independent project to make it easier to accept contributions for it.  So TBD for now, and probably best done as an independent followup after the main reorg.
+</p><p>Everything under farrago/src/com/lucidera, fennel/lucidera, and saffron remain as yellow-zone.
+</p><p>Code movement should be carried out via p4 integrate where possible in order to preserve history.
+</p>
+<h1> <span class="mw-headline" id="Plan"> Plan </span></h1>
+<ol><li> Test out all activities which are going to take place during the rest of the steps so that they can be executed as quickly as possible, minimizing global lockout time
+</li><li> Arrange for a <i>global quiescence</i>.  This means all branches have been fully integrated, so all trees are identical, and everyone stops checking in for the duration of the reorg, except for emergencies.
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a>:  I'll use Perforce permissions to enforce this; see <a rel="nofollow" class="external autonumber" href="http://n2.nabble.com/achieving-branch-quiescence-%28a-rare-zen-moment%29-td2480016.html">[1]</a>
+</li></ul>
+</li><li> Run Jalopy on //open/dev
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 21:57, 21 September 2008 (PDT):  I need to fix some classpath dependencies broken by Enki and VJDBC+http; currently they are preventing Jalopy from running
+</li><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:30, 1 October 2008 (PDT):  upgrading to Jalopy 1.9.1 seems to solve this without classpath changes
+</li></ul>
+</li><li> Run Julian's fixup script on //open/dev to make all files checkFile-conformant
+</li><li> Enable checkFile trigger for farrago/fennel/saffron/luciddb across all branches
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 19:05, 24 March 2009 (EDT):  skipped saffron/luciddb for now
+</li></ul>
+</li><li> Update copyright years on //open/dev, and global rename Disruptive Tech to SQLstream
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:56, 11 October 2008 (PDT):  haha, resgen still has Red Square too!
+</li></ul>
+</li><li> Everyone syncs everything down to all branches ASAP, but quiescence remains in effect
+</li><li> On //open/dt/dev, SQLstream carries out their yellow-&gt;green reorgs, as well as first two items from <a href="/wiki/FarragoRelCleanup" title="FarragoRelCleanup">FarragoRelCleanup</a> (dealing with their red-zone dependencies simultaneously)
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:06, 21 September 2008 (PDT):  Note that checkPreamble should catch missing copyright changes; so be sure the reorg passes initBuild.sh --with-tests
+</li><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:06, 21 September 2008 (PDT):  Later we can probably unify checkPreamble into checkFile as well
+</li></ul>
+</li><li> SQLstream integrates their reorgs up to //open/dev
+</li><li> At this point, quiescence is ended for SQLstream, but not yet for LucidEra
+</li><li> LucidEra syncs down from //open/dev to //open/lu/dev
+</li><li> LucidEra carries out their yellow-&gt;green reorg on //open/lu/dev
+</li><li> LucidEra syncs up to //open/dev (and sideways to lcs)
+</li><li> Quiescence is over for LucidEra now too
+</li><li> SQLstream syncs down to //open/dt/dev
+</li><li> Done, yay...carry on with <a href="/wiki/BoostStlportUpgrade2009" title="BoostStlportUpgrade2009">BoostStlportUpgrade2009</a>!
+</li></ol>
+<p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 17:16, 24 March 2009 (EDT):  Actual execution for steps 8-16 was slightly different:  JVS carried out all of the reorg himself on //open/dev, and SQLstream and LucidEra are taking care of impact as they integ down.
+</p>
+<h1> <span class="mw-headline" id="Integration_Notes"> Integration Notes </span></h1>
+<p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 17:16, 24 March 2009 (EDT):  This section contains pointers for people absorbing the impact of the reorg above.  This could be either external dependencies or Eigenbase in-flight changes during the quiescence (either sandbox or private branch).  Eigenchange references are provided so that people carying out this work can reference the specific changes with <b>p4 describe</b>.
+</p>
+<ul><li> <b>eigenchange 12468</b> (move all of SQLstream portion of Fennel to green-zone):  Extension projects which depend on the SQLstream yellow-zone libraries need to change their #includes to reference the new green-zone locations (e.g. including "fennel/calculator/Calculator.h" instead of "fennel/disruptivetech/calc/Calculator.h"; don't forget about TestSuite inheritance).  This change also eliminates all libfennel_dt_*.so and libfarrago_dt.so libraries, so extension projects which depend on them need to change their linker directives accordingly (e.g. linking with libfennel_calculator instead of libfennel_dt_calc).  Likewise, the JNI library libfarrago_dt.so no longer needs to be dynamically loaded from Farrago; see edit to FarragoDefaultSessionPersonality where the DisruptiveTechJni.registerStreamFactory call was removed.
+</li><li> <b>eigenchange 12470</b> (move some of LucidEra portion of Fennel to green-zone):  I don't believe there are any external dependencies on these components yet, so nothing special needed here.
+</li><li> <b>eigenchange 12471</b> (move com.disruptivetech.farrago.calc to net.sf.farrago.fennel.calc):  Extension projects which depend on these SQLstream yellow-zone Java packages need to update their imports accordingly (e.g. import net.sf.farrago.fennel.calc.* instead of com.disruptivetech.farrago.calc.*).
+</li><li> <b>eigenchange 12472</b> (move com.disruptivetech.farrago.rel to net.sf.farrago.fennel.rel):  Similar to previous, just update imports.
+</li><li> <b>eigenchange 12474</b> (move com.disruptivetech.farrago.sql.advise to org.eigenbase.sql.advise, and com.disruptivetech.farrago.volcano to org.eigenbase.relopt.volcano):  Similar to previous, just update imports (see for example Saffron dependency update in eigenchange 12481).
+</li><li> <b>eigenchange 12475</b> (delete com.disruptivetech, moving tests to org.eigenbase.sql.test and net.sf.farrago.test):  all imports from com.disruptivetech.** should be gone now.
+</li><li> <b>eigenchange 12476</b> (move com.lucidera.lurql to org.eigenbase.lurql; move com.lucidera.opt.Lhx* to net.sf.farrago.rel; move com.lucidera.farrago.namespace.flatfile to net.sf.farrago.namespace.flatfile):  To minimize impact from this change, I left behind deprecated wrappers in the old packages; e.g. com.lucidera.lurql.LurqlQueryProcessor stays behind as a wrapper for the new org.eigenbase.lurql.LurqlQueryProcessor.  Once LucidEra has fixed up any red-zone dependencies, these deprecated wrappers can be deleted.
+</li><li> <b>eigenchange 12478</b> (move rules from org.eigenbase.rel to org.eigenbase.rel.rules; move Fennel-related subset of net.sf.farrago.query to net.sf.farrago.fennel.rel):  update imports accordingly; this one takes a bit more work since it's a partial move, so blind search/replace can't be used.
+</li><li> <b>eigenchange 12480</b> (change AggregateRel EXPLAIN to use MAX($1) instead of MAX(1); make optimizer rule singleton pattern consistent per FRG-105):  update EXPLAIN PLAN .ref files for the AggregateRel change; I took care of LucidDB checkin acceptance tests, but not full nightly regression, so LucidEra will need to handle that part. For the rule singletons, I left the existing constructors as public but deprecated; once all dependencies have been fixed (leaving references only to the public singletons), these constructors can be made private and undeprecated (this task belongs to SQLstream).
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 22/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1891-0!*!0!!en!*!* and timestamp 20140414193751 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=EigenbaseCodeReorg2008&amp;oldid=5887">http://luciddb.org/wiki/index.php?title=EigenbaseCodeReorg2008&amp;oldid=5887</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/EigenbaseCodeReorg2008" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:EigenbaseCodeReorg2008&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=EigenbaseCodeReorg2008&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=EigenbaseCodeReorg2008&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=EigenbaseCodeReorg2008" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/EigenbaseCodeReorg2008" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/EigenbaseCodeReorg2008" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=EigenbaseCodeReorg2008&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=EigenbaseCodeReorg2008&amp;oldid=5887" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 24 March 2009, at 23:05.</li>
+		<li id="viewcount">This page has been accessed 4,240 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.190 secs. --></body></html>

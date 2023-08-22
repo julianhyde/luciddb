@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelExecStreamInventory - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelExecStreamInventory", "wgTitle": "FennelExecStreamInventory", "wgCurRevisionId": 6502, "wgArticleId": 1595, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelExecStreamInventory action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelExecStreamInventory</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Abstract_Base_ExecStreams"><span class="tocnumber">2</span> <span class="toctext">Abstract Base ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#General-purpose_ExecStreams"><span class="tocnumber">3</span> <span class="toctext">General-purpose ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Mock_ExecStreams"><span class="tocnumber">4</span> <span class="toctext">Mock ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#FTRS_ExecStreams"><span class="tocnumber">5</span> <span class="toctext">FTRS ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Java_Hybrid-Plan_ExecStreams"><span class="tocnumber">6</span> <span class="toctext">Java Hybrid-Plan ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Calculator_ExecStreams"><span class="tocnumber">7</span> <span class="toctext">Calculator ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#LucidDB_Column-Store_and_Bitmap_Index_ExecStreams"><span class="tocnumber">8</span> <span class="toctext">LucidDB Column-Store and Bitmap Index ExecStreams</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#LucidDB_Special-Purpose_ExecStreams"><span class="tocnumber">9</span> <span class="toctext">LucidDB Special-Purpose ExecStreams</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Introduction"> Introduction </span></h2>
+<p>The creation of this page was motivated by a post from Julian:
+</p><p><a rel="nofollow" class="external free" href="http://sourceforge.net/mailarchive/message.php?msg_id=20060310073510.83B6EF77F3%40c9mailgw26.amadis.com">http://sourceforge.net/mailarchive/message.php?msg_id=20060310073510.83B6EF77F3%40c9mailgw26.amadis.com</a>
+</p><p>For background on ExecStreams, read:
+</p><p><a rel="nofollow" class="external free" href="http://fennel.sourceforge.net/doxygen/html/structExecStreamDesign.html">http://fennel.sourceforge.net/doxygen/html/structExecStreamDesign.html</a>
+</p><p>If you would like to fill in one of the missing pages below, copy from an existing page as a starting template.
+</p>
+<h2> <span class="mw-headline" id="Abstract_Base_ExecStreams"> Abstract Base ExecStreams </span></h2>
+<p>These are ExecStream classes which serve as abstract bases for concrete ExecStream implementations.  Each one abstracts a common ExecStream input/output connectivity pattern.  Derived classes inherit the base structure and prepare/open/close behavior, saving a bit of work and avoiding duplication.
+</p><p>Location:  <b>fennel/exec</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=ConduitExecStream&amp;action=edit&amp;redlink=1" class="new" title="ConduitExecStream (page does not exist)">ConduitExecStream</a>:  an abstract base for streams with exactly one input and output
+</li><li> <a href="/wiki/index.php?title=ConfluenceExecStream&amp;action=edit&amp;redlink=1" class="new" title="ConfluenceExecStream (page does not exist)">ConfluenceExecStream</a>:  an abstract base for streams with many inputs but one output
+</li><li> <a href="/wiki/index.php?title=DiffluenceExecStream&amp;action=edit&amp;redlink=1" class="new" title="DiffluenceExecStream (page does not exist)">DiffluenceExecStream</a>:  an abstract base for streams with one input but many outputs
+</li><li> <a href="/wiki/index.php?title=SingleInputExecStream&amp;action=edit&amp;redlink=1" class="new" title="SingleInputExecStream (page does not exist)">SingleInputExecStream</a>:  an abstract base for streams with one input (with output count determined by derived class)
+</li><li> <a href="/wiki/index.php?title=SingleOutputExecStream&amp;action=edit&amp;redlink=1" class="new" title="SingleOutputExecStream (page does not exist)">SingleOutputExecStream</a>:  an abstract base for streams with one output (with input count determined by derived class)
+</li></ul>
+<h2> <span class="mw-headline" id="General-purpose_ExecStreams"> General-purpose ExecStreams </span></h2>
+<p>These are concrete ExecStream classes which implement general-purpose operations commonly needed in implementing relational query processing.  
+</p><p>Location:  <b>fennel/exec</b>
+</p>
+<ul><li> <a href="/wiki/BarrierExecStream" title="BarrierExecStream">BarrierExecStream</a>:  a control-flow confluence which drains all of its upstream producers before allowing its consumer to execute
+</li><li> <a href="/wiki/BernoulliSamplingExecStream" title="BernoulliSamplingExecStream">BernoulliSamplingExecStream</a>: a conduit which filters rows from its input to produce a sample with a Bernoulli distribution
+</li><li> <a href="/wiki/index.php?title=CartesianJoinExecStream&amp;action=edit&amp;redlink=1" class="new" title="CartesianJoinExecStream (page does not exist)">CartesianJoinExecStream</a>:  a confluence which computes the CROSS PRODUCT of two input streams
+</li><li> <a href="/wiki/index.php?title=CollectExecStream&amp;action=edit&amp;redlink=1" class="new" title="CollectExecStream (page does not exist)">CollectExecStream</a>:  a conduit which implements the COLLECT operator, reading multiple tuples from its input and writing them out as a single large tuple (encoded as a binary MULTISET)
+</li><li> <a href="/wiki/index.php?title=CopyExecStream&amp;action=edit&amp;redlink=1" class="new" title="CopyExecStream (page does not exist)">CopyExecStream</a>:  a conduit which copies tuples unchanged from input to output
+</li><li> <a href="/wiki/index.php?title=CorrelationJoinExecStream&amp;action=edit&amp;redlink=1" class="new" title="CorrelationJoinExecStream (page does not exist)">CorrelationJoinExecStream</a>:  an alternate implementation of nested-loop join
+</li><li> <a href="/wiki/MergeExecStream" title="MergeExecStream">MergeExecStream</a>:  a confluence which computes the UNION ALL of its inputs
+</li><li> <a href="/wiki/index.php?title=NestedLoopJoinExecStream&amp;action=edit&amp;redlink=1" class="new" title="NestedLoopJoinExecStream (page does not exist)">NestedLoopJoinExecStream</a>:  a confluence which computes the JOIN of two input streams, optionally using a third input stream when joining via a temporary index
+</li><li> <a href="/wiki/index.php?title=ReshapeExecStream&amp;action=edit&amp;redlink=1" class="new" title="ReshapeExecStream (page does not exist)">ReshapeExecStream</a>:  a conduit which performs simple transformation and filtering
+</li><li> <a href="/wiki/index.php?title=ScratchBufferExecStream&amp;action=edit&amp;redlink=1" class="new" title="ScratchBufferExecStream (page does not exist)">ScratchBufferExecStream</a>:  a conduit which provides a memory buffer without actually doing any processing
+</li><li> <a href="/wiki/index.php?title=SegBufferExecStream&amp;action=edit&amp;redlink=1" class="new" title="SegBufferExecStream (page does not exist)">SegBufferExecStream</a>:  a conduit which buffers its input either to memory or disk before passing it on to its output, optionally allowing restarts
+</li><li> <a href="/wiki/index.php?title=SortedAggExecStream&amp;action=edit&amp;redlink=1" class="new" title="SortedAggExecStream (page does not exist)">SortedAggExecStream</a>:  a conduit which computes aggregations over a pre-sorted input stream
+</li><li> <a href="/wiki/index.php?title=SplitterExecStream&amp;action=edit&amp;redlink=1" class="new" title="SplitterExecStream (page does not exist)">SplitterExecStream</a>:  a diffluence which replicates tuples from a single input stream into all of its outputs
+</li><li> <a href="/wiki/index.php?title=UncollectExecStream&amp;action=edit&amp;redlink=1" class="new" title="UncollectExecStream (page does not exist)">UncollectExecStream</a>:  a conduit which implements the UNCOLLECT operator, reading each binary MULTISET-encoded tuple from its input and decoding it into multiple output tuples
+</li><li> <a href="/wiki/index.php?title=ValuesExecStream&amp;action=edit&amp;redlink=1" class="new" title="ValuesExecStream (page does not exist)">ValuesExecStream</a>:  a source which produces a predefined VALUES list of tuples
+</li></ul>
+<h2> <span class="mw-headline" id="Mock_ExecStreams"> Mock ExecStreams </span></h2>
+<p>These are concrete ExecStream classes used in constructing unit test scenarios as part of test-driven development of ExecStreams.  They are not intended for use in implementing real query plans.
+</p><p>Location:  <b>fennel/exec</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=MockConsumerExecStream&amp;action=edit&amp;redlink=1" class="new" title="MockConsumerExecStream (page does not exist)">MockConsumerExecStream</a>:  a sink which saves and/or prints the input it receives
+</li><li> <a href="/wiki/index.php?title=MockProducerExecStream&amp;action=edit&amp;redlink=1" class="new" title="MockProducerExecStream (page does not exist)">MockProducerExecStream</a>:  a source which produces a stream of synthetically generated tuples
+</li><li> <a href="/wiki/index.php?title=MockResourceExecStream&amp;action=edit&amp;redlink=1" class="new" title="MockResourceExecStream (page does not exist)">MockResourceExecStream</a>:  a "dog-in-the-manger" source which attempts to allocate resources without actually using them
+</li></ul>
+<h2> <span class="mw-headline" id="FTRS_ExecStreams"> FTRS ExecStreams </span></h2>
+<p>These are ExecStreams which are used to implement the <a rel="nofollow" class="external text" href="http://farrago.sf.net/design/TableIndexing.html">FTRS local data wrapper</a>.  Some of them also serve as useful building blocks and base classes for other kinds of indexing implementations such as LucidDB's bitmap indexing.  Except where noted as abstract, all classes are concrete.
+</p><p>Location:  <b>fennel/ftrs</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=BTreeExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeExecStream (page does not exist)">BTreeExecStream</a>:  an abstract base for any ExecStream which accesses a BTree
+</li><li> <a href="/wiki/index.php?title=BTreeInsertExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeInsertExecStream (page does not exist)">BTreeInsertExecStream</a>:  a conduit which inserts tuples from its input into a BTree, writing a final insertion count to its output
+</li><li> <a href="/wiki/index.php?title=BTreeReadExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeReadExecStream (page does not exist)">BTreeReadExecStream</a>:  an abstract base for any ExecStream which reads tuples from a BTree and writes them to its output
+</li><li> <a href="/wiki/index.php?title=BTreeScanExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeScanExecStream (page does not exist)">BTreeScanExecStream</a>:  a source which reads all of the tuples from a BTree unconditionally and writes them to its output
+</li><li> <a href="/wiki/index.php?title=BTreeSearchExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeSearchExecStream (page does not exist)">BTreeSearchExecStream</a>:  a conduit which reads search directives from its input, performs corresponding searches on a BTree, and writes the matching results to its output
+</li><li> <a href="/wiki/index.php?title=BTreeSearchUniqueExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeSearchUniqueExecStream (page does not exist)">BTreeSearchUniqueExecStream</a>:  an optimized derivative of BTreeSearchExecStream for the case where it is guaranteed that each search will find at most one match
+</li><li> <a href="/wiki/index.php?title=BTreeSortExecStream&amp;action=edit&amp;redlink=1" class="new" title="BTreeSortExecStream (page does not exist)">BTreeSortExecStream</a>:  a conduit which sorts its input by inserting each tuple into the correct location in a BTree, and then scans the final tree in order and writes the results to its output
+</li><li> <a href="/wiki/index.php?title=FtrsTableWriterExecStream&amp;action=edit&amp;redlink=1" class="new" title="FtrsTableWriterExecStream (page does not exist)">FtrsTableWriterExecStream</a>:  a conduit which reads insert/update/delete tuples from its input and applies them to multiple BTrees at once in transactional fashion, writing a final modification count to its output
+</li></ul>
+<h2> <span class="mw-headline" id="Java_Hybrid-Plan_ExecStreams"> Java Hybrid-Plan ExecStreams </span></h2>
+<p>These are concrete ExecStream classes which implement JNI glue for efficiently passing tuples across the C++/Java memory boundary.
+</p><p>Location:  <b>fennel/farrago</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=JavaSinkExecStream&amp;action=edit&amp;redlink=1" class="new" title="JavaSinkExecStream (page does not exist)">JavaSinkExecStream</a>:  a sink which reads tuples from its input and transmits them to a Java peer (where they appear as a source in the Java portion of the execution plan)
+</li><li> <a href="/wiki/index.php?title=JavaTransformExecStream&amp;action=edit&amp;redlink=1" class="new" title="JavaTransformExecStream (page does not exist)">JavaTransformExecStream</a>:  a confluence which reads tuples from its inputs, transmits them to corresponding Java peers, and then writes the result of Java-level processing to its output
+</li></ul>
+<h2> <span class="mw-headline" id="Calculator_ExecStreams"> Calculator ExecStreams </span></h2>
+<p>This is a concrete ExecStream class which implements scalar expression evaluation.  It has its own subdirectory since it has a large number of helper classes for implementing a virtual machine.
+</p><p>Location:  <b>fennel/calculator</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=CalcExecStream&amp;action=edit&amp;redlink=1" class="new" title="CalcExecStream (page does not exist)">CalcExecStream</a>:  a conduit which runs a calculator program on each input tuple, filtering and/or transforming to produce its output
+</li></ul>
+<h2> <span class="mw-headline" id="LucidDB_Column-Store_and_Bitmap_Index_ExecStreams"> LucidDB Column-Store and Bitmap Index ExecStreams </span></h2>
+<p>These are ExecStream implementations contributed by LucidEra as part of <a rel="nofollow" class="external text" href="http://www.luciddb.org/arch.html">LucidDB's implementation of column-store and bitmap indexing</a>.  All classes are concrete except where noted as abstract.
+</p><p>Location:  <b>fennel</b>, subdirectories <b>lcs</b> and <b>lbm</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=LbmBitOpExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmBitOpExecStream (page does not exist)">LbmBitOpExecStream</a>:  an abstract base for bitmap intersection and subtraction
+</li><li> <a href="/wiki/index.php?title=LbmChopperExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmChopperExecStream (page does not exist)">LbmChopperExecStream</a>:  a conduit which passes bitmaps through from input to output, chopping them into smaller ones if they exceed a certain limit
+</li><li> <a href="/wiki/index.php?title=LbmGeneratorExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmGeneratorExecStream (page does not exist)">LbmGeneratorExecStream</a>:  a conduit which reads control variables from its input, together with data from one or more previously loaded column-store clusters, and writes corresponding bitmap index entries to its output
+</li><li> <a href="/wiki/index.php?title=LbmIntersectExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmIntersectExecStream (page does not exist)">LbmIntersectExecStream</a>:  a confluence which performs bitmap intersection on its inputs, writing the resulting bitmaps to its output
+</li><li> <a href="/wiki/index.php?title=LbmMinusExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmMinusExecStream (page does not exist)">LbmMinusExecStream</a>:  a confluence which performs bitmap subtraction of second and subsequent inputs from its first input, writing the resulting bitmaps to its output
+</li><li> <a href="/wiki/index.php?title=LbmNormalizerExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmNormalizerExecStream (page does not exist)">LbmNormalizerExecStream</a>:  a conduit which reads bitmaps as input and converts them to normal tuples as output
+</li><li> <a href="/wiki/index.php?title=LbmSearchExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmSearchExecStream (page does not exist)">LbmSearchExecStream</a>:  an adaptation of BTreeSearchExecStream for use in bitmap index searching
+</li><li> <a href="/wiki/index.php?title=LbmSortedAggExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmSortedAggExecStream (page does not exist)">LbmSortedAggExecStream</a>:  a conduit which computes aggregations against a bitmap representation
+</li><li> <a href="/wiki/index.php?title=LbmSplicerExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmSplicerExecStream (page does not exist)">LbmSplicerExecStream</a>:  a diffluence which combines bitmaps from its input and writes them into a bitmap index BTree (either creating new entries or unioning into existing ones), writing out final modification counts in one output, and a stream of UNIQUE violation row ID's in the other output
+</li><li> <a href="/wiki/index.php?title=LbmUnionExecStream&amp;action=edit&amp;redlink=1" class="new" title="LbmUnionExecStream (page does not exist)">LbmUnionExecStream</a>:  a confluence which performs bitmap union on its inputs, writing the result of the union to its output (currently only handles windowed self-union for one input)
+</li><li> <a href="/wiki/index.php?title=LcsClusterAppendExecStream&amp;action=edit&amp;redlink=1" class="new" title="LcsClusterAppendExecStream (page does not exist)">LcsClusterAppendExecStream</a>:  a conduit which reads tuples from its input and writes them to a column-store cluster BTree, writing the final modification count to its output
+</li><li> <a href="/wiki/index.php?title=LcsRowScanBaseExecStream&amp;action=edit&amp;redlink=1" class="new" title="LcsRowScanBaseExecStream (page does not exist)">LcsRowScanBaseExecStream</a>:  an abstract base for LcsRowScanExecStream and LbmGeneratorExecStream, factoring out the commonality of scanning column-store cluster BTrees
+</li><li> <a href="/wiki/index.php?title=LcsRowScanExecStream&amp;action=edit&amp;redlink=1" class="new" title="LcsRowScanExecStream (page does not exist)">LcsRowScanExecStream</a>:  a confluence which reads scan directives from its inputs and uses them to access and filter one or more column-store BTrees in synchronized fashion, writing combined tuples as output
+</li></ul>
+<h2> <span class="mw-headline" id="LucidDB_Special-Purpose_ExecStreams"> LucidDB Special-Purpose ExecStreams </span></h2>
+<p>These are concrete ExecStream classes contributed by LucidEra which implement specific LucidDB query-processing operators.
+</p><p>Location:  <b>fennel</b>, subdirectories <b>hashexe</b>, <b>flatfile</b>, and <b>sorter</b>
+</p>
+<ul><li> <a href="/wiki/index.php?title=LhxAggExecStream&amp;action=edit&amp;redlink=1" class="new" title="LhxAggExecStream (page does not exist)">LhxAggExecStream</a>:  a conduit which computes aggregations on its input using hash aggregation (partitioning to disk as necessary)
+</li><li> <a href="/wiki/index.php?title=LhxJoinExecStream&amp;action=edit&amp;redlink=1" class="new" title="LhxJoinExecStream (page does not exist)">LhxJoinExecStream</a>:  a confluence which computes the JOIN of its two inputs using hash join (partitioning to disk as necessary)
+</li><li> <a href="/wiki/index.php?title=FlatFileExecStream&amp;action=edit&amp;redlink=1" class="new" title="FlatFileExecStream (page does not exist)">FlatFileExecStream</a>:  a source which parses a text file and produces tuples as output
+</li><li> <a href="/wiki/index.php?title=ExternalSortExecStream&amp;action=edit&amp;redlink=1" class="new" title="ExternalSortExecStream (page does not exist)">ExternalSortExecStream</a>:  a conduit which sorts its input and writes the results to its output (using disk-based external sort as necessary)
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 34/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1595-0!*!0!!en!*!* and timestamp 20140414194714 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelExecStreamInventory&amp;oldid=6502">http://luciddb.org/wiki/index.php?title=FennelExecStreamInventory&amp;oldid=6502</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelExecStreamInventory" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelExecStreamInventory&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelExecStreamInventory&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelExecStreamInventory&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelExecStreamInventory" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelExecStreamInventory" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelExecStreamInventory" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelExecStreamInventory&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelExecStreamInventory&amp;oldid=6502" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 27 January 2010, at 04:40.</li>
+		<li id="viewcount">This page has been accessed 5,322 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.214 secs. --></body></html>

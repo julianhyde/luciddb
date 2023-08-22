@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoCatalogChangeRules - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoCatalogChangeRules", "wgTitle": "FarragoCatalogChangeRules", "wgCurRevisionId": 5163, "wgArticleId": 1476, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoCatalogChangeRules action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoCatalogChangeRules</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page defines the rules developers must follow when making changes to the Farrago catalog; adhering to these rules will ensure that existing catalog instances can be upgraded whenever new versions of Farrago-based systems are installed. For background on how an upgrade procedure can be incorporated into an installation program, see <a href="/wiki/FarragoCatalogUpgrade" title="FarragoCatalogUpgrade">FarragoCatalogUpgrade</a>.<br />
+</p>
+<hr />
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Catalog_Contents"><span class="tocnumber">1</span> <span class="toctext">Catalog Contents</span></a></li>
+<li class="toclevel-1"><a href="#Regressions"><span class="tocnumber">2</span> <span class="toctext">Regressions</span></a></li>
+<li class="toclevel-1"><a href="#Relevant_Initialization_SQL_Scripts"><span class="tocnumber">3</span> <span class="toctext">Relevant Initialization SQL Scripts</span></a></li>
+<li class="toclevel-1"><a href="#Change_Rules_For_Initialization_SQL_Scripts"><span class="tocnumber">4</span> <span class="toctext">Change Rules For Initialization SQL Scripts</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Scripts_must_be_idempotent"><span class="tocnumber">4.1</span> <span class="toctext">Scripts must be idempotent</span></a></li>
+<li class="toclevel-2"><a href="#Scripts_must_not_assume_anything_about_the_default_catalog_or_schema."><span class="tocnumber">4.2</span> <span class="toctext">Scripts must not assume anything about the default catalog or schema.</span></a></li>
+<li class="toclevel-2"><a href="#Creation_and_call_of_update_system_objects_must_be_the_very_first_actions_in_createStorageWrappers.sql."><span class="tocnumber">4.3</span> <span class="toctext">Creation and call of update_system_objects must be the very first actions in createStorageWrappers.sql.</span></a></li>
+<li class="toclevel-2"><a href="#Scripts_must_not_create_new_schemas_within_default_catalog_LOCALDB"><span class="tocnumber">4.4</span> <span class="toctext">Scripts must not create new schemas within default catalog LOCALDB</span></a></li>
+<li class="toclevel-2"><a href="#Object_creation_DDL_must_use_CREATE_OR_REPLACE"><span class="tocnumber">4.5</span> <span class="toctext">Object creation DDL must use CREATE OR REPLACE</span></a></li>
+<li class="toclevel-2"><a href="#Objects_must_not_be_dropped"><span class="tocnumber">4.6</span> <span class="toctext">Objects must not be dropped</span></a></li>
+<li class="toclevel-2"><a href="#Objects_must_not_be_renamed"><span class="tocnumber">4.7</span> <span class="toctext">Objects must not be renamed</span></a></li>
+<li class="toclevel-2"><a href="#Existing_associations_cannot_be_made_more_restrictive"><span class="tocnumber">4.8</span> <span class="toctext">Existing associations cannot be made more restrictive</span></a></li>
+<li class="toclevel-2"><a href="#Scripts_must_not_create_tables"><span class="tocnumber">4.9</span> <span class="toctext">Scripts must not create tables</span></a></li>
+<li class="toclevel-2"><a href="#Existing_columns_in_views_must_not_be_changed"><span class="tocnumber">4.10</span> <span class="toctext">Existing columns in views must not be changed</span></a></li>
+<li class="toclevel-2"><a href="#Routines_require_case-by-case_consideration"><span class="tocnumber">4.11</span> <span class="toctext">Routines require case-by-case consideration</span></a></li>
+<li class="toclevel-2"><a href="#SQL.2FMED_options_require_case-by-case_consideration"><span class="tocnumber">4.12</span> <span class="toctext">SQL/MED options require case-by-case consideration</span></a></li>
+<li class="toclevel-2"><a href="#Scripts_must_assume_default_Farrago_CREATE_OR_REPLACE_behavior"><span class="tocnumber">4.13</span> <span class="toctext">Scripts must assume default Farrago CREATE OR REPLACE behavior</span></a></li>
+<li class="toclevel-2"><a href="#Scripts_may_not_assume_that_the_objects_they_create_are_private"><span class="tocnumber">4.14</span> <span class="toctext">Scripts may not assume that the objects they create are private</span></a></li>
+<li class="toclevel-2"><a href="#Developers_must_be_forward-looking_when_making_catalog_changes"><span class="tocnumber">4.15</span> <span class="toctext">Developers must be forward-looking when making catalog changes</span></a></li>
+<li class="toclevel-2"><a href="#TBD"><span class="tocnumber">4.16</span> <span class="toctext">TBD</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2 id="tocFarragoCatalogChangeRules0"> <span class="mw-headline" id="Catalog_Contents">Catalog Contents</span></h2>
+<p>The Farrago catalog contains various kinds of metadata:<br />
+</p>
+<ul>
+    <li>The bootstrap definition of MOF (the generic metamodel in terms of which all other metadata is defined). This is an immutable part of MDR so it never changes. (If we upgrade to later versions of MOF in the future, we will need to review the migration impact carefully.)<br />
+</li>
+    <li><a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/fem/index.html">FEM</a> (the Farrago Extension Metamodel). Developers modify this by editing <strong>farrago/catalog/xmi/FarragoExtMetamodel.uml</strong>. All changes to FEM must be additive only, as defined in section &quot;Additive Changes Only&quot; in <a href="/wiki/CatalogUml" title="CatalogUml">CatalogUml</a>.</li>
+    <li>System-owned bootstrap objects either created by running the <strong>main</strong> method of class <strong>net.sf.farrago.db.FarragoDatabase</strong>, or by running the UDR, <b>sys_boot.sys_boot.update_system_objects()</b>, which is called by the script <b>farrago/initsql/createStorageWrappers.sql</b>.  These objects are those which cannot be created via catalog initialization SQL scripts (either because they have no corresponding DDL command, e.g. type descriptors, or because they are required to exist before those scripts can run, e.g. the <strong>sa</strong> user). The UDR is used to create type descriptors.  It handles upgrades so only types that do not already exist in the catalogs are created when the UDR is run on an existing database.
+
+</li>
+    <li>System-owned objects created by running catalog initialization scripts. Developers make changes by editing those initialization scripts. Such changes are the subject of the rest of this page.</li>
+    <li>User-defined objects. These may depend on system-defined objects in arbitrary ways, so the purpose of many of the change rules is to avoid accidentally causing (a) failed upgrade due to dependencies from user-defined objects or (b) silently broken or invalidated user-defined object definitions resulting from a seemingly successful upgrade.</li>
+    <li>System parameters are defined in <b>FarragoExtMetamodel.uml</b> in the <b>FEM Config</b> package.  Normally, default values for the parameters are specified in <b>farrago/catalog/xmi/FarragoConfTemplate.xmi</b> for newly created catalogs.  In order to upgrade existing catalogs with new system parameter values, the parameters need to be specified with a multiplicity of <b>0..1</b> in the UML model to account for cases where the parameters don't yet exist.  In that case, the parameter values are set by <b>sys_boot.sys_boot.update_configuration()</b>, which is called by the script <b>farrago/initsql/createStorageWrappers.sql</b>.<br />
+</li>
+</ul>
+<p>Extension projects are likely to have their own counterparts to some of the above, for which similar rules must be observed.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCatalogChangeRules1"> <span class="mw-headline" id="Regressions">Regressions</span></h2>
+<p>We would eventually like to create a Farrago-level backwards-compatibility regression test, as described in <a href="/wiki/FarragoCatalogUpgrade" title="FarragoCatalogUpgrade">FarragoCatalogUpgrade</a>. This would catch breaking changes as far upstream from packaged releases as possible. Since this test does not yet exist, it is currently the responsibility of anyone maintaining an extension project installation program to test for regressions within that downstream context. When a regression is detected, the offending developer should be notified so that he or she can help fix the broken initialization script, restoring backwards compatibility.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCatalogChangeRules2"> <span class="mw-headline" id="Relevant_Initialization_SQL_Scripts">Relevant Initialization SQL Scripts</span></h2>
+<p>Change rules apply to the following scripts in <strong>farrago/initsql</strong>:<br />
+</p>
+<ul>
+    <li>createStorageWrappers.sql</li>
+    <li>createSqljSchema.sql</li>
+    <li>createJdbcViews.sql</li>
+    <li>createMgmtViews.sql</li>
+</ul>
+<p>Note that script <strong>createSalesSchema.sql</strong> is <em>not</em> subject to change rules because it is not expected to be run by catalog initialization procedures for installable systems (its only purpose is to create global fixtures used in Farrago unit tests).<br />
+<br />
+New scripts may be added over time; the list above should be changed accordingly.<br />
+<br />
+</p><p>Change rules also apply to the following scripts in <strong>luciddb/initsql</strong> (used in intializing the catalog for extension project LucidDB):<br />
+</p>
+<ul>
+    <li>installApplib.sql</li>
+    <li>createDbaViews.sql</li>
+    <li>createTestHarness.sql<br />
+</li>
+    <li>createForeignWrappers.sql</li>
+</ul>
+<p><br />
+</p>
+<hr />
+<h2 id="tocFarragoCatalogChangeRules3"> <span class="mw-headline" id="Change_Rules_For_Initialization_SQL_Scripts">Change Rules For Initialization SQL Scripts</span></h2>
+<p>The subsections below state the rules which must be followed by all developers.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules4"> <span class="mw-headline" id="Scripts_must_be_idempotent">Scripts must be idempotent</span></h3>
+<p>It is sometimes necessary for a catalog upgrade to be re-attempted due to a failure on the first try, so the script must have the same final effect when run through completely from the beginning regardless of whether it has previously been partially executed.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules5"> <span class="mw-headline" id="Scripts_must_not_assume_anything_about_the_default_catalog_or_schema.">Scripts must not assume anything about the default catalog or schema.</span></h3>
+<p>Individual scripts will typically be concatenated into a larger upgrade script as part of installer packaging, so each one must set its own context. This can be done by<br />
+</p>
+<ul>
+    <li>Setting a catalog explicitly (<strong>set catalog 'catalog-name';</strong>)</li>
+    <li>Setting a schema explicitly (<strong>set schema 'catalog-name.schema-name';</strong>)</li>
+    <li>or<br />
+
+</li>
+    <li>Creating objects with explicit qualification (<strong>create or replace function catalog-name.schema-name.function-name ...;</strong>)</li>
+</ul>
+<p><br />
+</p>
+<hr />
+<h3> <span class="mw-headline" id="Creation_and_call_of_update_system_objects_must_be_the_very_first_actions_in_createStorageWrappers.sql.">Creation and call of update_system_objects must be the very first actions in createStorageWrappers.sql.</span></h3>
+<p>The implementation of this procedure must effectively follow the other rules listed here (as if it were a script).
+</p><p><br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules6"> <span class="mw-headline" id="Scripts_must_not_create_new_schemas_within_default_catalog_LOCALDB">Scripts must not create new schemas within default catalog LOCALDB</span></h3>
+<p>This catalog is intended to remain clean as the container for user-defined schemas (plus the standard schemas defined by SQL:2003, <strong>SQLJ</strong> and <strong>INFORMATION_SCHEMA</strong>).<br />
+</p><p><br />
+Instead, create new system-owned schemas within catalog <strong>SYS_BOOT</strong>. However, before doing so, it's a good idea to explain why on the <a rel="nofollow" class="external text" href="mailto:farrago-dev@eigenbase.org">farrago-dev@eigenbase.org</a> mailing list and make sure everyone agrees. It might be more appropriate to add your new objects directly to one of the existing schemas under SYS_BOOT:<br />
+</p>
+<ul>
+    <li><strong>JDBC_METADATA</strong>: contains metadata views and supporting objects needed to implement the JDBC metadata API<br />
+</li>
+    <li><strong>MGMT</strong>: contains system-management views and routines<br />
+
+</li>
+</ul>
+<p><br />
+(Note that catalog initialization scripts for extension projects may choose to define additional user-visible schemas within catalog <strong>LOCALDB</strong>. For example, LucidDB defines schema <strong>SYS_ROOT</strong> as a container for its out-of-the-box DBA views and procedures.)<br />
+</p>
+<hr />
+<p><br />
+</p>
+<h3 id="tocFarragoCatalogChangeRules7"> <span class="mw-headline" id="Object_creation_DDL_must_use_CREATE_OR_REPLACE">Object creation DDL must use CREATE OR REPLACE</span></h3>
+<p>This allows an existing definition of an object to be overwritten.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules8"> <span class="mw-headline" id="Objects_must_not_be_dropped">Objects must not be dropped</span></h3>
+<p>This could break user-defined objects. Eventually, we may come up with a protocol for officially deprecating and eventually dropping system-defined objects, but for now, just leave old object definitions behind. Add comments (both in the SQL script and via the DESCRIPTION clause for objects that support it) to indicate that they are deprecated.<br />
+<br />
+For Java-based objects such as external routines and SQL/MED data wrappers, be careful not to delete entry points from the jar if existing system objects depend on those entry points.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules9"> <span class="mw-headline" id="Objects_must_not_be_renamed">Objects must not be renamed</span></h3>
+<p>Farrago supports <strong>create or replace rename to new_name object_type old_name</strong> functionality, but this must not be executed by catalog initialization scripts, since users may maintain scripts which depend by name on the existence of system objects. Plus, this would make the script non-idempotent. Instead, create a new object and leave the existing one alone. Examples are jars, wrappers, servers, schemas, views, tables, columns, and routines.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules9"> <span class="mw-headline" id="Existing_associations_cannot_be_made_more_restrictive">Existing associations cannot be made more restrictive</span></h3>
+<p>If an existing association is defined as 0..* (i.e., 1 to many), it cannot be modified to a 0..1 (i.e., 1-1) association.<br />
+</p><p>The reverse is acceptable.  An existing 1-1 association can be changed to a 1 to many association.  However, if there are any existing system views that reference the attribute corresponding to the parent end of the association, (which is valid because of the previous 1-1 association), then that reference becomes invalid with the less restrictive 1 to many association.  The view definitions will need to be modified to take this into account.  Moreover, migration from earlier catalog versions will need to be addressed because the older catalogs will still have the original, now invalid, view definitions.<br />
+</p><p><a href="/wiki/index.php?title=User:Szuercher&amp;action=edit&amp;redlink=1" class="new" title="User:Szuercher (page does not exist)">Szuercher</a> 15:56, 3 November 2008 (PST): This doesn't automatically work in Enki/Hibernate repositories.  It would require intervention during upgrade to move the association data across repository storage tables. In addition, Enki/Hibernate can't handle switching associations between ordered/unordered/high cardinality without intervention.
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules10"> <span class="mw-headline" id="Scripts_must_not_create_tables">Scripts must not create tables</span></h3>
+<p>Physical tables are problematic for a number of reasons. Updating their contents in an idempotent fashion is difficult. And different extension projects may use different physical table storage schemes. So, create a view with a multi-row VALUES clause instead. (See view <strong>table_types_view_internal</strong> in <strong>createJdbcViews.sql</strong> for an example.)<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules11"> <span class="mw-headline" id="Existing_columns_in_views_must_not_be_changed">Existing columns in views must not be changed</span></h3>
+<p>Add new columns at the end, and do not delete or reorder existing columns.<br />
+(Technically, adding a new column could break a user script which uses select *, in that it will now return unexpected information, but avoiding this would be unnecessarily restrictive. Users who desire isolation from such changes should create a view and select from that in their script instead.)<br />
+</p><p><br />
+Never change the datatype family of a view column. Narrowing precision or scale within a family (e.g. from INTEGER down to SMALLINT) may be OK, but avoid it if you can.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules12"> <span class="mw-headline" id="Routines_require_case-by-case_consideration">Routines require case-by-case consideration</span></h3>
+<p>If there is a chance that changing the semantics of an existing routine could break applications which call it, then make the change in additive fashion instead. (The exception is when the change is a bug fix; but even here, if it is likely that applications have started accidentally relying on the buggy behavior, it may be better to make the change additive.)<br />
+<br />
+For routines, an additive change can mean either creating an entirely new routine name, or overloading an existing routine name. Overloading is only OK if the change is based on a new parameter signature which cannot possibly introduce ambiguity with respect to existing invocation scripts. According to SQL:2003, procedures can only be overloaded on number of parameters, whereas functions can be overloaded on both number and type.<br />
+<br />
+Be especially careful with changing the semantics of an existing UDX, since its output is an entire table. Follow the rules given above for &quot;existing column ordering in views must not be changed&quot;, treating the output as if it were a view. But in addition, treat adding a new column to the output as a change in semantics (since for a UDX, invocation scripts often need to rely on select * as the number of columns produced may be dynamic based on input). In other words, if such a change cannot be achieved via a new overload, come up with a new UDX name instead.<br />
+<br />
+</p><p>Never change the specific name of an existing routine overload, and never change its parameter signature. Overloading is very sensitive to parameter types, even within datatype families. However, widening precision or scale may be OK.<br />
+<br />
+For the return type of a function, follow the rules given above for the datatype of a view column.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules13"> <span class="mw-headline" id="SQL.2FMED_options_require_case-by-case_consideration">SQL/MED options require case-by-case consideration</span></h3>
+<p>The concerns here are similar to routines; changing the options might be a bugfix, or it might be a semantic change.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules14"> <span class="mw-headline" id="Scripts_must_assume_default_Farrago_CREATE_OR_REPLACE_behavior">Scripts must assume default Farrago CREATE OR REPLACE behavior</span></h3>
+<p>By default, Farrago processes CREATE OR REPLACE as follows:<br />
+</p>
+<ol>
+
+    <li>Validate the new object definition and save it (without committing it)</li>
+    <li>Revalidate all existing objects which depend on the modified object; revalidation verifies that the new objects are still valid with respect to the new object definition</li>
+    <li>If any validation fails, rollback the CREATE OR REPLACE (causing the script to fail); otherwise, commit</li>
+</ol>
+<p>Extension projects may support less restrictive behavior, e.g. allowing dependents to become temporarily invalid, and then revalidating them when the script executes CREATE OR REPLACE for them too. However, Farrago catalog initialization scripts must <em>not</em> rely on such behavior. (Catalog initialization scripts which are private to an extension project are free to make whatever assumptions they want.)<br />
+<br />
+</p><p>Here's an example. (This happens to break another rule above, namely modifying the existing columns of a view.) Suppose the old version of the catalog script had<br />
+<br />
+</p>
+<pre>
+create or replace view v1 as select a,b from t;
+create or replace view v2 as select a from v1 where b='X';
+</pre>
+<p><br />
+The new version has<br />
+<br />
+</p>
+<pre>
+create or replace view v1 as select a,c from t;
+create or replace view v2 as select a from v1 where c='X';
+</pre>
+<p><br />
+The first statement will break with the default Farrago behavior. Farrago will attempt to revalidate the old definition of v2, and that revalidation will fail because column b no longer exists in the new version of v1. (With the less restrictive behavior described above, the first statement would succeed, leaving v2 invalid, and then the second statement would revalidate v2, repairing it.) <em>Don't do this.</em><br />
+</p><p><br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules15"> <span class="mw-headline" id="Scripts_may_not_assume_that_the_objects_they_create_are_private">Scripts may not assume that the objects they create are private</span></h3>
+<p>Even if a script does not grant any access to users or roles, it is not OK to assume that the objects created are private and therefore not subject to dependency constraints from user-defined objects as described above. Extension projects may create system-level dependencies on such objects; system administrators may do likewise.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules16"> <span class="mw-headline" id="Developers_must_be_forward-looking_when_making_catalog_changes">Developers must be forward-looking when making catalog changes</span></h3>
+<p>Given all of these restrictions, it is very easy to quickly accumulate catalog flotsam and jetsam which will be difficult or impossible to eliminate. So, think long and hard before adding new objects; that way you won't have to change them again later. Seek review. Broadcast your proposed changes to farrago-dev.<br />
+</p>
+<hr />
+<h3 id="tocFarragoCatalogChangeRules17"> <span class="mw-headline" id="TBD">TBD</span></h3>
+<ul>
+    <li>rules for changing granted access<br />
+
+</li>
+</ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 121/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1476-0!*!0!!en!*!* and timestamp 20140414192636 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoCatalogChangeRules&amp;oldid=5163">http://luciddb.org/wiki/index.php?title=FarragoCatalogChangeRules&amp;oldid=5163</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoCatalogChangeRules" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoCatalogChangeRules&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoCatalogChangeRules&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoCatalogChangeRules&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoCatalogChangeRules" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoCatalogChangeRules" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoCatalogChangeRules" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoCatalogChangeRules&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoCatalogChangeRules&amp;oldid=5163" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 4 November 2008, at 19:09.</li>
+		<li id="viewcount">This page has been accessed 3,273 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.231 secs. --></body></html>

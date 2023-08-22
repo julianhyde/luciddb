@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelParameters - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelParameters", "wgTitle": "FennelParameters", "wgCurRevisionId": 6175, "wgArticleId": 1928, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelParameters action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelParameters</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page documents parameters which control the behavior of Fennel.  Some of these are generic, some are component-specific, and some are <a href="/wiki/FennelUnitTests" title="FennelUnitTests">test-specific</a>.  Many also appear in higher-level systems built on Fennel such as <a href="/wiki/FarragoSystemParameters" title="FarragoSystemParameters">FarragoSystemParameters</a> and <a href="/wiki/LucidDbSystemParameters" title="LucidDbSystemParameters">LucidDbSystemParameters</a>.
+</p>
+<table border="1">
+    <tr>
+        <th>Applies To</th>
+        <th>Name</th>
+        <th>Domain</th>
+        <th>Default Value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>Common</td>
+        <td>resourceDir</td>
+        <td>filesystem path to directory</td>
+        <td>${FENNEL_HOME}/common</td>
+        <td>Location from which localized resource string files will be loaded.</td>
+    </tr>
+    <tr>
+        <td>Common</td>
+        <td>jniHandleTraceFile</td>
+        <td>filesystem path to file</td>
+        <td>empty string</td>
+        <td>If non-empty, controls location where JNI handle tracing output is written</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>cachePagesMax</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1024</td>
+        <td>Determines upper bound for number of pages cache can allocate. On startup, actual upper bound is set to the larger of this parameter and cachePagesInit. Subsequently, changes to cachePagesInit are limited by upper bound calculated at startup.</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>cachePagesInit</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1024</td>
+        <td>Sets number of page memory buffers to allocate from the OS for Fennel's data cache (also used as a pool for volatile scratch memory allocated by ExecStreams). Increasing it after startup causes new free buffers to be allocated; decreasing it causes buffers to be released (flushing them first if they contain dirty data).</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>cachePageSize</td>
+        <td>32-bit integer (number of bytes; must be a power of 2)</td>
+        <td>4096</td>
+        <td>Determines contiguous size of memory buffers allocated by cache. Also determines contiguous size of pages stored on disk; these are the elemental allocation units for all disk-based data structures such as indexes.</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>processorCacheBytes</td>
+        <td>32-bit integer (number of bytes)</td>
+        <td>-1</td>
+        <td>Controls the amount of last-level CPU cache (typically L2, sometimes L3) to be used by memory-conscious data structures for improved cache coherence.  The default value of -1 requests an automatic setting; currently this is 2MB, but may be changed to hardware autodetect in the future.  <b>This parameter is not available before v0.9.2</b>.</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>cacheIdleFlushInterval</td>
+        <td>32-bit integer (number of milliseconds)</td>
+        <td>100</td>
+        <td>Controls rate at which dirty data is flushed from the cache via lazy writer thread.  Set to 0 to disable the lazy writer.</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>prefetchPagesMax</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>12</td>
+        <td>Controls size of prefetch queue for access paths which use prefetch.</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>prefetchThrottleRate</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>10</td>
+        <td>In the event that prefetch has been throttled down due to rejected requests, controls number of successful prefetches which must occur before prefetch rate is increased again.</td>
+    </tr>
+    <tr>
+        <td>Cache, Resource Governor</td>
+        <td>cacheReservePercentage</td>
+        <td>integer between 1 and 99 inclusive</td>
+        <td>5</td>
+        <td>The percentage of the data cache that should be set aside for global resource usage. The remainder will be available to allocate to individual statements.</td>
+    </tr>
+    <tr>
+        <td>Cache, Resource Governor</td>
+        <td>expectedConcurrentStatements</td>
+        <td>32-bit integer (number of statements)</td>
+        <td>4</td>
+        <td>The percentage of the data cache that should be set aside for global resource usage. The remainder will be available to allocate to individual statements.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from CacheTestBase</td>
+        <td>victimPolicy</td>
+        <td>{ twoq, lru, random }</td>
+        <td>twoq</td>
+        <td>Sets the cache victimization algorithm.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from CacheTestBase </td>
+        <td>diskPages</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1000</td>
+        <td>Size of file to create for tests which need persistence but which do not create a database</td>
+    </tr>
+    <tr>
+        <td>Cache when default twoq victim policy is being used</td>
+        <td>freshmenPageQueuePercentage</td>
+        <td>integer between 0 and 100 inclusive</td>
+        <td>25</td>
+        <td>Percentage of the total cache set aside for the freshmen queue</td>
+    </tr>
+    <tr>
+        <td>Cache when default twoq victim policy is being used</td>
+        <td>pageHistoryQueuePercentage</td>
+        <td>integer between 0 and 100 inclusive</td>
+        <td>100</td>
+        <td>Percentage of the total number of cache pages that dictates the number of pages in the history queue.</td>
+    </tr>
+    <tr>
+        <td>Device I/O</td>
+        <td>deviceSchedulerType</td>
+        <td>{ threadPool, aioLinux, aioPolling, aioSignal }</td>
+        <td>system-dependent</td>
+        <td>Controls the scheduler used for disk I/O.  <b>threadPool</b> means to fake asynchronous I/O via a thread pool, and use buffered file access.  On Linux, <b>aioLinux</b> means to use <b>libaio</b> for asynchronous I/O, with <b>O_DIRECT</b> for unbuffered file access.  The default is to to use <b>libaio</b> if available, otherwise to fallback to <b>threadPool</b>.  On Windows, <b>ioCompletionPort</b> (the default) means to use asynchronous I/O via completion ports and unbuffered file access.  <b>aioSignal</b> and <b>aioPolling</b> are for Unix variants such as Solaris which are currently not supported by Fennel.  In all cases, if an unrecognized or unsupported value is set, the system silently reverts to default behavior to avoid causing startup failures.</td>
+    </tr>
+    <tr>
+        <td>Device I/O</td>
+        <td>deviceSchedulerThreadCounts</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>1</td>
+        <td>Suggested number of threads to dedicate to scheduling activities; the scheduler may adjust this number based on the setting for deviceSchedulerMaxRequests.</td>
+    </tr>
+    <tr>
+        <td>Device I/O</td>
+        <td>deviceSchedulerMaxRequests</td>
+        <td>32-bit integer (number of I/O requests)</td>
+        <td>1024</td>
+        <td>The maximum number of simultaneous requests that this scheduler should be able to handle; additional requests may be queued (or rejected for prefetch).</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseDir</td>
+        <td>filesystem path to directory</td>
+        <td>must be set explicitly, except tests will set this to working directory automatically</td>
+        <td>Location where all data, temp, and log files will be created.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>forceTxns</td>
+        <td>{ false, true }</td>
+        <td>false</td>
+        <td>Whether to force out all dirty pages at each commit.  For logical transaction logging, this is not necessary, but some storage implementations such as LucidDB treat the database itself as a log structure.</td>
+    </tr>
+    <tr>
+        <td>Database (only when forceTxns=true)</td>
+        <td>disableSnapshots</td>
+        <td>{ false, true }</td>
+        <td>false</td>
+        <td>Normally, forceTxns=true implies usage of snapshot page versioning; setting disableSnapshots=true reverts to using unversioned page updates.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseInitSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1000</td>
+        <td>Determines the number of pages desired when calculating the initial size of Fennel's db.dat file.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseMaxSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>no limit</td>
+        <td>Determines maximum size to which db.dat file can grow. Further allocations will fail even if space remains in the file system.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseIncrementSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1</td>
+        <td>Determines number of pages by which to automatically extend the db.dat file when all existing pages have been allocated.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>tempInitSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1000</td>
+        <td>Determines the number of pages desired when calculating the initial size of Fennel's temp.dat file.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>tempMaxSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>no limit</td>
+        <td>Determines maximum size to which temp.dat file can grow. Further allocations will fail even if space remains in the file system.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>tempIncrementSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1</td>
+        <td>Determines number of pages by which to automatically extend the temp.dat file when all existing pages have been allocated.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseShadowLogInitSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1000</td>
+        <td>Determines the number of pages desired when calculating the initial size of Fennel's shadowlog.dat file.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseShadowLogMaxSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>no limit</td>
+        <td>Determines maximum size to which shadowlog.dat file can grow. Further allocations will fail even if space remains in the file system.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseShadowLogIncrementSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1</td>
+        <td>Determines number of pages by which to automatically extend the shadowlog.dat file when all existing pages have been allocated.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseTxnLogInitSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1000</td>
+        <td>Determines the number of pages desired when calculating the initial size of Fennel's txnlog.dat file.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseTxnLogMaxSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>no limit</td>
+        <td>Determines maximum size to which txnlog.dat file can grow. Further allocations will fail even if space remains in the file system.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>databaseTxnLogIncrementSize</td>
+        <td>32-bit integer (number of pages)</td>
+        <td>1</td>
+        <td>Determines number of pages by which to automatically extend the txnlog.dat file when all existing pages have been allocated.</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>groupCommitInterval</td>
+        <td>32-bit integer (number of milliseconds)</td>
+        <td>30</td>
+        <td>Determines maximum latency for group commit.</td>
+    </tr>
+    <tr>
+        <td>ParallelExecStreamScheduler</td>
+        <td>degreeOfParallelism</td>
+        <td>32-bit integer (number of concurrent tasks)</td>
+        <td>4</td>
+        <td>Configures the thread pool used for parallel execution.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testSuiteNameBoost</td>
+        <td>test suite name</td>
+        <td>set automatically based on test being run</td>
+        <td>Internal parameter; should not be set explicitly.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testTraceFileName</td>
+        <td>filesystem path to file</td>
+        <td>set automatically based on test being run to ${FENNEL_HOME}/trace/%testSuiteNameBoost%_trace.log</td>
+        <td>Controls location of test trace output.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testTraceLevel</td>
+        <td>integer in the domain { 300, 400, 500, 700, 800, 900, 1000, 10000 } from the <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/TraceTarget_8h.html#a11">TraceLevel enum</a></td>
+        <td>800 (TRACE_CONFIG)</td>
+        <td>Controls verbosity of test trace output.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testStatsFileName</td>
+        <td>filesystem path to file</td>
+        <td>/tmp/fennel.stats</td>
+        <td>Controls location of stats monitoring file.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testTraceStdout</td>
+        <td>string (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:13, 25 November 2008 (EST):  shouldn't this be boolean instead?)</td>
+        <td>empty string</td>
+        <td>If non-empty, trace output is also written to stdout.</td>
+    </tr>
+    <tr>
+        <td>Tests</td>
+        <td>testDictionaryFileName</td>
+        <td>filesystem path to file</td>
+        <td>dictWords</td>
+        <td>Location of dictionary words file used as data by some tests.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from ThreadedTestBase</td>
+        <td>testDuration</td>
+        <td>32-bit integer (number of seconds)</td>
+        <td>10</td>
+        <td>Duration for executing multi-threaded test.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from ThreadedTestBase</td>
+        <td>defaultThreads</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>1</td>
+        <td>Default number of threads to execute for a given activity, if not overridden by a more specific parameter such as readSeqThreads.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from PagingTestBase</td>
+        <td>randomOps</td>
+        <td>32-bit integer</td>
+        <td>5000</td>
+        <td>Total number of requests to be executed by each random I/O thread.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from PagingTestBase</td>
+        <td>resizeCache</td>
+        <td>0 or 1 (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:13, 25 November 2008 (EST):  shouldn't this be boolean?)</td>
+        <td>1</td>
+        <td>Whether to dynamically shrink and expand the cache during the test.</td>
+    </tr>
+    <tr>
+        <td>Tests derived from PagingTestBase</td>
+        <td>readSeqThreads, writeSeqThreads, readRandThreads, writeRandThreads, readNoWaitThreads, writeNoWaitThreads, writeSkipThreads, scratchThreads, prefetchThreads, prefetchBatchThreads, allocateThreads, deallocateThreads</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>setting for&#160;%defaultThreads%</td>
+        <td>This family of parameters controls the number of threads to execute for carrying out various kinds of concurrent I/O, as indicated by the parameter names.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>insertsPerTxn</td>
+        <td>32-bit integer (number of insert operations)</td>
+        <td>5</td>
+        <td>Controls the number of operations executed per insert transaction.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>deletesPerTxn</td>
+        <td>32-bit integer (number of delete operations)</td>
+        <td>5</td>
+        <td>Controls the number of operations executed per delete transaction.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>keysPerScan</td>
+        <td>32-bit integer (number of btree entries)</td>
+        <td>5</td>
+        <td>Controls the number of leaf btree entries iterated over by each scan transaction.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>maxKey</td>
+        <td>32-bit integer (key value)</td>
+        <td>1000000</td>
+        <td>Controls the maximum number randomly generated for a key value.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>checkpointInterval</td>
+        <td>32-bit integer (number of seconds)</td>
+        <td>20</td>
+        <td>Controls the interval in between checkpoint operations.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>testRollback</td>
+        <td>0 or 1 (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:13, 25 November 2008 (EST):  shouldn't this be boolean?)</td>
+        <td>1</td>
+        <td>Whether to cause half of the transactions to end in rollback (instead of just committing all of them).</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>insertThreads</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>setting for&#160;%defaultThreads%</td>
+        <td>Controls the number of threads carrying out concurrent insert transactions.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>deleteThreads</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>setting for&#160;%defaultThreads%</td>
+        <td>Controls the number of threads carrying out concurrent delete transactions.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>scanThreads</td>
+        <td>32-bit integer (number of threads)</td>
+        <td>setting for&#160;%defaultThreads%</td>
+        <td>Controls the number of threads carrying out concurrent scan transactions.</td>
+    </tr>
+    <tr>
+        <td>BTreeTxnTest</td>
+        <td>fuzzyChecpoint</td>
+        <td>0 or 1 (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:13, 25 November 2008 (EST):  shouldn't this be boolean?)</td>
+        <td>1</td>
+        <td>Whether to use fuzzy checkpoints instead of sharp checkpoints.</td>
+    </tr>
+</table>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 2/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1928-0!*!0!*!*!*!* and timestamp 20140414194704 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelParameters&amp;oldid=6175">http://luciddb.org/wiki/index.php?title=FennelParameters&amp;oldid=6175</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelParameters" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelParameters&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelParameters&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelParameters&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelParameters" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelParameters" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelParameters" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelParameters&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelParameters&amp;oldid=6175" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 1 July 2009, at 21:05.</li>
+		<li id="viewcount">This page has been accessed 2,179 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.299 secs. --></body></html>

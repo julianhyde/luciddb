@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbConcurrencyControl - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbConcurrencyControl", "wgTitle": "LucidDbConcurrencyControl", "wgCurRevisionId": 6536, "wgArticleId": 1594, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbConcurrencyControl action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbConcurrencyControl</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Query.2FDML_Rules"><span class="tocnumber">1</span> <span class="toctext">Query/DML Rules</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Page_Multi-versioning"><span class="tocnumber">2</span> <span class="toctext">Page Multi-versioning</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#DDL_Rules"><span class="tocnumber">3</span> <span class="toctext">DDL Rules</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#JDBC_Driver_Rules"><span class="tocnumber">4</span> <span class="toctext">JDBC Driver Rules</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Query.2FDML_Rules"> Query/DML Rules </span></h2>
+<p>For execution of queries and DML, concurrency control in LucidDB follows a few simple rules:
+</p>
+<ol><li> Only autocommit is supported (no user-level transactions).
+</li><li> Queries never block DML statements (or other queries).
+</li><li> DML statements never block queries.
+</li><li> Any query or DML statement sees a snapshot-consistent view of the database as of the point in time at which the statement started execution (or as of a particular label if one is set for the statement's session; see <a href="/wiki/LucidDbWarehouseLabels" title="LucidDbWarehouseLabels">LucidDbWarehouseLabels</a> for more information on this feature).
+</li><li> DML statements do not block each other if they target different tables.
+</li><li> DML statements which target the same table cause a conflict; the DML statement which starts later (while an earlier DML statement is still in progress on the same table) will fail immediately (no wait).
+</li><li> DML statements are atomic; if they fail, they are completely rolled back, leaving behind no partial effect on the target table.  <a href="/wiki/LucidDbSessionParameters" title="LucidDbSessionParameters">LucidDbSessionParameters</a> describes parameters which can be set to allow row-level errors to be treated as warnings; these do not count as failure unless the requested threshold is reached.
+</li></ol>
+<p>Snapshot consistency in LucidDB is defined as follows:
+</p>
+<pre>
+Given a fixed schema, a statement X (either DML or query)
+which starts at time T sees the state of the database as static
+for its duration, with the state seen defined as the cumulative result
+of all DML and TRUNCATE statements which committed before time T.
+Effects of concurrent DML statements are not visible from the context
+of X, regardless of whether those statements commit before X does.
+</pre>
+<h2> <span class="mw-headline" id="Page_Multi-versioning"> Page Multi-versioning </span></h2>
+<p>LucidDB implements the concurrency control semantics above via a page versioning technique.  When a DML statement modifies an existing page, it creates a new version rather than updating in place.  The old page version is left behind in case concurrent readers still need it as part of their snapshot.
+</p><p>Old page versions are not reclaimed automatically, meaning that as DML statements are executed, old unneeded page versions will accumulate.  Their storage can be reclaimed via the ALTER SYSTEM DEALLOCATE OLD statement (a LucidDB-specific command).  This statement reclaims any old page versions which are no longer needed.  It can be executed concurrently with any other statement.  Its operation is quite fast and efficient because it only needs to scan physical metadata to decide which pages can be reclaimed; it does not need to look at the contents of any data pages.  Best practice is to schedule it to run as a final step after ETL jobs or maintenance updates, and in particular after data removal operations such as
+</p>
+<ul><li> DROP TABLE
+</li><li> TRUNCATE TABLE
+</li><li> ALTER TABLE REBUILD
+</li></ul>
+<p>Note that once LucidDB's data file grows in the filesystem, it never shrinks, regardless of whether pages have been reclaimed within it and not yet reused.  More information is available in <a href="/wiki/LucidDbDataStorageAndAccess" title="LucidDbDataStorageAndAccess">LucidDbDataStorageAndAccess</a>.
+</p>
+<h2> <span class="mw-headline" id="DDL_Rules"> DDL Rules </span></h2>
+<ol><li> DDL statements execute with an exclusive lock on the entire catalog. 
+</li><li> Query/DML preparation requires a shared lock on the entire catalog.
+</li><li> Query execution does not lock the catalog unless the query references system tables.
+</li><li> DML execution takes a very brief exclusive lock on the catalog at the end (to update target table rowcounts).
+</li><li> The catalog lock has wait-as-long-as-needed semantics; it is safe to request any of these operations concurrently without worrying about unexpected timeout/deadlock.
+</li><li> <b>Note:</b> DDL includes CREATE INDEX, which keeps the <b>catalog locked</b> while it runs; CREATE INDEX can take a significant amount of time to run for a table with existing data.  (<a href="http://issues.eigenbase.org/browse/FRG-312" class="extiw" title="eigenjira:FRG-312">eigenjira:FRG-312</a>:  A future improvement will be to drop the catalog lock during execution of this statement.)
+</li><li> A DDL statement which attempts to DROP or REPLACE an object referenced by a prepared or executing query or DML statement will fail immediately.  (This is enforced via an "object-in-use" state maintained for each object; the catalog lock is not involved.)
+</li></ol>
+<p>Special optimizations are made for certain quasi-DDL statements:
+</p>
+<ol><li> ANALYZE TABLE executes like a no-op DML statement.
+</li><li> ALTER TABLE REBUILD executes like a no-op DML statement.
+</li><li> TRUNCATE TABLE executes like a DML statement.
+</li><li> ALTER TABLE ADD COLUMN executes like a DML statement, with additional nuances as explained in <a href="/wiki/FarragoAlterTableAddColumn#Concurrency" title="FarragoAlterTableAddColumn">the design docs</a>.
+</li></ol>
+<p>As with DML statements, these special statements acquire a brief exclusive lock on the catalog at the end of their execution to update information such as stored statistics and timestamps.
+</p><p>For backup/restore concurrency notes, see <a href="/wiki/LucidDbBackupRestore" title="LucidDbBackupRestore">LucidDbBackupRestore</a>.
+</p>
+<h2> <span class="mw-headline" id="JDBC_Driver_Rules"> JDBC Driver Rules </span></h2>
+<ol><li> The LucidDB JDBC driver is thread-safe across connections, but NOT thread-safe within a connection. What this means is that if a client creates connection C1 and uses it in thread T1, and creates another connection C2 and uses it in thread T2, all will be well. But if threads T1 and T2 both make calls on C1 concurrently, undefined behavior will occur. Note that in JDBC, a Connection spans a family of related objects; for example, a cursor is represented by a ResultSet. For threading purposes, all sub-objects created directly or indirectly via a connection should be considered to be part of that connection.
+</li><li> As mentioned above, each SQL statement is executed as an individual autocommit transaction. The JDBC spec implies that this includes overlapping statements and queries from within the same session, but LucidDB prevents multiple statements from being active on the same session. So, for example, if a client creates a connection and opens a cursor, a new transaction starts as a result. If the client then attempts to execute an INSERT statement on the same connection, the INSERT will fail with an error about a cursor still being open. The same is true for an attempt to create a second cursor while the first one is still open; this will fail with the same error message. This behavior is non-conforming, but avoids the possibility of a session "locking itself out". Applications should close cursors as soon as all results have been fetched, and should use multiple connections in the case where simultaneous cursors are needed.
+</li></ol>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 23/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1594-0!*!0!!en!*!* and timestamp 20140414191037 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbConcurrencyControl&amp;oldid=6536">http://luciddb.org/wiki/index.php?title=LucidDbConcurrencyControl&amp;oldid=6536</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbConcurrencyControl" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbConcurrencyControl&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbConcurrencyControl&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbConcurrencyControl&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbConcurrencyControl&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbConcurrencyControl" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbConcurrencyControl" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbConcurrencyControl&amp;oldid=6536" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 21 April 2010, at 05:11.</li>
+		<li id="viewcount">This page has been accessed 7,506 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.138 secs. --></body></html>

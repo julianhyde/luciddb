@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoSessionFramework - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoSessionFramework", "wgTitle": "FarragoSessionFramework", "wgCurRevisionId": 5642, "wgArticleId": 1918, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoSessionFramework action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoSessionFramework</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><b>under construction</b>
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Java_Packages"><span class="tocnumber">2</span> <span class="toctext">Java Packages</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Session_Containment"><span class="tocnumber">3</span> <span class="toctext">Session Containment</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#JDBC_Associations"><span class="tocnumber">4</span> <span class="toctext">JDBC Associations</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Threading_Model"><span class="tocnumber">5</span> <span class="toctext">Threading Model</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Synchronization"><span class="tocnumber">6</span> <span class="toctext">Synchronization</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Personalities"><span class="tocnumber">7</span> <span class="toctext">Personalities</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Transactions"><span class="tocnumber">8</span> <span class="toctext">Transactions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Savepoints"><span class="tocnumber">8.1</span> <span class="toctext">Savepoints</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Session_Variables"><span class="tocnumber">9</span> <span class="toctext">Session Variables</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Reentrant_Sessions"><span class="tocnumber">10</span> <span class="toctext">Reentrant Sessions</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Statement_Lifecycle"><span class="tocnumber">11</span> <span class="toctext">Statement Lifecycle</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Attachments"><span class="tocnumber">12</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This page documents the <i>session framework</i> in Farrago.  This topic sprawls over a number of related areas such as session management, threading, transactions, locking, and statement lifecycle.  It is intended to provide conceptual help to anyone attempting to debug or enhance these areas.
+</p>
+<h1> <span class="mw-headline" id="Java_Packages"> Java Packages </span></h1>
+<p>The diagram below shows the Farrago Java packages directly involved in session management:
+</p><p><a href="/wiki/File:SessionPackages.png" class="image"><img alt="SessionPackages.png" src="/wiki/upload/1/1c/SessionPackages.png" width="777" height="245" /></a>
+</p>
+<ul><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/package-summary.html">net.sf.farrago.session</a> defines all session framework interfaces (both API and SPI).
+</li><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/db/package-summary.html">net.sf.farrago.db</a> defines default implementations for most of the session framework interfaces.
+</li><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/ddl/package-summary.html">net.sf.farrago.ddl</a> defines default implementations for session interfaces related to DDL.
+</li><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/query/package-summary.html">net.sf.farrago.query</a> defines default implementations for session interfaces related to query processing.
+</li><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/runtime/package-summary.html">net.sf.farrago.runtime</a> defines default implementations for session interfaces related to statement runtime support.
+</li><li> Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/jdbc/engine/package-summary.html">net.sf.farrago.jdbc.engine</a> implements the Farrago JDBC driver by invoking session API methods.
+</li></ul>
+<h1> <span class="mw-headline" id="Session_Containment"> Session Containment </span></h1>
+<p>The next diagram illustrates how sessions are managed within the scope of a database instance; it also shows some of the important objects which exist within the scope of a session.
+</p><p><a href="/wiki/File:SessionAssociations.png" class="image"><img alt="SessionAssociations.png" src="/wiki/upload/6/6d/SessionAssociations.png" width="738" height="450" /></a>
+</p>
+<ul><li> A session is owned by the singleton <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/db/FarragoDatabase.html">FarragoDatabase</a> object.
+</li><li> A session may own zero or more <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionStmtContext.html">statement contexts</a>.  A statement context is a context in which statements (typically SQL) can be prepared and executed.  In JDBC terms, a statement context corresponds to either a PreparedStatement (usable for only a single SQL statement which may be executed over and over) or a Statement (reusable for a series of different SQL statements).
+</li><li> While a non-DDL statement is being prepared (whether explicitly via creation of a PreparedStatement, or implicitly via a Statement execution), the process is managed by a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionPreparingStmt.html">preparing statement</a> object.  This object only exists for the duration of the preparation process, after which it is discarded.
+</li><li> While a non-DDL statement is being executed, the execution state is tracked by a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionRuntimeContext.html">runtime context</a> object.  This object is discarded once execution completes.  If another execution later takes place in the same statement context (whether of the same statement or of a different statement), a new runtime context is allocated.
+</li><li> Execution of a non-DDL statement also brings into existence a JDBC ResultSet.  For a DML statement, this only exists for the lifetime of the execute call (the rowcount is read from it); for a query, it stays in existence across the entire execute/fetch sequence until closed.
+</li><li> Finally, execution of a non-DDL statement also associates an <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionExecutableStmt.html">executable statement</a> with the statement context.  Unlike the other objects, the executable statement is not owned by the statement context; it is a reusable object pinned from the <a href="/wiki/FarragoCodeCache#Cache_Contents" title="FarragoCodeCache">global code cache</a>, and may be shared by other concurrently executing statement contexts.  The association with the executable statement ends once execution completes.  Note that the preparation process results in a new executable statement being created and added to the global code cache (unless a matching executable statement was already available in the cache, in which case most of preparation can be skipped).
+</li></ul>
+<p>Later on in this document, we will also discuss <i>reentrant sessions</i>, which are associated with other sessions rather than directly with the database.
+</p>
+<h1> <span class="mw-headline" id="JDBC_Associations"> JDBC Associations </span></h1>
+<p>The next diagram elaborates on the associations between session objects and their JDBC counterparts:
+</p><p><a href="/wiki/File:SessionJdbcAssociations.png" class="image"><img alt="SessionJdbcAssociations.png" src="/wiki/upload/b/bf/SessionJdbcAssociations.png" width="1000" height="513" /></a>
+</p>
+<ul><li> The JDBC counterpart to a session is a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/jdbc/engine/FarragoJdbcEngineConnection.html">FarragoJdbcEngineConnection</a>.  Note that the association is a one-way layering; the connection knows about the session, but not vice versa.
+</li><li> The JDBC counterpart to a statement context is a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/jdbc/engine/FarragoJdbcEngineStatement.html">FarragoJdbcEngineStatement</a>.  Again, the association is a one-way layering; the statement knows about the statement context, but not vice versa.
+</li><li> Each statement knows which connection it is associated with, but connections do not track ownership of their statements (even though the session/context ownership is tracked bidirectionally at the layer below).
+</li><li> Prepared statements are subclassed from FarragoJdbcEngineStatement, with specializations for DDL and non-DDL.
+</li></ul>
+<h1> <span class="mw-headline" id="Threading_Model"> Threading Model </span></h1>
+<p>The session framework threading is <i>passive</i>:  no threads are created for session management purposes--instead, externally created threads call in through JDBC or other API's.  (Threads may be created below the session layer as part of statement execution, e.g. for a UDX invocation or for a <a href="/wiki/FennelParallelExecStreamScheduler" title="FennelParallelExecStreamScheduler">parallel query executor</a>.)
+</p><p>The source of external threads depends on how Farrago is deployed.  When running as an embedded engine (similar to hsqldb or Derby), threads are part of the calling application.  When running as a network server, threads are typically managed in a pool by the network listener (e.g. by RMI).  --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 19:29, 18 November 2008 (EST):  Does VJDBC follow the rules below, or does it depend how the calling application uses the JDBC API?
+</p><p>Regardless of how calling threads originate, they must follow these rules:
+</p>
+<ul><li> Two threads T1 and T2 are allowed to call Farrago via different sessions (e.g. via different JDBC connections) simultaneously, and they will be serviced concurrently.
+</li><li> Two threads T1 and T2 are <b>not</b> allowed to call Farrago on the same session simultaneously.  Farrago does nothing to prevent this, so making this mistake will lead to (very bad) undefined behavior.  For threading purposes, all sub-objects created directly or indirectly via a session (see diagram above) should be considered to be part of that session.  For example, at the JDBC level, calling on a ResultSet and the Connection it came from at the same time is incorrect.
+</li><li> There is one exception to the previous rule, which is asynchronous cancel.  A cancel call may be made from any thread at any time.
+</li></ul>
+<h1> <span class="mw-headline" id="Synchronization"> Synchronization </span></h1>
+<p>Synchronization is required in order to support the following use cases:
+</p>
+<ul><li> concurrent creation/destruction of sessions within the same database
+</li><li> management view enumeration of existing sessions and statements and their activities
+</li><li> safe kill of an executing statement
+</li><li> safe kill of a session with executing statements
+</li><li> safe shutdown of a database with active sessions
+</li></ul>
+<p>Accordingly, all session framework code adheres to the following rules (most of the relevant code is in package <b>net.sf.farrago.db</b>):
+</p>
+<ul><li> Currently, at most one database instance is supported per JVM.  This is a singleton instance of <b>net.sf.farrago.db.FarragoDatabase</b>, managed via <b>net.sf.farrago.db.FarragoDbSingleton</b>.  Database level synchronization is done via the mutex at the <b>FarragoDbSingleton</b> class level (not on the singleton object instance).  This level of synchronization prevents conflicts across
+<ul><li> database startup
+</li><li> database shutdown
+</li><li> database backup (at most one of these can be taking place at a time)
+</li><li> session creation
+</li><li> session destruction
+</li><li> session enumeration
+</li></ul>
+</li><li> All synchronization at the session level takes place on the session object itself (not on statement contexts nor any of their component objects).  Most public methods for <b>FarragoDbSession</b> are marked as <b>synchronized</b>, whereas most public methods for <b>FarragoDbStmtContextBase</b>, and <b>FarragoDbStmtContext</b> wrap a <b>synchronized(session) { ... }</b> block around their bodies.  This level of synchronization prevents conflicts between session activity and the various kill/shutdown scenarios.
+<ul><li> Note that preventing concurrent API calls on the same session from the application level is <b>not</b> the purpose of this synchronization.  As noted above, such calls are likely to lead to undefined behavior.
+</li></ul>
+</li><li> Whenever an operation needs to acquire both the database-level mutex and the mutex for a particular session, it <i>must</i> take the database-level mutex first and the session second.  This mutex acquisition ordering guarantees that no deadlocks will occur.
+</li><li> Any globally shared resources (e.g. the code cache) must be protected by their own synchronization so that threads from different sessions can access them concurrently.
+</li></ul>
+<p>Note that there is no synchronization at all at the JDBC level; this layer is designed to be thin enough that it can rely on the underlying session synchronization for all operations.
+</p>
+<h1> <span class="mw-headline" id="Personalities"> Personalities </span></h1>
+<p>As explained in <a href="/wiki/PersonalityFeatureFramework" title="PersonalityFeatureFramework">PersonalityFeatureFramework</a>, Farrago session behavior is influenced by the <i>personality</i> set for the session (an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionPersonality.html">FarragoSessionPersonality</a>).  Each session actually has two associated personalities (which may be the same):  a <i>default personality</i> (set by the session factory when the session is initialized) and a <i>current personality</i> (changed via <b>ALTER SESSION IMPLEMENTATION SET JAR ...</b>).  The <b>ALTER SESSION IMPLEMENTATION SET DEFAULT</b> statement reverts the current session to become the default session again.  When a new personality is created, it is given a reference to the default personality so that it can delegate behavior aspects which do not need to be overridden.
+</p>
+<h1> <span class="mw-headline" id="Transactions"> Transactions </span></h1>
+<p>In Farrago, a transaction is associated with a session.  Transactions cannot be shared across sessions, and a single session can have at most one transaction active at a time.  
+</p><p>There is no association between transactions and threads; a transaction may be started on one thread, execute statements on a different thread, and commit on yet another thread; as long as all of this takes place on the same session, and multiple threads are not calling onto the session concurrently, all is well.  This is important since network listener thread pools typically do not guarantee any particular binding between threads and call sequences.
+</p><p>A Farrago transaction spans two separate persistent resource managers:
+</p>
+<ul><li> Fennel data store:  this is tracked via an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/fennel/FennelTxnContext.html">FennelTxnContext</a>, kept as a data member in <b>FarragoDbSession</b>.
+</li><li> Catalog repository:  this is tracked via instances of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/catalog/FarragoReposTxnContext.html">FarragoReposTxnContext</a>; these are typically managed on the stack of particular operations (rather than as a data member in <b>FarragoDbSession</b>).
+</li></ul>
+<p>There are currently some open issues in this area:
+</p>
+<ul><li> There is no distributed transaction coordination across the two resource managers (no two-phase commit).  This means, for example, that for a DDL statement such as CREATE TABLE, a crash may leave the catalog out of sync with the Fennel data store after recovery (e.g. a table definition referencing an unallocated index root page).
+</li><li> Managing the two transaction contexts independently makes some code difficult to follow; even without distributed transactions, it would help if everything were managed from a single transaction context object.
+</li><li> Eventually, distributed transaction coordination may also need to span SQL/MED foreign servers.  (With Enki enabled, this is already applicable to catalog views, since these are implemented in terms of SQL/MED queries against the DBMS underlying Hibernate.)
+</li><li> The effect on transaction state is not currently well defined if an exception is encountered during commit or rollback.
+</li><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 20:53, 18 November 2008 (EST):  TBD:  issues with reentrant sessions, plus need to unify FennelTxnContext with TxnIdRef
+</li></ul>
+<h2> <span class="mw-headline" id="Savepoints"> Savepoints </span></h2>
+<p>For personalities which enable them, Farrago transactions support savepoints.  At the Farrago level, a session maintains a list of <b>FarragoDbSavepoint</b> objects, each with
+</p>
+<ul><li> an internal savepoint ID unique within the session
+</li><li> savepoint name
+</li><li> handle to a Fennel-level savepoint (<b>FennelSvptHandle</b>), which keeps track of the necessary log state
+</li></ul>
+<p>Savepoint control is exposed through JDBC API's as well as via SQL statements.
+</p>
+<h1> <span class="mw-headline" id="Session_Variables"> Session Variables </span></h1>
+<p>Each session has associated with it a set of state variables, represented as an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionVariables.html">FarragoSessionVariables</a>.  Some of these variables (such as the current user name) are standard as defined by SQL:2003, while others are Farrago-specific, and still others are personality-specific.  Variables common across all personalities are usually modeled as data members of <b>FarragoSessionVariables</b>, whereas personality-specific variables are managed in a name/value pair map for extensibility.
+</p>
+<h1> <span class="mw-headline" id="Reentrant_Sessions"> Reentrant Sessions </span></h1>
+<p>The framework supports a concept known as <i>reentrant sessions</i>.  A reentrant session may be created as part of the implementation of processing some SQL statement being executed on a user-level session.  For example, the CREATE VIEW AS SELECT ... statement needs to prepare the SELECT statement in order to validate the view definition; this is done using a reentrant session, which has two benefits:
+</p>
+<ul><li> any resources allocated are associated with the reentrant session (rather than the user-level session), so they can be freed together at the end of statement processing
+</li><li> any changes to session state (e.g. changing the current schema) take place on the reentrant session, so they do not affect the state of the user-level session
+</li></ul>
+<p>When a reentrant session is created, all of the existing state of the user-level session is cloned, so the reentrant session inherits variable values such as the current schema.
+</p><p>Reentrant sessions are not added to the global session list; it is the responsibility of the statement which creates the reentrant session to close it explicitly as part of the statement's own cleanup.  This also means that reentrant sessions are not visible via management views.
+</p><p>When a transaction is already in progress on a session, a new reentrant session will participate in the same transaction (regardless of whether the user-level session is in autocommit mode).  Otherwise, the reentrant session inherits the autocommit setting of the user-level session.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:57, 16 January 2009 (EST):  need to explain how abort requests get propagated to reentrant sessions
+</p><p>Reentrant sessions are currently used for the following purposes:
+</p>
+<ul><li> queries and DML executed internally by statements such as ALTER SYSTEM, ALTER TABLE, ANALYZE TABLE, and CREATE INDEX (when rows already exist)
+</li><li> loopback JDBC connections created by user-defined routine code (via URL <b>jdbc:default:connection</b>); see <a href="http://issues.eigenbase.org/browse/FRG-249" class="extiw" title="eigenjira:FRG-249">eigenjira:FRG-249</a> for a related threading issue
+</li><li> validation of default value definitions
+</li><li> validation of view definitions
+</li><li> validation of routine definitions
+</li><li> reentrant statements used by the optimizer, e.g. for reduction of constant expressions and uncorrelated subqueries; see <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/query/FarragoReentrantStmt.html">FarragoReentrantStmt</a>
+</li></ul>
+<h1> <span class="mw-headline" id="Statement_Lifecycle"> Statement Lifecycle </span></h1>
+<p>A statement context has the following lifecycle:
+</p><p><a href="/wiki/File:SessionStatementLifecycle.png" class="image"><img alt="SessionStatementLifecycle.png" src="/wiki/upload/9/9d/SessionStatementLifecycle.png" width="483" height="518" /></a>
+</p>
+<ul><li> After a new context is constructed, it is initially in the unprepared state (with no associated SQL statement).
+</li><li> Before a SQL statement can be executed, it must first be prepared.  This is true regardless of whether a real prepare was requested via JDBC vs an implicit prepare for direct one-shot execution.
+<ul><li> A special case is made for executing a DDL statement; in this case, the preparation request also executes the DDL statement and then immediately returns the context to the unprepared state.  The reason is that DDL statements are interpreted (they do not have compiled execution plans associated with them).
+</li></ul>
+</li><li> Once prepared, a statement can be executed.
+<ul><li> If it is a DML statement, then execution takes place entirely within the <b>execute</b> method; a cursor (<b>ResultSet</b> instance) is used internally for fetching the rowcount, but this cursor is not visible to the caller.
+</li><li> For a query, execution is split across the initial <b>execute</b> method and each <b>next</b> call on the cursor.
+</li></ul>
+</li><li> During execution, a cancel request cannot be processed immediately if a fetch is taking place; in that case, the context enters the cancel-pending state until the executing code detects the cancel request and aborts what it is doing.  A cancel on an executing DML statement works the same way.
+</li><li> Before a context can be closed, it must first be returned to the unprepared state, canceling any in-progress execution and releasing all associated resources
+</li></ul>
+<p>Note that the lifecycle above is from the point of view of the statement context; the JDBC statement which wraps it may cycle through several states in a single method.  For example, <b>FarragoJdbcEngineStatement.executeUpdate(String sql)</b> calls <b>prepare</b>, <b>execute</b>, and <b>unprepare</b> on the underlying statement context in order to implement direct execution.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:54, 17 January 2009 (EST):  explain <a rel="nofollow" class="external text" href="http://n2.nabble.com/Upcoming-Change---Cancellation-of-Fennel-Database-Level-Commands-td1441120.html">special case for DDL cancelation</a>
+</p>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:SessionPackages.png" title="File:SessionPackages.png">Image:SessionPackages.png</a>
+</li><li> <a href="/wiki/File:SessionPackages.dia" title="File:SessionPackages.dia">Image:SessionPackages.dia</a>
+</li><li> <a href="/wiki/File:SessionAssociations.png" title="File:SessionAssociations.png">Image:SessionAssociations.png</a>
+</li><li> <a href="/wiki/File:SessionAssociations.dia" title="File:SessionAssociations.dia">Image:SessionAssociations.dia</a>
+</li><li> <a href="/wiki/File:SessionJdbcAssociations.png" title="File:SessionJdbcAssociations.png">Image:SessionJdbcAssociations.png</a>
+</li><li> <a href="/wiki/File:SessionJdbcAssociations.dia" title="File:SessionJdbcAssociations.dia">Image:SessionJdbcAssociations.dia</a>
+</li><li> <a href="/wiki/File:SessionStatementLifecycle.dia" title="File:SessionStatementLifecycle.dia">Image:SessionStatementLifecycle.dia</a>
+</li><li> <a href="/wiki/File:SessionStatementLifecycle.png" title="File:SessionStatementLifecycle.png">Image:SessionStatementLifecycle.png</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 51/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1918-0!*!0!!en!2!* and timestamp 20140414194545 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoSessionFramework&amp;oldid=5642">http://luciddb.org/wiki/index.php?title=FarragoSessionFramework&amp;oldid=5642</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoSessionFramework" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoSessionFramework&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoSessionFramework&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoSessionFramework&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoSessionFramework" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoSessionFramework" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoSessionFramework" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoSessionFramework&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoSessionFramework&amp;oldid=5642" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 17 January 2009, at 07:20.</li>
+		<li id="viewcount">This page has been accessed 3,962 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.301 secs. --></body></html>

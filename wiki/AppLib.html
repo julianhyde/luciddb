@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib", "wgTitle": "AppLib", "wgCurRevisionId": 7162, "wgArticleId": 1403, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Numeric_Routines"><span class="tocnumber">1.1</span> <span class="toctext">Numeric Routines</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#String_Routines"><span class="tocnumber">1.2</span> <span class="toctext">String Routines</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Date.2FTime_Routines"><span class="tocnumber">1.3</span> <span class="toctext">Date/Time Routines</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Phone_Number_Routines"><span class="tocnumber">1.4</span> <span class="toctext">Phone Number Routines</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Security-Related_Routines"><span class="tocnumber">1.5</span> <span class="toctext">Security-Related Routines</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#ANALYZE_Routines"><span class="tocnumber">1.6</span> <span class="toctext">ANALYZE Routines</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Row.2FColumn_Transformations"><span class="tocnumber">1.7</span> <span class="toctext">Row/Column Transformations</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#General_Utility_Routines"><span class="tocnumber">1.8</span> <span class="toctext">General Utility Routines</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Data_Loading_Utility_Routines"><span class="tocnumber">1.9</span> <span class="toctext">Data Loading Utility Routines</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Scripting_Routines"><span class="tocnumber">1.10</span> <span class="toctext">Scripting Routines</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#Get_the_code"><span class="tocnumber">2</span> <span class="toctext">Get the code</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This page is an index for the Eigenbase application library (applib), a collection of commonly needed application routines packaged with <a href="/wiki/LucidDbDocs" title="LucidDbDocs">LucidDB</a> and other Eigenbase sub-projects.  For LucidDB system-management routines (some of which may also be useful for application purposes), see <a href="/wiki/LucidDbSystemProcedures" title="LucidDbSystemProcedures">LucidDbSystemProcedures</a>.
+</p>
+<h2> <span class="mw-headline" id="Numeric_Routines"> Numeric Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_RAND" title="AppLib RAND"> RAND</a>
+</li></ul>
+<h2> <span class="mw-headline" id="String_Routines"> String Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_CHAR_REPLACE" title="AppLib CHAR REPLACE"> CHAR_REPLACE</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_CONTAINS_NUMBER&amp;action=edit&amp;redlink=1" class="new" title="AppLib CONTAINS NUMBER (page does not exist)"> CONTAINS_NUMBER</a>
+</li><li> <a href="/wiki/AppLib_INSTR" title="AppLib INSTR"> INSTR</a>
+</li><li> <a href="/wiki/AppLib_LEFTN" title="AppLib LEFTN"> LEFTN</a>
+</li><li> <a href="/wiki/AppLib_REPEATER" title="AppLib REPEATER"> REPEATER</a>
+</li><li> <a href="/wiki/AppLib_RIGHTN" title="AppLib RIGHTN"> RIGHTN</a>
+</li><li> <a href="/wiki/AppLib_STR_REPLACE" title="AppLib STR REPLACE"> STR_REPLACE</a>
+</li></ul>
+<h2> <span class="mw-headline" id="Date.2FTime_Routines"> Date/Time Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_ADD_DAYS" title="AppLib ADD DAYS"> ADD_DAYS</a>
+</li><li> <a href="/wiki/AppLib_ADD_HOURS" title="AppLib ADD HOURS"> ADD_HOURS</a>
+</li><li> <a href="/wiki/AppLib_ADJUST_TIMESTAMP" title="AppLib ADJUST TIMESTAMP"> ADJUST_TIMESTAMP</a> (Only from 0.9.4 on)
+</li><li> <a href="/wiki/AppLib_CALENDAR_QUARTER" title="AppLib CALENDAR QUARTER"> CALENDAR_QUARTER</a>
+</li><li> <a href="/wiki/AppLib_CHAR_TO_DATE" title="AppLib CHAR TO DATE"> CHAR_TO_DATE</a>
+</li><li> <a href="/wiki/AppLib_CHAR_TO_TIME" title="AppLib CHAR TO TIME"> CHAR_TO_TIME</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_CHAR_TO_TIMESTAMP&amp;action=edit&amp;redlink=1" class="new" title="AppLib CHAR TO TIMESTAMP (page does not exist)"> CHAR_TO_TIMESTAMP</a>
+</li><li> <a href="/wiki/AppLib_CONVERT_DATE" title="AppLib CONVERT DATE"> CONVERT_DATE</a>
+</li><li> <a href="/wiki/AppLib_CURRENT_DATE_IN_JULIAN" title="AppLib CURRENT DATE IN JULIAN"> CURRENT_DATE_IN_JULIAN</a>
+</li><li> <a href="/wiki/AppLib_DATE_TO_CHAR" title="AppLib DATE TO CHAR"> DATE_TO_CHAR</a>
+</li><li> <a href="/wiki/AppLib_DAY_FROM_JULIAN_START" title="AppLib DAY FROM JULIAN START"> DAY_FROM_JULIAN_START</a>
+</li><li> <a href="/wiki/AppLib_DAY_IN_YEAR" title="AppLib DAY IN YEAR"> DAY_IN_YEAR</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_DAY_NUMBER_OVERALL&amp;action=edit&amp;redlink=1" class="new" title="AppLib DAY NUMBER OVERALL (page does not exist)"> DAY_NUMBER_OVERALL</a>
+</li><li> <a href="/wiki/AppLib_DAYS_DIFF" title="AppLib DAYS DIFF"> DAYS_DIFF</a>
+</li><li> <a href="/wiki/AppLib_DERIVE_EFFECTIVE_TO_TIMESTAMP" title="AppLib DERIVE EFFECTIVE TO TIMESTAMP"> DERIVE_EFFECTIVE_TO_TIMESTAMP</a>
+</li><li> <a href="/wiki/AppLib_EXTRACT_TIMESTAMP" title="AppLib EXTRACT TIMESTAMP"> EXTRACT_TIMESTAMP</a> (Only from 0.9.4 on)
+</li><li> <a href="/wiki/index.php?title=AppLib_FISCAL_MONTH&amp;action=edit&amp;redlink=1" class="new" title="AppLib FISCAL MONTH (page does not exist)"> FISCAL_MONTH</a>
+</li><li> <a href="/wiki/AppLib_FISCAL_TIME_DIMENSION" title="AppLib FISCAL TIME DIMENSION"> FISCAL_TIME_DIMENSION</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_FISCAL_QUARTER&amp;action=edit&amp;redlink=1" class="new" title="AppLib FISCAL QUARTER (page does not exist)"> FISCAL_QUARTER</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_FISCAL_YEAR&amp;action=edit&amp;redlink=1" class="new" title="AppLib FISCAL YEAR (page does not exist)"> FISCAL_YEAR</a>
+</li><li> <a href="/wiki/AppLib_HOURS_DIFF" title="AppLib HOURS DIFF"> HOURS_DIFF</a>
+</li><li> <a href="/wiki/AppLib_JULIAN_DAY_TO_DATE" title="AppLib JULIAN DAY TO DATE"> JULIAN_DAY_TO_DATE</a>
+</li><li> <a href="/wiki/AppLib_JULIAN_DAY_TO_TIMESTAMP" title="AppLib JULIAN DAY TO TIMESTAMP"> JULIAN_DAY_TO_TIMESTAMP</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_PADWEEKNUMBER&amp;action=edit&amp;redlink=1" class="new" title="AppLib PADWEEKNUMBER (page does not exist)"> PADWEEKNUMBER</a>
+</li><li> <a href="/wiki/index.php?title=AppLib_TIME_DIMENSION&amp;action=edit&amp;redlink=1" class="new" title="AppLib TIME DIMENSION (page does not exist)"> TIME_DIMENSION</a>
+</li><li> <a href="/wiki/AppLib_TIME_TO_CHAR" title="AppLib TIME TO CHAR"> TIME_TO_CHAR</a>
+</li><li> <a href="/wiki/AppLib_TIMESTAMP_TO_CHAR" title="AppLib TIMESTAMP TO CHAR"> TIMESTAMP_TO_CHAR</a>
+</li><li> <a href="/wiki/AppLib_TRUNCATE_TIMESTAMP" title="AppLib TRUNCATE TIMESTAMP"> TRUNCATE_TIMESTAMP</a> (Only from 0.9.4 on)
+</li></ul>
+<h2> <span class="mw-headline" id="Phone_Number_Routines"> Phone Number Routines </span></h2>
+<p><b>Purpose</b>
+</p>
+<dl><dd>Standardizes the format for telephone numbers. 
+</dd></dl>
+<p><b>Functions</b>
+</p>
+<ul><li> <a href="/wiki/AppLib_CLEAN_PHONE" title="AppLib CLEAN PHONE"> CLEAN_PHONE</a>
+</li><li> <a href="/wiki/AppLib_CLEAN_PHONE_INTERNATIONAL" title="AppLib CLEAN PHONE INTERNATIONAL"> CLEAN_PHONE_INTERNATIONAL</a>
+</li></ul>
+<h2> <span class="mw-headline" id="Security-Related_Routines"> Security-Related Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_GRANT_SELECT_FOR_SCHEMA" title="AppLib GRANT SELECT FOR SCHEMA"> GRANT_SELECT_FOR_SCHEMA</a>
+</li></ul>
+<h2> <span class="mw-headline" id="ANALYZE_Routines"> ANALYZE Routines </span></h2>
+<p><b>Purpose</b>
+</p>
+<dl><dd>Causes LucidDB to create statistical information for optimizing performance of queries.
+</dd></dl>
+<p><b>Recommended use</b> 
+</p>
+<dl><dd>Use after ETL or other updates to tables.
+</dd></dl>
+<p><b>Functions</b>
+</p>
+<ul><li> <a href="/wiki/AppLib_COMPUTE_STATISTICS_FOR_SCHEMA" title="AppLib COMPUTE STATISTICS FOR SCHEMA"> COMPUTE_STATISTICS_FOR_SCHEMA</a>
+</li></ul>
+<dl><dd> Executes 'analyze table' with 'compute statistics for all columns' for all tables in a schema. 
+</dd></dl>
+<ul><li> <a href="/wiki/AppLib_ESTIMATE_STATISTICS_FOR_SCHEMA" title="AppLib ESTIMATE STATISTICS FOR SCHEMA"> ESTIMATE_STATISTICS_FOR_SCHEMA</a>
+</li></ul>
+<h2> <span class="mw-headline" id="Row.2FColumn_Transformations"> Row/Column Transformations </span></h2>
+<ul><li> <a href="/wiki/AppLib_COLLAPSE_ROWS" title="AppLib COLLAPSE ROWS"> COLLAPSE_ROWS</a>
+</li><li> <a href="/wiki/AppLib_CONTIGUOUS_VALUE_INTERVALS" title="AppLib CONTIGUOUS VALUE INTERVALS"> CONTIGUOUS_VALUE_INTERVALS</a>
+</li><li> <a href="/wiki/AppLib_FLATTEN_RECURSIVE_HIERARCHY" title="AppLib FLATTEN RECURSIVE HIERARCHY"> FLATTEN_RECURSIVE_HIERARCHY</a>
+</li><li> <a href="/wiki/AppLib_FLATTEN_RECURSIVE_HIERARCHY_ALL_LEVELS" title="AppLib FLATTEN RECURSIVE HIERARCHY ALL LEVELS"> FLATTEN_RECURSIVE_HIERARCHY_ALL_LEVELS</a>
+</li><li> <a href="/wiki/AppLib_GENERATE_CRC" title="AppLib GENERATE CRC"> GENERATE_CRC</a>
+</li><li> <a href="/wiki/AppLib_GENERATE_SEQUENCE" title="AppLib GENERATE SEQUENCE"> GENERATE_SEQUENCE</a>  (Only available starting with LucidDB 0.9.4.)
+</li><li> <a href="/wiki/AppLib_GENERATE_SEQUENCE" title="AppLib GENERATE SEQUENCE"> GENERATE_SEQUENCE_PARTITIONED</a>  (Only available starting with LucidDB 0.9.4.)
+</li><li> <a href="/wiki/AppLib_PENULTIMATE_VALUES" title="AppLib PENULTIMATE VALUES"> PENULTIMATE_VALUES</a>
+</li><li> <a href="/wiki/AppLib_PIVOT_COLUMNS_TO_ROWS" title="AppLib PIVOT COLUMNS TO ROWS"> PIVOT_COLUMNS_TO_ROWS</a>
+</li><li> <a href="/wiki/AppLib_SPLIT_STRINGS" title="AppLib SPLIT STRINGS"> SPLIT_STRINGS</a>
+</li><li> <a href="/wiki/AppLib_TOPN" title="AppLib TOPN"> TOPN</a>
+</li></ul>
+<h2> <span class="mw-headline" id="General_Utility_Routines"> General Utility Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_CREATE_VAR" title="AppLib CREATE VAR"> CREATE_VAR</a>
+</li><li> <a href="/wiki/AppLib_DELETE_VAR" title="AppLib DELETE VAR"> DELETE_VAR</a>
+</li><li> <a href="/wiki/AppLib_DO_FOR_ENTIRE_SCHEMA" title="AppLib DO FOR ENTIRE SCHEMA"> DO_FOR_ENTIRE_SCHEMA</a>
+</li><li> <a href="/wiki/AppLib_DROP_SCHEMA_IF_EXISTS" title="AppLib DROP SCHEMA IF EXISTS"> DROP_SCHEMA_IF_EXISTS</a>
+</li><li> <a href="/wiki/AppLib_ENFORCE_ROW_CONSTRAINTS" title="AppLib ENFORCE ROW CONSTRAINTS"> ENFORCE_ROW_CONSTRAINTS</a>
+</li><li> <a href="/wiki/AppLib_EXEC_SQL_IF_NO_ROWS" title="AppLib EXEC SQL IF NO ROWS"> EXEC_SQL_IF_NO_ROWS</a>
+</li><li> <a href="/wiki/AppLib_FLUSH_VAR" title="AppLib FLUSH VAR"> FLUSH_VAR</a>
+</li><li> <a href="/wiki/AppLib_GET_VAR" title="AppLib GET VAR"> GET_VAR</a>
+</li><li> <a href="/wiki/AppLib_SET_VAR" title="AppLib SET VAR"> SET_VAR</a>
+</li><li> <a href="/wiki/AppLib_CLEAR_PENTAHO_MONDRIAN_CACHE" title="AppLib CLEAR PENTAHO MONDRIAN CACHE"> CLEAR_PENTAHO_MONDRIAN_CACHE</a>
+</li><li> <a href="/wiki/AppLib_SHOW_IDX_CANDIDATES" title="AppLib SHOW IDX CANDIDATES"> SHOW_IDX_CANDIDATES</a> (Only available starting with LucidDB 0.9.4.)
+</li><li> <a href="/wiki/AppLib_CREATE_INDEXES" title="AppLib CREATE INDEXES"> CREATE_INDEXES</a> (Only available starting with LucidDB 0.9.4.)
+</li></ul>
+<h2> <span class="mw-headline" id="Data_Loading_Utility_Routines"> Data Loading Utility Routines </span></h2>
+<ul><li> <a href="/wiki/AppLib_REPLICATE_MONDRIAN" title="AppLib REPLICATE MONDRIAN"> REPLICATE_MONDRIAN</a>
+</li></ul>
+<dl><dd> Replication will copy both metadata and data from your source DBMS into LucidDB (guided by your Mondrian schema .xml file), creating a logically identical structure.
+</dd></dl>
+<ul><li> <a href="/wiki/AppLib_CREATE_TABLE_FROM_SOURCE_TABLE" title="AppLib CREATE TABLE FROM SOURCE TABLE"> CREATE_TABLE_FROM_SOURCE_TABLE</a>
+</li></ul>
+<dl><dd> Creates a table with the same structure as the source table, optionally adding a few additional columns
+</dd></dl>
+<ul><li> <a href="/wiki/AppLib_CREATE_TABLE_AS" title="AppLib CREATE TABLE AS"> CREATE_TABLE_AS</a>
+</li></ul>
+<dl><dd> Creates a table with the same structure as the SQL statement passed in. It optionally loads the table after creating the table.
+</dd></dl>
+<ul><li> <a href="/wiki/AppLib_READ_ROWS_FROM_FILE" title="AppLib READ ROWS FROM FILE"> READ_ROWS_FROM_FILE</a>
+</li></ul>
+<dl><dd> Allow serialized rows to be read from a file and output in a table function. 
+</dd></dl>
+<ul><li> <a href="/wiki/AppLib_WRITE_ROWS_TO_FILE" title="AppLib WRITE ROWS TO FILE"> WRITE_ROWS_TO_FILE</a>
+</li><li> <a href="/wiki/AppLib_REMOTE_ROWS" title="AppLib REMOTE ROWS"> REMOTE_ROWS</a>
+</li></ul>
+<dl><dd> Allow serialized rows to be streamed via HTTP from remote Java applications (<a href="/wiki/LucidDbPDIStreamingLoader" title="LucidDbPDIStreamingLoader">PDI</a> / Talend).
+</dd></dl>
+<h2> <span class="mw-headline" id="Scripting_Routines"> Scripting Routines</span></h2>
+<p><b>Note</b>: These are only available starting with LucidDB 0.9.4.
+</p>
+<ul><li> <a href="/wiki/AppLib_EXECUTE_SCRIPT" title="AppLib EXECUTE SCRIPT"> EXECUTE_SCRIPT</a>
+</li><li> <a href="/wiki/AppLib_GET_SCRIPTING_ENGINES" title="AppLib GET SCRIPTING ENGINES"> GET_SCRIPTING_ENGINES</a>
+</li><li> <a href="/wiki/AppLib_EXECUTE_FUNCTION" title="AppLib EXECUTE FUNCTION"> EXECUTE_FUNCTION</a>
+</li><li> <a href="/wiki/AppLib_EXECUTE_METHOD" title="AppLib EXECUTE METHOD"> EXECUTE_METHOD</a>
+</li><li> <a href="/wiki/AppLib_EXECUTE_TRANSFORM" title="AppLib EXECUTE TRANSFORM"> EXECUTE_TRANSFORM</a>
+</li><li> <a href="/wiki/AppLib_MAKE_SCRIPT_UDF" title="AppLib MAKE SCRIPT UDF"> MAKE_SCRIPT_UDF</a>
+</li></ul>
+<h1> <span class="mw-headline" id="Get_the_code"> Get the code </span></h1>
+<p>We are sorry documentation for this library is sparse in some areas.<br />
+The source code in this library can be acquired using GIT.<br />
+It should be easy to derive the purpose and parameters for functions in this library by looking at the code.<br />
+Documentation will be a focus during this 4th Quarter of 2011.<br />
+<br />
+</p>
+<pre>
+https://github.com/dynamobi/dynamobi/tree/master/extensions/applib/src/org/eigenbase/applib
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 49/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1403-0!*!0!!en!*!* and timestamp 20140414191124 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib&amp;oldid=7162">http://luciddb.org/wiki/index.php?title=AppLib&amp;oldid=7162</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib&amp;oldid=7162" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 9 November 2011, at 18:14.</li>
+		<li id="viewcount">This page has been accessed 18,294 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.199 secs. --></body></html>

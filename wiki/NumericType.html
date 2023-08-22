@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>NumericType - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "NumericType", "wgTitle": "NumericType", "wgCurRevisionId": 2609, "wgArticleId": 1511, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-NumericType action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">NumericType</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This document describes the functional design of the DECIMAL/NUMERIC type.<br />
+See <a href="/wiki/NumericTypeDesign" title="NumericTypeDesign">NumericTypeDesign</a> for internals of the decimal implementation.<br />
+<br />
+Our <a href="/wiki/NumericTypeDiscussions" title="NumericTypeDiscussions">discussions</a> are also online.<br />
+<br />
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Decimal_Properties"><span class="tocnumber">1</span> <span class="toctext">Decimal Properties</span></a></li>
+<li class="toclevel-1"><a href="#Decimal_Representation"><span class="tocnumber">2</span> <span class="toctext">Decimal Representation</span></a></li>
+<li class="toclevel-1"><a href="#Decimal_Arithmetic:_Result_Type"><span class="tocnumber">3</span> <span class="toctext">Decimal Arithmetic: Result Type</span></a></li>
+<li class="toclevel-1"><a href="#Decimal_Arithmetic:_Implementation"><span class="tocnumber">4</span> <span class="toctext">Decimal Arithmetic: Implementation</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Casting"><span class="tocnumber">4.1</span> <span class="toctext">Casting</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Union_and_CASE"><span class="tocnumber">5</span> <span class="toctext">Union and CASE</span></a></li>
+<li class="toclevel-1"><a href="#UDF.2FUDT"><span class="tocnumber">6</span> <span class="toctext">UDF/UDT</span></a></li>
+<li class="toclevel-1"><a href="#JDBC"><span class="tocnumber">7</span> <span class="toctext">JDBC</span></a></li>
+<li class="toclevel-1"><a href="#Design_Questions"><span class="tocnumber">8</span> <span class="toctext">Design Questions</span></a></li>
+<li class="toclevel-1"><a href="#References"><span class="tocnumber">9</span> <span class="toctext">References</span></a></li>
+</ul>
+</td></tr></table>
+<h2 id="tocNumericType0"> <span class="mw-headline" id="Decimal_Properties">Decimal Properties</span></h2>
+<p><br />
+In Farrago, a DECIMAL type is an numeric SQL type, with a fixed number of base 10 digits. Some of these digits are dedicated to the fractional portion of a number. Decimals are characterized by the following properties:<br />
+<br />
+<em>Precision</em>. the total number of digits<br />
+<em>Scale</em>. the number of digits after the decimal point<br />
+<em>Radix</em>. base 10 is used<br />
+<br />
+Decimals are declared as DECIMAL(precision, scale). For example, DECIMAL(6,2) represents a six digit number, with two digits after the decimal point (and up to four digits before).<br />
+<br />
+</p><p>“123.45” can be represented exactly by DECIMAL(6,2)<br />
+“12345” is too big<br />
+“12.345” has too many digits after the decimal point.<br />
+<br />
+</p>
+<h2 id="tocNumericType1"> <span class="mw-headline" id="Decimal_Representation">Decimal Representation</span></h2>
+<p><br />
+Internally, decimals are represented as signed integers, with a constant decimal shift. For example, the DECIMAL(6,2) value “123.45” is shifted by two digits (multiplied by 10^2) to get an integer representation of “12345”. The DECIMAL(6,3) value “123.45” is adjusted by 3 digits to get an integer representation of “123450”.<br />
+<br />
+All decimals are represented by 64-bit signed integers. The maximum precision of a decimal is 19. <strong>Note that most, but not all 19-digit numbers can be represented</strong>.<br />
+</p><p><br />
+For reference, the maximum range of integer values are as follows:<br />
+<br />
+<em>32-bit integer</em>. +/- 2.1 * 10^9. can represent precision 9, a few numbers of precision 10<br />
+<em>64-bit integer</em>. +/- 9.2 * 10^18. can represent precision 18, most of precision 19<br />
+<em>128-bit integer</em>. +/- 1.7 * 10^38. can represent precision 38, a bit of precision 39<br />
+<em>double precision floating point</em>. accurately represents about 15 decimal digits<br />
+<br />
+</p>
+<h2 id="tocNumericType2"> <span class="mw-headline" id="Decimal_Arithmetic:_Result_Type">Decimal Arithmetic: Result Type</span></h2>
+<p><br />
+<u>Type matching rules</u><br />
+Floating point numbers have the greatest range of any numbers. Consequently, arithmetic between a floating point number and a decimal number is treated as floating point arithmetic. On the other hand, decimals have more expressive power than integer numeric types. INTEGER and BIGINT are special cases of DECIMAL (with scale = 0). Consequently, arithmetic between decimals and integers is treated as decimal arithmetic.<br />
+<br />
+<em>Data type precedence</em>. floating-point &gt; fixed-point &gt; integral<br />
+<br />
+In addition to <em>precision</em> and <em>scale</em>, let us also introduce the following concepts for our discussion of decimal arithmetic:<br />
+</p><p><br />
+<em>(whole) Digits</em>. the number of digits before the decimal point; in other words (<em>Precision –</em><em>Scale)</em><br />
+<em>Abbreviations</em>. P=precision, S=scale, D=digits<br />
+<em>Suffixes</em>. for example P1, P2=(precision of operands); Pout=(precision of result)<br />
+<br />
+<u>Natural result types</u><br />
+The results of arithmentic between two decimals have the following natural constraints:<br />
+</p><p><br />
+<strong>Addition/Subtraction</strong><br />
+Dout = max(D1,D2)+1<br />
+Sout = max(S1,S2)<br />
+Example: 999.0 + 1.01 = 1000.01<br />
+<br />
+<strong>Multiplication</strong><br />
+Dout = D1+D2<br />
+Sout = S1+S2<br />
+Example: 90.1 * 5.01 = 451.401<br />
+</p><p><br />
+<strong>Division</strong><br />
+Dout = Dtop + Sbottom<br />
+Sout = can be infinite<br />
+Example: 1/3 = 0.33333...<br />
+Example: 12.34 / 0.01 = 1234<br />
+<br />
+Notice that results have a broader range than operands. This presents a challenge to our database. During validation, it assigns result types to arithmetic, but it is constrained by system limits (19 decimal digits). It must choose between integral digits or fractional digits. Insufficient integral digits may lead to result overflow. Insufficient fractional digits leads to loss of precision. Neither choice is ideal. Other database vendors have provided the following heuristics:<br />
+<br />
+<u>Limited result types</u><br />
+</p><p><br />
+Like Farrago, the database systems below have a limited max precision, Pmax. They generally have a preferred result type for arithmetic operations (precision, number of whole digits, and/or scale). The preferred type is described by equations. However, if the preferred precision is greater than the maximum precision, either the whole digits or the scale must be reduced.<br />
+<br />
+<em>Table 1: Result types of popular databases</em>.<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td></td>
+        <td><em><strong>Pmax</strong></em></td>
+        <td><em><strong>ADD/SUB</strong></em></td>
+        <td><em><strong>MULT</strong></em></td>
+        <td><em><strong>DIV</strong></em></td>
+    </tr>
+    <tr>
+        <td><strong>SQL 2003 Spec</strong></td>
+        <td></td>
+        <td>Pout=implementation Sout=max(S1,S2)</td>
+        <td>Pout=implementation Sout=S1+S2</td>
+        <td>Pout=implementation Sout=implementation</td>
+    </tr>
+    <tr>
+        <td>(causes overflow)</td>
+        <td></td>
+        <td>Leading digit lost</td>
+        <td>Leading digit lost</td>
+        <td>Leading digit lost [round or trunc accepted]</td>
+    </tr>
+    <tr>
+        <td><strong>DB2</strong></td>
+        <td>31</td>
+        <td>Dout=max(D1,D2) Sout=max(S1,S2)</td>
+        <td>Pout=P1+P2 [up to 31] Sout=S1+S1 [up to 31]</td>
+        <td>Pout=31 Dout=Dtop+Sbottom [up to 31] Sout=31-Dtop</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Lower Dout to preserve fractional part of result.</td>
+        <td></td>
+        <td>Sout will be at least 3 if the database parameter MIN_DEC_DIV_3 is set.</td>
+    </tr>
+    <tr>
+        <td><strong>Sql Server</strong></td>
+        <td>38</td>
+        <td>Dout=max(D1,D2) [+1 for add] Sout=max(S1,S2)</td>
+        <td>Pout=P1+P2+1 [up to 38] Sout=S1+S2 [up to 38]</td>
+        <td>Dout=Dtop+Sbottom [up to 38] Sout=max(6,Stop+Pbottom+1)</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Lower Sout to preserve integral part of result.</td>
+        <td>Lower Sout to preserve integral part of result.</td>
+        <td>Lower Sout to preserve integral part of result. Sout is always at least 6.</td>
+    </tr>
+    <tr>
+        <td><strong>Broadbase</strong></td>
+        <td>19</td>
+        <td>Dout=max(D1,D2) Sout=max(S1,S2)</td>
+        <td>Pout=P1+P2 [up to 19] Sout=S1+S2 [up to 19]</td>
+        <td>Pout=max(D1,D2)+max(S1,S2) [up to 19] Sout=max(S1,S2)</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Lower Sout to preserve integral part of result.</td>
+        <td>Lower Sout to preserve integral part of result.</td>
+        <td>Lower Sout to preserve integral part of result. If the parameter divParam is set, Sout will be at least divParam.</td>
+    </tr>
+    <tr>
+        <td><strong>Farrago</strong></td>
+        <td>19</td>
+        <td>Dout=max(D1,D2)+1 Sout=max(S1,S2)</td>
+        <td>Pout=P1+P2 [up to 19] Sout=S1+S2 [up to 19]</td>
+        <td>Dout=Dtop+Sbottom [up to 19] Sout=max(6,Stop+Pbottom+1)</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Lower Dout to preserve the fractional part of result.</td>
+        <td></td>
+        <td>Lower Sout to preserve integral part of result.</td>
+    </tr>
+    <tr>
+        <td><strong>LucidDb</strong></td>
+        <td>19</td>
+        <td>Dout=max(D1,D2)+1 Sout=max(S1,S2)</td>
+        <td>Pout=P1+P2 [up to 19] Sout=S1+S2 [up to 19]</td>
+        <td>Dout=Dtop+Sbottom [up to 19] Sout=6</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Lower Dout to preserve the fractional part of result.</td>
+        <td>Sout is capped at 6 to preserve integral part of result. Implemented with doubles to avoid overflow.</td>
+        <td>Sout is capped at 6 to preserve integral part of result. Implemented with doubles to avoid overflow.</td>
+    </tr>
+</table>
+<p><em>Tai: Good, let's avoid the DB parameter</em><br />
+</p>
+<ul>
+
+    <li>Oracle uses a generic NUMBER type (which represents up to 38 digits without rounding) and has no need to specify scale/precision</li>
+    <li>Postgres/EnterpriseDB use an arbitrary precision number (up to 1000 digits)</li>
+    <li>MySQL uses an arbitrary precision number (previously double precision, now up to 65 digits exact precision)</li>
+</ul>
+<p><br />
+In general, the SQL Spec could be described as cautious. Its result type does not allow rounding errors, except on division. As a result, exceptions are thrown whenever arithmetic would cause a loss of any digits. DB2 faithfully implements the SQL Spec. (Note: examples assume a maximum precision of 19).<br />
+<br />
+</p>
+<pre class="text">DECIMAL(19,0) + 1.000 [DECIMAL(4,3)] =&gt; DECIMAL(19,3) // loss of integral digits (range)
+DECIMAL(19,3) * 1.000 [DECIMAL(4,3)] =&gt; DECIMAL(19,6) // loss of integral digits (range)</pre>
+<p><br />
+The SQL Server and Broadbase implementations could be described as permissive. When necessary, the scale is lowered in an effort to prevent the result from overflowing. The cost is that small digits may be prematurely cut from the results of arithmetic.<br />
+<br />
+</p>
+<pre class="text">DECIMAL(19,0) + 1.000 [DECIMAL(4,3)] =&gt; DECIMAL(19,0) // loss of small digits (less precise)
+DECIMAL(19,3) * 1.000 [DECIMAL(4,3)] =&gt; DECIMAL(19,2) // loss of small digits (less precise)</pre>
+<p><br />
+<em>Division</em>. DB2 and SQL Server attempt to support the maximum result of a division, sacrificing scale as necessary. Some implementations, DB2 and Broadbase, provide a database parameter which guarantees a minimum number of decimal digits (for example, 3). SQL Server specifies that the maximum number of decimal digits should be 6.<br />
+<br />
+<em>Proposed behavior</em>. Attempt to follow the SQL Spec and therefore DB2. Note that the max precision of 19 digits currently falls short of other major databases. We'll follow a division scheme similar to SqlServer which provides a practical heuristic (similar to the significant digits of scientific arithmetic) without too many side effects. (In DB2, dividing Dec(1,0) by Dec(1,0) yields Dec(19,18). Subsequent addition of small number like Dec(2,0) may cause an overflow).<br />
+<br />
+<em>Table 2. SQL 2003 specification for results of other operations</em><br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+
+        <td><em><strong>Operation</strong></em></td>
+        <td><em><strong>Behavior</strong></em></td>
+    </tr>
+    <tr>
+        <td>round</td>
+        <td>result is integer; either + or - 0.5 is okay</td>
+    </tr>
+
+    <tr>
+        <td>trunc/floor, ceiling</td>
+        <td>result is integer; truncate after decimal, maybe add one</td>
+    </tr>
+    <tr>
+        <td>%</td>
+        <td>not applicable, unless scale is 0</td>
+    </tr>
+    <tr>
+        <td>ln, e, pow, sqrt</td>
+        <td>returns implementation defined real</td>
+    </tr>
+</table>
+<p><br />
+</p>
+<h2 id="tocNumericType3"> <span class="mw-headline" id="Decimal_Arithmetic:_Implementation">Decimal Arithmetic: Implementation</span></h2>
+<p><br />
+During validation, arithmetic between operands is expanded so that the operand types are compatible and the return type is inferred. The function calls are mapped to more tangible typed function calls. During this process, the decimal arithmetic will be mapped to more basic integer and floating point arithmetic.<br />
+<br />
+Example of decimal addition:<br />
+</p>
+<pre class="text">3.5 + 1.49 [initial decimal values]
+3.50 + 1.49 [are set to same scale]
+350 + 149 [then are reinterpreted as long values]
+499 [the long values are added]
+4.99 [and the result is reinterpreted as a decimal]</pre>
+<p><br />
+Notes<br />
+1. literal values such as pow(10,S) are computed once per query<br />
+2. overflow is often avoided by using a result type that can accomodates all possible result values<br />
+</p><p>3. otherwise overflow happens if and only if basic arithmetic fails or cast fails<br />
+<br />
+<em>Table 3. Mapping decimal arithmetic to integer and floating point arithmetic</em><br />
+<br />
+Addition/Subtraction<br />
+</p>
+<pre class="text">reinterpretCast(decimal(Pout,Sout))
+    addBigint
+        decimal1 * pow(10, Sout-S1)
+        decimal2 * pow(10, Sout-S2)
+Overflow:
+(1) adjusting scale overflows or
+(2) bigint addition overflows
+[note: result type is guaranteed to be sufficient or max]</pre>
+<p>Multiplication<br />
+</p>
+<pre class="text">reinterpretCast(decimal(Pout,Sout))
+    multiplyBigint
+        decimal1
+        decimal2
+Overflow:
+(1) multiplication overflows
+[note: result type is guaranteed to be sufficient or max]</pre>
+<p>Division<br />
+</p>
+<pre class="text">reinterpretCast(decimal(Pout,Sout))
+    cast float to bigint
+        multiplyFloat
+            divideFloat
+                cast decimal1 as float
+                cast decimal2 as float
+            pow(10,Sout-S1+S2) // may be less than 1
+Overflow:
+(1) float division overflows (impossible?)
+(2) cast to integer type overflows
+(3) multiplication overflows
+[note: float range is much larger than decimal, but inexact]
+[note: may be less precise; how else might we implement?]</pre>
+<p>Rounding (rounds half away from zero)<br />
+</p>
+<pre class="text">divideBigint
+    case decimal &gt; 0
+        addBigint
+            decimal
+            pow(10,S)/2
+    else
+        subtractBigint
+            decimal
+            pow(10,S)/2
+    endif
+    pow(10,S)
+Overflow:
+(1) bigint addition fails</pre>
+<p>Truncation/Floor<br />
+</p>
+<pre class="text">divideBigint
+    decimal
+    pow(10,S)</pre>
+<p>Ceiling<br />
+</p>
+<pre class="text">divideBigint
+    addBigint
+        decimal
+        pow(10,S) - 1
+    pow(10,S)
+Overflow:
+(1) bigint addition fails</pre>
+<p>Mod<br />
+</p>
+<pre class="text">error unless (scale = 0)
+same as mod Bigint</pre>
+<p>Exponential functions: ln, e, pow, sqrt<br />
+All other functions<br />
+</p>
+<pre class="text">Decimals are casted as doubles.</pre>
+<p>It's important to have this feature because decimals are the default type for almost all numeric literals containing a decimal point.<br />
+<br />
+</p>
+<h3 id="tocNumericType4"> <span class="mw-headline" id="Casting">Casting</span></h3>
+<p><br />
+Note: unlike arithmetic operations, casts DO require special overflow checks<br />
+Note: casts rely on the round function (described above)<br />
+(Refer to SQL 2003 Part 2 Section 4.4.2 Number characteristics)<br />
+<br />
+Int to Decimal<br />
+</p>
+<pre class="text">multiplyBigint
+    int
+    pow(10,S)</pre>
+<p>Real to Decimal<br />
+</p>
+<pre class="text">cast to Bigint
+    multiplyFloat
+        real
+        pow(10,S)</pre>
+<p>Decimal to Int<br />
+</p>
+<pre class="text">round
+    decimal
+    0</pre>
+<p>Decimal to Real<br />
+</p>
+<pre class="text">divideFloat
+    cast decimal as float
+    pow(10,s)</pre>
+<p>Decimal to Decimal<br />
+</p>
+<pre class="text">if (Sin == Sout)
+    outValue = inValue
+else if (Sin &gt; Sout)
+    outValue = inValue * pow(10,Sin-Sout)
+else
+    outValue = round(decimal, Sout)
+end</pre>
+<p><br />
+</p>
+<h2 id="tocNumericType5"> <span class="mw-headline" id="Union_and_CASE">Union and CASE</span></h2>
+<p>SQL:2003 Part 2 Section 9.3, &quot;Data types of results of aggregations&quot;, defines the rules to be used for deriving a possibly widened result type in the case where a query column's values will consist of the union of values from a number of different yet compatible types. This is relevant for relational set operators such as UNION and INTERSECTION, as well as CASE expressions (where each THEN clause may supply a value of a different type).<br />
+</p><p><br />
+According to Syntax Rule 3.c, &quot;If all of the data types in DTS [the set of types being combined] are exact numeric, then the result data type is exact numeric with implementation-defined precision and with scale equal to the maximum of the scales of the data types in DTS.&quot; As with multiplication, the standard is erring on the side of safety in preserving scale, with overflow resulting in errors if insufficient precision remains for the whole digits.<br />
+<br />
+Farrago currently violates the standard here, instead choosing to preserve whole digits instead of scale (similar to LucidDB multiplication type derivation). We will address this as part of work on strict-vs-pragmatic mode.<br />
+<br />
+</p>
+<h2 id="tocNumericType6"> <span class="mw-headline" id="UDF.2FUDT">UDF/UDT</span></h2>
+<p><br />
+The (2s-complement) integer representation of decimals is readily converted into java.math.BigInteger, then BigDecimal.<br />
+<br />
+<em>Psuedocode (Java rather than JNI)</em>.<br />
+</p><p>[int internalDecimal]<br />
+BigDecimal arg = new BigDecimal(new BigInteger(&amp;internalDecimal), scale)<br />
+<br />
+(Refer to SQL 2003 Part 10 Section 9.11 SQLJ Datatype Properties for type mapping)<br />
+<br />
+</p>
+<h2 id="tocNumericType7"> <span class="mw-headline" id="JDBC">JDBC</span></h2>
+<p><br />
+Values can be casted from BigDecimal to other types (strings, integers, doubles).<br />
+<br />
+</p>
+<h2 id="tocNumericType8"> <span class="mw-headline" id="Design_Questions">Design Questions</span></h2>
+<p><br />
+<em>Will we use 32-bit integers or only 64-bit integers?</em><br />
+The more compact 32-bit integers have the benefits of less storage space, possibly faster execution. On the other hand, they might complicate the model, because they would necessitate the handling of multiple internal types. But then again, it might save us time in the long run, if we eventually decided to use multiple internal types. For now, we'll keep things simple and only use the 64-bit types unless there are good reasons to go 32-bit. (Question: is there a compelling reason to do 32-bit?) Other databases use proprietary internal representations for their numeric data.<br />
+<em>Tai: Keep it simple, let’s start with 64-bit storage.</em><br />
+<br />
+<em>What precision/scale are we going to support?</em><br />
+Other databases allow a high precision/scale because they probably have a larger binary datatype than 64 bit. If we are only doing that much it is only possible to really support 19 digits of precision or perhaps 18. (Might as well support almost 19 and allow numbers to overflow naturally when the internal representation cannot support them.) Similarly scale can range from 0-19. Negative scale is not supported in the SQL 2003 spec and would complicate things, so maybe we could skip it for now. (Question: is there a compelling reason to do negative scale?) Oracle supports a large range of scales because their generic NUMBER type can dynamically become approximate at extreme values.<br />
+<br />
+<em>What are the return types of arithmetic?</em><br />
+If we would like to follow the SQL 2003 specification, our approach would be similar to DB2's. This also allows us to have the correct overflow behavior without too much additional work. The most controversial arithmetic operation is probably DIVISION, for which the standard provides little guidance. Allowing the maximum integral digits to support the result (as DB2 and SQL Server do) may mean sacrificing fractional digits (especially with our limited precision), and might mean a messy database parameter to guarantee a specified number of fractional digits. Perhaps we could require a set number as minimum (like 3).<br />
+</p><p><br />
+</p>
+<h2 id="tocNumericType9"> <span class="mw-headline" id="References">References</span></h2>
+<p><br />
+SQL 2003 Part 2 Section 6.26 (the draft found through this link is close to the actual standard)<br />
+<a rel="nofollow" class="external autonumber" href="http://www.wiscorp.com/SQLStandards.html">[1]</a><br />
+<br />
+DB2 8.1 SQL Reference Vol I Ch 2<br />
+<a rel="nofollow" class="external autonumber" href="http://www.nvc.cs.vt.edu/pkgdocs/IBMdb2/html/db2s0/concap.htm#IDX6448">[2]</a><br />
+<br />
+MSDN Transact SQL Reference<br />
+<a rel="nofollow" class="external autonumber" href="http://msdn.microsoft.com/library/?url=/library/en-us/tsqlref/ts_da-db_8rc5.asp">[3]</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 311/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1511-0!*!0!!en!*!* and timestamp 20140414194558 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=NumericType&amp;oldid=2609">http://luciddb.org/wiki/index.php?title=NumericType&amp;oldid=2609</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/NumericType" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:NumericType&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=NumericType&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=NumericType&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=NumericType" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/NumericType" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/NumericType" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=NumericType&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=NumericType&amp;oldid=2609" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 5 July 2007, at 17:05.</li>
+		<li id="viewcount">This page has been accessed 4,365 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.275 secs. --></body></html>

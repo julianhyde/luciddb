@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>View source - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="next" href="http://luciddb.org/wiki/LucidDbTpch" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if IE 8]><link rel="stylesheet" href="/wiki/skins/common/IE80Fixes.css?303" media="screen" /><![endif]-->
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbTpch", "wgTitle": "LucidDbTpch", "wgCurRevisionId": 5901, "wgArticleId": 1858, "wgIsArticle": false, "wgAction": "edit", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": true, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbTpch action-edit skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">View source</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">for <a href="/wiki/LucidDbTpch" title="LucidDbTpch">LucidDbTpch</a></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>You do not have permission to edit this page, for the following reason:
+</p>
+<div class="permissions-errors">
+<p>The action you have requested is limited to users in the group: <a href="/wiki/index.php?title=LucidDB_Wiki:Users&amp;action=edit&amp;redlink=1" class="new" title="LucidDB Wiki:Users (page does not exist)">Users</a>.
+</p>
+</div>
+<p>You can view and copy the source of this page:
+</p><textarea id="wpTextbox1" name="wpTextbox1" cols="80" rows="25" readonly="">= Disclaimers =
+
+'''Important Notice #1:''' the information on this page refers to the TPC-H benchmark tables and queries, but the results described are not official TPC-H results and should not be interpreted as such; nor should they be compared to official TPC-H results in any way.  TPC-H is a trademark of the Transaction Processing Performance Council.
+
+'''Important Notice #2:''' this page contains comparative results for LucidDB and MySQL, but the tests were carried out without expertise in MySQL performance tuning, and so the results should not be interpreted as what could be expected from a system tuned by an expert.  Suggestions for configuration improvements are welcome!  MySQL is a registered trademark of MySQL AB in the United States, the European Union and other countries.
+* --[[User:Jvs|Jvs]] 18:29, 29 July 2008 (PDT):  Peter Zaitsev has pointed out that MySQL load performance would be better if indexes were predefined before data is loaded (rather than created individually after), so we'll be trying that on the next run.  He also recommened using the rewritten queries with joins instead of subqueries against MySQL (not just LucidDB).
+
+= Overview =
+
+This wiki page presents some LucidDB performance results based on the table and query definitions from the [http://www.tpc.org/tpch TPC-H] benchmark.  For the purposes of comparison between LucidDB's column store architecture and a typical row store, results from MySQL running on the same machine are also presented for the identical analytic workload.  Scale factor 10 (10GB of source flatfile data) was used for the cross-DBMS comparison.  Some information on how to run the tests yourself is also provided.  Join the luciddb-users mailing list at sourceforge.net if you need help.
+
+Additional information was presented at [http://en.oreilly.com/oscon2008/public/schedule/detail/2781 OSCON 2008]; here are the [[Media:luciddb_oscon2008_win.ppt|slides]].
+
+Also, for some results obtained independently by others outside of the LucidDB project, see [http://www.tholis.com/news/open-source-data-warehousing/ this blog post].
+
+= Scale Factor 10 Benchmark Machine Specifications =
+
+The machine used to run the scale factor 10 benchmark for both LucidDB and MySQL had the following hardware:
+
+* AMD64
+* 8GB RAM
+* 2GHz dual-core
+* 1MB L2 cache
+* Seagate ST3300555SS SATA drive, 10K RPM
+
+All files (source flatfiles, data files, and temp files) were stored on the same ext3 filesystem on the single drive (no RAID).  The Linux I/O scheduler was changed from the default (cfq) to deadline.
+
+The operating system was 64-bit RHEL 5.
+
+For LucidDB, the JRockit R27.4 JVM was used.
+
+= LucidDB Test Execution =
+
+== LucidDB Version ==
+
+The LucidDB version used for testing was a prerelease of 0.7.4.  If you're going to run the test yourself, download the full [http://downloads.sf.net/eigenbase/eigenbase-src-0.7.4.tar.bz2 0.7.4 source tarball] and unpack it.  http://p4web.eigenbase.org/open/dev/thirdparty/tpch.tar.gz contains the dbgen benchmark code from the TPC website, plus some LucidDB-specifics helper scripts, while '''luciddb/test/sql/tpch''' from the source tarball contains all LucidDB-specific scripts.
+
+== LucidDB Storage Preallocation ==
+
+For optimal load performance, LucidDB data and temp files were preallocated via the [[LucidDbPerformanceTuning#Pre-allocating_File_Space_.28Linux_Only.29|lucidDbAllocFile utility]].  The '''allocSpace.10G.sh''' script can be used after editing the path for LUCIDDB_DIR to point to your installed LucidDB '''bin''' directory.  Make sure LucidDB is not running when you execute the utility, otherwise you'll encounter a file lock error.
+
+== LucidDB Buffer Pool Size ==
+
+The LucidDB buffer pool was set to 6GB.  See [[LucidDbBufferPoolSizing]] for the procedure.
+
+== LucidDB I/O Scheduler ==
+
+The LucidDB I/O Scheduler was set to '''aioLinux''' (forcing usage of libaio and O_DIRECT):
+
+&lt;pre>
+alter system set "deviceSchedulerType" = 'aioLinux';
+&lt;/pre>
+
+Restart LucidDB after changing this setting and make sure that it comes back up successfully; if it doesn't, you probably need to install the libaio package on your machine.
+
+== LucidDB Prefetch ==
+
+A prefetch queue size of 50 pages was found to be the optimal setting for the disk configuration used:
+
+&lt;pre>
+alter system set "prefetchPagesMax" = 50;
+&lt;/pre>
+
+Changing this setting also requires a restart in order to take effect.  The optimal setting is dependent on the disk configuration.
+
+(The numbers reported below were with the default setting of 12.)
+
+== LucidDB Concurrency ==
+
+For benchmark loads and queries run without any concurrency, LucidDB can be configured to give each statement the maximum possible memory:
+
+&lt;pre>
+alter system set "expectedConcurrentStatements" = 1;
+&lt;/pre>
+
+Changing this setting does not require a restart.
+
+(The numbers reported below were with the default setting of 4.)
+
+== Data Generation ==
+
+The dbgen utility provided on the TPC website was used to generate the datafiles.  The utility can't generate files larger than 2GB, so at scale factor 10, it's necessary to generate the files split up into smaller pieces.  Large tables were split up into 10 parts, and then reconcatenated back into a single file per table (since the limit is in the utility, not in LucidDB's flatfile reader, and it's more efficient for LucidDB to load each table in one shot).
+
+(--[[User:Jvs|Jvs]] 19:07, 30 March 2009 (EDT):  According to http://n2.nabble.com/large-file-support-in-TPC-H-dbgen-td2559525.html, it should be possible to get dbgen to generate one big file.)
+
+The '''createdbMultiProcess''' script in tpch.tar.gz takes care of the generation step above, as well as some additional munging needed to make the files parsable by LucidDB.
+
+&lt;pre>
+$ ./createdbMultiProcess 10G 10
+&lt;/pre>
+
+Reconcatentation can be performed with the Unix '''cat''' command.
+
+== LucidDB Initialization SQL ==
+
+The template script '''init.sql.tmpl''' executes DDL to create some of the necessary objects such as the flatfile links.  It also selects row counts from the flatfile links to verify that the files are accessible.  Edit it to match your site-specifics, and then execute it.  You can ignore the commented-out portions (they are obsolete leftovers from Broadbase).
+
+== LucidDB Table Definitions ==
+
+The script '''create_tables.sql''' defines the TPC-H base tables.  The definitions include the primary keys, but no other indexes.
+
+(Note that the flat file external tables are quoted as lowercase, e.g. "lineitem", whereas the corresponding base tables are unquoted and hence ALLCAPS, e.g. LINEITEM.)
+
+== LucidDB Data Load ==
+
+The script '''load_tables.sql''' copies data from the flatfile links into the base tables.  Besides loading the data, this also updates the primary key index.
+
+== LucidDB Index Creation ==
+
+Non-primary-key indexes are created by script '''create_indexes.sql'''.  LucidDB does not support foreign key constraints, but indexes on the foreign key columns are still needed for efficient query processing.  Additional indexes useful to the optimizer are also created.
+
+This script also runs ANALYZE to collect statistics needed by the optimizer.
+
+== LucidDB Queries ==
+
+Queries are in individual script files named according to query number, e.g. '''1.sql'''.
+
+* Queries 2, 4, 11, 15, 16, and 17 are rewritten into an equivalent form which avoids subqueries, since LucidDB's optimizer does not yet handle all subquery decorrelation efficiently by itself.
+* Queries 19, 21, and 22 are omitted since LucidDB's optimizer cannot yet handle them, and no one has come up with an equivalent rewrite.
+* Queries 2, 3, 10, and 18 should be using !set rowlimit to control the result set size, but the scripts have not been updated yet; doing so may reduce the result rendering time.
+* Queries which perform date arithmetic after parameter substitution in the original spec have been rewritten with the result of the arithmetic; LucidDB's optimizer is capable of doing the equivalent constant reduction rewrite (the scripts can be edited to verify this).
+
+After the server was restarted post-load, all queries were run through exactly once in sequence in the same session.
+
+== LucidDB Storage ==
+
+LucidDB storage breakdowns were obtained with this query:
+
+&lt;pre>
+select table_schem as schema_name, table_name, index_name, pages as page_count
+from sys_boot.jdbc_metadata.index_info_internal;
+&lt;/pre>
+
+= MySQL Test Execution =
+
+== MySQL Version ==
+
+The MySQL version used was 5.0.22, with the MyISAM storage engine.
+
+== MySQL Configuration ==
+
+For the data load and indexing, the following '''my.cnf''' settings were used (after some experimentation to attempt to find the best ones):
+
+&lt;pre>
+skip-locking
+key_buffer = 3000M
+sort_buffer_size = 2M
+read_buffer_size = 2M
+read_rnd_buffer_size = 8M
+myisam_sort_buffer_size = 64M
+bulk_insert_buffer_size = 2M
+&lt;/pre>
+
+However, for queries, the default '''my.cnf''' settings were used, since attempts to use large-memory settings seemed to hurt query times in most cases.
+
+== MySQL Scripts ==
+
+The script [[Media:mysql_load.sql]] was used to create the schema, load the data, create the indexes, and analyze statistics.  PRIMARY KEY and index definitions were identical to those used for LucidDB.  However, unlike LucidDB, primary keys were added as a separate step (instead of being loaded together with the data).
+
+The script [[Media:mysql_query.sql]] was used to run queries; the queries were not modified from the TPC-H specification.  As with LucidDB, queries were run in sequence in a single session after restarting the server post-load.
+
+Query 11 returned incorrect results (empty result set).  Later investigation showed that the query was parameterized incorrectly for both MySQL and LucidDB, so the results for both should be ignored.  (This will be corrected for a future run.)
+
+During a trial run, query 18 never came back after hours, and the machine was thrashing, so it was omitted from the real run.
+
+== MySQL Storage ==
+
+Storage was measured by shutting the server down and examining data and index file sizes:
+
+&lt;pre>
+# ls -l
+total 16377720
+-rw-rw---- 1 mysql mysql       8850 Apr 13 23:28 customer.frm
+-rw-rw---- 1 mysql mysql  238173452 Apr 13 23:28 customer.MYD
+-rw-rw---- 1 mysql mysql   38496256 Apr 13 23:28 customer.MYI
+-rw-rw---- 1 mysql mysql         65 Apr 13 18:16 db.opt
+-rw-rw---- 1 mysql mysql       9226 Apr 14 04:50 lineitem.frm
+-rw-rw---- 1 mysql mysql 5296436176 Apr 14 05:01 lineitem.MYD
+-rw-rw---- 1 mysql mysql 7186396160 Apr 14 06:01 lineitem.MYI
+-rw-rw---- 1 mysql mysql       8692 Apr 14 06:06 nation.frm
+-rw-rw---- 1 mysql mysql       2316 Apr 14 06:06 nation.MYD
+-rw-rw---- 1 mysql mysql       4096 Apr 14 06:06 nation.MYI
+-rw-rw---- 1 mysql mysql       8928 Apr 14 06:07 orders.frm
+-rw-rw---- 1 mysql mysql 1472903276 Apr 14 06:09 orders.MYD
+-rw-rw---- 1 mysql mysql  585344000 Apr 14 06:14 orders.MYI
+-rw-rw---- 1 mysql mysql       8874 Apr 14 06:15 part.frm
+-rw-rw---- 1 mysql mysql  234451704 Apr 14 06:15 part.MYD
+-rw-rw---- 1 mysql mysql  156191744 Apr 14 06:16 part.MYI
+-rw-rw---- 1 mysql mysql       8748 Apr 14 06:03 partsupp.frm
+-rw-rw---- 1 mysql mysql 1160039052 Apr 14 06:04 partsupp.MYD
+-rw-rw---- 1 mysql mysql  370024448 Apr 14 06:06 partsupp.MYI
+-rw-rw---- 1 mysql mysql       8648 Apr 13 23:33 region.frm
+-rw-rw---- 1 mysql mysql        412 Apr 13 23:33 region.MYD
+-rw-rw---- 1 mysql mysql       3072 Apr 13 23:33 region.MYI
+-rw-rw---- 1 mysql mysql       8804 Apr 13 19:20 supplier.frm
+-rw-rw---- 1 mysql mysql   13888184 Apr 13 19:20 supplier.MYD
+-rw-rw---- 1 mysql mysql    1848320 Apr 13 19:20 supplier.MYI
+&lt;/pre>
+
+= Scale Factor 10 Results =
+
+All times are in seconds; all storage sizes are in bytes.  Index storage includes PRIMARY KEY.
+
+== Queries ==
+
+Results for queries 1-18 are graphed here (times in seconds):
+
+[[Image:tpch_sf10_queries.png]]
+
+(As noted above, results for query 11 should be ignored due to a problem with the runs.)
+
+== Load Time ==
+
+This is how long it took to load the data (ANALYZE time not included):
+
+[[Image:tpch_sf10_load.png]]
+
+LucidDB takes longer to load the base data, but is able to take advantage of the compression results later while building indexes.
+
+== Storage ==
+
+Storage comparison for the LINEITEM table (which dominates the database) is graphed here (measured in bytes):
+
+[[Image:tpch_sf10_storage.png]]
+
+If we drill into the LucidDB storage by column for this table, we find something interesting:
+
+[[Image:tpch_sf10_column_storage.png]]
+
+Most of the storage is eaten up by the comment text field, whereas the other columns compress quite well.  With column store, the comment column is only accessed if the query actually needs it, whereas with row store, the I/O cost is always paid up front.
+
+The LucidDB index storage breakdown for this table is also enlightening:
+
+[[Image:tpch_sf10_index_storage.png]]
+
+Most of the storage is eaten up by the primary key index, which is hard to compress; the other index bitmaps compress quite well. The primary key on the fact table is not accessed much except at load time, so in terms of query I/O, it isn't relevant.
+
+== SF 10 Numbers ==
+
+&lt;TABLE BORDER=1>
+		&lt;TR>
+			&lt;TD WIDTH=196 HEIGHT=18 ALIGN=LEFT>&lt;B>&lt;BR>&lt;/B>&lt;/TD>
+			&lt;TD WIDTH=157 ALIGN=LEFT>&lt;B>MySQL&lt;/B>&lt;/TD>
+			&lt;TD WIDTH=135 ALIGN=LEFT>&lt;B>LucidDB&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>QUERIES&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="1" SDNUM="1033;">1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="464.6" SDNUM="1033;">464.6&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="372.458" SDNUM="1033;0;#.0">372.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="2" SDNUM="1033;">2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="26" SDNUM="1033;">26&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="18.045" SDNUM="1033;0;#.0">18.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="3" SDNUM="1033;">3&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3301.4" SDNUM="1033;">3301.4&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="74.193" SDNUM="1033;0;#.0">74.2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="4" SDNUM="1033;">4&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="269.3" SDNUM="1033;">269.3&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="86.354" SDNUM="1033;0;#.0">86.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="5" SDNUM="1033;">5&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1724.3" SDNUM="1033;">1724.3&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="64.686" SDNUM="1033;0;#.0">64.7&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="6" SDNUM="1033;">6&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="63.6" SDNUM="1033;">63.6&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="21.767" SDNUM="1033;0;#.0">21.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="7" SDNUM="1033;">7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="94.8" SDNUM="1033;">94.8&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="278.805" SDNUM="1033;0;#.0">278.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="8" SDNUM="1033;">8&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="42.8" SDNUM="1033;">42.8&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="18.882" SDNUM="1033;0;#.0">18.9&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="9" SDNUM="1033;">9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="533" SDNUM="1033;">533&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="169.043" SDNUM="1033;0;#.0">169.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="10" SDNUM="1033;">10&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2730.9" SDNUM="1033;">2730.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="119.607" SDNUM="1033;0;#.0">119.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="11" SDNUM="1033;">11&lt;/TD>
+			&lt;TD ALIGN=LEFT>bad run&lt;/TD>
+			&lt;TD ALIGN=LEFT>bad run&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="12" SDNUM="1033;">12&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1388.7" SDNUM="1033;">1388.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="48.466" SDNUM="1033;0;#.0">48.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="13" SDNUM="1033;">13&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="571.2" SDNUM="1033;">571.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="180" SDNUM="1033;0;#.0">180.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="14" SDNUM="1033;">14&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="487" SDNUM="1033;">487&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="46.878" SDNUM="1033;0;#.0">46.9&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="15" SDNUM="1033;">15&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="357.1" SDNUM="1033;">357.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="69.972" SDNUM="1033;0;#.0">70.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="16" SDNUM="1033;">16&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="132.2" SDNUM="1033;">132.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="69.706" SDNUM="1033;0;#.0">69.7&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="17" SDNUM="1033;">17&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="49.1" SDNUM="1033;">49.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="138.115" SDNUM="1033;0;#.0">138.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="18" SDNUM="1033;">18&lt;/TD>
+			&lt;TD ALIGN=LEFT>thrash&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="249.339" SDNUM="1033;0;#.0">249.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="19" SDNUM="1033;">19&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="68.3" SDNUM="1033;">68.3&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#.0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="20" SDNUM="1033;">20&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="248" SDNUM="1033;">248&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="83.767" SDNUM="1033;0;#.0">83.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="21" SDNUM="1033;">21&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1787.3" SDNUM="1033;">1787.3&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=RIGHT SDVAL="22" SDNUM="1033;">22&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="6.7" SDNUM="1033;">6.7&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>LOAD TABLE&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds (does not include primary key creation)&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds (includes primary key creation)&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.593" SDNUM="1033;0;#.0">1.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.364" SDNUM="1033;0;#.0">1.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="15.1" SDNUM="1033;">15.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="42.116" SDNUM="1033;0;#.0">42.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.8" SDNUM="1033;">0.8&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2.972" SDNUM="1033;0;#.0">3.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="12.7" SDNUM="1033;">12.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="32.18" SDNUM="1033;0;#.0">32.2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="60.4" SDNUM="1033;">60.4&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="210.814" SDNUM="1033;0;#.0">210.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="135" SDNUM="1033;">135&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="584.7" SDNUM="1033;0;#.0">584.7&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="665.7" SDNUM="1033;">665.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="4841.36" SDNUM="1033;0;#.0">4841.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>PRIMARY KEY&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.5" SDNUM="1033;">0.5&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="21.3" SDNUM="1033;">21.3&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.2" SDNUM="1033;">1.2&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="19.9" SDNUM="1033;">19.9&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="100.7" SDNUM="1033;">100.7&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="158.4" SDNUM="1033;">158.4&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="741.7" SDNUM="1033;">741.7&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>CREATE INDEX&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>NATION(N_REGIONKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.1" SDNUM="1033;">1.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.418" SDNUM="1033;0;0.0">0.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>SUPPLIER(S_NATIONKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.5" SDNUM="1033;">1.5&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.626" SDNUM="1033;0;0.0">0.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PARTSUPP(PS_PARTKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="82.3" SDNUM="1033;">82.3&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="32.018" SDNUM="1033;0;0.0">32.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PARTSUPP(PS_SUPPKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="120" SDNUM="1033;">120&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="53.13" SDNUM="1033;0;0.0">53.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>CUSTOMER(C_NATIONKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="24.4" SDNUM="1033;">24.4&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.241" SDNUM="1033;0;0.0">1.2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>ORDERS(O_CUSTKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="142.6" SDNUM="1033;">142.6&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="98.144" SDNUM="1033;0;0.0">98.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_ORDERKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1002.7" SDNUM="1033;">1002.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="168.681" SDNUM="1033;0;0.0">168.7&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=36 ALIGN=LEFT>LINEITEM(L_PARTKEY,L_SUPPKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1370" SDNUM="1033;">1370&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="452.59" SDNUM="1033;0;0.0">452.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_SHIPDATE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1993.9" SDNUM="1033;">1993.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="599.03" SDNUM="1033;0;0.0">599.0&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=36 ALIGN=LEFT>CUSTOMER(C_MKTSEGMENT)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="27.9" SDNUM="1033;">27.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.078" SDNUM="1033;0;0.0">1.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>ORDERS(O_ORDERDATE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="281.1" SDNUM="1033;">281.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="149.248" SDNUM="1033;0;0.0">149.2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_SUPPKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1691.1" SDNUM="1033;">1691.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="523.393" SDNUM="1033;0;0.0">523.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>REGION(R_NAME)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.7" SDNUM="1033;">0.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.499" SDNUM="1033;0;0.0">0.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_DISCOUNT)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2334.1" SDNUM="1033;">2334.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="15.318" SDNUM="1033;0;0.0">15.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_QUANTITY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2528.7" SDNUM="1033;">2528.7&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="24.506" SDNUM="1033;0;0.0">24.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_RETURNFLAG)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2981.2" SDNUM="1033;">2981.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="11.685" SDNUM="1033;0;0.0">11.7&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_SHIPMODE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3475.8" SDNUM="1033;">3475.8&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="14.926" SDNUM="1033;0;0.0">14.9&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_COMMITDATE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3733.9" SDNUM="1033;">3733.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="565.335" SDNUM="1033;0;0.0">565.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_RECEIPTDATE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3968" SDNUM="1033;">3968&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="557.278" SDNUM="1033;0;0.0">557.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>LINEITEM(L_PARTKEY)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="4300.6" SDNUM="1033;">4300.6&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="457.792" SDNUM="1033;0;0.0">457.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PART(P_SIZE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="27" SDNUM="1033;">27&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.533" SDNUM="1033;0;0.0">1.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PART(P_TYPE)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="43.2" SDNUM="1033;">43.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2.35" SDNUM="1033;0;0.0">2.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=36 ALIGN=LEFT>PARTSUPP(PS_SUPPLYCOST)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="163.9" SDNUM="1033;">163.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="62.415" SDNUM="1033;0;0.0">62.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>NATION(N_NAME)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.2" SDNUM="1033;">0.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.558" SDNUM="1033;0;0.0">0.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PART(P_NAME)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="57" SDNUM="1033;">57&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="21.431" SDNUM="1033;0;0.0">21.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>ORDERS(O_CLERK)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="437.2" SDNUM="1033;">437.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="181.266" SDNUM="1033;0;0.0">181.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PART(P_BRAND)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="71.2" SDNUM="1033;">71.2&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.584" SDNUM="1033;0;0.0">1.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>PART(P_CONTAINER)&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="76.5" SDNUM="1033;">76.5&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.295" SDNUM="1033;0;0.0">1.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>ANALYZE TABLE&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+			&lt;TD ALIGN=LEFT>seconds&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2.107" SDNUM="1033;0;0.0">2.1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1.388" SDNUM="1033;0;0.0">1.4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="0.1" SDNUM="1033;">0.1&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="4.466" SDNUM="1033;0;0.0">4.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD ALIGN=LEFT>N/A&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2.869" SDNUM="1033;0;0.0">2.9&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="15.9" SDNUM="1033;">15.9&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="6.773" SDNUM="1033;0;0.0">6.8&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD ALIGN=LEFT>N/A&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3.451" SDNUM="1033;0;0.0">3.5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD ALIGN=LEFT>N/A&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="10.582" SDNUM="1033;0;0.0">10.6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="290" SDNUM="1033;">290&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="36.334" SDNUM="1033;0;0.0">36.3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT>&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>STORAGE (DATA)&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">bytes&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">bytes&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2316" SDNUM="1033;0;#,##0">2,316&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="262144" SDNUM="1033;0;#,##0">262,144&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="412" SDNUM="1033;0;#,##0">412&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="196608" SDNUM="1033;0;#,##0">196,608&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="234451704" SDNUM="1033;0;#,##0">234,451,704&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="126353408" SDNUM="1033;0;#,##0">126,353,408&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="13888184" SDNUM="1033;0;#,##0">13,888,184&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="14155776" SDNUM="1033;0;#,##0">14,155,776&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1160039052" SDNUM="1033;0;#,##0">1,160,039,052&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1156907008" SDNUM="1033;0;#,##0">1,156,907,008&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="238173452" SDNUM="1033;0;#,##0">238,173,452&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="224034816" SDNUM="1033;0;#,##0">224,034,816&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1472903276" SDNUM="1033;0;#,##0">1,472,903,276&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1288536064" SDNUM="1033;0;#,##0">1,288,536,064&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="5296436176" SDNUM="1033;0;#,##0">5,296,436,176&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3668377600" SDNUM="1033;0;#,##0">3,668,377,600&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">&lt;BR>&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=18 ALIGN=LEFT>&lt;B>STORAGE (INDEXES)&lt;/B>&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">bytes&lt;/TD>
+			&lt;TD ALIGN=LEFT SDNUM="1033;0;#,##0">bytes&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="4096" SDNUM="1033;0;#,##0">4,096&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="131072" SDNUM="1033;0;#,##0">131,072&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3072" SDNUM="1033;0;#,##0">3,072&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="98304" SDNUM="1033;0;#,##0">98,304&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="156191744" SDNUM="1033;0;#,##0">156,191,744&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="176553984" SDNUM="1033;0;#,##0">176,553,984&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="1848320" SDNUM="1033;0;#,##0">1,848,320&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="2883584" SDNUM="1033;0;#,##0">2,883,584&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="370024448" SDNUM="1033;0;#,##0">370,024,448&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="329875456" SDNUM="1033;0;#,##0">329,875,456&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="38496256" SDNUM="1033;0;#,##0">38,496,256&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="42696704" SDNUM="1033;0;#,##0">42,696,704&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="585344000" SDNUM="1033;0;#,##0">585,344,000&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="595722240" SDNUM="1033;0;#,##0">595,722,240&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD HEIGHT=19 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="7186396160" SDNUM="1033;0;#,##0">7,186,396,160&lt;/TD>
+			&lt;TD ALIGN=RIGHT SDVAL="3918462976" SDNUM="1033;0;#,##0">3,918,462,976&lt;/TD>
+		&lt;/TR>
+
+&lt;/TABLE>
+
+= Scale Factor 30 Results =
+
+To test LucidDB scalability, a separate test was carried out comparing LucidDB SF 10 against LucidDB SF 30.  (No MySQL run was attempted at SF 30.)  These test runs used a different machine with a larger filesystem mounted on  SAN (which is why the SF 10 numbers are better than the ones above); other than that, the hardware and LucidDB configuration were similar to the runs described above (in particular, still 8 GB RAM).
+
+[[Image:tpch_sf10_vs_30.png]]
+
+Left-hand bars show the SF 10 results; right-hand bars show the SF 30 results.  The middle bars are computed as three times the SF 10 results (for comparing the expected results given perfect linear scaleup vs the actual SF 30 results).
+
+== SF 30 Numbers ==
+
+&lt;TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" WIDTH=278 HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" WIDTH=126 ALIGN=LEFT SDNUM="1033;0;0.000">LucidDB SF 10&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" WIDTH=144 ALIGN=LEFT SDNUM="1033;0;0.000">LucidDB SF 30&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0.000">Time (sec)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0.000">Time (sec)&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;B>GRAND TOTAL&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="10215.655" SDNUM="1033;0;0">&lt;B>10216&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="33703.323" SDNUM="1033;0;0">&lt;B>33703&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;B>LOAD TABLE&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="4819.688" SDNUM="1033;0;0">&lt;B>4820&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="14976.131" SDNUM="1033;0;0">&lt;B>14976&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.577" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.291" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.85" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.872" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="37.69" SDNUM="1033;0;0">38&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="110.1" SDNUM="1033;0;0">110&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.888" SDNUM="1033;0;0">3&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="6.043" SDNUM="1033;0;0">6&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="28.625" SDNUM="1033;0;0">29&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="84.832" SDNUM="1033;0;0">85&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="122.118" SDNUM="1033;0;0">122&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="387.289" SDNUM="1033;0;0">387&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="494.621" SDNUM="1033;0;0">495&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1518.807" SDNUM="1033;0;0">1519&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="4131.319" SDNUM="1033;0;0">4131&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="12866.897" SDNUM="1033;0;0">12867&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;B>CREATE INDEX&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="3779.439" SDNUM="1033;0;0">&lt;B>3779&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="13508.871" SDNUM="1033;0;0">&lt;B>13509&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>NATION(N_REGIONKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.078" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.715" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>SUPPLIER(S_NATIONKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.615" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.643" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>PARTSUPP(PS_PARTKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="24.551" SDNUM="1033;0;0">25&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="76.438" SDNUM="1033;0;0">76&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>PARTSUPP(PS_SUPPKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="45.11" SDNUM="1033;0;0">45&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="137.623" SDNUM="1033;0;0">138&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>CUSTOMER(C_NATIONKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.948" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.074" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>ORDERS(O_CUSTKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="89" SDNUM="1033;0;0">89&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="294.775" SDNUM="1033;0;0">295&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>LINEITEM(L_ORDERKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="142.427" SDNUM="1033;0;0">142&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="425.678" SDNUM="1033;0;0">426&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=70 ALIGN=LEFT>LINEITEM(L_PARTKEY,L_SUPPKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="428.566" SDNUM="1033;0;0">429&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1643.916" SDNUM="1033;0;0">1644&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>LINEITEM(L_SHIPDATE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="573.742" SDNUM="1033;0;0">574&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1999.45" SDNUM="1033;0;0">1999&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>CUSTOMER(C_MKTSEGMENT)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.984" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.006" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>ORDERS(O_ORDERDATE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="132.34" SDNUM="1033;0;0">132&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="426.279" SDNUM="1033;0;0">426&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>LINEITEM(L_SUPPKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="519.088" SDNUM="1033;0;0">519&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1978.671" SDNUM="1033;0;0">1979&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>REGION(R_NAME)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.613" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.612" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>LINEITEM(L_DISCOUNT)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="11.651" SDNUM="1033;0;0">12&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="36.648" SDNUM="1033;0;0">37&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>LINEITEM(L_QUANTITY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="16.979" SDNUM="1033;0;0">17&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="50.706" SDNUM="1033;0;0">51&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>LINEITEM(L_RETURNFLAG)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="9.587" SDNUM="1033;0;0">10&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="27.68" SDNUM="1033;0;0">28&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>LINEITEM(L_SHIPMODE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="11.643" SDNUM="1033;0;0">12&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="33.561" SDNUM="1033;0;0">34&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>LINEITEM(L_COMMITDATE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="565.282" SDNUM="1033;0;0">565&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2054.294" SDNUM="1033;0;0">2054&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>LINEITEM(L_RECEIPTDATE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="558.746" SDNUM="1033;0;0">559&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2052.185" SDNUM="1033;0;0">2052&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>LINEITEM(L_PARTKEY)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="421.768" SDNUM="1033;0;0">422&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1551.34" SDNUM="1033;0;0">1551&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>PART(P_SIZE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.505" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="3.298" SDNUM="1033;0;0">3&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>PART(P_TYPE)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.712" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="4.337" SDNUM="1033;0;0">4&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=53 ALIGN=LEFT>PARTSUPP(PS_SUPPLYCOST)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="54.906" SDNUM="1033;0;0">55&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="187.66" SDNUM="1033;0;0">188&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>NATION(N_NAME)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.653" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.695" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>PART(P_NAME)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="15.088" SDNUM="1033;0;0">15&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="47.179" SDNUM="1033;0;0">47&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>ORDERS(O_CLERK)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="148.531" SDNUM="1033;0;0">149&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="466.071" SDNUM="1033;0;0">466&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>PART(P_BRAND)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.129" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.142" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=36 ALIGN=LEFT>PART(P_CONTAINER)&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.197" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.195" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;B>ANALYZE TABLE (ESTIMATE STAT)&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="64.043" SDNUM="1033;0;0">&lt;B>64&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="227.813" SDNUM="1033;0;0">&lt;B>228&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    NATION&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.811" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.748" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    REGION&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.939" SDNUM="1033;0;0">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="0.878" SDNUM="1033;0;0">1&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    PART&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="3.155" SDNUM="1033;0;0">3&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="5.195" SDNUM="1033;0;0">5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    SUPPLIER&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.062" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.206" SDNUM="1033;0;0">2&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    PARTSUPP&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="5.967" SDNUM="1033;0;0">6&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="14.239" SDNUM="1033;0;0">14&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    CUSTOMER&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2.824" SDNUM="1033;0;0">3&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="4.591" SDNUM="1033;0;0">5&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    ORDERS&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="10.013" SDNUM="1033;0;0">10&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="27.889" SDNUM="1033;0;0">28&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>    LINEITEM&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="37.272" SDNUM="1033;0;0">37&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="171.067" SDNUM="1033;0;0">171&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=LEFT>&lt;B>QUERIES&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1552.485" SDNUM="1033;0;0">&lt;B>1552&lt;/B>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="4990.508" SDNUM="1033;0;0">&lt;B>4991&lt;/B>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="1" SDNUM="1033;">1&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="286.651" SDNUM="1033;0;0">287&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="842.367" SDNUM="1033;0;0">842&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="2" SDNUM="1033;">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="13.116" SDNUM="1033;0;0">13&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="47.713" SDNUM="1033;0;0">48&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="3" SDNUM="1033;">3&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="60.15" SDNUM="1033;0;0">60&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="206.83" SDNUM="1033;0;0">207&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="4" SDNUM="1033;">4&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="74.091" SDNUM="1033;0;0">74&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="230.838" SDNUM="1033;0;0">231&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="5" SDNUM="1033;">5&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="62.623" SDNUM="1033;0;0">63&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="168.344" SDNUM="1033;0;0">168&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="6" SDNUM="1033;">6&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="18.588" SDNUM="1033;0;0">19&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="57.133" SDNUM="1033;0;0">57&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="7" SDNUM="1033;">7&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="272.532" SDNUM="1033;0;0">273&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="837.101" SDNUM="1033;0;0">837&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="8" SDNUM="1033;">8&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="16.699" SDNUM="1033;0;0">17&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="69.633" SDNUM="1033;0;0">70&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="9" SDNUM="1033;">9&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="105.219" SDNUM="1033;0;0">105&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="461.653" SDNUM="1033;0;0">462&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="10" SDNUM="1033;">10&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="87.964" SDNUM="1033;0;0">88&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="184.097" SDNUM="1033;0;0">184&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="11" SDNUM="1033;">11&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="9.748" SDNUM="1033;0;0">10&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="29.574" SDNUM="1033;0;0">30&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="12" SDNUM="1033;">12&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="35.457" SDNUM="1033;0;0">35&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="138.002" SDNUM="1033;0;0">138&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="13" SDNUM="1033;">13&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="1.512" SDNUM="1033;0;0">2&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="8.599" SDNUM="1033;0;0">9&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="14" SDNUM="1033;">14&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="35.71" SDNUM="1033;0;0">36&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="116.791" SDNUM="1033;0;0">117&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="15" SDNUM="1033;">15&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="67.549" SDNUM="1033;0;0">68&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="192.245" SDNUM="1033;0;0">192&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="16" SDNUM="1033;">16&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="52.78" SDNUM="1033;0;0">53&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="171.318" SDNUM="1033;0;0">171&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="17" SDNUM="1033;">17&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="115.734" SDNUM="1033;0;0">116&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="374.591" SDNUM="1033;0;0">375&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="18" SDNUM="1033;">18&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="169.585" SDNUM="1033;0;0">170&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="653.257" SDNUM="1033;0;0">653&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="19" SDNUM="1033;">19&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT SDNUM="1033;0;0">&lt;BR>&lt;/TD>
+		&lt;/TR>
+		&lt;TR>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=18 ALIGN=RIGHT SDVAL="20" SDNUM="1033;">20&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="66.777" SDNUM="1033;0;0">67&lt;/TD>
+			&lt;TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="200.422" SDNUM="1033;0;0">200&lt;/TD>
+		&lt;/TR>
+&lt;/TABLE>
+
+= Attachments =
+
+* [[:Image:mysql_load.sql]]
+* [[:Image:mysql_query.sql]]
+* [[:Image:tpch_sf10_queries.png]]
+* [[:Image:tpch_sf10_load.png]]
+* [[:Image:tpch_sf10_storage.png]]
+* [[:Image:tpch_sf10_column_storage.png]]
+* [[:Image:tpch_sf10_index_storage.png]]
+* [[:Image:tpch_sf10_vs_30.png]]
+* [[:Image:luciddb_oscon2008_win.ppt]]</textarea><div class='templatesUsed'>
+
+</div>
+<p id="mw-returnto">Return to <a href="/wiki/LucidDbTpch" title="LucidDbTpch">LucidDbTpch</a>.</p>
+<div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/LucidDbTpch">http://luciddb.org/wiki/LucidDbTpch</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbTpch" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbTpch&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource" class="selected"><a href="/wiki/index.php?title=LucidDbTpch&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbTpch&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbTpch&amp;returntoquery=action%3Dedit" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbTpch" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbTpch" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.action.edit", "mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.162 secs. --></body></html>

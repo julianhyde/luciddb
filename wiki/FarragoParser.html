@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoParser - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoParser", "wgTitle": "FarragoParser", "wgCurRevisionId": 6886, "wgArticleId": 1848, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoParser action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoParser</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page provides an overview of the Farrago SQL parsing framework.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Eigenbase_SQL_Object_Model_and_Parser"><span class="tocnumber">1</span> <span class="toctext">Eigenbase SQL Object Model and Parser</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Eigenbase_SQL_Pretty_Printer"><span class="tocnumber">2</span> <span class="toctext">Eigenbase SQL Pretty Printer</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Farrago_Parser_Including_DDL"><span class="tocnumber">3</span> <span class="toctext">Farrago Parser Including DDL</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Parser_Extensions"><span class="tocnumber">4</span> <span class="toctext">Parser Extensions</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#TBD"><span class="tocnumber">5</span> <span class="toctext">TBD</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Eigenbase_SQL_Object_Model_and_Parser"> Eigenbase SQL Object Model and Parser </span></h1>
+<p>Farrago parsing is based on the org.eigenbase library.  Whereas Farrago itself is a full DBMS framework (including heavyweight aspects such as sessions, persistence, and metadata catalogs), the org.eigenbase library is a lightweight, standalone component suitable for embedding in applications such as client tools which can benefit from SQL-awareness.
+</p><p>The following packages in org.eigenbase are relevant to SQL parsing:
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/package-summary.html">org.eigenbase.sql</a>:  object model for the query and DML portions of the SQL language
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/parser/package-summary.html">org.eigenbase.sql.parser</a>:  non-generated classes and data structures for the SQL parser, plus unit tests
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/parser/impl/package-summary.html">org.eigenbase.sql.parser.impl</a>:  classes generated by <a rel="nofollow" class="external text" href="https://javacc.dev.java.net/">JavaCC</a> to implement the SQL parser
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/fun/package-summary.html">org.eigenbase.sql.fun</a>:  definitions for builtin functions and operators from SQL:2003
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/util/package-summary.html">org.eigenbase.sql.util</a>:  utility classes
+</li></ul>
+<p>The diagram below shows the object model instantiation after parsing a query such as <b>select *,42 as the_answer from sales.depts as d where deptno = 10</b>.
+</p><p><img src="http://farrago.sourceforge.net/design/ParseTree.gif" alt="ParseTree.gif" />
+</p><p>Each box represents an instance of an object implementing some class descended from <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/SqlNode.html">org.eigenbase.sql.SqlNode</a>.  Some operators (like <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/SqlSelect.html">SqlSelect</a>) are important enough to get their own classes, but in most cases a generic <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/SqlCall.html">SqlCall</a> is used.  For example, in the diagram above, there is no "SqlEquals" class instantiation; instead, there's a SqlCall where the operator reference is set to the singleton <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/fun/SqlStdOperatorTable.html#equalsOperator">org.eigenbase.sql.fun.SqlStdOperatorTable.equalsOperator</a>.
+</p><p>The parser grammar is defined primarily in <a href="http://p4web.eigenbase.org///open/dev/farrago/src/org/eigenbase/sql/parser/CommonParser.jj" class="extiw" title="eigensrc://open/dev/farrago/src/org/eigenbase/sql/parser/CommonParser.jj">eigensrc://open/dev/farrago/src/org/eigenbase/sql/parser/CommonParser.jj</a>.  However, that file by itself is incomplete, as it is designed to be combined with extension grammars via concatenation.  For the vanilla SQL parser with no extensions, it is concatenated with <a href="http://p4web.eigenbase.org///open/dev/farrago/src/org/eigenbase/sql/parser/Parser.jj" class="extiw" title="eigensrc://open/dev/farrago/src/org/eigenbase/sql/parser/Parser.jj">eigensrc://open/dev/farrago/src/org/eigenbase/sql/parser/Parser.jj</a> to produce a well-formed grammar (written to <b>farrago/src/org/eigenbase/sql/parser/impl/CombinedParser.jj</b>) which is fed in as the real input to JavaCC.  The grammar also provides some of the best examples of how to instantiate the SQL language object model.
+</p><p>From <b>CombinedParser.jj</b>, the build also generates and publishes a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/combinedParserBnf.html">full hyperlinked BNF grammar</a> via the jjdoc ant task.  Unfortunately, it comes out in jumbled order; the main parsing entry point production is <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/combinedParserBnf.html#prod36">SqlStmtEof</a>, which accepts a query or DML statement terminated by EOF.
+</p><p>Invoking the parser is very easy:
+</p>
+<pre>
+import org.eigenbase.sql.*;
+import org.eigenbase.sql.parser.*;
+
+...
+
+SqlParser parser = new SqlParser(sqlString);
+SqlNode node = parser.parseExpression();
+</pre>
+<p>This example uses the parseExpression entry point (for something like <b>a+b</b>); you can instead use parseQuery (expecting a <b>SELECT</b> or equivalent) or parseStmt (any query or DML).  A constructor which takes a Reader instead of a String is also provided.
+</p><p>Once you have a SqlNode tree, you can traverse and manipulate it.  <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/util/package-summary.html">org.eigenbase.sql.util</a> provides a standard visitor pattern implementation, as well as a "shuttle" pattern for transforming or modifying trees.  Here's some example code from the validator which instead walks and modifies a tree directly:
+</p>
+<pre>
+    private void registerSubqueries(
+        SqlValidatorScope parentScope,
+        SqlNode node)
+    {
+        if (node == null) {
+            return;
+        } else if (node.isA(SqlKind.Query)) {
+            registerQuery(parentScope, null, node, null, false);
+        } else if (node.isA(SqlKind.MultisetQueryConstructor)) {
+            registerQuery(parentScope, null, node, null, false);
+        } else if (node instanceof SqlCall) {
+            validateNodeFeature(node);
+            SqlCall call = (SqlCall) node;
+            final SqlNode [] operands = call.getOperands();
+            for (int i = 0; i &lt; operands.length; i++) {
+                registerOperandSubqueries(parentScope, call, i);
+            }
+        } else if (node instanceof SqlNodeList) {
+            SqlNodeList list = (SqlNodeList) node;
+            for (int i = 0, count = list.size(); i &lt; count; i++) {
+                SqlNode listNode = list.get(i);
+                if (listNode.isA(SqlKind.Query)) {
+                    listNode =
+                        SqlStdOperatorTable.scalarQueryOperator.createCall(
+                            listNode.getParserPosition(),
+                            listNode);
+                    list.set(i, listNode);
+                }
+                registerSubqueries(parentScope, listNode);
+            }
+        } else {
+            // atomic node -- can be ignored
+        }
+    }
+</pre>
+<p>SqlNode.toString can be used to "unparse" a node back into text via pretty-printing (as described below).  The toSqlString methods provide finer control over the SQL dialect and pretty printer implementation used.  (SqlUtil.eigenbaseDialect produces something like SQL:2003 standard.)
+</p><p>The parser annotates instantiated nodes with <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/parser/SqlParserPos.html">SqlParserPos</a> location information.  These can be used for error reporting.  Note that preserving positional correctness in the face of SQL construction or transformation can be challenging, so sometimes an unparse+reparse is the easiest solution.
+</p><p>Unit tests for the parser are in <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/parser/SqlParserTest.html">SqlParserTest</a>.  Positive tests work by parsing, unparsing, and then comparing the unparsed result to an expected string.  Negative tests work by verifying that the parser throws a particular error, and that the positional information is where it is expected to be (using a shorthand of carets around the offending substring).  Here's an example:
+</p>
+<pre>
+    public void testNullIf()
+    {
+        checkExp(&quot;nullif(v1,v2)&quot;,
+            &quot;NULLIF(`V1`, `V2`)&quot;);
+        checkExpFails(
+            &quot;1 ^+^ nullif + 3&quot;,
+            &quot;(?s)Encountered \&quot;\\+ nullif \\+\&quot; at line 1, column 3.*&quot;);
+    }
+</pre>
+<h1> <span class="mw-headline" id="Eigenbase_SQL_Pretty_Printer"> Eigenbase SQL Pretty Printer </span></h1>
+<p>Package <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/pretty/package-summary.html">org.eigenbase.sql.pretty</a> implements an SQL pretty printer which works in terms of the SqlNode object model.  The SqlPrettyWriter class provides a number of configurable options for controlling the way unparsing is performed.  It also has a few bugs as of this writing.
+</p><p>Unit tests are in <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/sql/test/SqlPrettyWriterTest.html">SqlPrettyWriterTest</a>.  Many of them work by diffing the pretty printer results against an expected string stored in <b>farrago/src/org/eigenbase/sql/test/SqlPrettyWriterTest.ref.xml</b>.
+</p>
+<h1> <span class="mw-headline" id="Farrago_Parser_Including_DDL"> Farrago Parser Including DDL </span></h1>
+<p>The Farrago parser augments the Eigenbase parser with DDL parsing support.  However, it does not currently supply a DDL object model; instead, it populates the catalog directly as it parses.  Other than that, the general pattern followed is the same; <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/parser/package-summary.html">net.sf.farrago.parser</a> is the public package, whereas <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/parser/impl/package-summary.html">net.sf.farrago.parser.impl</a> contains the classes generated by JavaCC.
+</p><p>The DDL parser grammar is defined in <a href="http://p4web.eigenbase.org///open/dev/farrago/src/net/sf/farrago/parser/CommonDdlParser.jj" class="extiw" title="eigensrc://open/dev/farrago/src/net/sf/farrago/parser/CommonDdlParser.jj">eigensrc://open/dev/farrago/src/net/sf/farrago/parser/CommonDdlParser.jj</a>.  This is combined with the Eigenbase <b>CommonParser.jj</b> plus (by default when there is no extension active) <a href="http://p4web.eigenbase.org///open/dev/farrago/src/net/sf/farrago/parser/DdlParser.jj" class="extiw" title="eigensrc://open/dev/farrago/src/net/sf/farrago/parser/DdlParser.jj">eigensrc://open/dev/farrago/src/net/sf/farrago/parser/DdlParser.jj</a> to produce <b>farrago/src/net/sf/farrago/parser/CombinedParser.jj</b>.
+</p><p>A corresponding <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/combinedDdlParserBnf.html">hyperlinked BNF grammar</a> is also generated.
+</p><p>For an explanation of how Farrago uses the SQL parser for processing non-DDL statements, see the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/query/package-summary.html">query processing overview</a> (somewhat stale).
+</p>
+<h1> <span class="mw-headline" id="Parser_Extensions"> Parser Extensions </span></h1>
+<p>The <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/extensibility.html">Farrago extensibility overview</a> explains why you might want to extend the parser with your own constructs in the context of creating a pluggable extension to Farrago.  It also provides some examples of how this works.  The corresponding random number generator example packages follow the usual JavaCC pattern:
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/rng/package-summary.html">net.sf.farrago.rng</a>
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/rng/parserimpl/package-summary.html">net.sf.farrago.rng.parserimpl</a>
+</li></ul>
+<p><a href="http://p4web.eigenbase.org///open/dev/farrago/examples/rng/src/net/sf/farrago/rng/RngParser.jj" class="extiw" title="eigensrc://open/dev/farrago/examples/rng/src/net/sf/farrago/rng/RngParser.jj">eigensrc://open/dev/farrago/examples/rng/src/net/sf/farrago/rng/RngParser.jj</a> shows how to extend the standard grammars.  It is combined with <b>CommonParser.jj</b> from Eigenbase plus <b>CommonDdlParser.jj</b> from Farrago to produce the input to JavaCC, generating the actual parser used by the RNG extension.
+</p>
+<h1> <span class="mw-headline" id="TBD"> TBD </span></h1>
+<ul><li> How parsers are plugged in to Farrago's session framework
+</li><li> Interactions between parser, SQL validator, and DDL validator
+</li><li> <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/com/disruptivetech/farrago/sql/advise/package-summary.html">com.disruptivetech.farrago.sql.advise</a>, a SQL autocomplete facility based on the validator
+</li><li> How we maintain <a href="/wiki/FarragoSqlReservedWords" title="FarragoSqlReservedWords">FarragoSqlReservedWords</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 46/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1848-0!*!0!!en!*!* and timestamp 20140414194554 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoParser&amp;oldid=6886">http://luciddb.org/wiki/index.php?title=FarragoParser&amp;oldid=6886</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoParser" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoParser&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoParser&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoParser&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoParser" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoParser" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoParser" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoParser&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoParser&amp;oldid=6886" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 10 December 2010, at 07:40.</li>
+		<li id="viewcount">This page has been accessed 5,181 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.180 secs. --></body></html>

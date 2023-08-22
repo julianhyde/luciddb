@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>HowToWriteAnOptimizer - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "HowToWriteAnOptimizer", "wgTitle": "HowToWriteAnOptimizer", "wgCurRevisionId": 5015, "wgArticleId": 1878, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-HowToWriteAnOptimizer action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">HowToWriteAnOptimizer</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Optimizer_Flow"><span class="tocnumber">2</span> <span class="toctext">Optimizer Flow</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Optimizer_Search_Space"><span class="tocnumber">3</span> <span class="toctext">Optimizer Search Space</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Miniplanner_Example"><span class="tocnumber">4</span> <span class="toctext">Miniplanner Example</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Premise"><span class="tocnumber">4.1</span> <span class="toctext">Premise</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Build"><span class="tocnumber">4.2</span> <span class="toctext">Build</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Setup_Test_Schema"><span class="tocnumber">4.3</span> <span class="toctext">Setup Test Schema</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Install_Miniplanner_Plugin"><span class="tocnumber">4.4</span> <span class="toctext">Install Miniplanner Plugin</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Test_The_Heuristic_Planner"><span class="tocnumber">4.5</span> <span class="toctext">Test The Heuristic Planner</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Test_The_Cost_Based_Planner"><span class="tocnumber">4.6</span> <span class="toctext">Test The Cost Based Planner</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Tracing"><span class="tocnumber">5</span> <span class="toctext">Tracing</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Collaborative_Rules"><span class="tocnumber">6</span> <span class="toctext">Collaborative Rules</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Real_World_Optimizers"><span class="tocnumber">7</span> <span class="toctext">Real World Optimizers</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#Exercises"><span class="tocnumber">8</span> <span class="toctext">Exercises</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#Attachments"><span class="tocnumber">9</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This document provides an introduction to writing a new DBMS optimizer within the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/extensibility.html">Eigenbase extensibility frameworks</a>.  You may be thinking to yourself that optimizers can only be developed by people who tend to mutter to themselves in Klingon; the goal of this page is to demonstrate that it is not that hard to get started...we just can't promise you won't end up uttering phrases like "Hab SoSlI' Quch!" when someone interrupts you while you are tracking down a bug in join tree enumeration.
+</p><p>Constructing an optimizer involves plugging together the following components:
+</p>
+<ul><li> an <a href="http://en.wikipedia.org/wiki/Relational_algebra" class="extiw" title="wikipedia:Relational algebra">algebra</a> of <i>relational expressions</i>:  these instantiate <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/rel/RelNode.html">org.eigenbase.rel.RelNode</a>, and together they define the space of logical and physical plan representations which the optimizer is capable of manipulating
+</li><li> a set of <i>relational expression traits</i>:  these define aspects of relational expressions which are to be preserved or transformed by the optimizer (the most common example is the <i>calling convention</i>, which specifies whether the expression corresponds to a particular physical implementation such as a Java iterator or <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structExecStreamDesign.html">Fennel ExecStream</a>)
+</li><li> a set of <i>rules</i>:  these instantiate <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/relopt/RelOptRule.html">org.eigenbase.relopt.RelOptRule</a>, defining the logic for individual transformations between equivalent relational expressions, as well as the conditions under which they can be legally applied
+</li><li> a <i>cost metric</i>:  this instantiates <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/relopt/RelOptCost.html">org.eigenbase.relopt.RelOptCost</a>, and may vary from basic (e.g. number of rows produced by an expression) to sophisticated (CPU cost, I/O cost)
+</li><li> a set of providers for <i>relational expression metadata</i>:  these instantiate <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/rel/metadata/RelMetadataProvider.html">org.eigenbase.rel.metadata.RelMetadataProvider</a> and supply <a href="/wiki/RelationalExpressionMetadata" title="RelationalExpressionMetadata">information</a> such as costing functions and integrity constraint definitions; these are used by the optimizer to produce a plan which is both optimized and valid
+</li><li> a <i>planner</i> implementation:  the planner instantiates <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/relopt/RelOptPlanner.html">org.eigenbase.relopt.RelOptPlanner</a> and drives the optimization process, starting with a purely logical representation of a plan and invoking rules to transform it into a purely physical representation suitable for execution (and with the lowest value known for the cost metric); different planner implementations have different strategies for choosing which rules to invoke, and in what order
+<ul><li> a generic planner <i>may</i> require additional configuration; for example, a <i>heuristic</i> planner may require a <i>program</i> specifying the order in which to invoke rules
+</li></ul>
+</li></ul>
+<p>For the most part, implementations of the interfaces above are mix-and-match; however, some combinations may not work well; for example, certain combinations of rules may cause a cost-based optimizer to get trapped in an infeasible region of the algebraic search space.
+</p><p><i>Terminology note</i>:  sometimes "planner" and "optimizer" are used interchangeably; in this page, we'll use planner to refer to the component which fires the rules, and optimizer as the overall system including all of the components listed above.
+</p>
+<h1> <span class="mw-headline" id="Optimizer_Flow"> Optimizer Flow </span></h1>
+<p>This diagram illustrates the overall context in which query optimization takes place:
+</p><p><a href="/wiki/File:FarragoOptimizerInOut.png" class="image"><img alt="FarragoOptimizerInOut.png" src="/wiki/upload/8/82/FarragoOptimizerInOut.png" width="500" height="378" /></a>
+</p><p>Query processing starts with SQL text, which is fed through the parser and validator and then converted into a tree of relational algebra expressions.  These are purely logical expressions such as <b>JoinRel</b> and <b>FilterRel</b> (represented using the traditional relational algebra symbols in the diagram).  The dollar signs indicate that references to input tuple attributes are by ordinal position, since the optimizer is always free to substitute equivalent expressions which produce the same tuple shape at any point in the tree.  From here, the optimizer takes over, converting the tree into equivalent purely physical operators (the yellow boxes such as <b>FtrsIndexSearchRel</b> on the right hand side; this is what <b>EXPLAIN PLAN</b> renders).  Finally, the physical relational expressions are converted by <b>RelImplementor</b> into a lower-level form (a Fennel stream graph and/or generated Java code).
+</p><p>Although some of the work done by <b>SqlToRelConverter</b> (pre-optimization) and <b>RelImplementor</b> (post-optimization) can be considered as part of query optimization, in this page we are going to focus on what happens in the green box.
+</p><p>For more information on Farrago query processing in general, see <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/query/package-summary.html#package_description">the slightly out of date net.sf.farrago.query Javadoc</a>.
+</p>
+<h1> <span class="mw-headline" id="Optimizer_Search_Space"> Optimizer Search Space </span></h1>
+<p>So, what does happen inside the green box?  That depends on how the optimizer has been constructed, but there are several possibilities for how the optimizer will traverse the search space; it is easiest to explain these with an example:
+</p><p><a href="/wiki/File:FarragoOptimizerSearchSpace.png" class="image"><img alt="FarragoOptimizerSearchSpace.png" src="/wiki/upload/2/24/FarragoOptimizerSearchSpace.png" width="500" height="378" /></a>
+</p>
+<ul><li> A <i>non-cost-based heuristic optimizer</i> will apply rules in a fixed order, regardless of whether they improve cost.  In this example, supposing the only rule is PushFilterThroughJoinRule, the optimizer will start at the upper left, move down, and stop.  (SwapJoinRule doesn't make sense in a non-cost-based optimizer.)  The <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">Hep planner implementation</a> can be used to construct such an optimizer.
+</li><li> A <i>locally cost-based heuristic optimizer</i> will apply rules in a fixed order, skipping rules which do not improve cost.  In this example, suppose the order is first PushFilterThroughJoinRule, then SwapJoinRule.  In that case, the optimizer will start at the upper left.  If pushing the filter improves the cost, it will move down; and then possibly right if the SwapJoinRule further improves the cost.  However, if pushing the filter does not improve the cost, it will move to the top right instead, assuming the SwapJoinRule improves the cost.  However, in this case it will never consider the bottom right, unless its rule ordering includes a second phase of filter pushing.  Hep can be used to construct this kind of optimizer also, but it does not handle the costing itself--that is up to the individual rules.
+</li><li> A <i>globally cost-based optimizer</i> will decide its own ordering for rule firing, and it will keep track of multiple potential candidates in the search space simultaneously.  In this example, it can traverse all four possibilities (plus various corresponding physical expressions), compute a cost for each one, and then take the best one.  The <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/com/disruptivetech/farrago/volcano/package-summary.html#package_description">Volcano planner</a> can be used to construct such an optimizer.  Volcano uses dynamic programming; other possibilities for global cost-based optimization are randomized approaches such as simulated annealing and genetic algorithms.
+</li><li> A <i>hybrid optimizer</i> may combine aspects of the approaches above, possibly using a heuristic planner to feed a globally cost-based planner with good candidates for further search.
+</li></ul>
+<p>When applying transformations, it is useful for planners to be able to recognize that a result has been seen before.  In a dynamic-programming optimizer such as Volcano, this is an essential part of the algorithm; it is also useful even in Hep for recognizing common subexpressions (saving optimization work and optionally producing non-tree execution graphs).  To facilitate this, planners rely on relational expressions to compute <i>digests</i>; these are strings which serve as keys for recognizing identical expressions quickly via string equality.  When writing new relational expressions, it is important to get the digest right.  A digest which contains non-essential information will prevent the optimizer from recognizing equivalence; a digest which contains insufficient information may cause the optimizer to replace an expression with a non-equivalent expression (leading to an illegal plan, which in the best case will cause assertion errors, and in the worst case will silently cause incorrect execution results).
+</p>
+<h1> <span class="mw-headline" id="Miniplanner_Example"> Miniplanner Example </span></h1>
+<p>Enough theory!  The following subsections walk through the construction of a tiny but real optimizer from scratch.  The source code annotated here is available as a plugin under <b>dev/farrago/examples/miniplan</b>; you are encouraged to compile, test, and modify it yourself as a way of getting your hands dirty with a real optimizer implementation which is small enough to be easy to understand.
+</p>
+<h2> <span class="mw-headline" id="Premise"> Premise </span></h2>
+<p>Our tiny optimizer will not be able to deal with very many expressions; for example, it will throw up its hands when it sees a join.  However, to make it interesting, it will understand GROUP BY and UNION ALL, and in particular, we'll teach it how to push a GROUP BY down through a UNION ALL.  There is a very real-world use case for this optimization technique.  For big databases, it is common to horizontally partition a large table into a number of physical slices, and then put a logical UNION ALL view on top of them so that their combination is accessible as a single logical table.  When an aggregation query is executed against that view, we want the optimizer to be able to push down the GROUP BY through the UNION ALL so that the executor can aggregate each horizontal partition independently in parallel, and then merge the results.
+</p><p>Depending on the query, this optimization technique may help in some cases, and hurt in others; this will give us an opportunity to compare heuristic vs cost-based optimization.
+</p><p>Here's the code for the pushdown rule (note that just for fun, there's a bug in it for you to find):
+</p>
+<pre>
+package net.sf.farrago.miniplan;
+
+import org.eigenbase.rel.*;
+import org.eigenbase.relopt.*;
+import org.eigenbase.reltype.*;
+import org.eigenbase.rel.metadata.*;
+
+import java.util.*;
+
+
+/**
+ * PushAggThroughUnionAllRule implements the rule for pushing an
+ * {@link AggregateRel} past a non-distinct {@link UnionRel}.
+ *
+ * @author John Sichi
+ * @version $Id:$
+ */
+public class PushAggThroughUnionAllRule extends RelOptRule
+{
+    public static final PushAggThroughUnionAllRule instance =
+        new PushAggThroughUnionAllRule();
+    
+    public PushAggThroughUnionAllRule()
+    {
+        super(
+            new RelOptRuleOperand(
+                AggregateRel.class,
+                new RelOptRuleOperand[] {
+                    new RelOptRuleOperand(UnionRel.class, null)
+                }));
+    }
+    
+    public void onMatch(RelOptRuleCall call)
+    {
+        AggregateRel aggRel = (AggregateRel) call.rels[0];
+        UnionRel unionRel = (UnionRel) call.rels[1];
+
+        if (unionRel.isDistinct()) {
+            // This transformation is only valid for UNION ALL.
+            // Consider t1(i) with rows (5), (5) and t2(i) with
+            // rows (5), (10), and the query
+            // select sum(i) from (select i from t1) union (select i from t2).
+            // The correct answer is 15.  If we apply the transformation,
+            // we get
+            // select sum(i) from
+            // (select sum(i) as i from t1) union (select sum(i) as i from t2)
+            // which yields 25 (incorrect).
+            return;
+        }
+
+        // NOTE jvs 24-Aug-2008:  There's a bug in this code.  When
+        // you find it, please don't fix it!  Finding it is an exercise
+        // in http://wiki.eigenbase.org/pub/HowToWriteAnOptimizer,
+        // so we want it to stay around.
+
+        RelNode [] unionInputs = unionRel.getInputs();
+        int nUnionInputs = unionInputs.length;
+        RelNode [] newUnionInputs = new RelNode[nUnionInputs];
+        RelOptCluster cluster = unionRel.getCluster();
+
+        BitSet groupByKeyMask = new BitSet();
+        for (int i = 0; i &lt; aggRel.getGroupCount(); i++) {
+            groupByKeyMask.set(i);
+        }
+        
+        boolean anyTransformed = false;
+
+        // create corresponding aggs on top of each union child
+        for (int i = 0; i &lt; nUnionInputs; i++) {
+            boolean alreadyUnique = 
+                RelMdUtil.areColumnsDefinitelyUnique(
+                    unionInputs[i],
+                    groupByKeyMask);
+
+            if (alreadyUnique) {
+                newUnionInputs[i] = unionInputs[i];
+            } else {
+                anyTransformed = true;
+                newUnionInputs[i] =
+                    new AggregateRel(
+                        cluster,
+                        unionInputs[i],
+                        aggRel.getGroupCount(),
+                        aggRel.getAggCallList());
+            }
+        }
+
+        if (!anyTransformed) {
+            // none of the children could benefit from the pushdown,
+            // so bail out (preventing the infinite loop to which most
+            // planners would succumb)
+            return;
+        }
+        
+        // create a new union whose children are the aggs created above
+        UnionRel newUnionRel = new UnionRel(cluster, newUnionInputs, true);
+
+        AggregateRel newTopAggRel = new AggregateRel(
+            cluster,
+            newUnionRel,
+            aggRel.getGroupCount(),
+            aggRel.getAggCallList());
+
+        call.transformTo(newTopAggRel);
+    }
+}
+</pre>
+<p>For background on rule construction, read <a href="/wiki/HowToWriteNewOptimizerRules" title="HowToWriteNewOptimizerRules">HowToWriteNewOptimizerRules</a>.  In this case, note the logic for skipping the transformation in cases where it will have no effect.  This is necessary for preventing an infinite loop, since the result of the transformation still matches the firing pattern.  This NOP detection is based on having relational expression metadata available for <b>areColumnsDefinitelyUnique</b>; the standard metadata providers for Farrago guarantee the necessary logic for reporting that the pushed-down aggregations will produce unique values for the GROUP BY columns.
+</p>
+<h2> <span class="mw-headline" id="Build"> Build </span></h2>
+<p>Make sure you have a <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/developerJumpStart.html">working Farrago source build</a> before continuing.
+</p><p>From <b>dev/farrago/examples/miniplan</b>, run <b>ant</b> to build the miniplanner plugin.  This will produce <b>dev/farrago/examples/miniplan/plugin/FarragoMiniplan.jar</b>; this contains the compiled plugin we'll dynamically load into Farrago to change the optimizer.
+</p><p>The buildfile is quite short because it leverages standard Farrago plugin compilation macros:
+</p>
+<pre>
+&lt;project name=&quot;farragoMiniplan&quot; basedir=&quot;.&quot; default=&quot;jar&quot;&gt;
+  &lt;dirname property=&quot;farragoMiniplan.dir&quot; file=&quot;${ant.file}&quot; /&gt;
+
+  &lt;!-- Definitions for Farrago build properties and macros --&gt;
+  &lt;import file=&quot;../../buildMacros.xml&quot;/&gt;
+
+  &lt;!-- Specialization definitions required by buildPlugin.xml --&gt;
+
+  &lt;property name=&quot;plugin.dir&quot; location=&quot;${farragoMiniplan.dir}&quot;/&gt;
+  &lt;property name=&quot;plugin.jar.basename&quot; value=&quot;FarragoMiniplan&quot;/&gt;
+  &lt;property name=&quot;plugin.factory.class&quot; 
+    value=&quot;net.sf.farrago.miniplan.FarragoMiniplanPersonalityFactory&quot;/&gt;
+
+  &lt;!-- Classpath for plugin dependencies (none in this case) --&gt;
+  &lt;path id=&quot;plugin.3p.classpath&quot;&gt;
+  &lt;/path&gt;
+  &lt;property name=&quot;plugin.3p.classpath&quot; refid=&quot;plugin.3p.classpath&quot;/&gt;
+
+  &lt;!-- Standard definitions for Farrago plugin build --&gt;
+  &lt;import file=&quot;../../plugin/buildPlugin.xml&quot;/&gt;
+
+  &lt;target name=&quot;compile&quot;&gt;
+    &lt;mkdir dir=&quot;${plugin.classes.dir}&quot;/&gt;
+    &lt;farrago.javaCompile
+      deprecation=&quot;off&quot;
+      srcdir=&quot;${plugin.src.dir}&quot;
+      destdir=&quot;${plugin.classes.dir}&quot;
+      classpathref=&quot;plugin.classpath&quot;&gt;
+      &lt;include name=&quot;**/*.java&quot; /&gt;
+    &lt;/farrago.javaCompile&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;jar&quot; depends=&quot;compile&quot;&gt;
+    &lt;antcall target=&quot;plugin.buildJar&quot;/&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;createPlugin&quot;&gt;
+    &lt;antcall target=&quot;clean&quot;/&gt;
+    &lt;antcall target=&quot;jar&quot;/&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;clean&quot; depends=&quot;plugin.clean&quot;&gt;
+  &lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+<h2> <span class="mw-headline" id="Setup_Test_Schema"> Setup Test Schema </span></h2>
+<p>Now, execute the following via <b>sqlline</b> using the default Farrago personality:
+</p>
+<pre>
+create schema miniplan;
+set schema 'miniplan';
+set path 'miniplan';
+
+-- register UDX we'll use to populate test data
+create function ramp(n int)
+returns table(i int)
+language java
+parameter style system defined java
+no sql
+external name 'class net.sf.farrago.test.FarragoTestUDR.ramp';
+
+-- define two physical partitions with identical table definition
+-- column pk:  primary key
+-- column hicard:  will contain mostly distinct values
+-- column locard:  will contain mostly duplicate values
+create table t1(pk int not null primary key, hicard int, locard int);
+create table t2(pk int not null primary key, hicard int, locard int);
+
+-- define a logical view combining the physical partitions
+create view v as select * from t1 union all select * from t2;
+
+-- populate the first partition, manipulating the UDX output to produce the desired data patterns
+insert into t1(pk,hicard,locard) 
+select i,i*0.9,i*0.04 from table(ramp(1000));
+
+-- populate the second partition (with a similar but not identical data distribution)
+insert into t2(pk,hicard,locard) 
+select i+1000,i*0.8,i*0.05 from table(ramp(1000));
+
+-- make some stats on the data distribution available to the optimizer
+analyze table t1 compute statistics for all columns;
+analyze table t2 compute statistics for all columns;
+</pre>
+<h2> <span class="mw-headline" id="Install_Miniplanner_Plugin"> Install Miniplanner Plugin </span></h2>
+<p>Now execute this DDL to install the plugin:
+</p>
+<pre>
+create jar miniplan.miniplan_plugin 
+library 'file:${FARRAGO_HOME}/examples/miniplan/plugin/FarragoMiniplan.jar'
+options(0);
+</pre>
+<p>The .jar manifest specifies <b>class FarragoMiniplanPersonalityFactory</b> to be loaded for implementing <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionPersonalityFactory.html">net.sf.farrago.session.FarragoSessionPersonalityFactory</a>:
+</p>
+<pre>
+package net.sf.farrago.miniplan;
+
+import com.disruptivetech.farrago.rel.*;
+import com.disruptivetech.farrago.volcano.*;
+import com.lucidera.opt.*;
+
+import net.sf.farrago.fem.config.*;
+import net.sf.farrago.query.*;
+import net.sf.farrago.db.*;
+import net.sf.farrago.session.*;
+import net.sf.farrago.defimpl.*;
+
+import org.eigenbase.oj.rel.*;
+import org.eigenbase.rel.*;
+import org.eigenbase.rel.rules.*;
+import org.eigenbase.relopt.*;
+import org.eigenbase.relopt.hep.*;
+
+import java.util.*;
+
+/**
+ * FarragoMiniplanPersonalityFactory implements the {@link
+ * FarragoSessionPersonalityFactory} interface by plugging in
+ * a &quot;mini&quot; planner meant only for tutorial purposes.
+ *
+ * @author John V. Sichi
+ * @version $Id: //open/dev/farrago/src/net/sf/farrago/defimpl/FarragoVolcanoPersonalityFactory.java#4 $
+ */
+public class FarragoMiniplanPersonalityFactory
+    implements FarragoSessionPersonalityFactory
+{
+    //~ Methods ----------------------------------------------------------------
+
+    // implement FarragoSessionPersonalityFactory
+    public FarragoSessionPersonality newSessionPersonality(
+        FarragoSession session,
+        FarragoSessionPersonality defaultPersonality)
+    {
+        return new FarragoMiniplanSessionPersonality(
+            (FarragoDbSession) session);
+    }
+
+    private static void addMiniplannerRules(FarragoSessionPlanner planner)
+    {
+        ...
+    }
+
+    private static HepProgram createMiniplannerHepProgram(
+        Collection&lt;RelOptRule&gt; medPluginRules)
+    {
+        ...
+    }
+
+    private static class FarragoMiniplanSessionPersonality
+        extends FarragoDefaultSessionPersonality
+    {
+        ...
+    }
+
+    private static class FarragoVolcanoMiniplanner
+        extends FarragoDefaultPlanner
+    {
+        ...
+    }
+}
+</pre>
+<p>Next, change the current session's personality to use the plugin:
+</p>
+<pre>
+alter session implementation set jar miniplan.miniplan_plugin;
+</pre>
+<p>Here's the corresponding implementation of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionPersonality.html">net.sf.farrago.session.FarragoSessionPersonality</a>, which introduces a session parameter for switching between heuristic (the default) and Volcano (cost-based):
+</p>
+<pre>
+    private static class FarragoMiniplanSessionPersonality
+        extends FarragoDefaultSessionPersonality
+    {
+        private static final String MINIPLAN_VOLCANO = &quot;volcano&quot;;
+        
+        protected FarragoMiniplanSessionPersonality(FarragoDbSession session)
+        {
+            super(session);
+            paramValidator.registerBoolParam(MINIPLAN_VOLCANO, false);
+        }
+
+        // implement FarragoSessionPersonality
+        public void loadDefaultSessionVariables(
+            FarragoSessionVariables variables)
+        {
+            super.loadDefaultSessionVariables(variables);
+            variables.setDefault(MINIPLAN_VOLCANO, &quot;false&quot;);
+        }
+        
+        // implement FarragoSessionPersonality
+        public FarragoSessionPlanner newPlanner(
+            FarragoSessionPreparingStmt stmt,
+            boolean init)
+        {
+            ...
+        }
+    }
+</pre>
+<p>To verify that the miniplanner is active, try a query with a join:
+</p>
+<pre>
+explain plan for
+select * from sales.depts d1, sales.depts d2;
+</pre>
+<p>You should get back an error like the one below (whereas this statement would succeed with the default Farrago optimizer):
+</p>
+<pre>
+Error: Optimizer failed to find a valid physical implementation for relational expression 
+rel#6:JoinRel.NONE(left=HepRelVertex#8,right=HepRelVertex#8,condition=true,joinType=inner); 
+see trace for partially optimized plan. 
+Details: reason is [Node's traits (NONE) do not match required traits (ITERATOR)]; 
+while preparing statement [select * from sales.depts d1, sales.depts d2]. (state=,code=0)
+</pre>
+<p><i>Note:</i>  This error occurs because the miniplanner has no rule for dealing with a logical <b>JoinRel</b>.  Farrago detects that the optimizer has failed to find a physical plan by checking the traits for each relational expression in the final optimizer output and verifying that no expressions remain with calling convention <b>NONE</b>.
+</p><p>In contrast, this statement should succeed with the miniplanner active:
+</p>
+<pre>
+select * from sales.depts union all select * from sales.depts;
+</pre>
+<p>Whereas this one should fail, because the miniplanner only understands <b>UNION ALL</b> (not <b>UNION</b> with duplicate removal):
+</p>
+<pre>
+select * from sales.depts union select * from sales.depts;
+</pre>
+<h2> <span class="mw-headline" id="Test_The_Heuristic_Planner"> Test The Heuristic Planner </span></h2>
+<p>The heuristic planner implementation involves constructing a <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">Hep program</a>:
+</p>
+<pre>
+    private static class FarragoMiniplanSessionPersonality
+        extends FarragoDefaultSessionPersonality
+    {
+        ....
+        // implement FarragoSessionPersonality
+        public FarragoSessionPlanner newPlanner(
+            FarragoSessionPreparingStmt stmt,
+            boolean init)
+        {
+            boolean useVolcano =
+                stmt.getSession().getSessionVariables().getBoolean(
+                    MINIPLAN_VOLCANO);
+            
+            if (useVolcano) {
+                FarragoVolcanoMiniplanner planner =
+                    new FarragoVolcanoMiniplanner(stmt);
+                if (init) {
+                    planner.init();
+                }
+                return planner;
+            } else {
+                Collection&lt;RelOptRule&gt; medPluginRules =
+                    new LinkedHashSet&lt;RelOptRule&gt;();
+
+                HepProgram program =
+                    createMiniplannerHepProgram(
+                        medPluginRules);
+
+                FarragoDefaultHeuristicPlanner planner =
+                    new FarragoDefaultHeuristicPlanner(
+                        program,
+                        stmt,
+                        medPluginRules);
+                addMiniplannerRules(planner);
+                return planner;
+            }
+        }
+    }
+
+    private static HepProgram createMiniplannerHepProgram(
+        Collection&lt;RelOptRule&gt; medPluginRules)
+    {
+        HepProgramBuilder builder = new HepProgramBuilder();
+        
+        builder.addGroupBegin();
+        builder.addRuleInstance(RemoveTrivialProjectRule.instance);
+        builder.addRuleInstance(new PushProjectPastSetOpRule());
+        builder.addRuleInstance(new MergeProjectRule());
+        builder.addGroupEnd();
+
+        builder.addRuleInstance(PushAggThroughUnionAllRule.instance);
+        
+        builder.addRuleCollection(medPluginRules);
+        
+        builder.addRuleInstance(RemoveTrivialProjectRule.instance);
+        builder.addRuleInstance(new LhxAggRule());
+
+        builder.addRuleInstance(new FennelReshapeRule());
+        builder.addRuleInstance(FennelUnionRule.instance);
+        
+        builder.addConverters(true);
+
+        return builder.createProgram();
+    }
+</pre>
+<p>The Hep program starts with a group of rules which fire together; they involve pushing projections down through the expression tree so that only referenced columns are accessed.  This is important since our <b>PushAggThroughUnionAllRule</b> (which fires immediately after) relies on there being nothing in between the aggregation and the underlying union.  Up through this point, the rules are all logical-&gt;logical transformations.  After this, the remaining rules are logical-&gt;physical transformations.  The <b>medPluginRules</b> is a placeholder which gets expanded with access rules for physical tables.  The remaining rules fill in physical implementation for aggregation and union (and any residual projections); finally, converters are added to transform between Fennel and Java calling conventions.
+</p><p>OK, let's try some real queries.  (Now would be a good time to read <a href="/wiki/FarragoExplainPlanExplained" title="FarragoExplainPlanExplained">FarragoExplainPlanExplained</a> if you haven't read that before.)
+</p><p>By default, the miniplanner uses the heuristic planner implementation, so we will always see aggregation get pushed down through UNION ALL.  First, let's try a full-table aggregation, with no GROUP BY:
+</p>
+<pre>
+0: jdbc:farrago:&gt;&#160;!set outputformat csv
+0: jdbc:farrago:&gt; explain plan including all attributes for select sum(hicard) from miniplan.v;
+'column0'
+'FennelToIteratorConverter: rowcount = 1.0, cumulative cost = 20006.0'
+'  FennelAggRel(groupCount=[0], EXPR$0=[SUM(0)]): rowcount = 1.0, cumulative cost = 20005.0'
+'    FennelMergeRel: rowcount = 2.0, cumulative cost = 20004.0'
+'      FennelAggRel(groupCount=[0], EXPR$0=[SUM(0)]): rowcount = 1.0, cumulative cost = 10001.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+'      FennelAggRel(groupCount=[0], EXPR$0=[SUM(0)]): rowcount = 1.0, cumulative cost = 10001.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+7 rows selected (0.086 seconds)
+</pre>
+<p>Notice that the <b>FennelMergeRel</b> is sandwiched between <b>FennelAggRels</b> above and below.  You can read this plan as "sum each underlying partition, union those two partial sums into a two-row table, and then sum over that two-row table to produce the final result."  (In general, if there are n partitions in the UNION ALL input, there will be n rows to be summed at the end.)
+</p><p>What if we use the default Farrago planner instead?  Assuming no one has taught it how to accomplish this pushdown, we get this:
+</p>
+<pre>
+0: jdbc:farrago:&gt; alter session implementation set default;    
+No rows affected (0.021 seconds)
+0: jdbc:farrago:&gt; explain plan including all attributes for select sum(hicard) from miniplan.v;
+'column0'
+'FennelToIteratorConverter: rowcount = 200.0, cumulative cost = 22400.0'
+'  FennelAggRel(groupCount=[0], EXPR$0=[SUM(0)]): rowcount = 200.0, cumulative cost = 22200.0'
+'    FennelMergeRel: rowcount = 2000.0, cumulative cost = 22000.0'
+'      FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+'      FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+5 rows selected (0.165 seconds)
+</pre>
+<p>As expected, no pushdown (all the rows will be unioned first before any of them can be aggregated).
+</p><p>Switching back to the miniplanner, let's try a <b>GROUP BY</b>:
+</p>
+<pre>
+0: jdbc:farrago:&gt; alter session implementation set jar miniplan.miniplan_plugin;
+No rows affected (0.014 seconds)
+0: jdbc:farrago:&gt; explain plan including all attributes for select locard,sum(hicard) from miniplan.v group by locard;
+'column0'
+'FennelToIteratorConverter: rowcount = 9.200000000000001, cumulative cost = 20202.4'
+'  LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 9.200000000000001, cumulative cost = 20193.2'
+'    FennelMergeRel: rowcount = 92.0, cumulative cost = 20184.0'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 41.0, cumulative cost = 10041.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[2, 1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 51.0, cumulative cost = 10051.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[2, 1]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+7 rows selected (0.117 seconds)
+</pre>
+<p>We got the pushdown for this one too (this time with hash aggregation), which is good, since according to the optimizer's rowcount estimates, the early aggregation reduces the union input size significantly.
+</p><p>Speaking of rowcounts, they are very accurate for the early aggregations:
+</p>
+<pre>
+0: jdbc:farrago:&gt; select count(distinct locard) from miniplan.t1;
+'EXPR$0'
+'41'
+0: jdbc:farrago:&gt; select count(distinct locard) from miniplan.t2;
+'EXPR$0'
+'51'
+1 row selected (0.202 seconds)
+</pre>
+<p>But note that for the final aggregation, the rowcount estimate is off (the estimate is 9.2 rows, when in fact 51 rows are returned by the query).  That's because the cost functions available don't know how to deal with the union, so the estimate for the final aggregation makes a guess that it will reduce the union output size by a factor of 10.  In this case, the poor estimate doesn't matter, since nothing else depends on the final output, but if it were used as part of a more complicated plan, we might need to implement an improved cost function.
+</p><p>What if we group by <b>hicard</b> instead of <b>locard</b>?
+</p>
+<pre>
+0: jdbc:farrago:&gt; explain plan including all attributes for select hicard,sum(locard) from miniplan.v group by hicard;
+'column0'
+'FennelToIteratorConverter: rowcount = 170.0, cumulative cost = 23740.0'
+'  LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 170.0, cumulative cost = 23570.0'
+'    FennelMergeRel: rowcount = 1700.0, cumulative cost = 23400.0'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 900.0, cumulative cost = 10900.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 800.0, cumulative cost = 10800.0'
+'        FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = 10000.0'
+7 rows selected (0.122 seconds)
+</pre>
+<p>Once again, we got the pushdown.  But in this case, we didn't really want it, since the early aggregation did not reduce the union input size by very much, so most of the aggregation work will have to be repeated in the outer <b>LhxAggRel</b>.  
+</p><p>Without a cost-based optimizer, Farrago can't discriminate these two syntactically equivalent cases.
+</p>
+<h2> <span class="mw-headline" id="Test_The_Cost_Based_Planner"> Test The Cost Based Planner </span></h2>
+<p>Let's retry the last two queries, but this time turning on cost-based optimization.  We do this by changing the miniplanner's <b>volcano</b> session parameter:
+</p>
+<pre>
+0: jdbc:farrago:&gt; alter session set &quot;volcano&quot; = true;
+No rows affected (0.027 seconds)
+0: jdbc:farrago:&gt; explain plan including all attributes for select locard,sum(hicard) from miniplan.v group by locard;
+'column0'
+'FennelToIteratorConverter: rowcount = 92.0, cumulative cost = {22368.0 rows, 42092.0 cpu, 60000.0 io}'
+'  LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 92.0, cumulative cost = {22276.0 rows, 42000.0 cpu, 60000.0 io}'
+'    FennelMergeRel: rowcount = 92.0, cumulative cost = {22184.0 rows, 42000.0 cpu, 60000.0 io}'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 41.0, cumulative cost = {11041.0 rows, 21000.0 cpu, 30000.0 io}'
+'        FennelReshapeRel(projection=[[1, 0]], outputRowType=[RecordType(INTEGER LOCARD, INTEGER HICARD) NOT NULL]): rowcount = 1000.0, cumulative cost = {11000.0 rows, 21000.0 cpu, 30000.0 io}'
+'          FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = {10000.0 rows, 20000.0 cpu, 30000.0 io}'
+'      LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 51.0, cumulative cost = {11051.0 rows, 21000.0 cpu, 30000.0 io}'
+'        FennelReshapeRel(projection=[[1, 0]], outputRowType=[RecordType(INTEGER LOCARD, INTEGER HICARD) NOT NULL]): rowcount = 1000.0, cumulative cost = {11000.0 rows, 21000.0 cpu, 30000.0 io}'
+'          FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = {10000.0 rows, 20000.0 cpu, 30000.0 io}'
+9 rows selected (0.335 seconds)
+0: jdbc:farrago:&gt; explain plan including all attributes for select hicard,sum(locard) from miniplan.v group by hicard;
+'column0'
+'FennelToIteratorConverter: rowcount = 200.0, cumulative cost = {23900.0 rows, 41700.0 cpu, 60000.0 io}'
+'  LhxAggRel(groupCount=[1], EXPR$1=[SUM(1)]): rowcount = 200.0, cumulative cost = {22200.0 rows, 40000.0 cpu, 60000.0 io}'
+'    FennelMergeRel: rowcount = 2000.0, cumulative cost = {22000.0 rows, 40000.0 cpu, 60000.0 io}'
+'      FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T1]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T1], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = {10000.0 rows, 20000.0 cpu, 30000.0 io}'
+'      FtrsIndexScanRel(table=[[LOCALDB, MINIPLAN, T2]], projection=[[1, 2]], index=[SYS$CONSTRAINT_INDEX$SYS$PRIMARY_KEY$T2], preserveOrder=[false]): rowcount = 1000.0, cumulative cost = {10000.0 rows, 20000.0 cpu, 30000.0 io}'
+5 rows selected (0.167 seconds)
+</pre>
+<p>Excellent...we got pushdown when grouping on <b>locard</b>, but not on <b>hicard</b>.  (The cost metrics used by Volcano and the heuristic planner are slightly different, so we can't compare them directly across the two optimizers).
+</p><p>The cost-based implementation is even simpler than Hep because it doesn't need to specify any program, just a ruleset; Volcano is free to fire any of the registered rules as it sees fit:
+</p>
+<pre>
+    private static void addMiniplannerRules(FarragoSessionPlanner planner)
+    {
+        planner.addRule(new PushProjectPastSetOpRule());
+        planner.addRule(new LhxAggRule());
+        planner.addRule(RemoveTrivialProjectRule.instance);
+        planner.addRule(FennelUnionRule.instance);
+        planner.addRule(new FennelReshapeRule());
+        planner.addRule(PushAggThroughUnionAllRule.instance);
+        FennelToIteratorConverter.register(planner);
+        IteratorToFennelConverter.register(planner);
+    }
+
+    private static class FarragoVolcanoMiniplanner
+        extends FarragoDefaultPlanner
+    {
+        public FarragoVolcanoMiniplanner(FarragoSessionPreparingStmt stmt)
+        {
+            super(stmt);
+        }
+
+        public void init()
+        {
+            addMiniplannerRules(this);
+        }
+    }
+</pre>
+<p>So, why would anyone want to use Hep when it's more work than using Volcano, and isn't even cost-based?  A full answer is given in <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">FarragoHeuristicPlanner</a>, but in short, Volcano can get lost when operating on large rulesets and plans; so if you're thinking about using it for your optimizer implementation, be sure to test it out on large-scale problems, and be prepared to help improve its generic implementation.
+</p>
+<h1> <span class="mw-headline" id="Tracing"> Tracing </span></h1>
+<p>To learn how to trace Hep, read <a href="/wiki/HepTracing" title="HepTracing">HepTracing</a>.  This can be very useful for studying how a planner transforms expressions.  Try turning it on for the miniplan queries above, and see if you can understand each step in the transformation.
+</p><p>Similar support exists for Volcano, although interpreting the output takes more time since Volcano is keeping track of many different candidates at once.
+</p>
+<h1> <span class="mw-headline" id="Collaborative_Rules"> Collaborative Rules </span></h1>
+<p>The examples above illustrate individual rules working in isolation.  A useful technique is to make rules work together, so that the output of one rule can be recognized as the input of another.
+</p><p>For example, in <a href="/wiki/LucidDbJoinOptimization" title="LucidDbJoinOptimization">LucidDB join optimization</a>, the join optimization is carried out by a big locally cost-based rule which rearranges many joins at once.  Normally, this would not be possible, since <b>JoinRel</b> instances in Eigenbase only have two inputs.  To address this, the LucidDB optimizer introduces a <i>multi-way join expression</i> (called <b>MultiJoinRel</b>) into the algebra.  A family of rules (<b>ConvertMultiJoinRule</b>, <b>PushProjectIntoMultiJoinRule</b>, and <b>PullUpProjectsOnTopOfMultiJoinRule</b>) work together to roll up two-way joins into multi-way joins, taking care of intervening projection expressions as well:
+</p><p><a href="/wiki/File:JoinConversion.png" class="image"><img alt="JoinConversion.png" src="/wiki/upload/9/9d/JoinConversion.png" width="503" height="383" /></a>
+</p><p>After that phase, <b>LoptOptimizeJoinRule</b> fires on the single remaining <b>MultiJoinRel</b>, optimizing it and transforming the result back into a tree of normal 2-way joins (which is what the rest of the optimizer expects to see).  You will never see <b>MultiJoinRel</b> in an EXPLAIN PLAN, because it is purely an intermediate representation.
+</p>
+<h1> <span class="mw-headline" id="Real_World_Optimizers"> Real World Optimizers </span></h1>
+<p>The following real optimizers have been implemented as part of Eigenbase:
+</p>
+<ul><li> The default Farrago optimizer uses Hep; it's a grab-bag of just about everything in Eigenbase.  See <b>net.sf.farrago.defimpl.FarragoDefaultHeuristicPlanner</b>.
+</li><li> An alternate Farrago optimizer uses Volcano; see <b>net.sf.farrago.defimpl.FarragoDefaultPlanner</b> (it used to be the default planner, but has not yet been renamed).  For an example of how to activate it, see <b>dev/farrago/unitsql/optimizer/index.sql</b>.
+</li><li> <a rel="nofollow" class="external text" href="http://www.luciddb.org">LucidDB</a> uses Hep, but with its own program and ruleset.  See <b>com.lucidera.farrago.LucidDbSessionPersonality</b> along with <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/com/lucidera/opt/package-summary.html">com.lucidera.opt</a> and <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/com/lucidera/lcs/package-summary.html">com.lucidera.lcs</a>.
+</li></ul>
+<p>Others exist in extension projects outside of Eigenbase.
+</p><p>Some unresolved issues are noted in <a href="/wiki/FarragoSortOrder" title="FarragoSortOrder">FarragoSortOrder</a>.
+</p>
+<h1> <span class="mw-headline" id="Exercises"> Exercises </span></h1>
+<p>If you want to gain a deeper understanding, try some of these.
+</p>
+<ol><li> Reorder or remove some of the miniplanner rules in the heuristic program and see what happens.  Use tracing to help see the effect.
+</li><li> Add rules to the miniplanner to make it capable of implementing filters.
+</li><li> Suppose you are modeling a distributed executor, where the cost of transmitting tuples across a slow network may be high.  Modify the cost-based miniplanner to take this into account, and see how it changes plans for different queries.  You can make a simplifying assumption that the UNION ALL represents the network transmission.  (For a real optimizer, you could make network location a trait, with a converter representing the transmission cost, but this is a lot more work.)
+</li><li> Find and fix the bug in <b>PushAggThroughUnionAllRule</b>.  Hint:  try the COUNT function.
+</li></ol>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:FarragoOptimizerHowTo.odg" title="File:FarragoOptimizerHowTo.odg">Image:FarragoOptimizerHowTo.odg</a>
+</li><li> <a href="/wiki/File:FarragoOptimizerInOut.png" title="File:FarragoOptimizerInOut.png">Image:FarragoOptimizerInOut.png</a>
+</li><li> <a href="/wiki/File:FarragoOptimizerSearchSpace.png" title="File:FarragoOptimizerSearchSpace.png">Image:FarragoOptimizerSearchSpace.png</a>
+</li><li> <a href="/wiki/File:JoinConversion.png" title="File:JoinConversion.png">Image:JoinConversion.png</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 229/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1878-0!*!0!!en!2!* and timestamp 20140414194539 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=HowToWriteAnOptimizer&amp;oldid=5015">http://luciddb.org/wiki/index.php?title=HowToWriteAnOptimizer&amp;oldid=5015</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/HowToWriteAnOptimizer" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:HowToWriteAnOptimizer&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=HowToWriteAnOptimizer&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=HowToWriteAnOptimizer&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=HowToWriteAnOptimizer" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/HowToWriteAnOptimizer" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/HowToWriteAnOptimizer" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=HowToWriteAnOptimizer&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=HowToWriteAnOptimizer&amp;oldid=5015" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 21 October 2008, at 22:08.</li>
+		<li id="viewcount">This page has been accessed 5,743 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.355 secs. --></body></html>

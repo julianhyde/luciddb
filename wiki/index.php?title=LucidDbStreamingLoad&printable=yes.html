@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbStreamingLoad - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbStreamingLoad", "wgTitle": "LucidDbStreamingLoad", "wgCurRevisionId": 6590, "wgArticleId": 1903, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbStreamingLoad action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbStreamingLoad</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Setup"><span class="tocnumber">2</span> <span class="toctext">Setup</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Create_Generic_Loader_Script"><span class="tocnumber">3</span> <span class="toctext">Create Generic Loader Script</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Create_Wrapper_Script"><span class="tocnumber">4</span> <span class="toctext">Create Wrapper Script</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Create_BCP_Control_File"><span class="tocnumber">5</span> <span class="toctext">Create BCP Control File</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Define_PDI_Transformation"><span class="tocnumber">6</span> <span class="toctext">Define PDI Transformation</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Test_the_Transformation"><span class="tocnumber">7</span> <span class="toctext">Test the Transformation</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Troubleshooting"><span class="tocnumber">8</span> <span class="toctext">Troubleshooting</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This page describes experimental support for bulk loading data into LucidDB without having to save it on disk in a flatfile first, and without having to write a new foreign data wrapper. 
+</p><p>The approach is explained in terms of using LucidDB as an ETL target for <a rel="nofollow" class="external text" href="http://kettle.pentaho.org">Pentaho Data Integration</a> (PDI, formerly Kettle).
+</p><p><i>NOTE:  A <a href="/wiki/LucidDbPDIStreamingLoader" title="LucidDbPDIStreamingLoader">PDI step</a> now exists which takes care of all of the messy bits, so if you actually want to bulk load from PDI, you should use that instead.  However, the information in this page is still useful as an example for duct-taping together a bulk load from any source, e.g. <a href="/wiki/LucidDbTalend" title="LucidDbTalend">LucidDbTalend</a>.</i>
+</p>
+<h1> <span class="mw-headline" id="Setup"> Setup </span></h1>
+<p>These instructions currently only work on Linux.  Windows support via named pipes may be developed in the future.
+</p><p>Streaming load is based on <a href="http://en.wikipedia.org/wiki/Named_pipe#Named_pipes_in_Unix" class="extiw" title="wikipedia:Named pipe">fifo support</a> in LucidDB's flatfile reader.  This is available since release 0.8.0, so set up a copy of that before continuing (see <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a> if this is your first time setting up a LucidDB instance).  However, we'll use <b>luciddb-0.7.5</b> as the example installation directory, since these instructions were originally based on a prerelease with that version number.
+</p><p>Create a directory <b>luciddb-0.7.5/fifo</b>; this is where the named pipe will be created, along with some other related files.
+</p><p>Using sqllineClient, create a new user:
+</p>
+<pre>
+create user pdi authorization 'unused';
+!quit
+</pre>
+<p>Reconnect with <b>sqllineClient -n PDI</b> to create a target schema for this user, as well as a foreign server for the fifo directory (adjusting the path accordingly):
+</p>
+<pre>
+create schema target;
+
+create table target.entropy(random_uuid varchar(128));
+
+create or replace server fifo_server
+foreign data wrapper sys_file_wrapper
+options (
+    directory '/path/to/luciddb-0.7.5/fifo/',
+    file_extension 'csv',
+    with_header 'yes', 
+    num_rows_scan '0',
+    lenient 'no');
+
+!quit
+</pre>
+<p>The <b>num_rows_scan</b> setting is very important for the fifo to work correctly; without it, you will get mysterious errors or hangs later.
+</p><p>We will use PDI to fill the empty table with randomly generated UUID's.
+</p><p><a rel="nofollow" class="external text" href="https://sourceforge.net/project/showfiles.php?group_id=140317&amp;package_id=186321">Download</a> a copy of PDI and install it.
+</p><p>You can tell PDI how to connect to LucidDB by giving it LucidDB's client JDBC driver and connection information, following steps similar to those in <a href="/wiki/LucidDbAggregateDesigner#Install_the_Client" title="LucidDbAggregateDesigner">LucidDbAggregateDesigner#Install the Client</a> (except the JDBC driver directory is <b>libext</b> instead of <b>drivers</b>).  However, that is not actually necessary for streaming load to work, so we won't go into details here.
+</p>
+<h1> <span class="mw-headline" id="Create_Generic_Loader_Script"> Create Generic Loader Script </span></h1>
+<p>Create a new file named <b>lucidDbLoader</b> in your <b>luciddb-0.7.5/bin</b> directory, with the following contents:
+</p>
+<pre>
+#!/bin/bash
+
+usage() {
+    echo &quot;Usage:  lucidDbLoader &lt;jdbc-url&gt; &lt;user-name&gt; &lt;password&gt; &lt;fifo-dir&gt; &lt;fifo-server-name&gt; &lt;schema-name&gt; &lt;table-name&gt;&quot;
+    echo &quot;Example:  lucidDbLoader jdbc:luciddb:rmi://localhost sa unused /var/tpch FFSRV TPCH ORDERS&quot;
+}
+
+if [ &quot;$#&quot;&#160;!= 7 ]; then
+    usage;
+    exit -1;
+fi
+
+set +e
+
+binDir=$(cd `dirname $0`; pwd)
+
+jdbcUrl=&quot;$1&quot;
+userName=&quot;$2&quot;
+password=&quot;$3&quot;
+fifoDir=&quot;$4&quot;
+fifoServerName=&quot;$5&quot;
+schemaName=&quot;$6&quot;
+tableName=&quot;$7&quot;
+
+controlFileName=&quot;${fifoDir}/${tableName}.bcp&quot;
+fifoName=&quot;${fifoDir}/${tableName}.csv&quot;
+
+if [&#160;! -f ${controlFileName} ]; then
+    echo &quot;Control file ${controlFileName} does not exist&quot;
+    exit -1;
+fi
+
+rm -f ${fifoName}
+
+mkfifo ${fifoName}
+
+cat &gt; ${fifoDir}/lucidDbLoader.sql &lt;&lt;EOF
+insert into &quot;${schemaName}&quot;.&quot;${tableName}&quot;
+select * from &quot;$fifoServerName&quot;.&quot;DEFAULT&quot;.&quot;${tableName}&quot;;
+!quit
+EOF
+
+${binDir}/sqllineClient -u ${jdbcUrl} -n ${userName} -p ${password} &gt; ${fifoDir}/lucidDbLoader.log 2&gt;&amp;1 --run=${fifoDir}/lucidDbLoader.sql &amp;
+
+cat - &gt; ${fifoName}
+
+wait
+
+rm -f ${fifoName}
+</pre>
+<p>Then make it executable:
+</p>
+<pre>
+chmod a+x lucidDbLoader
+</pre>
+<p>(Eventually a script like this will come standard with LucidDB releases, but for now you have to create it yourself.)
+</p>
+<h1> <span class="mw-headline" id="Create_Wrapper_Script"> Create Wrapper Script </span></h1>
+<p>Now, in the <b>luciddb-0.7.5/fifo</b> directory, create a script named <b>loadEntropy</b> as follows (adjusting paths as usual):
+</p>
+<pre>
+#!/bin/bash
+
+set +e
+
+cat - | /path/to/luciddb-0.7.5/bin/lucidDbLoader jdbc:luciddb:rmi://localhost PDI unused /path/to/luciddb-0.7.5/fifo FIFO_SERVER TARGET ENTROPY
+</pre>
+<p>Make it executable also:
+</p>
+<pre>
+chmod a+x loadEntropy
+</pre>
+<p>The only reason this script is needed is that PDI doesn't have a dedicated step for loading LucidDB yet, so we're going to have to repurpose the generic flatfile output step.  Once PDI has been enhanced with a dedicated LucidDB loader step, this script will no longer be necessary.
+</p>
+<h1> <span class="mw-headline" id="Create_BCP_Control_File"> Create BCP Control File </span></h1>
+<p>In the <b>luciddb-0.7.5/fifo</b> directory, create a file named <b>ENTROPY.bcp</b> as follows:
+</p>
+<pre>
+9.0
+1
+1 SQLCHAR 0 128 &quot;rn&quot; 1 RANDOM_UUID &quot;&quot;
+</pre>
+<p>For general information on BCP control file format, see <a href="/wiki/LucidDbFlatFileWrapper#Column_Descriptions" title="LucidDbFlatFileWrapper">LucidDbFlatFileWrapper#Column Descriptions</a>.
+</p><p>Again, this will no longer be needed once a dedicated step is available which knows how to generate the control file automatically based on transformation metadata.
+</p>
+<h1> <span class="mw-headline" id="Define_PDI_Transformation"> Define PDI Transformation </span></h1>
+<p>OK, now we have everything we need for setting up the load in PDI.
+</p><p>Create a new transformation like this:
+</p><p><a href="/wiki/File:PdiStreamingLoad.png" class="image"><img alt="PdiStreamingLoad.png" src="/wiki/upload/b/b7/PdiStreamingLoad.png" width="1512" height="734" /></a>
+</p><p>For the second page of the text file output step, fill the information in as follows:
+</p><p><a href="/wiki/File:PdiStreamingLoadContent.png" class="image"><img alt="PdiStreamingLoadContent.png" src="/wiki/upload/a/ab/PdiStreamingLoadContent.png" width="705" height="525" /></a>
+</p>
+<h1> <span class="mw-headline" id="Test_the_Transformation"> Test the Transformation </span></h1>
+<p>Execute the transformation, and if all goes well, it will load 9 UUID rows into LucidDB.
+</p><p>Verify with <b>sqllineClient -n PDI</b>:
+</p>
+<pre>
+0: jdbc:luciddb:rmi://localhost&gt; select * from target.entropy; 
++------------------------------------------------------------------------------+
+|                                                            RANDOM_UUID       |
++------------------------------------------------------------------------------+
+| 3gorklolnkke2                                                                |
+| 4s44n5cabmocp                                                                |
+| 491i7gbh90l5q                                                                |
+| 4lrn9mdblh9nr                                                                |
+| 4454ckbti41gh                                                                |
+| hnff3toh1322                                                                 |
+| 2mimnlo6llqfp                                                                |
+| fjg1lgkvlohg                                                                 |
+| 33s3gj8qcp7it                                                                |
++------------------------------------------------------------------------------+
+</pre>
+<h1> <span class="mw-headline" id="Troubleshooting"> Troubleshooting </span></h1>
+<p>Fifos can be a bit of a pain since if one end dies or does something wrong, the other end is left hanging.
+</p><p>The file <b>luciddb-0.7.5/fifo/lucidDbLoader.sql</b> contains the INSERT statement generated to execute the load.
+</p><p>The file <b>luciddb-0.7.5/fifo/lucidDbLoader.log</b> contains the result of executing that INSERT statement.
+</p><p>While the loader script is running the fifo <b>luciddb-0.7.5/fifo/ENTROPY.csv</b> will exist.
+</p><p>The PDI execution window has a logging tab to show the output of commands executed.  (It does not treat a return code of -1 from a command execution as a failure, so you have to check the logging window yourself instead of relying on the execution result pane.)
+</p><p>Within sqllineClient, you can use <b>select * from sys_root.dba_sql_statements</b> to see what is executing in LucidDB.
+</p><p>If all else fails, use <b>ps</b> to see what processes are running; <b>kill -9</b> is your friend.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 102/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1903-0!*!0!!en!2!* and timestamp 20140414191155 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbStreamingLoad&amp;oldid=6590">http://luciddb.org/wiki/index.php?title=LucidDbStreamingLoad&amp;oldid=6590</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbStreamingLoad" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbStreamingLoad&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbStreamingLoad&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbStreamingLoad&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbStreamingLoad&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbStreamingLoad" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbStreamingLoad" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbStreamingLoad&amp;oldid=6590" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 12 June 2010, at 21:23.</li>
+		<li id="viewcount">This page has been accessed 7,836 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.141 secs. --></body></html>

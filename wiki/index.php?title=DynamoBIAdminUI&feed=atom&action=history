@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="http://luciddb.org/wiki/skins/common/feed.css?303"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;feed=atom&amp;action=history</id>
+		<title>DynamoBIAdminUI - Revision history</title>
+		<link rel="self" type="application/atom+xml" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;feed=atom&amp;action=history"/>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;action=history"/>
+		<updated>2014-04-14T20:06:44Z</updated>
+		<subtitle>Revision history for this page on the wiki</subtitle>
+		<generator>MediaWiki 1.18.1</generator>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7161&amp;oldid=prev</id>
+		<title>Smoodoo: /* Extracting and Running */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7161&amp;oldid=prev"/>
+				<updated>2011-11-04T21:04:06Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Extracting and Running&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 21:04, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 28:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 28:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Control of the terminal should be returned, and the AdminUI should now be accessible from your web browser. Please allow up to a minute for the services to load. Once everything is ready, navigate to http://localhost:8077 and after a redirect you should be greeted with this page:&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Control of the terminal should be returned, and the AdminUI should now be accessible from your web browser. Please allow up to a minute for the services to load. Once everything is ready, navigate to http://localhost:8077 and after a redirect you should be greeted with this page:&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;!adminui_welcome&lt;/del&gt;.&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;png!&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:AdminUI Login Page&lt;/ins&gt;.&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;jpg]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;If you have a LucidDB server running on your localhost as well, you may now login. The default username is '''sa''' with an empty password. If you have successfully logged in, you should see the list of available schemas in the left navigation menu populate.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;If you have a LucidDB server running on your localhost as well, you may now login. The default username is '''sa''' with an empty password. If you have successfully logged in, you should see the list of available schemas in the left navigation menu populate.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7143&amp;oldid=prev</id>
+		<title>Smoodoo: /* About */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7143&amp;oldid=prev"/>
+				<updated>2011-11-04T18:23:17Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;About&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 18:23, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;For full feature details, see the [[AdminUI Features Page|DynamoBIAdminUI_Features]].&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;For full feature details, see the [[AdminUI Features Page|DynamoBIAdminUI_Features]].&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Prerequisites =&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Prerequisites =&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7142&amp;oldid=prev</id>
+		<title>Smoodoo: /* About */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7142&amp;oldid=prev"/>
+				<updated>2011-11-04T18:22:31Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;About&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 18:22, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 1:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 1:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= About =&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= About =&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:AdminUI 11-4-2011 1-07-28 PM.jpg|AdminUI v1.0|thumb|400px]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The AdminUI is a graphical front-end for any web browser to LucidDB which makes database administrating simpler and does not require a great knowledge of SQL. Even SQL pros can benefit from the AdminUI and speed up a variety of tasks normally done from a command line.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The AdminUI is a graphical front-end for any web browser to LucidDB which makes database administrating simpler and does not require a great knowledge of SQL. Even SQL pros can benefit from the AdminUI and speed up a variety of tasks normally done from a command line.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7133&amp;oldid=prev</id>
+		<title>Smoodoo: /* Downloading */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7133&amp;oldid=prev"/>
+				<updated>2011-11-04T15:59:11Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Downloading&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 15:59, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 13:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 13:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Downloading =&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Downloading =&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Go download [[http://www.dynamobi.com/c/downloads/&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;latest-&lt;/del&gt;stable&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;|&lt;/del&gt;our latest stable build]] &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;([[User:Ksecretan|Ksecretan]] 15:56, 11 October 2011 (EDT): fix link to a specific version?) &lt;/del&gt;of Dynamo AdminUI and related services. To keep up with the latest development builds, you may instead choose to download the zip from our &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;[[&lt;/del&gt;http://build.dynamobi.com/job/dynamo_services/&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;|active &lt;/del&gt;development &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;build]] location&lt;/del&gt;.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Go download [[http://www.dynamobi.com/c/downloads/stable&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;/ &lt;/ins&gt;our latest stable build]] of Dynamo AdminUI and related services. To keep up with the latest development builds, you may instead choose to download the zip from our http://build.dynamobi.com/job/dynamo_services/ &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt; location.&amp;#160; The link to the &lt;/ins&gt;development &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;builds currently is down&lt;/ins&gt;.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Extracting and Running =&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= Extracting and Running =&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7083&amp;oldid=prev</id>
+		<title>Ksecretan: migrating dynamobi wiki, still fixups to do</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=DynamoBIAdminUI&amp;diff=7083&amp;oldid=prev"/>
+				<updated>2011-10-11T19:56:22Z</updated>
+		
+		<summary type="html">&lt;p&gt;migrating dynamobi wiki, still fixups to do&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;New page&lt;/b&gt;&lt;/p&gt;&lt;div&gt;= About =&lt;br /&gt;
+&lt;br /&gt;
+The AdminUI is a graphical front-end for any web browser to LucidDB which makes database administrating simpler and does not require a great knowledge of SQL. Even SQL pros can benefit from the AdminUI and speed up a variety of tasks normally done from a command line.&lt;br /&gt;
+&lt;br /&gt;
+For full feature details, see the [[AdminUI Features Page|DynamoBIAdminUI_Features]].&lt;br /&gt;
+&lt;br /&gt;
+= Prerequisites =&lt;br /&gt;
+&lt;br /&gt;
+If you have not downloaded a copy of LucidDB, please see the instructions for that at the [[LucidDbGettingStarted | LucidDB Installation Page]]. An instance of the LucidDB Server must be running in order to connect with the AdminUI.&lt;br /&gt;
+&lt;br /&gt;
+In order to use the AdminUI, you must have a web browser with a recent version of Flash Player installed and a recent version of the Java Runtime Environment installed on your operating system.&lt;br /&gt;
+&lt;br /&gt;
+= Downloading =&lt;br /&gt;
+&lt;br /&gt;
+Go download [[http://www.dynamobi.com/c/downloads/latest-stable|our latest stable build]] ([[User:Ksecretan|Ksecretan]] 15:56, 11 October 2011 (EDT): fix link to a specific version?) of Dynamo AdminUI and related services. To keep up with the latest development builds, you may instead choose to download the zip from our [[http://build.dynamobi.com/job/dynamo_services/|active development build]] location.&lt;br /&gt;
+&lt;br /&gt;
+= Extracting and Running =&lt;br /&gt;
+&lt;br /&gt;
+Once the zip file has downloaded, extract the ''dynamodb-services'' directory to a location of your choice. If you are on Windows, you may be able to double-click the file '''bin\startup.bat''' to start the program, otherwise launch ''cmd.exe'' and navigate to the extraction directory to run the batch file. If you are running Linux or Mac, you will have to use the command window to navigate to the extraction directory, navigate to the bin directory inside, make the .sh files inside have executable privileges, and execute '''bin/startup.sh'''. For example, if you extracted to ''/home/me/dynamodb-services'', you would run these commands:&lt;br /&gt;
+&lt;br /&gt;
+{code:xml}&lt;br /&gt;
+$ cd /home/me/dynamodb-services&lt;br /&gt;
+$ for x in `find . -name '*.sh'`; do chmod +x $x; done&lt;br /&gt;
+$ ./start-dynamoservices.sh&lt;br /&gt;
+{code}&lt;br /&gt;
+&lt;br /&gt;
+Control of the terminal should be returned, and the AdminUI should now be accessible from your web browser. Please allow up to a minute for the services to load. Once everything is ready, navigate to http://localhost:8077 and after a redirect you should be greeted with this page:&lt;br /&gt;
+&lt;br /&gt;
+!adminui_welcome.png!&lt;br /&gt;
+&lt;br /&gt;
+If you have a LucidDB server running on your localhost as well, you may now login. The default username is '''sa''' with an empty password. If you have successfully logged in, you should see the list of available schemas in the left navigation menu populate.&lt;br /&gt;
+&lt;br /&gt;
+!adminui_loggedin.png!&lt;br /&gt;
+&lt;br /&gt;
+You can now see what sorts of things you can do with the AdminUI at the [[DynamoBIAdminUI_Features|AdminUI Features Page]].&lt;br /&gt;
+&lt;br /&gt;
+= Alternate Configurations =&lt;br /&gt;
+&lt;br /&gt;
+== What if I want to change the root's password or the password isn't blank? ==&lt;br /&gt;
+&lt;br /&gt;
+== What if I want LucidDB to run remotely? ==&lt;br /&gt;
+&lt;br /&gt;
+== What if LucidDB's port isn't the standard 8034? ==&lt;br /&gt;
+&lt;br /&gt;
+For all of these questions, each of these options are determined by a single configuration file. The web services read a file found in '''dynamodb-services/webapps/adminws/WEB-INF/classes''' called '''luciddb-jdbc-default.properties'''. You can simply edit this file directly, though the suggested alternative is to create a file called '''luciddb-jdbc.properties''' in the same directory with the same options. The services will favor this new file.&lt;br /&gt;
+&lt;br /&gt;
+First, to change &amp;quot;sa&amp;quot;'s default password (you can run this in SqlLine or in the AdminUI's query window):&lt;br /&gt;
+&lt;br /&gt;
+{code:sql}&lt;br /&gt;
+create or replace user &amp;quot;sa&amp;quot; identified by 'newpassword';&lt;br /&gt;
+{code}&lt;br /&gt;
+&lt;br /&gt;
+Now edit the luciddb-jdbc.properties file.&lt;br /&gt;
+&lt;br /&gt;
+{code:xml}&lt;br /&gt;
+jdbc.driver=org.luciddb.jdbc.LucidDbClientDriver (1)&lt;br /&gt;
+jdbc.url=jdbc:luciddb:http://localhost           (2)&lt;br /&gt;
+jdbc.username=sa                                 (3)&lt;br /&gt;
+jdbc.password=                                   (4)&lt;br /&gt;
+{code}&lt;br /&gt;
+&lt;br /&gt;
+# Leave this alone.&lt;br /&gt;
+# This is where you change the location of your LucidDB server. If it's on a different port, simply append ':XXXX' to the URL string as normal.&lt;br /&gt;
+# Unless your root user has changed, this should remain &amp;quot;sa&amp;quot;.&lt;br /&gt;
+# Enter your password.&lt;br /&gt;
+&lt;br /&gt;
+== What if I want a different port than 8077 for the web service? ==&lt;br /&gt;
+&lt;br /&gt;
+Simply edit the configuration file '''dynamodb-services/conf/server.xml''' and search for 8077 and replace it with your new value. Restart using the ''shutdown.sh'' and ''startup.sh'' scripts in the ''bin'' directory.&lt;/div&gt;</summary>
+		<author><name>Ksecretan</name></author>	</entry>
+
+	</feed>

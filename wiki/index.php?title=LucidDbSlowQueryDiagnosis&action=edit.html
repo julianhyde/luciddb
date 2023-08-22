@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>View source - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="next" href="http://luciddb.org/wiki/LucidDbSlowQueryDiagnosis" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if IE 8]><link rel="stylesheet" href="/wiki/skins/common/IE80Fixes.css?303" media="screen" /><![endif]-->
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbSlowQueryDiagnosis", "wgTitle": "LucidDbSlowQueryDiagnosis", "wgCurRevisionId": 4649, "wgArticleId": 1611, "wgIsArticle": false, "wgAction": "edit", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": true, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbSlowQueryDiagnosis action-edit skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">View source</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">for <a href="/wiki/LucidDbSlowQueryDiagnosis" title="LucidDbSlowQueryDiagnosis">LucidDbSlowQueryDiagnosis</a></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>You do not have permission to edit this page, for the following reason:
+</p>
+<div class="permissions-errors">
+<p>The action you have requested is limited to users in the group: <a href="/wiki/index.php?title=LucidDB_Wiki:Users&amp;action=edit&amp;redlink=1" class="new" title="LucidDB Wiki:Users (page does not exist)">Users</a>.
+</p>
+</div>
+<p>You can view and copy the source of this page:
+</p><textarea id="wpTextbox1" name="wpTextbox1" cols="80" rows="25" readonly="">=Introduction=
+
+If your LucidDB instance looks like it's hung, and you want to determine if this is because of a slow-running query, then this is the right page to be reading.  Diagnosing queries that take minutes, instead of seconds, to run is outside the scope of this document.  However, some of the sections in this document, in particular those that describe how to interpret EXPLAIN PLAN output, may be useful for that purpose.
+
+A query can appear to be hung for a number of reasons.  This page will outline those, as well as steps you need to take to isolate the cause.
+
+==Overview==
+The following flowchart summarizes the contents of this page.  In the interest of keeping the flowchart succinct, details are not included in the steps.  Therefore, you do need to read the document to understand each of the diagrammed steps.
+
+[[Image:SlowQueryFlowchart1.png]] [[Image:SlowQueryFlowchart2.png]]
+
+[[Image:SlowQueryFlowchart3.png]]
+
+=Identifying a System Hang=
+
+First, you need to determine if the slowness you're seeing is due to a slow-running query in LucidDB.  The next few subsections describe steps you should take to determine if that is the case.
+
+==Is LucidDB Consuming CPU?==
+If you suspect that your system is hung because of a slow-running query, the first step is to confirm that LucidDB is in fact in the middle of query execution.  In other words, it is doing real work, as opposed to being hung in a deadlock of some sort.  Make sure the LucidDB process is using up CPU by using the monitoring tools for your system.  For example, on Linux, that would be the '''top''' commands.  '''Top''' will tell you if a java process is consuming CPU. To identify the process id of your LucidDB instance, look for the following text in your server log file, starting from the end of the file.
+
+   opening database; process ID =
+
+The number following the "=" will be the process id.  The server log will normally be the file, '''trace/LucidDbTrace.log''', in the directory where you installed your LucidDB instance.
+
+If the LucidDB java process is not consuming CPU, then is there some other process that is?  If so, then perhaps that other process is hogging the CPU, and that's why your query is running slowly.  If that's not the case, and LucidDB is not consuming CPU, then the system hang is not a result of a slow-running query.
+
+==Get a Stack Dump==
+Once you've confirmed that LucidDB is utilizing CPU cycles, the next step is to obtain a stack of the running threads in the java process corresponding to LucidDB.  To do this, see [[FarragoStackTrace]].
+
+==Examine the Stack Dump==
+The thread dump you've just obtained will contain a stack trace of each of the running threads in the java process.  To determine if one of those threads is executing native code, which is where most of the work is done to process a query, look for a thread whose stack contains a sequence of calls that look like the following:
+
+  at '''net.sf.farrago.fennel.FennelStorage.tupleStreamFetch'''(Native Method)
+  at '''net.sf.farrago.fennel.FennelStreamGraph.fetch'''(FennelStreamGraph.java:183)
+  at '''net.sf.farrago.runtime.FennelTupleIter.populateBuffer'''(FennelTupleIter.java:108)
+  at '''net.sf.farrago.runtime.FennelAbstractTupleIter.fetchNext'''(FennelAbstractTupleIter.java:122)
+  at '''org.eigenbase.runtime.TupleIterResultSet.next'''(TupleIterResultSet.java:98)
+  at '''net.sf.farrago.runtime.FarragoTupleIterResultSet.next'''(FarragoTupleIterResultSet.java:120)
+
+When searching for this pattern, '''''do not''''' literally look for a series of lines that exactly match the lines above.  Depending on which JVM you're using, your stack trace may look slightly different.  Moreover, the line numbers shown in the trace above will likely be different from yours because of changes from one release to the next.  What you should pay attention to are the method names highlighted in bold.  Also note that these calls may not necessarily be at the top of the stack for a given thread.  They may be in the middle of the stack, depending on the query operation.  Probably the easiest thing to do is to start by searching for a thread that contains '''fennel''', which indicates that the thread is executing native code.
+
+If you do not see this stack call pattern in any of the threads, then the hang is due to some other problem.  Or it may not be a hang.  For example, if you're executing a large join query, query optimization can take several minutes for a highly complex query.  So, perhaps you just need to wait a bit longer.  If that's not the case, and you suspect a product bug, then having the stack dump you've gathered will be useful in helping to diagnose the source of the problem.
+
+=Identifying the Query Causing the Hang=
+
+Having determined that the problem is due to a slow query, the next step is to identify the SQL statement itself.  To do this, locate the last SQL statement executed by looking backwards from the end of your server log file.
+
+This, however, only works if you're the only user running on your LucidDB instance, and you initiated no other queries since you encountered the hang.  Otherwise, the hanging statement may not be the last one recorded in the log file.  You may have to search for earlier SQL statements in the log file and do some trial and error testing to find the actual slow-running statement.
+
+Once you find the statement, it should be either a DML statement (INSERT, MERGE, or DELETE) or a SELECT statement.  If not, then it would appear that there are other statements running on your LucidDB instance, and you do need to look at earlier entries in the log file.
+
+An alternative is to issue a query on one of the system views [[LucidDbSystemViews#DBA_SQL_STATEMENTS]] as follows:
+
+   select * from sys_root.dba_sql_statements;
+
+This will list all active SQL statements, including the one you just issued.  From there, you should be able to identify a set of candidate SQL statements corresponding to the hanging one.
+
+=Run EXPLAIN PLAN and Interpret the Output=
+
+Once you have the slow-running query, execute the [[LucidDbExplainPlan|EXPLAIN PLAN]] command to generate the query plan for the statement.  The syntax is as follows:
+
+    EXPLAIN PLAN FOR &lt;SQL statement>
+
+If you do this in '''sqlline''', make sure to execute
+
+    !set outputformat csv
+
+before issuing EXPLAIN PLAN so the output lines aren't truncated.  If the EXPLAIN command generates a large output, and you want to save it to a file, you can do this by piping the input commands into sqlline and then redirecting the output:
+
+    cat query.sql | sqlline >&amp; output
+
+'''query.sql''' contains the '''!set''' command shown above, followed by the EXPLAIN command.
+
+Before discussing specifics on what to look for in the EXPLAIN output, the next subsection contains a brief overview of key pieces of the query plan that will help you understand why you need to look for certain things and what they mean.  Before reading those sections, you should take a look at [[FarragoExplainPlanExplained]] for an introduction to the EXPLAIN PLAN output.
+
+==Basics You Need to Know==
+
+There are a number of different constructs in a query's explain output.  For example, here's the explain output for a 3-way snowflake join.  Note that the right-hand side of the output has been truncated for readability.
+
+ set schema 'sj';
+ explain plan for
+    select s.sid, c.company, c.city, st.state
+        from sales s, state st, customer c
+        where
+            s.customer = c.id and
+            c.city = st.city and st.state = 'New York'
+        order by s.sid;
+
+ 'FennelToIteratorConverter'
+ '  FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '    FennelReshapeRel(projection=&amp;#91;&amp;#91;0, 3&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER SID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE ...
+ '      '''LhxJoinRel'''(leftKeys=&amp;#91;&amp;#91;1&amp;#93;&amp;#93;, rightKeys=&amp;#91;&amp;#91;2&amp;#93;&amp;#93;, '''joinType=[INNER]''')'
+ '        LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, SALES&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0, 3&amp;#93;&amp;#93;, clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$SALES$CUSTOMER, ...
+ '          LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[1])'
+ '            LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, SALES&amp;#93;&amp;#93;, index=[I_SALES_CUST], projection=[*], inputKeyProj=[*], ...
+ '              FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                LhxAggRel(groupCount=[1])'
+ '                  FennelReshapeRel(projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER ID) NOT NULL])'
+ '                    LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                      LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[2])'
+ '                        LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], ...
+ '                          FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                            LhxAggRel(groupCount=[1])'
+ '                              LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, STATE&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                                FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+ '        FennelReshapeRel(projection=&amp;#91;&amp;#91;0, 3, 0&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1"  ...
+ '          '''LhxJoinRel'''(leftKeys=&amp;#91;&amp;#91;1&amp;#93;&amp;#93;, rightKeys=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, '''joinType=[INNER]''')'
+ '            LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0, 2&amp;#93;&amp;#93;, clustered ...
+ '              LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[2])'
+ '                LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], inputKeyProj=[*], ...
+ '                  FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                    LhxAggRel(groupCount=[1])'
+ '                      LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, STATE&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                        FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+ '            LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, STATE&amp;#93;&amp;#93;, projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$STATE$CITY, ...
+ '              FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+
+Each *Rel in the explain output represents a RelNode, which corresponds to a type of LucidDB operation.  Rather than describing what each of these RelNodes does, which would be too lengthy and probably much more information than you need, this section will just focus on the RelNodes relevant to diagnosing slow queries.  Because slow queries are likely going to be the result of slow join execution, the focus, therefore, will be on the RelNodes related to joins.  Moreover, the discussion will focus on the minimum attributes within these RelNodes that will help you identify why your joins are slow.  Specifically, after reading this section, you should be able to look at the explain output for a DML or SELECT query and determine:
+
+# What joins make up the statement
+# What join method was used to execute each join
+# What are the inputs into each join
+# What is the order in which the joins are performed
+
+===Join Methods===
+
+[[LucidDbJoinImplementation]] describes the different join types and join methods supported by LucidDB.  The example above utilizes two hash joins, as denoted by the '''LhxJoinRel''''s.  Note that in both cases, the join types are inner joins, as denoted by '''joinType=[INNER]'''.  Had one of those joins been a left, right, or full outer join, you would have  seen '''joinType=[LEFT]''', '''joinType=[RIGHT]''', or '''joinType=[FULL]'''.
+
+The other join method LucidDB currently supports is a cartesian product join.  The following is a very simple example of what the explain plan for one looks like.  Again, the right-hand side has been truncated.
+
+ explain plan for
+     select * from sales left join customer c on c.city = 'San Mateo';
+
+ 'FennelToIteratorConverter'
+ '  '''FennelCartesianProductRel'''('''leftouterjoin=[true]''')'
+ '    LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, SALES&amp;#93;&amp;#93;, projection=[*], clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$SALES$CUSTOMER, ...
+ '    FennelBufferRel(inMemory=[false], multiPass=[true])'
+ '      LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$CUSTOMER$CITY, ...
+ '        LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], inputKeyProj=&amp;#91;&amp;#91;1, 3&amp;#93;&amp;#93;, ...
+ '          FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'San Mateo           ', ']', 'San Mateo           ' }&amp;#93;&amp;#93;)'
+
+The cartesian product join RelNode is '''FennelCartesianProductRel'''.  Since this is a left outer join, '''leftouterjoin=[true]'''.  If this was an inner join, you would have seen '''leftouterjoin=[false]'''.  No other join types are supported for cartesian product joins.
+
+Nested loop joins appear as '''FennelNestedLoopJoinRel''''s in the explain output.
+
+===Join Inputs===
+
+====Identifying the Join Inputs====
+Notice that in both examples above, the explain output utilizes indentation.  That's done for a reason.  For any given RelNode, its inputs always appear on lines that follow it, indented over by two spaces.  So, in the case of a join, if the join RelNode starts at column X in the output, then the two join inputs should appear on lines starting at column X+2.
+
+This is very easy to see in the cartesian product join example.  The two inputs are highlighted in bold below -- '''LcsRowScanRel''' and '''FennelBufferRel'''.
+
+ 'FennelToIteratorConverter'
+ '  FennelCartesianProductRel(leftouterjoin=[true])'
+ '    '''LcsRowScanRel'''(table=&amp;#91;&amp;#91;LOCALDB, SJ, '''SALES'''&amp;#93;&amp;#93;, projection=[*], clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$SALES$CUSTOMER, ...
+ '    '''FennelBufferRel'''(inMemory=[false], multiPass=[true])'
+ '      LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, '''CUSTOMER'''&amp;#93;&amp;#93;, projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$CUSTOMER$CITY, ...
+ '        LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], inputKeyProj=&amp;#91;&amp;#91;1, 3&amp;#93;&amp;#93;, ...
+ '          FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'San Mateo           ', ']', 'San Mateo           ' }&amp;#93;&amp;#93;)'
+
+For the first example, the inputs aren't on consecutive lines.  The inputs into the first hash join are highlighted in bold below -- '''LcsRowScanRel''' and '''FennelReshapeRel'''.
+
+ 'FennelToIteratorConverter'
+ '  FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '    FennelReshapeRel(projection=&amp;#91;&amp;#91;0, 3&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER SID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE ...
+ '      LhxJoinRel(leftKeys=&amp;#91;&amp;#91;1&amp;#93;&amp;#93;, rightKeys=&amp;#91;&amp;#91;2&amp;#93;&amp;#93;, joinType=[INNER])'
+ '        '''LcsRowScanRel'''(table=&amp;#91;&amp;#91;LOCALDB, SJ, '''SALES'''&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0, 3&amp;#93;&amp;#93;, clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$SALES$CUSTOMER, ...
+ '          LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[1])'
+ '            LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, SALES&amp;#93;&amp;#93;, index=[I_SALES_CUST], projection=[*], inputKeyProj=[*], ...
+ '              FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                LhxAggRel(groupCount=[1])'
+ '                  FennelReshapeRel(projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER ID) NOT NULL])'
+ '                    LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                      LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[2])'
+ '                        LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], ...
+ '                          FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                            LhxAggRel(groupCount=[1])'
+ '                              LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, STATE&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                                FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+ '        '''FennelReshapeRel'''(projection=&amp;#91;&amp;#91;0, 3, 0&amp;#93;&amp;#93;, outputRowType=[RecordType(INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1"  ...
+ '          LhxJoinRel(leftKeys=&amp;#91;&amp;#91;1&amp;#93;&amp;#93;, rightKeys=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, joinType=[INNER])'
+ '            LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, '''CUSTOMER'''&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0, 2&amp;#93;&amp;#93;, clustered ...
+ '              LcsIndexMergeRel(consumerSridParamId=[0], segmentLimitParamId=[0], ridLimitParamId=[2])'
+ '                LcsIndexSearchRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, CUSTOMER&amp;#93;&amp;#93;, index=[I_CUSTOMER_CITY], projection=[*], inputKeyProj=[*], ...
+ '                  FennelSortRel(key=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, discardDuplicates=[false])'
+ '                    LhxAggRel(groupCount=[1])'
+ '                      LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, STATE&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered ...
+ '                        FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+ '            LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, SJ, '''STATE'''&amp;#93;&amp;#93;, projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$STATE$CITY, ...
+ '              FennelValuesRel(tuples=&amp;#91;&amp;#91;{ '[', 'New York            ', ']', 'New York            ' }&amp;#93;&amp;#93;)'
+
+For large join queries, you can use a text editor to help you identify the column number where lines begin.  That's why it's useful to save the explain output in a file.
+
+====Join Input Types====
+Let's first consider the cartesian join example.  In that case, the first input is a row scan, '''LcsRowScanRel''' on the '''SALES''' table.  That's the left input into the cartesian product join.  The second (or right) input is a '''FennelBufferRel'''.  With a cartesian product join, since you're re-executing the right-hand side once for each row produced from the left-hand side, the query optimizer may decide that it's beneficial to buffer the result of the right-hand side.  That way, you avoid re-executing the right-hand side and instead simply read the buffered result for each iteration over the left-hand side.  That is when you will see a '''FennelBufferRel'''.
+
+Specifically, in this example, the right-hand side of the cartesian join is a filtered row scan on '''CUSTOMER'''.  How do you know this?  Because the line that follows '''FennelBufferRel''' is indented over by two spaces and is a '''LcsRowScanRel''' on the '''CUSTOMER''' table.  And the line that follows that '''LcsRowScanRel''' is a '''LcsIndexSearchRel''', which indicates use of an index search.  (''A detailed discussion of indexes searches is outside of the scope of this document.'')  Hence, in this example, the input into the buffer is the result of the filtered row scan.  Rather than re-executing that row scan multiple times, the query plan dictates that the filtering be done once, and the subset of rows that qualify the filter are buffered.
+
+Let's now look at the hash join example.  In this case, again, the first input is a '''LcsRowScanRel''' on the '''SALES''' table.  The second input is a '''FennelReshapeRel'''.  A '''FennelReshapeRel''' is a LucidDB operation that can project away columns from the input that are no longer needed, rearrange the order of its input columns, and possibly do some simple data filtering.  The details aren't important, but what's significant is its actual input, which can be a join or a row scan, among other input types.  In this example, that input is the second hash join, '''LhxJoinRel'''.  In other words, the query plan the optimizer has chosen in this example is a right-deep join tree.
+
+So, to complete this example, the inputs into the second hash join are a '''LcsRowScanRel''' on the '''CUSTOMER''' table and a '''LcsRowScanRel''' on the '''STATE''' table.  Note that the inputs into the '''LcsRowScanRel''''s on '''SALES''' and '''CUSTOMER''' in this example look a bit complicated because this snowflake join query is using semijoins to process the joins more efficiently.  See [[LucidDbJoinOptimization#Star Joins]] for further details on how star joins are implemented by LucidDB.
+
+===Join Ordering===
+
+Once you've identified the inputs into the various joins, then determining the overall join ordering is simply a matter of piecing the different inputs together, starting from the top.  In our hash join example, the resulting join tree is:
+
+       Hash Join
+        /      \
+     SALES   Hash Join
+              /      \
+          CUSTOMER  STATE
+
+For a basic star join, what you'll generally see is a left-deep join tree where the left-most row scan is a scan of the fact table, while the dimension tables all appear on the right-hand side of the joins as you move up the join tree.  For example:
+
+                     Hash Join
+                     /        \
+                   Hash Join  DIM_TABn
+                   /
+                  ...
+                  /
+                 Hash Join
+                /       \ 
+            Hash Join   DIM_TAB2
+              /     \
+        Hash Join  DIM_TAB1
+            /   \
+    FACT_TABLE  DIM_TAB0
+
+=Identifying the Cause=
+
+Having done the basic ground work described in the previous sections, the next step is to utilize the explain output to help in doing further diagnosis.
+
+==Reduce the Query==
+
+You should first try to reduce the query to a smaller one that still reproduces the problem.  This may sound like a tedious step if you have a big query, but it will make the problem easier to diagnose by narrowing the scope of the problem.  The way you should reduce the query is by executing independent, smaller queries first, and then building on top of the smaller queries, mimicing the join order selected by the optimizer.
+
+For example, if your join ordering is as follows:
+
+                       Hash Join
+                        /      \
+                   Hash Join    G
+                  /         \
+            Hash Join      Hash Join
+            /       \         /   \
+       Hash Join  Hash Join  E     F
+         /    \     /    \
+        A      B   C      D
+
+then the smaller queries you would execute are as follows, in the order noted:
+
+# SELECT COUNT(*) FROM A, B WHERE ''join conditions between (A, B)'' AND ''filter conditions on (A, B)''
+# SELECT COUNT(*) FROM C, D WHERE ''join conditions between (C, D)'' AND ''filter conditions on (C, D)''
+# SELECT COUNT(*) FROM E, F WHERE ''join conditions between (E, F)'' AND ''filter conditions on (E, F)''
+# SELECT COUNT(*) FROM A, B, C, D WHERE ''join conditions between (A, B, C, D)'' AND ''filter conditions on (A, B, C, D)''
+# SELECT COUNT(*) FROM A, B, C, D, E, F WHERE ''join conditions between (A, B, C, D, E, F)'' AND ''filter conditions on (A, B, C, D, E, F)''
+# SELECT COUNT(*) FROM G, ''the tables that G joins with'' where ''join conditions between G and the tables it joins with'' AND ''filter conditions on G and the tables it joins with''
+
+If things run fine for queries 1-3, but then query 4 hangs, then you've reduced the problem from a 7-way join to a 4-way join.  Or, if G only joins with A, and that's the join subset that's slow, then you've reduced the problem to a 2-way join!
+
+If this is a bit too abstract, let's consider the hash join example from earlier.
+
+   select s.sid, c.company, c.city, st.state
+       from sales s, state st, customer c
+       where
+           s.customer = c.id and
+           c.city = st.city and st.state = 'New York'
+       order by s.sid;
+
+       Hash Join
+       /      \
+    SALES   Hash Join
+             /      \
+         CUSTOMER  STATE
+
+The smaller query you would try to execute first would be the following:
+
+   select count(*) from company c, state st
+      where c.city = st.city and st.state = 'New York';
+
+Note that it generally isn't necessary to do an exact projection of the subset of columns referenced in the original query to reproduce the problem.  So for simplicity, you should initially try to just use count(*).  Also, determining the applicable subset of join conditions and filters for each reduced query assumes that you have a basic understanding of the different components of the problem query.
+
+Note also that the number of tables in the query may be greater than the actual number of tables referenced in the original query if you're using views.  So, you'll need to have access to those view definitions to determine which join conditions and filters to apply when attempting to reduce the query.
+
+==Possible Causes==
+
+This section outlines some possible reasons for your slow query.  If some of these sound a bit outlandish, bear in mind that each of these scenarios was encountered at one point or another by a LucidDB user.
+
+===Incorrect Data?===
+Having reduced your query, first verify that the inputs into your join are correct.  For example, perhaps you accidentally loaded additional data into your tables that would result in joins producing a large number of duplicate rows, which when combined with additional joins, balloons the size of the data you're processing.  That's where reducing the query into smaller queries and running the smaller queries in sequence can help.
+
+===Cartesian Product Joins===
+
+====Why Cartesian Product Joins Are Bad and Should Be Avoided====
+One common source of long-running join queries is the presence of cartesian product joins.  Cartesian product joins are inefficient because you execute your right input once for each row from the left input.  So, the first step is to look at your explain output and determine if there are any '''FennelCartesianProductRel''''s. 
+
+If there are, the next question to ask is would you expect there to be any cartesian product joins in your query?  Here are some examples of inadvertent mistakes that can lead to cartesian product joins:
+
+* You forgot to include a join condition in your query.  If a primary/foreign key relationship consists of multiple keys, make sure you include all keys in the join condition.
+* You specified an OR between two conditions when you meant to specify an AND.
+* You misplaced parenthesis when AND'ing and OR'ing together expressions.  E.g., instead of "A OR B AND C", did you really mean "(A OR B) AND C"?
+
+If any of these apply, or you've made some other error, then you've found the problem and can fix it by modifying your original query.
+
+If there are legitimate reasons why there is no join condition between a table and the rest of the query, as in our earlier example, or the join condition is such that using a hash join is not feasible (e.g., the join is an inner non-equi join), then before doing any further diagnosis, take the product of the number of rows returned from the left and right inputs.  If this is a very large number, then recognize that there is not much we can do to make your cartesian product join efficient.  In that case, your only option may be to make changes in your application to avoid this poor-performing cartesian product join.
+
+If the multiplied result is a reasonable number, and you believe that your particular cartesian product join should not be a performance issue, then read further ...
+
+====''Special'' Inputs====
+
+Having verified that the cartesian product join is in fact the problem, the next thing to look at is if the right-hand side input includes any UDX calls or references to external tables, e.g., flat files or JDBC foreign tables.  UDX calls are denoted by a '''FarragoJavaUdxRel''' RelNode.  A reference to an external flat file is denoted by a '''FlatFileFennelRel''' RelNode, while a JDBC foreign table reference is denoted by a '''ResultSetToFarragoIteratorConverter''' with a '''MedJdbcQueryRel''' as its input.  If you do find either of these on the right-hand side of the cartesian product join, then you need to utilize temporary tables to store these sub-results.  LucidDB has limited statistical information for these RelNodes, so it may not be able to make informed optimization decisions when these RelNodes appear on the right-hand side of a cartesian product join.
+
+====Should the Right-Hand Side Be Buffered?====
+If the right-hand side input only references LucidDB tables, (i.e., '''LcsRowScanRel''''s), then check if that right-hand side input is buffered.  It's buffered if that input is a '''FennelBufferRel''', as described earlier.  If it's not buffered, and the right-hand side consists of a single table scan with no filtering, then buffering isn't going to help make your cartesian product join any faster.  In that case or in the case where the right-hand side is already buffered, then it appears that your input sizes ''are'' too big, and there isn't anything that LucidDB can do to make your query faster.
+
+On the other hand, if the right-hand side is a join or a scan on a large number of rows with filters, aggregation, and/or grouping that reduce the result size to a small number of rows, then buffering can help.  Aggregation/grouping is indicated by the presence of a '''LhxAggRel''' RelNode, as noted below.
+
+ '    '''LhxAggRel'''(groupCount=[1], agg#0=[COUNT()])'
+ '      FennelRenameRel(fieldNames=&amp;#91;&amp;#91;$f0&amp;#93;&amp;#93;)'
+ '        LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, S, T&amp;#93;&amp;#93;, projection=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;, clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$T$A&amp;#93;&amp;#93;)'
+
+Filtering appears as either an '''IterCalcRel''' on top of an '''LcsRowScanRel''' as follows:
+
+ ''''IterCalcRel'''(expr#0=&amp;#91;&amp;#91;inputs&amp;#93;&amp;#93;, expr#1=[1], expr#2=[+($t0, $t1)], expr#3=[2], expr#4=[=($t2, $t3)], A=[$t0], $condition=[$t4])'
+ '  FennelToIteratorConverter'
+ '    '''LcsRowScanRel'''(table=&amp;#91;&amp;#91;LOCALDB, S, T&amp;#93;&amp;#93;, projection=[*], clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$T$A&amp;#93;&amp;#93;)'
+
+or when there are inputs below the '''LcsRowScanRel''', e.g., the '''LcsIndexSearchRel''' in one of the earlier examples, or the '''FennelValuesRel''' in the example below:
+
+ '  LcsRowScanRel(table=&amp;#91;&amp;#91;LOCALDB, S, T&amp;#93;&amp;#93;, projection=[*], clustered indexes=&amp;#91;&amp;#91;SYS$CLUSTERED_INDEX$T$A&amp;#91;&amp;#91;, residual columns=&amp;#91;&amp;#91;0&amp;#93;&amp;#93;)'
+ '    '''FennelValuesRel'''(tuples=&amp;#91;&amp;#91;{ '[', 1, ']', 1 }&amp;#93;&amp;#93;)'
+
+In these cases, if the resulting input size is smaller than the original table size, buffering should occur, and perhaps the optimizer has out-of-date statistics, which leads it to believe that processing the right-hand side input is inexpensive and therefore, equivalent to reading a buffered result.  See the [[#Are_Stats_Up-to-Date.3F|section below]] for further information on how to determine if your stats are out-of-date.
+
+If your statistics are up-to-date, and the explain plan still shows no buffering, then you have probably encountered a product defect.
+
+===Bad Join Ordering===
+
+If there are no cartesian product joins in your query plan, then the other likely cause of a slow-running query is a bad join ordering. 
+
+To understand why join ordering is important, let's consider a simple example.  Suppose, you have the following query:
+
+   select count(*) from A, B, C
+       where A.a1 = B.b1 + C.c1 and
+           A.a2 = B.b2 and
+           B.b3 = C.c2;
+
+Table A contains 100,000 rows while both tables B and C contain 100.  Two possible join orderings are the following:
+
+          Hash Join          Hash Join
+           /     \            /     \
+       Hash Join  C          A    Hash Join
+        /     \                    /     \
+       A       B                  B       C
+
+However, let's suppose that column B.b2 is not unique, and therefore, the result of the hash join between A and B is greater than 100,000.  On the other hand, the join between B and C produces only 100 rows, while the join condition "A.a1 = B.b1 + C.c1" produces a much smaller subset of the 100,000 rows.  Note also that in the plan on the left, that join condition that references all 3 tables can no longer be processed by a hash join because the left join input is referenced in both the left and right hand sides of the join filter.  Therefore, it must be processed after the final hash join.  Given these characteristics, the better join ordering is the second one.
+
+In this particular example, choosing the plan on the left over the one on the right will result in a longer execution time, but not necessarily an execution strategy that causes the query to hang.  The intent of this example is to show how different join orderings can result in different performance.  What you can conclude is that because table A has multiple join conditions where the join condition between A and (B, C) is more selective than the join condition between A and B, it makes more sense to defer the join of A until the join of B and C has occurred.
+
+====Are Stats Up-to-Date?====
+
+The most likely cause of a bad join ordering is out-of-date stats.  This section describes LucidDB stats and how you can determine if your stats are out-of-date.
+
+LucidDB gathers and uses the following stats:
+
+* table row count
+* column cardinality
+* distribution of column values
+
+An example of how out-of-date statistics can negatively affect things is the following.  Suppose you did an initial load of one your tables, and at the time of the load, you didn't have the values for one of the columns, column X.  Therefore, you populate the column with NULL as a default value.  You then run [[LucidDbAnalyzeTable|ANALYZE TABLE]] on that table.  One of the statistics ANALYZE TABLE gathers is column cardinality.  In this example, the cardinality of column X would be one because every value in the column is NULL.  Now, suppose you later run a MERGE statement on the table and update column X with its actual value, resulting in column X containing unique values.  If ANALYZE TABLE is not rerun on that column, then if you were to execute a query containing a GROUP BY, specifying that column as the GROUP BY key, the optimizer would estimate that the size of that GROUP BY result is one rather than its actual value, which is the number of rows in the table.  If that GROUP BY result is joined with other tables, the optimizer could choose to execute that join sooner than appropriate since the optimizer thinks that join input is small.
+
+=====Viewing Existing Stats=====
+If you don't know off-hand whether or not your stats are up-to-date, you can view them in the catalogs.
+
+The table row count stat is different from the other stats in that LucidDB maintains this value, as DML queries are executed.  In other words, it's not necessary to run ANALYZE TABLE to retrieve up-to-date values for this.  You can verify this by issuing the following query:
+
+   select * from sys_root.dba_stored_tables;
+
+If the current row counts returned don't match the actual table row counts, then that's a product bug.
+
+Column cardinality can be viewed by issuing the following query:
+
+   select * from sys_root.dba_column_stats;
+
+This is what's returned for a 1,000,000 row table BENCH1M:
+
+&lt;pre>
++---------------+--------------+-------------+--------------+-----------------------+------------------------------------+------------------+--------------+------------+---------------+----------------+------------------------+
+| CATALOG_NAME  | SCHEMA_NAME  | TABLE_NAME  | COLUMN_NAME  | DISTINCT_VALUE_COUNT  | IS_DISTINCT_VALUE_COUNT_ESTIMATED  | PERCENT_SAMPLED  | SAMPLE_SIZE  | BAR_COUNT  | ROWS_PER_BAR  | ROWS_LAST_BAR  |   LAST_ANALYZE_TIME    |
++---------------+--------------+-------------+--------------+-----------------------+------------------------------------+------------------+--------------+------------+---------------+----------------+------------------------+
+| LOCALDB       | S            | BENCH1M     | kseq         | 1000000               | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k2           | 2                     | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k4           | 4                     | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k5           | 5                     | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k10          | 10                    | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k25          | 25                    | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k100         | 100                   | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k1k          | 1000                  | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k10k         | 10000                 | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k40k         | 40000                 | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k100k        | 99994                 | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k250k        | 245439                | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
+| LOCALDB       | S            | BENCH1M     | k500k        | 432041                | false                              | 100.0            | 1000000      | 100        | 10000         | 10000          | 2007-09-28 10:03:21.0  |
++---------------+--------------+-------------+--------------+-----------------------+------------------------------------+------------------+--------------+------------+---------------+----------------+------------------------+
+&lt;/pre>
+
+Each column has associated with it data distributions (or histograms).  These are stored as "bars".  Each bar represents a data range, such that there are an equal number of values represented by each bar.  Each bar has a start value indicating the beginning of that data range. LucidDB also stores the number of distinct values within each bar, which have been estimated.  For further details, see [[TableStatistics]].
+
+To view data distributions:
+
+   select * from sys_root.dba_column_histograms;
+
+Here's an example of how to interpret the result from the above query.  This is a subset of the rows returned for column k100k in table BENCH1M:
+
+&lt;pre>
++---------------+--------------+-------------+--------------+----------+--------------+--------------+
+| CATALOG_NAME  | SCHEMA_NAME  | TABLE_NAME  | COLUMN_NAME  | ORDINAL  | START_VALUE  | VALUE_COUNT  |
++---------------+--------------+-------------+--------------+----------+--------------+--------------+
+| LOCALDB       | S            | BENCH1M     | k100k        | 96       | 96044        | 977          |
+| LOCALDB       | S            | BENCH1M     | k100k        | 97       | 97021        | 998          |
+| LOCALDB       | S            | BENCH1M     | k100k        | 98       | 98019        | 991          |
++---------------+--------------+-------------+--------------+----------+--------------+--------------+
+&lt;/pre>
+
+What this means is that for the data range [96044, 97021), there are 977 distinct values.  For the data range [97021, 98019), there are 998 distinct values.  If you take a look at the '''BAR_COUNT''' and '''ROWS_PER_BAR''' columns in the result from the previous query, you'll notice that there are 100 bars, each representing 10,000 rows, for each column.  10,000*100 = a sample size of 1,000,000 rows.  Estimated statistics will have a lower sample size, and correspondingly fewer rows per bar.
+
+=====Deciding If You Need to Run ANALYZE TABLE=====
+
+Since the table row count is always maintained, this means that if you've loaded a large number of new rows into your table, but the column cardinality and data distributions are relatively unchanged, then it's not necessary to rerun ANALYZE TABLE.  In fact, even if the column cardinalities and data distributions have changed slightly, it may not be necessary to rerun ANALYZE TABLE.  The stats need not be exact; they just need to be within the ballpark.  How close to the ballpark?  Well, that's somewhat subjective depending on the complexity of the query and the number of rows in your table.  Unless you have a high degree of data skew, it's probably easier to just look at the overall column cardinalities.  If your column cardinalities are within, say 25%, of the actual values, that is probably in the ballpark.  
+
+Note that you can specify that ANALYZE TABLE be run on only a subset of columns in a table.  That way, you can update the statistics only for the columns that have changed significantly.  Also, the subset of columns for which it's more important that you have ballpark stats are those columns that are either used as join keys or group by keys.
+
+If after viewing the stats, you're still not sure which tables have out-of-date stats, then as a last resort, you should run ANALYZE TABLE on all of the tables in the original query, or the reduced query if you were able to narrow down the problem.
+
+LucidDB supports gathering estimated statistics via ANALYZE TABLE.  Using estimated statistics results in a significant reduction of the amount of time required to gather statistics from large tables.  Without an explicit sampling percentage, ANALYZE TABLE ESTIMATE STATISTICS will use the table's row count to choose an appropriate sampling percentage.  The sampling percentage is chosen to ensure there are enough rows in the sample to produce reasonable statistics.  In particular, for very small tables it will revert to computing statistics rather than estimating them.  Estimated statistics makes use of indexes and constraints, when available, to obtain more accurate cardinalities.  Otherwise, it estimates cardinality based on the sampled data.  The estimation algorithm is not foolproof, so you may be forced to manually specify a larger sample percentage or revert to computed statistics in some cases.
+
+=Still Stuck?=
+
+If you've verified all of the following:
+
+* Your table data is correct.
+* The problem is not because of a cartesian product join.
+* You haven't made an error in the query.
+* Your table stats are up-to-date
+
+Then perhaps you need to tune your system to provide more memory for memory-intensive operations like hash joins, hash aggregation, and sorting.  See [[LucidDbBufferPoolSizing]] for information on how to add additional memory to your buffer pool.
+
+If after adding more buffer pool space, your query is still slow, then you may have found a product bug.
+
+=Summary of RelNodes=
+
+Here's a list of the different RelNodes discussed in this document:
+
+* '''FarragoJavaUdxRel''' - UDX call
+* '''FennelBufferRel''' - the input into this RelNode is buffered
+* '''FennelCartesianProductRel''' - cartesian product join
+* '''FennelNestedLoopJoinRel''' - nested loop join
+* '''FennelReshapeRel''' - projection and rearranging of input columns
+* '''FlatFileFennelRel''' - access to an external, flat-file table
+* '''IterCalcRel''' - some type of filtering
+* '''LcsIndexSearchRel''' - index search
+* '''LcsRowScanRel''' - table row scan
+* '''LhxAggRel''' - aggregation and/or grouping
+* '''LhxJoinRel''' - hash join
+* '''MedJdbcQueryRel''' - access to a JDBC foreign table
+* '''ResultSetToFarragoIteratorConverter''' - converts a JDBC foreign table query result
+
+=Appendix: Preemptive Performance Testing Using Simulated Stats=
+
+If you do not want to run ANALYZE TABLE to gather more up-to-date statistics, e.g., because it's too time-consuming, and you want to find out very quickly what impact up-to-date stats will have on your query plan, there's a way you can simulate statistics.  This can also be useful if you want to take a look at the explain plan for a query, but you haven't populated your tables with data yet.  Note, however, that when updating data distributions using this technique, the resulting data distributions are  uniform distributions.  Also, there are limitations in how you can specify the boundary values for the different data ranges.  Therefore, if you are filtering for specific data values in your query, this technique may not accurately reflect the estimated result sizes of those filters.
+
+Before doing anything, you should take a [[LucidDbBackupRestore|a backup]] of your database so you can restore the stats back to their original state after you're done experimenting with the simulated stats.  Alternatively, you can restore the stats simply by running ANALYZE TABLE, but it's generally a good idea to do a backup, irregardless, in case you make a mistake.
+
+To update the table rowcount for the '''CUSTOMER''' table in a schema named '''TPCD''' with a rowcount of '''15000''', execute the following:
+
+ call sys_boot.mgmt.stat_set_row_count('LOCALDB',''''TPCD'''',''''CUSTOMER'''','''15000''');
+
+To update the statistics for an integer column named '''C_CUSTKEY''' in that same table so it contains '''15000''' distinct values, you would execute the following:
+
+  call sys_boot.mgmt.stat_set_column_histogram(
+    'LOCALDB','TPCD','CUSTOMER',''''C_CUSTKEY'''','''15000''',100,'''15000''',0,'0123456789');
+
+To update statistics for a character column named '''C_NATIONKEY''' with only '''25''' distinct values, you would execute the following:
+
+  call sys_boot.mgmt.stat_set_column_histogram(
+    'LOCALDB','TPCD','CUSTOMER',''''C_NATIONKEY'''','''25''',100,'''25''',0,'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+The '''100''''s in the calls above indicate the sampling percentage.  Since we're just simulating stats, let's pretend that we're using the entire table as our sample size, so just use 100.  The second to the last parameter indicates how boundary values in the data distributions are generated.  Use either 0 or 1.  For the last parameter, use the numeric string if the column is an integer type and the letters otherwise.
+
+If you want to validate what you've done, you can view the resulting stats in the catalog, as described [[#Viewing_Existing_Stats|above]].</textarea><div class='templatesUsed'>
+
+</div>
+<p id="mw-returnto">Return to <a href="/wiki/LucidDbSlowQueryDiagnosis" title="LucidDbSlowQueryDiagnosis">LucidDbSlowQueryDiagnosis</a>.</p>
+<div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/LucidDbSlowQueryDiagnosis">http://luciddb.org/wiki/LucidDbSlowQueryDiagnosis</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbSlowQueryDiagnosis" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbSlowQueryDiagnosis&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource" class="selected"><a href="/wiki/index.php?title=LucidDbSlowQueryDiagnosis&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbSlowQueryDiagnosis&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbSlowQueryDiagnosis&amp;returntoquery=action%3Dedit" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbSlowQueryDiagnosis" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbSlowQueryDiagnosis" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.action.edit", "mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.172 secs. --></body></html>

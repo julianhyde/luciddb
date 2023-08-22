@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>ReleaseProcedure - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "ReleaseProcedure", "wgTitle": "ReleaseProcedure", "wgCurRevisionId": 6606, "wgArticleId": 1916, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-ReleaseProcedure action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">ReleaseProcedure</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page documents the procedure used to make Eigenbase source and binary releases.  It covers Farrago, Fennel, and LucidDB; other subprojects (blackhawk, saffron, enki, JGraphT and resgen) have their own release procedures.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Version_Numbering"><span class="tocnumber">1</span> <span class="toctext">Version Numbering</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Release_Specific_File_Updates"><span class="tocnumber">2</span> <span class="toctext">Release Specific File Updates</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Perforce_Label_Creation"><span class="tocnumber">3</span> <span class="toctext">Perforce Label Creation</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Release_Build"><span class="tocnumber">4</span> <span class="toctext">Release Build</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Release_Candidate_Validation"><span class="tocnumber">5</span> <span class="toctext">Release Candidate Validation</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Label_Lock"><span class="tocnumber">6</span> <span class="toctext">Label Lock</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Sourceforge_Release"><span class="tocnumber">7</span> <span class="toctext">Sourceforge Release</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Website_Updates"><span class="tocnumber">8</span> <span class="toctext">Website Updates</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Mailing_List_Announcements"><span class="tocnumber">9</span> <span class="toctext">Mailing List Announcements</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Sourceforge_News"><span class="tocnumber">10</span> <span class="toctext">Sourceforge News</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#JIRA_Update"><span class="tocnumber">11</span> <span class="toctext">JIRA Update</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#TBD"><span class="tocnumber">12</span> <span class="toctext">TBD</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Version_Numbering"> Version Numbering </span></h1>
+<p>Currently, we use a unified version numbering scheme across these projects, with no release codenames.  In the future, individual projects may go on their own release tracks, but for now, we keep it simple.
+</p><p>The version numbering is <b>x.y.z</b>, e.g. 0.7.4.
+</p><p>So far, LucidDB has been driving the release process, since it has an actual user community as opposed to just a developer community.  We have kept x=0 because there are still a lot of gaps to be filled before calling anything "1.0".  We increment y for introduction of major new user-visible features or architectural changes, and z otherwise.  Numbering has been linear so far, but in the future could be branching for maintenance of older releases.
+</p><p>In some cases, development prereleases may be put out before an official release.  For this, the convention is to reserve a release number which will be skipped in the official release track, e.g. LucidDB 0.7.5 was a prerelease before the official 0.8.0 release, and 0.7.4 was the last official release on the 0.7 track.  If the 0.7 track had continued, the next official release there would have been 0.7.6 (which we'll use as an example version number throughout this page).
+</p><p>Release versions should also be defined in JIRA (issues.eigenbase.org) so that issues can be assigned to releases as appropriate.  Because Fennel, Farrago, and LucidDB are different projects in JIRA, it is necessary to create and manage a release definition for each one rather than just once.
+</p>
+<h1> <span class="mw-headline" id="Release_Specific_File_Updates"> Release Specific File Updates </span></h1>
+<p>Once the release number has been decided, a number of files need to be updated:
+</p>
+<pre>
+Change 11941 by jvs@jvs.bagheera.eigenbase on 2008/11/10 13:25:57
+
+        DEV:  version number and doc updates for 0.8.0 release
+
+Affected files ...
+
+... //open/dev/bootstrap/dist/README.bin#14 edit
+... //open/dev/bootstrap/dist/README.src#13 edit
+... //open/dev/farrago/README#16 edit
+... //open/dev/fennel/README#20 edit
+... //open/dev/fennel/configure.in#61 edit
+... //open/dev/luciddb/doc/arch.html#15 edit
+... //open/dev/luciddb/doc/features.html#9 edit
+... //open/dev/luciddb/doc/roadmap.html#11 edit
+... //open/dev/luciddb/license/README#13 edit
+</pre>
+<p>In some cases, this is just a matter of updating the release number (a step that really should be automated/generated, but for now it's manual via Perforce edits).
+</p><p>In other cases, it's necessary to add or change text in the file.  For example, for LucidDB, we maintain a summary of changes in each release; this requires a human to scan through the Perforce changes since the last release and come up with a short description for each (including a JIRA reference from issues.eigenbase.org if any).
+</p><p>Besides bug fixes, new features and change impact notes, here are some other items to consider for release documentation:
+</p>
+<ul><li> have any significant new thirdparty dependencies been introduced?
+<ul><li> if so, are there any unresolved licensing issues?  are new GPL exceptions needed in the files named "COPYING" under fennel, farrago, or luciddb?
+</li></ul>
+</li><li> any special migration instructions?
+</li><li> any platform-specific limitations?
+</li><li> deprecation for existing features or addons?
+</li></ul>
+<h1> <span class="mw-headline" id="Perforce_Label_Creation"> Perforce Label Creation </span></h1>
+<p>After release-specific files have been updated, the next step in the release process is to create a Perforce label for the first release candidate.  Before doing this, it is a good idea to make sure that:
+</p>
+<ul><li> all features intended for the release are good to go
+</li><li> all bugs of interest are fixed
+</li><li> any desired branch integrations to //open/dev have been performed
+</li><li> all tests of interest are passing
+</li></ul>
+<p>The label name should be <b>eigenbase_rx.y.z</b>, and is created with the <b>p4 label</b> command:
+</p>
+<pre>
+p4 label eigenbase_r0.7.6
+</pre>
+<p>Initially, the label should be defined like this:
+</p>
+<pre>
+Label:  eigenbase_r0.7.6
+
+Update: 2008/07/16 09:47:58
+
+Access: 2008/07/13 16:36:32
+
+Owner:  jvs
+
+Description:
+        Eigenbase release 0.7.6 (candidate)
+
+Options:        unlocked
+
+View:
+        //open/dev/...
+</pre>
+<p>This assumes that the release is being made directly off the main Eigenbase trunk.  Alternatively, it may come from a release branch, e.g. <b>//open/release/r0.7.4</b>.  Perforce is quite powerful for retroactive branching, so it is fine to start with a label on the trunk and then later create a branch for fixing problems with the release; you can move the label from trunk to branch at that time.
+</p><p>Once the label has been defined as above, run a command like this one to take the initial snapshot of the code:
+</p>
+<pre>
+p4 labelsync -l eigenbase_r0.7.6
+</pre>
+<h1> <span class="mw-headline" id="Release_Build"> Release Build </span></h1>
+<p>The script <b>//open/dev/bootstrap/dist/buildEigenbaseRelease.sh</b> automates the entire release build process for a given platform.  It expects you to have set up and tested a Perforce sandbox and build environment for the branch corresponding to the current label definition.  Official builds should only be done with JDK 1.6 (as of 0.9.3).
+</p><p>Run it as follows:
+</p>
+<pre>
+buildEigenbaseRelease.sh eigenbase_r0.7.6 0 7 6
+</pre>
+<p>The script checks to make sure you don't have any files open for edit in your Perforce client, and fails immediately if you do.  If that check passes, the next step taken by the script is to <b>rm -rf</b> most of the sandbox directories for the branch and then <b>p4 sync -f</b> to the label (to make sure the build is pristine), so <i>make sure you don't have anything of value lying around in your Perforce sandbox directories!</i>.
+</p><p>On Linux, the script requires the <b>chrpath</b> utility to be available, so be sure to install that.
+</p><p>If the script completes successfully, it will produce files as follows on Linux:
+</p>
+<pre>
+eigenbase-0.7.6.tar.bz2
+eigenbase-src-0.7.6.tar.bz2
+fennel-0.7.6.tar.bz2
+farrago-0.7.6.tar.bz2
+luciddb-0.7.6.tar.bz2
+</pre>
+<p>On Windows, the files will have .zip extensions instead.
+</p><p>The files produced do not match the actual file release naming conventions, so it's necessary to rename them.  The source packages can come from any OS build, so assuming the 32-bit Linux build is used for that, the renames are as follows for the 3 platforms currently supported:
+</p>
+<ul><li> Linux 32-bit
+<ul><li> eigenbase-0.7.6.tar.bz2 -&gt; eigenbase-bin-linux32-0.7.6.tar.bz2
+</li><li> eigenbase-src-0.7.6.tar.bz2 (no rename)
+</li><li> fennel-0.7.6.tar.bz2 -&gt; fennel-src-0.7.6.tar.bz2
+</li><li> farrago-0.7.6.tar.bz2 -&gt; farrago-src-0.7.6.tar.bz2
+</li><li> luciddb-0.7.6.tar.bz2 -&gt; luciddb-bin-linux32-0.7.6.tar.bz2
+</li></ul>
+</li><li> Linux 64-bit (AMD)
+<ul><li> eigenbase-0.7.6.tar.bz2 -&gt; eigenbase-bin-linux64-0.7.6.tar.bz2
+</li><li> luciddb-0.7.6.tar.bz2 -&gt; luciddb-bin-linux32-0.7.6.tar.bz2
+</li></ul>
+</li><li> Win32
+<ul><li> eigenbase-0.7.6.zip -&gt; eigenbase-bin-win32-0.7.6.zip
+</li><li> luciddb-0.7.6.zip -&gt; luciddb-bin-win32-0.7.6.zip
+</li></ul>
+</li><li> Win64
+<ul><li> eigenbase-0.7.6.zip -&gt; eigenbase-bin-win64-0.7.6.zip
+</li><li> luciddb-0.7.6.zip -&gt; luciddb-bin-win64-0.7.6.zip
+</li></ul>
+</li><li> Mac OS/X (32-bit)
+<ul><li> eigenbase-0.7.6.tar.bz2 -&gt; eigenbase-bin-macos32-0.7.6.tar.bz2
+</li><li> luciddb-0.7.6.tar.bz2 -&gt; luciddb-bin-macos32-0.7.6.tar.bz2
+</li></ul>
+</li></ul>
+<p><br />
+(It would be nice if the script were enhanced to produce the correct filenames automatically.)
+</p><p>So far, OS/runtime dependencies for binary packages have been random based on whatever build machines have been available to Eigenbase.  On Windows, this isn't a problem, but on Linux there is a large amount of variation in ABI's for different gcc versions.  Eventually, we would like to have distro+version-specific packages (.debs, .rpms, etc); for now, users have to fall back to building from source in cases where the released binaries are incompatible with a particular distribution.
+</p>
+<h1> <span class="mw-headline" id="Release_Candidate_Validation"> Release Candidate Validation </span></h1>
+<p>Once builds have been produced, they should get as much validation as possible before release.  We don't currently have an automated release package testing process, so the suggested activities below are currently all manual.
+</p>
+<ul><li> Install the package (ideally on a clean machine not used for normal development/builds) and follow the setup and test instructions.
+<ul><li> LucidDB binary package:  <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a>, <a href="/wiki/LucidDbEtlTutorial" title="LucidDbEtlTutorial">LucidDbEtlTutorial</a>
+</li><li> Eigenbase source package:  <a href="/wiki/LucidDbBuildFromSourceDistribution" title="LucidDbBuildFromSourceDistribution">LucidDbBuildFromSourceDistribution</a>, <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/developerJumpStart.html">Farrago developer jumpstart</a>, Fennel instructions in INSTALL
+</li><li> Eigenbase binary package:  instructions in README
+</li><li> Farrago source package:  not really intended for builds, so just make sure the unpacked contents look right
+</li><li> Fennel source package:  unpack Boost and STLport distributions and follow instructions in INSTALL
+</li></ul>
+</li><li> For LucidDB, test out <a href="/wiki/LucidDbUpgrade" title="LucidDbUpgrade">upgrade</a> from an installation of the previous release
+</li><li> Compare the size of the release package files against the previous release.  If there is significant growth, make sure that it's expected (e.g. a new unneeded build-time dependency may have slipped into the distribution accidentally).  If there is significant size reduction, figure out what has gone away and make sure that it isn't still needed.
+</li></ul>
+<p>For LucidDB, add-ons and clients should also be tested since these don't get exercised as part of the main build/test sequence due to dependencies:
+</p>
+<ul><li> <a href="/wiki/LucidDbSquirrel" title="LucidDbSquirrel">LucidDbSquirrel</a>
+</li><li> <a href="/wiki/LucidDbPowerArchitect" title="LucidDbPowerArchitect">LucidDbPowerArchitect</a>
+</li><li> <a href="/wiki/LucidDbPDIStreamingLoader" title="LucidDbPDIStreamingLoader">LucidDbPDIStreamingLoader</a>
+</li><li> <a href="/wiki/LucidDbAggregateDesigner" title="LucidDbAggregateDesigner">LucidDbAggregateDesigner</a>
+</li><li> <a href="/wiki/LucidDbMonitor" title="LucidDbMonitor">LucidDbMonitor</a>
+</li></ul>
+<p>If time permits, verifying fixes for issues in JIRA which have been marked as resolved for the release helps to ensure a quality release.
+</p><p>It's a good idea to farm out the validation work to as many volunteers as possible to get more testing before release.  Here is <a rel="nofollow" class="external text" href="http://n2.nabble.com/0.7.5-development-prerelease-now-available-td1441520.html">an example from the LucidDB 0.7.5 prerelease</a>.  (Eventually nightly snapshot publication should be automated to reduce the effort and latency here.)
+</p><p>When issues are found which are considered urgent enough to require a fix for the release, a new release candidate must be produced.  Once the fix has been checked in and integrated to the target branch, the label can be updated by repeating the original labelsync command.  If the fix is mixed in with other changes on the branch, and you don't want to include those in the release, make sure to p4 sync selectively to get just the state you want before updating the label.  (It's easy to make mistakes here, so for anything non-trivial, consider setting up a release branch for isolating fixes.)
+</p>
+<pre>
+p4 labelsync -l eigenbase_r0.7.6
+</pre>
+<p>Then repeat the release build procedure and carry on with validating the new packages.   Note that it may be tempting to stitch together "frankenbuild" packages to expedite a release, but best practice is to always execute the full automated build procedure and only use the output of that (and to use the same label definition for all platforms).
+</p><p>Suffixing package filenames (e.g. luciddb-bin-win32-0.7.6-rc2.zip) can be a good way to keep release candidates straight.
+</p>
+<h1> <span class="mw-headline" id="Label_Lock"> Label Lock </span></h1>
+<p>Once a golden release candidate has been finalized, lock the Perforce label to indicate that it should no longer be updated, since there will be no more release candidates.  (Anything after this will be either a patch or a new release.)  Use this command:
+</p>
+<pre>
+p4 label eigenbase_r0.7.6
+</pre>
+<p>And change the label definition as follows:
+</p>
+<pre>
+Label:  eigenbase_r0.7.6
+
+Update: 2008/07/16 09:47:58
+
+Access: 2008/07/13 16:36:32
+
+Owner:  jvs
+
+Description:
+        Eigenbase release 0.7.6
+
+Options:        locked
+
+View:
+        //open/dev/...
+</pre>
+<h1> <span class="mw-headline" id="Sourceforge_Release"> Sourceforge Release </span></h1>
+<p>Now it's time to create the releases in Sourceforge.  This involves a large amount of pointing, clicking, and sftp, which we won't go into here since it's documented at <a rel="nofollow" class="external free" href="https://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download">https://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download</a>.
+</p><p>Conventions for Sourceforge package and release names are as follows:
+</p>
+<ul><li> <b>package:  release</b>
+</li><li> eigenbase:  eigenbase-0.7.6
+</li><li> fennel:  fennel-0.7.6
+</li><li> farrago:  farrago-0.7.6
+</li><li> luciddb:  luciddb-0.7.6
+</li></ul>
+<p>When uploading files, be sure to set the default download for each platform.
+</p>
+<h1> <span class="mw-headline" id="Website_Updates"> Website Updates </span></h1>
+<p>The LucidDB and Eigenbase websites have news pages which need to be updated as part of the release.  (It's not possible to do this up front when changing version numbers in files since the final release date typically isn't known at that time.)  For LucidDB, update <b>luciddb/doc/main.html</b>; also update <b>luciddb/doc/navigation.html</b> with the new download links.  For Eigenbase, update <b>intra/eigenbase/htdocs/news.html</b>.
+</p><p>If there are wiki pages in Eigenpedia describing new features pending, update them to indicate that they are now available in a specific release number.
+</p>
+<h1> <span class="mw-headline" id="Mailing_List_Announcements"> Mailing List Announcements </span></h1>
+<p>Currently, announcements only go out for LucidDB releases, to luciddb-users.  See <a rel="nofollow" class="external free" href="http://n2.nabble.com/LucidDB-0.7.4-release-is-now-available-td1441449.html">http://n2.nabble.com/LucidDB-0.7.4-release-is-now-available-td1441449.html</a> for an example.
+</p>
+<h1> <span class="mw-headline" id="Sourceforge_News"> Sourceforge News </span></h1>
+<p>Submit news articles for the release of each project, following the pattern from previous releases.  Also be sure to use the file release system to alert any users who have subscribed to file release notifications.
+</p>
+<h1> <span class="mw-headline" id="JIRA_Update"> JIRA Update </span></h1>
+<p>JIRA's "Manage Versions" feature includes an operation for marking a version as released.  Do this for all projects on the actual release date.  At this point, you may want to create future versions, and move any unresolved issues which were still assigned to the release which just completed.
+</p>
+<h1> <span class="mw-headline" id="TBD"> TBD </span></h1>
+<ul><li> patching, other maintenance
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 128/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1916-0!*!0!!en!*!* and timestamp 20140414193714 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=ReleaseProcedure&amp;oldid=6606">http://luciddb.org/wiki/index.php?title=ReleaseProcedure&amp;oldid=6606</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/ReleaseProcedure" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:ReleaseProcedure&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=ReleaseProcedure&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=ReleaseProcedure&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=ReleaseProcedure" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/ReleaseProcedure" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/ReleaseProcedure" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=ReleaseProcedure&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=ReleaseProcedure&amp;oldid=6606" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 17 June 2010, at 04:28.</li>
+		<li id="viewcount">This page has been accessed 4,686 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.184 secs. --></body></html>

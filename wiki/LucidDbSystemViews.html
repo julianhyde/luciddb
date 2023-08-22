@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbSystemViews - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbSystemViews", "wgTitle": "LucidDbSystemViews", "wgCurRevisionId": 7106, "wgArticleId": 1369, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbSystemViews action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbSystemViews</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#DBA_AUTH_IDS"><span class="tocnumber">2</span> <span class="toctext">DBA_AUTH_IDS</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#DBA_COLUMNS"><span class="tocnumber">3</span> <span class="toctext">DBA_COLUMNS</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#DBA_COLUMN_STATS"><span class="tocnumber">4</span> <span class="toctext">DBA_COLUMN_STATS</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#DBA_COLUMN_HISTOGRAMS"><span class="tocnumber">5</span> <span class="toctext">DBA_COLUMN_HISTOGRAMS</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#DBA_ELEMENT_GRANTS"><span class="tocnumber">6</span> <span class="toctext">DBA_ELEMENT_GRANTS</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#DBA_FOREIGN_SERVERS"><span class="tocnumber">7</span> <span class="toctext">DBA_FOREIGN_SERVERS</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#DBA_FOREIGN_SERVER_OPTIONS"><span class="tocnumber">8</span> <span class="toctext">DBA_FOREIGN_SERVER_OPTIONS</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#DBA_FOREIGN_TABLES"><span class="tocnumber">9</span> <span class="toctext">DBA_FOREIGN_TABLES</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#DBA_FOREIGN_TABLE_OPTIONS"><span class="tocnumber">10</span> <span class="toctext">DBA_FOREIGN_TABLE_OPTIONS</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#DBA_FOREIGN_WRAPPERS"><span class="tocnumber">11</span> <span class="toctext">DBA_FOREIGN_WRAPPERS</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#DBA_FOREIGN_WRAPPER_OPTIONS"><span class="tocnumber">12</span> <span class="toctext">DBA_FOREIGN_WRAPPER_OPTIONS</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#DBA_FUNCTION_PARAMETERS"><span class="tocnumber">13</span> <span class="toctext">DBA_FUNCTION_PARAMETERS</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#DBA_INHERITED_ROLES"><span class="tocnumber">14</span> <span class="toctext">DBA_INHERITED_ROLES</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#DBA_JARS"><span class="tocnumber">15</span> <span class="toctext">DBA_JARS</span></a></li>
+<li class="toclevel-1 tocsection-16"><a href="#DBA_LABELS"><span class="tocnumber">16</span> <span class="toctext">DBA_LABELS</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="#DBA_OBJECTS_IN_USE"><span class="tocnumber">17</span> <span class="toctext">DBA_OBJECTS_IN_USE</span></a></li>
+<li class="toclevel-1 tocsection-18"><a href="#DBA_PERFORMANCE_COUNTERS"><span class="tocnumber">18</span> <span class="toctext">DBA_PERFORMANCE_COUNTERS</span></a></li>
+<li class="toclevel-1 tocsection-19"><a href="#DBA_REPOSITORY_PROPERTIES"><span class="tocnumber">19</span> <span class="toctext">DBA_REPOSITORY_PROPERTIES</span></a></li>
+<li class="toclevel-1 tocsection-20"><a href="#DBA_ROLES"><span class="tocnumber">20</span> <span class="toctext">DBA_ROLES</span></a></li>
+<li class="toclevel-1 tocsection-21"><a href="#DBA_ROUTINES"><span class="tocnumber">21</span> <span class="toctext">DBA_ROUTINES</span></a></li>
+<li class="toclevel-1 tocsection-22"><a href="#DBA_ROUTINE_PARAMETERS"><span class="tocnumber">22</span> <span class="toctext">DBA_ROUTINE_PARAMETERS</span></a></li>
+<li class="toclevel-1 tocsection-23"><a href="#DBA_SCHEMAS"><span class="tocnumber">23</span> <span class="toctext">DBA_SCHEMAS</span></a></li>
+<li class="toclevel-1 tocsection-24"><a href="#DBA_SESSIONS"><span class="tocnumber">24</span> <span class="toctext">DBA_SESSIONS</span></a></li>
+<li class="toclevel-1 tocsection-25"><a href="#DBA_SQL_STATEMENTS"><span class="tocnumber">25</span> <span class="toctext">DBA_SQL_STATEMENTS</span></a></li>
+<li class="toclevel-1 tocsection-26"><a href="#DBA_STORED_TABLES"><span class="tocnumber">26</span> <span class="toctext">DBA_STORED_TABLES</span></a></li>
+<li class="toclevel-1 tocsection-27"><a href="#DBA_SYSTEM_BACKUPS"><span class="tocnumber">27</span> <span class="toctext">DBA_SYSTEM_BACKUPS</span></a></li>
+<li class="toclevel-1 tocsection-28"><a href="#DBA_SYSTEM_INFO"><span class="tocnumber">28</span> <span class="toctext">DBA_SYSTEM_INFO</span></a></li>
+<li class="toclevel-1 tocsection-29"><a href="#DBA_SYSTEM_PARAMETERS"><span class="tocnumber">29</span> <span class="toctext">DBA_SYSTEM_PARAMETERS</span></a></li>
+<li class="toclevel-1 tocsection-30"><a href="#DBA_TABLES"><span class="tocnumber">30</span> <span class="toctext">DBA_TABLES</span></a></li>
+<li class="toclevel-1 tocsection-31"><a href="#DBA_THREADS"><span class="tocnumber">31</span> <span class="toctext">DBA_THREADS</span></a></li>
+<li class="toclevel-1 tocsection-32"><a href="#DBA_THREAD_STACK_ENTRIES"><span class="tocnumber">32</span> <span class="toctext">DBA_THREAD_STACK_ENTRIES</span></a></li>
+<li class="toclevel-1 tocsection-33"><a href="#DBA_UNCLUSTERED_INDEXES"><span class="tocnumber">33</span> <span class="toctext">DBA_UNCLUSTERED_INDEXES</span></a></li>
+<li class="toclevel-1 tocsection-34"><a href="#DBA_USERS"><span class="tocnumber">34</span> <span class="toctext">DBA_USERS</span></a></li>
+<li class="toclevel-1 tocsection-35"><a href="#DBA_VIEWS"><span class="tocnumber">35</span> <span class="toctext">DBA_VIEWS</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>The DBA views defined by LucidDB provide a global picture of the contents of the system catalog (tables, columns, etc) and the volatile state of the system (sessions, cache utilization, etc).  Not all object types and attributes are exposed by the DBA views yet.  DBA views are published in the SYS_ROOT schema, so they can be queried like this:
+</p>
+<pre>
+select * from sys_root.dba_stored_tables;
+</pre>
+<p>There are two system-defined columns which appear in many of the system views:
+</p>
+<ul><li> MOF_ID:  This is the internal object identifier for descriptor objects stored in the catalog repository.  This identifier is NOT guaranteed to be preserved across an object's lifetime; for example, during catalog upgrade, MOF_ID's are reassigned for all objects.  Therefore, applications should never store MOF_ID's on their own.  However, MOF_ID's are guaranteed to be preserved within the scope of a single transaction, so it is safe to use MOF_ID for joining DBA views to underlying repository views.
+</li><li> LINEAGE_ID:  This is a universally unique identifier (UUID) assigned to an object when it is created.  (Not all repository objects receive a LINEAGE_ID; for example, SQL/MED storage options have their own system views, but are really just details of first-class obejcts.)  Because it is a UUID, a LINEAGE_ID is guaranteed not to conflict with any other object, even one created on a completely separate instance of LucidDB.  Also, a LINEAGE_ID is guaranteed to be preserved throughout an object's lifetime (including object renames and catalog upgrades).  Therefore, it is safe for applications to store and use LINEAGE_ID's for any identification purpose.
+</li></ul>
+<h2> <span class="mw-headline" id="DBA_AUTH_IDS"> DBA_AUTH_IDS </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_AUTH_IDS view contains one row for each authenticated entity created:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the entity.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the entity.
+</td></tr>
+<tr>
+<td> CLASS_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the class identifying the type of the entity.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was last modified.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_COLUMNS"> DBA_COLUMNS </span></h2>
+<p>The DBA_COLUMNS view contains one row for each column of every table-like object defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the table resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the table resides.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Table-like object in which the column resides.
+</td></tr>
+<tr>
+<td> COLUMN_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the column.
+</td></tr>
+<tr>
+<td> ORDINAL_POSITION </td>
+<td> INTEGER </td>
+<td> Position of the column when the object was created. First position starts at 1.
+</td></tr>
+<tr>
+<td> DATATYPE </td>
+<td> VARCHAR(128) </td>
+<td> Datatype of the column.
+</td></tr>
+<tr>
+<td> PRECISION </td>
+<td> INTEGER </td>
+<td> Numeric precision for numbers, length for strings.
+</td></tr>
+<tr>
+<td> DEC_DIGITS </td>
+<td> INTEGER </td>
+<td> Digits to the right of the decimal for numbers.
+</td></tr>
+<tr>
+<td> IS_NULLABLE </td>
+<td> BOOLEAN </td>
+<td> Nullability of the column.
+</td></tr>
+<tr>
+<td> DEFAULT_VALUE </td>
+<td> VARCHAR(1024) </td>
+<td> Default value for column (only available starting with LucidDB 0.9.4)
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the column.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_COLUMN_STATS"> DBA_COLUMN_STATS </span></h2>
+<p>The DBA_COLUMN_STATS view contains one row for each analyzed column of every table-like object defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the table resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the table resides.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Table-like object in which the column resides.
+</td></tr>
+<tr>
+<td> COLUMN_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the column.
+</td></tr>
+<tr>
+<td> DISTINCT_VALUE_COUNT </td>
+<td> BIGINT </td>
+<td> Number of distinct values in the column.
+</td></tr>
+<tr>
+<td> IS_DISTINCT_VALUE_COUNT_ESTIMATED </td>
+<td> BOOLEAN </td>
+<td> Indicates whether DISTINCT_VALUE_COUNT is estimated or exact.
+</td></tr>
+<tr>
+<td> PERCENT_SAMPLED </td>
+<td> FLOAT </td>
+<td> Percentage of column sampled for statistics (100.0 indicates computed statistics).
+</td></tr>
+<tr>
+<td> SAMPLE_SIZE </td>
+<td> BIGINT </td>
+<td> Number of rows in the sample used to generate statistics (number of rows in table for computed statistics).
+</td></tr>
+<tr>
+<td> BAR_COUNT </td>
+<td> INTEGER </td>
+<td> Number of histogram bars to be found in DBA_COLUMN_HISTOGRAMS.
+</td></tr>
+<tr>
+<td> ROWS_PER_BAR </td>
+<td> INTEGER </td>
+<td> Number of rows represented by each histogram bar, excluding the last bar.
+</td></tr>
+<tr>
+<td> ROWS_LAST_BAR </td>
+<td> INTEGER </td>
+<td> Number of rows represented by the last histogram bar.
+</td></tr>
+<tr>
+<td> LAST_ANALYZE_TIME </td>
+<td> TIMESTAMP </td>
+<td> Date and time of the last analysis of this column.
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_COLUMN_HISTOGRAMS"> DBA_COLUMN_HISTOGRAMS </span></h2>
+<p>The DBA_COLUMN_HISTOGRAMS view contains one row for each histogram bar for each analyzed column of every table-like object defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the table resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the table resides.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Table-like object in which the column resides.
+</td></tr>
+<tr>
+<td> COLUMN_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the column.
+</td></tr>
+<tr>
+<td> ORDINAL </td>
+<td> INTEGER </td>
+<td> Position of this histogram bar in relation to the others for this column.
+</td></tr>
+<tr>
+<td> START_VALUE </td>
+<td> VARCHAR(128) </td>
+<td> The lower bound of this histogram bar, converted to a string.
+</td></tr>
+<tr>
+<td> VALUE_COUNT </td>
+<td> BIGINT </td>
+<td> The number of distinct values represented by this histogram bar.  May be zero if a single value spans multiple bars.
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_ELEMENT_GRANTS"> DBA_ELEMENT_GRANTS </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_ELEMENT_GRANTS view contains one row for the details of each permission granted on some element or entity:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> GRANTED_CATALOG </td>
+<td> VARCHAR(128) </td>
+<td> Name of the catalog for the granted element, if applicable.
+</td></tr>
+<tr>
+<td> GRANTED_SCHEMA </td>
+<td> VARCHAR(128) </td>
+<td> Name of the schema for the granted element, if applicable.
+</td></tr>
+<tr>
+<td> GRANTED_ELEMENT </td>
+<td> VARCHAR(128) </td>
+<td> Name of the element to which this permission applies.
+</td></tr>
+<tr>
+<td> GRANTEE </td>
+<td> VARCHAR(128) </td>
+<td> Name of the element or entity to which this permission was granted.
+</td></tr>
+<tr>
+<td> GRANTOR </td>
+<td> VARCHAR(128) </td>
+<td> Name of the entity responsible for the granting.
+</td></tr>
+<tr>
+<td> ACTION </td>
+<td> VARCHAR(128) </td>
+<td> Name of the granted permission/privileged action. (See <a href="/wiki/LucidDbGrant" title="LucidDbGrant">LucidDbGrant</a>.)
+</td></tr>
+<tr>
+<td> GRANT_TYPE </td>
+<td> VARCHAR(128) </td>
+<td> Name of the class identifying the type of the grantee.
+</td></tr>
+<tr>
+<td> CLASS_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the class identifying the type of the element.
+</td></tr>
+<tr>
+<td> WITH_GRANT_OPTION </td>
+<td> BOOLEAN </td>
+<td> True if the grantee can make further grants on this element.
+</td></tr>
+<tr>
+<td> GRANTEE_MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> GRANTOR_MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> ELEMENT_MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_SERVERS"> DBA_FOREIGN_SERVERS </span></h2>
+<p>The DBA_FOREIGN_SERVERS view contains one row for each SQL/MED foreign server defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign data wrapper used to access the server.
+</td></tr>
+<tr>
+<td> FOREIGN_SERVER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the foreign server.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the foreign server.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign server was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign server was last modified.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about foreign server.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_SERVER_OPTIONS"> DBA_FOREIGN_SERVER_OPTIONS </span></h2>
+<p>The DBA_FOREIGN_SERVER_OPTIONS view contains one row for each foreign server SQL/MED option setting defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign data wrapper used to access the foreign server.
+</td></tr>
+<tr>
+<td> FOREIGN_SERVER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the foreign server.
+</td></tr>
+<tr>
+<td> OPTION_NAME </td>
+<td> VARCHAR(65535) </td>
+<td> Name of option specified during creation of foreign server.
+</td></tr>
+<tr>
+<td> OPTION_VALUE </td>
+<td> VARCHAR(65535) </td>
+<td> Value of the above option.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_TABLES"> DBA_FOREIGN_TABLES </span></h2>
+<p>The DBA_FOREIGN_TABLES view contains one row for each SQL/MED foreign table defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign data wrapper used to access the foreign server.
+</td></tr>
+<tr>
+<td> FOREIGN_SERVER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign server where foreign table resides.
+</td></tr>
+<tr>
+<td> FOREIGN_TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of foreign table.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the foreign table.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign table was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign table definition was last modified.
+</td></tr>
+<tr>
+<td> LAST_ANALYZE_ROW_COUNT </td>
+<td> BIGINT </td>
+<td> Number of rows stored when foreign table was last analyzed.
+</td></tr>
+<tr>
+<td> LAST_ANALYZE_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign table was last analyzed.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about foreign table.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_TABLE_OPTIONS"> DBA_FOREIGN_TABLE_OPTIONS </span></h2>
+<p>The DBA_FOREIGN_TABLE_OPTIONS view contains one row for each foreign table SQL/MED option setting defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign data wrapper used to access the foreign server.
+</td></tr>
+<tr>
+<td> FOREIGN_SERVER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Foreign server where foreign table resides.
+</td></tr>
+<tr>
+<td> FOREIGN_TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of foreign table.
+</td></tr>
+<tr>
+<td> OPTION_NAME </td>
+<td> VARCHAR(65535) </td>
+<td> Name of option specified during creation of foreign table.
+</td></tr>
+<tr>
+<td> OPTION_VALUE </td>
+<td> VARCHAR(65535) </td>
+<td> Value of the above option.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_WRAPPERS"> DBA_FOREIGN_WRAPPERS </span></h2>
+<p>The DBA_FOREIGN_WRAPPERS view contains one row for each SQL/MED foreign data wrapper defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of foreign data wrapper.
+</td></tr>
+<tr>
+<td> LIBRARY </td>
+<td> VARCHAR(65535) </td>
+<td> Path to a JAR containing the wrapper implementation or the fully-qualified name of a class on the server's classpath.
+</td></tr>
+<tr>
+<td> LANGUAGE </td>
+<td> VARCHAR(128) </td>
+<td> Language of the wrapper implementation.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the foreign data wrapper.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign data wrapper was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when foreign data wrapper was last modified.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the foreign data wrapper.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FOREIGN_WRAPPER_OPTIONS"> DBA_FOREIGN_WRAPPER_OPTIONS </span></h2>
+<p>DBA_FOREIGN_WRAPPER_OPTIONS contains one row for each SQL/MED foreign wrapper option setting defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> FOREIGN_WRAPPER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the foreign data wrapper.
+</td></tr>
+<tr>
+<td> OPTION_NAME </td>
+<td> VARCHAR(65535) </td>
+<td> Name of option specified during creation of foreign data wrapper.
+</td></tr>
+<tr>
+<td> OPTION_VALUE </td>
+<td> VARCHAR(65535) </td>
+<td> Value of the above option.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_FUNCTION_PARAMETERS"> DBA_FUNCTION_PARAMETERS </span></h2>
+<p>The DBA_FUNCTION_PARAMETERS view contains one row for each input/output parameter to a function.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the routine resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the routine resides.
+</td></tr>
+<tr>
+<td> ROUTINE_SPECIFIC_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Specific name of the routine.
+</td></tr>
+<tr>
+<td> PARAMETER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the routine parameter.
+</td></tr>
+<tr>
+<td> ORDINAL_POSITION </td>
+<td> INTEGER </td>
+<td> Position of the parameter when the routine was created. First position starts at 1. Input parameters and return parameters have separate ordinals.
+</td></tr>
+<tr>
+<td> DATATYPE </td>
+<td> VARCHAR(128) </td>
+<td> Data type of the parameter.
+</td></tr>
+<tr>
+<td> PRECISION </td>
+<td> INTEGER </td>
+<td> Numeric precision for numbers, length for strings.
+</td></tr>
+<tr>
+<td> DEC_DIGITS </td>
+<td> INTEGER </td>
+<td> Digits to the right of the decimal for numbers.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the parameter.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_INHERITED_ROLES"> DBA_INHERITED_ROLES </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_INHERITED_ROLES view contains one row for each inheritance of a role by a user or by another role:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> INHERITOR_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the inheriting user or role.
+</td></tr>
+<tr>
+<td> INHERITED_ROLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the inherited role.
+</td></tr>
+<tr>
+<td> WITH_GRANT_OPTION </td>
+<td> BOOLEAN </td>
+<td> True if the user can make further grants to this role.
+</td></tr>
+<tr>
+<td> INHERITOR_MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> INHERITED_ROLE_MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_JARS"> DBA_JARS </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_JARS view contains one row for each Java JAR file loaded into the database:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the loaded jar for reference in the database.
+</td></tr>
+<tr>
+<td> URL </td>
+<td> VARCHAR(128) </td>
+<td> Location of the actual jar file.
+</td></tr>
+<tr>
+<td> DEPLOYMENT_STATE </td>
+<td> VARCHAR(128) </td>
+<td> One of 'NOT_DEPLOYED', 'DEPLOYMENT_PENDING', 'DEPLOYED', 'DEPLOYED_PARTIAL', or  'UNDEPLOYMENT_PENDING' depending on the deployment status of the jar.
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> The name of the catalog this jar resides in.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> The name of the schema this jar resides in.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the loaded jar.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the loaded jar was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the loaded jar was last modified.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_LABELS"> DBA_LABELS </span></h2>
+<p>The DBA_LABELS view contains one row for each label created.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> LABEL_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the label.
+</td></tr>
+<tr>
+<td> PARENT_LABEL_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the parent label for which this label serves as an alias.  Null if this label is not an alias.
+</td></tr>
+<tr>
+<td> CSN </td>
+<td> BIGINT </td>
+<td> Commit sequence number corresponding to the id of the last committed transaction at the time the label was created.  This is used to determine what snapshot of data should be read by sessions using this label setting.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when the label was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when the label definition was last modified.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information on the label.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_OBJECTS_IN_USE"> DBA_OBJECTS_IN_USE </span></h2>
+<p>The DBA_OBJECTS_IN_USE view contains one row for each usage of an object by a statement (e.g. a table being accessed by a query).  Usage of an object prevents it from being dropped until the statement completes.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> SESSION_ID </td>
+<td> BIGINT </td>
+<td> Session using object
+</td></tr>
+<tr>
+<td> STMT_ID </td>
+<td> BIGINT </td>
+<td> Statement using object
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td> MOFID of object in use
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_PERFORMANCE_COUNTERS"> DBA_PERFORMANCE_COUNTERS </span></h2>
+<p>The DBA_PERFORMANCE_COUNTERS view contains one row for each performance counter available for LucidDB.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> SOURCE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Source of the performance information (e.g. JVM)
+</td></tr>
+<tr>
+<td> COUNTER_NAME </td>
+<td> VARCHAR(1024) </td>
+<td> Name of the performance counter
+</td></tr>
+<tr>
+<td> COUNTER_UNITS </td>
+<td> VARCHAR(128) </td>
+<td> Units in which the performance counter is measured, or null if not known
+</td></tr>
+<tr>
+<td> COUNTER_VALUE </td>
+<td> VARCHAR(65535) </td>
+<td> Current value of the performance counter
+</td></tr></table>
+<p><a href="/wiki/LucidDbMonitor" title="LucidDbMonitor">LucidDbMonitor</a> provides a graphical console for monitoring these counters.  See <a href="/wiki/LucidDbPerformanceCounters" title="LucidDbPerformanceCounters">LucidDbPerformanceCounters</a> for a description of the available counters.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="DBA_REPOSITORY_PROPERTIES"> DBA_REPOSITORY_PROPERTIES </span></h2>
+<p>The DBA_REPOSITORY_PROPERTIES view contains one row for each property used in defining the connection to the runtime metadata repository where LucidDB's catalog is stored.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> PROPERTY_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of property
+</td></tr>
+<tr>
+<td> PROPERTY_VALUE </td>
+<td> VARCHAR(1024) </td>
+<td> Value of property
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_ROLES"> DBA_ROLES </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_ROLES view contains one row for each role in the system:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the entity.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the entity.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was last modified.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_ROUTINES"> DBA_ROUTINES </span></h2>
+<p>The DBA_ROUTINES view contains one row for each SQL-invocable routine defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME  </td>
+<td> VARCHAR(128)  </td>
+<td> Catalog in which the table resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME  </td>
+<td> VARCHAR(128)  </td>
+<td> Schema in which the table resides.
+</td></tr>
+<tr>
+<td> INVOCATION_NAME  </td>
+<td> VARCHAR(128)  </td>
+<td> Name used to invoke routine.
+</td></tr>
+<tr>
+<td> SPECIFIC_NAME  </td>
+<td> VARCHAR(128)  </td>
+<td> Specific name used to distinguish overloaded routines.
+</td></tr>
+<tr>
+<td> EXTERNAL_NAME  </td>
+<td> VARCHAR(65535)  </td>
+<td> Fully-qualified external method name.
+</td></tr>
+<tr>
+<td> ROUTINE_TYPE  </td>
+<td> VARCHAR(128)  </td>
+<td> One of the following types: procedure or function.
+</td></tr>
+<tr>
+<td> CREATOR  </td>
+<td> VARCHAR(128)  </td>
+<td> Authorization ID which created the routine.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP  </td>
+<td> TIMESTAMP  </td>
+<td> Time/date when routine was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP  </td>
+<td> TIMESTAMP  </td>
+<td> Time/date when routine was last modified.
+</td></tr>
+<tr>
+<td> IS_TABLE_FUNCTION  </td>
+<td> BOOLEAN  </td>
+<td> True if routine returns a table (ie. is a UDX)
+</td></tr>
+<tr>
+<td> PARAMETER_STYLE  </td>
+<td> VARCHAR(128)  </td>
+<td> Style of the routine parameters (RPS_JAVA, RPS_JAVA_FARRAGO, ...)
+</td></tr>
+<tr>
+<td> IS_DETERMINISTIC  </td>
+<td> BOOLEAN  </td>
+<td> True if the routine is deterministic.
+</td></tr>
+<tr>
+<td> DATA_ACCESS  </td>
+<td> VARCHAR(128)  </td>
+<td> Data access level of the routine (RDA_NO_SQL, RDA_CONTAINS_SQL, RDA_READS_SQL_DATA, RDA_MODIFIES_SQL_DATA)
+</td></tr>
+<tr>
+<td> REMARKS  </td>
+<td> VARCHAR(65535)  </td>
+<td> Additional information about the routine.
+</td></tr>
+<tr>
+<td> MOF_ID  </td>
+<td> VARCHAR(128)  </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID  </td>
+<td> VARCHAR(128)  </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_ROUTINE_PARAMETERS"> DBA_ROUTINE_PARAMETERS </span></h2>
+<p>The DBA_ROUTINE_PARAMETERS view contains one row for each parameter of every SQL-invocable routine defined in the catalog. This view does not contains parameters of functions (which can be viewed in DBA_FUNCTION_PARAMETERS.)
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the routine resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the routine resides.
+</td></tr>
+<tr>
+<td> ROUTINE_SPECIFIC_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Specific name of the routine.
+</td></tr>
+<tr>
+<td> PARAMETER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the routine parameter.
+</td></tr>
+<tr>
+<td> ORDINAL_POSITION </td>
+<td> INTEGER </td>
+<td> Position of the parameter when the routine was created. First position starts at 1. Input parameters and return parameters have separate ordinals.
+</td></tr>
+<tr>
+<td> DATATYPE </td>
+<td> VARCHAR(128) </td>
+<td> Data type of the parameter.
+</td></tr>
+<tr>
+<td> PRECISION </td>
+<td> INTEGER </td>
+<td> Numeric precision for numbers, length for strings.
+</td></tr>
+<tr>
+<td> DEC_DIGITS </td>
+<td> INTEGER </td>
+<td> Digits to the right of the decimal for numbers.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the parameter.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_SCHEMAS"> DBA_SCHEMAS </span></h2>
+<p>The DBA_SCHEMAS view contains one row for each schema defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the schema resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the schema.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the schema.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when schema was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when schema was last modified.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information on the schema.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_SESSIONS"> DBA_SESSIONS </span></h2>
+<p>The DBA_SESSIONS view contains one row for each session connected to the system.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> SESSION_ID </td>
+<td> BIGINT </td>
+<td> Session ID (unique across lifetime of server)
+</td></tr>
+<tr>
+<td> CONNECT_URL </td>
+<td> VARCHAR(128) </td>
+<td> URL used to connect to LucidDB
+</td></tr>
+<tr>
+<td> CURRENT_USER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> User name currently set for session
+</td></tr>
+<tr>
+<td> CURRENT_ROLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Role name currently set for session
+</td></tr>
+<tr>
+<td> SESSION_USER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> User name with which session was authenticated
+</td></tr>
+<tr>
+<td> SYSTEM_USER_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Account name of user on client
+</td></tr>
+<tr>
+<td> SYSTEM_USER_FULLNAME </td>
+<td> VARCHAR(128) </td>
+<td> Full name of user on client, if known
+</td></tr>
+<tr>
+<td> SESSION_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name assigned to session, if any
+</td></tr>
+<tr>
+<td> CLIENT_PROGRAM_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of client program, if known
+</td></tr>
+<tr>
+<td> CLIENT_PROCESS_ID </td>
+<td> INTEGER </td>
+<td> Client process ID, if known
+</td></tr>
+<tr>
+<td> CURRENT_CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog name currently set as qualifier for session
+</td></tr>
+<tr>
+<td> CURRENT_SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema name currently set as qualifier for session
+</td></tr>
+<tr>
+<td> IS_CLOSED </td>
+<td> BOOLEAN </td>
+<td> Whether this session has already been closed
+</td></tr>
+<tr>
+<td> IS_AUTO_COMMIT </td>
+<td> BOOLEAN </td>
+<td> Whether this session is currently in autocommit mode
+</td></tr>
+<tr>
+<td> IS_TXN_IN_PROGRESS </td>
+<td> BOOLEAN </td>
+<td> Whether this session currently has a transaction in progress
+</td></tr>
+<tr>
+<td> CURRENT_LABEL_NAME </td>
+<td> VARCHAR(128) </td>
+<td> If non-null, the label name currently set for session
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_SQL_STATEMENTS"> DBA_SQL_STATEMENTS </span></h2>
+<p>The DBA_SQL_STATEMENTS view contains one row for each SQL statement currently open in any session
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> STMT_ID </td>
+<td> BIGINT </td>
+<td> Statement ID (unique across all sessions and across lifetime of server)
+</td></tr>
+<tr>
+<td> SESSION_ID </td>
+<td> BIGINT </td>
+<td> ID of session which created this statement
+</td></tr>
+<tr>
+<td> SQL_TEXT </td>
+<td> VARCHAR(65535) </td>
+<td> Text of SQL statement
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Timestamp of statement creation
+</td></tr>
+<tr>
+<td> PARAMETER_VALUES </td>
+<td> VARCHAR(65535) </td>
+<td> String representation for collection of parameter values used for execution of a prepared statement
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_STORED_TABLES"> DBA_STORED_TABLES </span></h2>
+<p>The DBA_STORED_TABLES view contains one row for each local table (stored and managed by LucidDB) defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the stored table resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the stored table resides.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of stored table.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the stored table.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when stored table was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when stored table definition was last modified.
+</td></tr>
+<tr>
+<td> LAST_ANALYZE_ROW_COUNT </td>
+<td> BIGINT </td>
+<td> Number of rows stored when table was last analyzed.
+</td></tr>
+<tr>
+<td> LAST_ANALYZE_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when stored table was last analyzed.
+</td></tr>
+<tr>
+<td> CURRENT_ROW_COUNT </td>
+<td> BIGINT </td>
+<td> Number of rows currently stored in table.
+</td></tr>
+<tr>
+<td> DELETED_ROW_COUNT </td>
+<td> BIGINT </td>
+<td> Number of deleted rows remaining to be purged from table via <a href="/wiki/LucidDbAlterTableRebuild" title="LucidDbAlterTableRebuild">ALTER TABLE REBUILD</a>.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information on stored table.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_SYSTEM_BACKUPS"> DBA_SYSTEM_BACKUPS </span></h2>
+<p>The DBA_SYSTEM_BACKUPS view contains information about the last full backup and the last backup (of any type) completed.  If a backup is currently in progress, then there will also be rows corresponding to that pending backup.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> BACKUP_TYPE </td>
+<td> VARCHAR(128) </td>
+<td> Indicates whether the record corresponds to the LAST or FULL backup.
+</td></tr>
+<tr>
+<td> CSN </td>
+<td> BIGINT </td>
+<td> The commit sequence number corresponding to the last committed, write transaction at the start of the backup.
+</td></tr>
+<tr>
+<td> START_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> The timestamp at the start of the backup.
+</td></tr>
+<tr>
+<td> END_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> If the system has been restored from a backup, then this field is NULL; otherwise, it indicates when the backup was completed.
+</td></tr>
+<tr>
+<td> STATUS </td>
+<td> VARCHAR(128) </td>
+<td> Indicates whether the backup has COMPLETED or is PENDING.
+</td></tr></table>
+<h2> <span class="mw-headline" id="DBA_SYSTEM_INFO"> DBA_SYSTEM_INFO </span></h2>
+<p>The DBA_SYSTEM_INFO view contains one row for each item of information available about the environment in which LucidDB is running.  This information is useful for diagnostics.  This view is a superset of the information in DBA_PERFORMANCE_COUNTERS.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> SOURCE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Source of the information (e.g. getenv)
+</td></tr>
+<tr>
+<td> ITEM_NAME </td>
+<td> VARCHAR(1024) </td>
+<td> Name of the information item within the source
+</td></tr>
+<tr>
+<td> ITEM_UNITS </td>
+<td> VARCHAR(128) </td>
+<td> Name of the units in which the value is measured, or null if not known
+</td></tr>
+<tr>
+<td> ITEM_VALUE </td>
+<td> VARCHAR(65535) </td>
+<td> Value of the information item
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_SYSTEM_PARAMETERS"> DBA_SYSTEM_PARAMETERS </span></h2>
+<p>The DBA_TABLES view contains one row for each system parameter.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> PARAM_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of parameter
+</td></tr>
+<tr>
+<td> PARAM_VALUE </td>
+<td> VARCHAR(1024) </td>
+<td> Current setting for parameter
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_TABLES"> DBA_TABLES </span></h2>
+<p>The DBA_TABLES view contains one row for each table-like object (view, local table, foreign table) defined in the catalog (in effect, it is a union view of the shared attributes of DBA_LOCAL_TABLES, DBA_FOREIGN_TABLES, and DBA_VIEWS):
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which table-like object resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which table-like object resides.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the table-like object.
+</td></tr>
+<tr>
+<td> TABLE_TYPE </td>
+<td> VARCHAR(128) </td>
+<td> One of the following types: LocalView, LocalTable, or ForeignTable
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the table-like object.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when table-like object was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when definition of table-like object was last modified.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about table-like object.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_THREADS"> DBA_THREADS </span></h2>
+<p>The DBA_THREADS view contains one row for each thread known to the server JVM (native-code threads may not appear here).
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> THREAD_ID </td>
+<td> BIGINT </td>
+<td> ID of thread within JVM
+</td></tr>
+<tr>
+<td> THREAD_GROUP_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of containing thread group
+</td></tr>
+<tr>
+<td> THREAD_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of thread
+</td></tr>
+<tr>
+<td> THREAD_PRIORITY </td>
+<td> INTEGER </td>
+<td> Priority of thread as defined by Java
+</td></tr>
+<tr>
+<td> THREAD_STATE </td>
+<td> VARCHAR(128) </td>
+<td> State of thread as defined by Java
+</td></tr>
+<tr>
+<td> IS_ALIVE </td>
+<td> BOOLEAN </td>
+<td> Whether the thread is still alive
+</td></tr>
+<tr>
+<td> IS_DAEMON </td>
+<td> BOOLEAN </td>
+<td> Whether the thread is running as a daemon
+</td></tr>
+<tr>
+<td> IS_INTERRUPTED </td>
+<td> BOOLEAN </td>
+<td> Whether the thread has been interrupted
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_THREAD_STACK_ENTRIES"> DBA_THREAD_STACK_ENTRIES </span></h2>
+<p>The DBA_THREAD_STACK_ENTRIES view contains one row for each stack frame of each thread known to the JVM.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> THREAD_ID </td>
+<td> BIGINT </td>
+<td> ID of thread within JVM
+</td></tr>
+<tr>
+<td> STACK_LEVEL </td>
+<td> INTEGER </td>
+<td> 0-based position of frame on stack (0 is deepest in stack, 1 is caller of 0, ...)
+</td></tr>
+<tr>
+<td> ENTRY_STRING </td>
+<td> VARCHAR(1024) </td>
+<td> Standard Java string representation for a stack entry
+</td></tr>
+<tr>
+<td> CLASS_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of Java class in which stack frame method is defined
+</td></tr>
+<tr>
+<td> METHOD_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of Java method executed by stack frame
+</td></tr>
+<tr>
+<td> FILE_NAME </td>
+<td> VARCHAR(1024) </td>
+<td> Name of Java source file, or null if debug info is not available
+</td></tr>
+<tr>
+<td> LINE_NUM </td>
+<td> INTEGER </td>
+<td> Line number in Java source file, or null if debug info is not available
+</td></tr>
+<tr>
+<td> IS_NATIVE </td>
+<td> BOOLEAN </td>
+<td> Whether the stack frame represents execution of a native method
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_UNCLUSTERED_INDEXES"> DBA_UNCLUSTERED_INDEXES </span></h2>
+<p>The DBA_UNCLUSTERED_INDEXES view contains one row for each unclustered index defined on a local LucidDB table.
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the index resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the index resides.
+</td></tr>
+<tr>
+<td> INDEX_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the unclustered index.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the index.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when index was created.
+</td></tr>
+<tr>
+<td> TABLE_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of table that index was created on.
+</td></tr>
+<tr>
+<td> <s>INDEX_COLUMN_NAMES</s> </td>
+<td> <s>VARCHAR(4096)</s> </td>
+<td> <s>Comma separated list of the names of the columns that the index was created on, in the order in which the columns were specified.</s>
+</td></tr>
+<tr>
+<td> IS_UNIQUE </td>
+<td> BOOLEAN </td>
+<td> True if index corresponds to a primary key or unique constraint.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the index.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<p>Note:  the <b>INDEX_COLUMN_NAMES</b> attribute was incorrectly released and needs to be normalized out into a separate DBA_INDEX_COLUMNS view.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="DBA_USERS"> DBA_USERS </span></h2>
+<p>(Only available starting with LucidDB 0.9.4)
+The DBA_USERS view contains one row for each user in the system:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the entity.
+</td></tr>
+<tr>
+<td> PASSWORD </td>
+<td> VARCHAR(128) </td>
+<td> The user's encrypted password.
+</td></tr>
+<tr>
+<td> PASSWORD_ENCRYPTION_ALGORITHM </td>
+<td> VARCHAR(128) </td>
+<td> The algorithm used to hash, encrypt, or encode the password.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the entity.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/Date when the entity was last modified.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+<h2> <span class="mw-headline" id="DBA_VIEWS"> DBA_VIEWS </span></h2>
+<p>The DBA_VIEWS view contains one row for each view defined in the catalog:
+</p>
+<table border="1" cellpadding="4" cellspacing="0" style="border:#c9c9c9 1px solid; margin: 1em 1em 1em 0; border-collapse: collapse;">
+<tr>
+<td align="center" style="background:#f0f0f0;"> <b>Column name</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Data type</b>
+</td>
+<td align="center" style="background:#f0f0f0;"> <b>Notes</b>
+</td></tr>
+<tr>
+<td> CATALOG_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Catalog in which the view resides.
+</td></tr>
+<tr>
+<td> SCHEMA_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Schema in which the view resides.
+</td></tr>
+<tr>
+<td> VIEW_NAME </td>
+<td> VARCHAR(128) </td>
+<td> Name of the view.
+</td></tr>
+<tr>
+<td> CREATOR </td>
+<td> VARCHAR(128) </td>
+<td> Authorization ID which created the view.
+</td></tr>
+<tr>
+<td> CREATION_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when view was created.
+</td></tr>
+<tr>
+<td> LAST_MODIFIED_TIMESTAMP </td>
+<td> TIMESTAMP </td>
+<td> Time/date when view definition was last modified.
+</td></tr>
+<tr>
+<td> ORIGINAL_TEXT </td>
+<td> VARCHAR(65535) </td>
+<td> Original text used to create view.
+</td></tr>
+<tr>
+<td> REMARKS </td>
+<td> VARCHAR(65535) </td>
+<td> Additional information about the view.
+</td></tr>
+<tr>
+<td> MOF_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr>
+<tr>
+<td> LINEAGE_ID </td>
+<td> VARCHAR(128) </td>
+<td>
+</td></tr></table>
+<hr />
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 248/1000000
+Post-expand include size: 4284/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1369-0!*!0!!en!*!* and timestamp 20140414191106 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbSystemViews&amp;oldid=7106">http://luciddb.org/wiki/index.php?title=LucidDbSystemViews&amp;oldid=7106</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbSystemViews" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbSystemViews&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbSystemViews&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbSystemViews&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbSystemViews" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbSystemViews" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbSystemViews" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbSystemViews&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbSystemViews&amp;oldid=7106" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 18 October 2011, at 14:25.</li>
+		<li id="viewcount">This page has been accessed 14,529 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.412 secs. --></body></html>

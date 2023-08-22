@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbCommonRelationalSubExpressionMaterialization - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbCommonRelationalSubExpressionMaterialization", "wgTitle": "LucidDbCommonRelationalSubExpressionMaterialization", "wgCurRevisionId": 5900, "wgArticleId": 1957, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbCommonRelationalSubExpressionMaterialization action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbCommonRelationalSubExpressionMaterialization</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Use_Cases"><span class="tocnumber">2</span> <span class="toctext">Use Cases</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Aggregations"><span class="tocnumber">2.1</span> <span class="toctext">Aggregations</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Semijoins"><span class="tocnumber">2.2</span> <span class="toctext">Semijoins</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Fennel_Changes"><span class="tocnumber">3</span> <span class="toctext">Fennel Changes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="#New_and_Modified_Classes"><span class="tocnumber">3.1</span> <span class="toctext">New and Modified Classes</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Scheduler_Changes"><span class="tocnumber">3.2</span> <span class="toctext">Scheduler Changes</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Early_Closes"><span class="tocnumber">3.3</span> <span class="toctext">Early Closes</span></a>
+<ul>
+<li class="toclevel-3 tocsection-9"><a href="#New_Dynamic_Parameter_Counters"><span class="tocnumber">3.3.1</span> <span class="toctext">New Dynamic Parameter Counters</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Farrago_Changes"><span class="tocnumber">4</span> <span class="toctext">Farrago Changes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-11"><a href="#Hep_Changes"><span class="tocnumber">4.1</span> <span class="toctext">Hep Changes</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Converting_the_Common_Relational_Subexpressions"><span class="tocnumber">4.2</span> <span class="toctext">Converting the Common Relational Subexpressions</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Applying_the_Common_Relational_Subexpression_Rule"><span class="tocnumber">4.3</span> <span class="toctext">Applying the Common Relational Subexpression Rule</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-14"><a href="#Unit_Tests"><span class="tocnumber">5</span> <span class="toctext">Unit Tests</span></a>
+<ul>
+<li class="toclevel-2 tocsection-15"><a href="#Fennel_Unit_Tests"><span class="tocnumber">5.1</span> <span class="toctext">Fennel Unit Tests</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Farrago_Unit_Tests"><span class="tocnumber">5.2</span> <span class="toctext">Farrago Unit Tests</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-17"><a href="#Performance_Results"><span class="tocnumber">6</span> <span class="toctext">Performance Results</span></a>
+<ul>
+<li class="toclevel-2 tocsection-18"><a href="#Modified_Queries"><span class="tocnumber">6.1</span> <span class="toctext">Modified Queries</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This document describes the enhancements necessary in LucidDB and its underlying Farrago and Fennel infrastructures to support materialization of common relational subexpressions.  Common relational subexpressions refer to identical relational expressions (e.g., joins between the same set of tables or a scan on a particular table with a particular filter condition) that are executed more than once as part of executing a user query.
+</p><p>By materializing the first instance of the common relational subexpression, we can reuse that materialized result for subsequent instances of that subexpression within the same query.  This is particularly beneficial if the common relational subexpression is complex, e.g., a join between several tables, and its result is small.  Having a small result means less space and time will be required to store and read the materialized result.  So, instead of incurring the cost of re-executing the common relational subexpression, we only incur the cost of storing the result and subsequently reading it.
+</p>
+<h1> <span class="mw-headline" id="Use_Cases"> Use Cases </span></h1>
+<p>Two examples that could benefit from common relational subexpression materialization are:
+</p>
+<ol><li> queries with a count-distinct aggregate and some other aggregate
+</li><li> queries involving <a href="/wiki/LucidDbJoinOptimization#Semijoins" title="LucidDbJoinOptimization">semijoins</a>
+</li></ol>
+<h2> <span class="mw-headline" id="Aggregations"> Aggregations </span></h2>
+<p>If a query contains a count-distinct plus any other aggregate, the relational expression that provides input into the aggregations needs to be executed twice, once for the count-distinct and once for the other aggregates.  That's a result of the rewrite done by the optimizer rule <code>RemoveDistinctAggregateRule</code>.  You can see the two instances by looking at the explain plan for the following query, which has a count-distinct and sum aggregate on a view.  The view is a join between two tables, SALES and PRODUCT.  Note that there are two <code>LhxJoinRel</code>s in the plan, each corresponding to a join between SALES and PRODUCT.  The <code>RelNode</code>s corresponding to the common relational subexpression are highlighted in bold.
+</p>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;1, 0&#93;&#93;, outputRowType=&#91;RecordType(BIGINT NOT NULL EXPR$0, INTEGER EXPR$1) NOT NULL&#93;)'
+'    FennelCartesianProductRel(leftouterjoin=&#91;false&#93;)'
+'      FennelAggRel(groupCount=&#91;0&#93;, EXPR$1=&#91;SUM(1)&#93;)'
+'        FennelReshapeRel(projection=&#91;&#91;3, 1&#93;&#93;, outputRowType=&#91;RecordType(CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NAME, INTEGER QUANTITY) NOT NULL&#91;)'
+'          <b>LhxJoinRel</b>(leftKeys=&#91;&#91;0&#93;&#93;, rightKeys=&#91;&#91;2&#93;&#93;, joinType=&#91;INNER&#93;)'
+'            <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;&#91;1, 4&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$SALES$PRODUCT_ID, SYS$CLUSTERED_INDEX$SALES$QUANTITY&#93;&#93;)'
+'           <b> FennelReshapeRel</b>(projection=&#91;&#91;0, 1, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NAME, INTEGER CAST($0):INTEGER) NOT NULL&#93;)'
+'              <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, projection=&#91;&#91;0, 1&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$PRODUCT$ID, SYS$CLUSTERED_INDEX$PRODUCT$NAME&#93;&#93;)'
+'      FennelBufferRel(inMemory=&#91;false&#93;, multiPass=&#91;true&#93;)'
+'        FennelAggRel(groupCount=&#91;0&#93;, EXPR$0=&#91;COUNT(0)&#93;)'
+'          LhxAggRel(groupCount=&#91;1&#93;)'
+'            FennelReshapeRel(projection=&#91;&#91;2&#93;&#93;, outputRowType=&#91;RecordType(CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NAME) NOT NULL&#93;)'
+'              <b>LhxJoinRel</b>(leftKeys=&#91;&#91;0&#93;&#93;, rightKeys=&#91;&#91;2&#93;&#93;, joinType=&#91;INNER&#91;)'
+'                <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;&#91;1&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$SALES$PRODUCT_ID&#93;&#93;)'
+'                <b>FennelReshapeRel</b>(projection=&#91;&#91;0, 1, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NAME, INTEGER CAST($0):INTEGER) NOT NULL&#93;)'
+'                  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, PRODUCT&#93;&#93;, projection=&#91;&#91;0, 1&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$PRODUCT$ID, SYS$CLUSTERED_INDEX$PRODUCT$NAME&#93;&#93;)'
+</pre>
+<p>By materializing the join between SALES and PRODUCT, we can avoid executing that join twice.
+</p>
+<h2> <span class="mw-headline" id="Semijoins"> Semijoins </span></h2>
+<p>A semijoin can be used to process a star join between a fact and dimension table by using the dimension table to filter the fact table.  Typically, the dimension table is filtered so it in turn can filter the fact table.  Unless the join between the fact and dimension tables can be removed through this <a href="/wiki/LucidDbJoinOptimization#Joins_That_Become_Redundant_Because_of_Semijoins" title="LucidDbJoinOptimization">optimization</a>, the scan of the dimension table will need to be done twice.  This redundant execution may not be significant for a small dimension table.  But if the dimension table is large or <a href="/wiki/LucidDbJoinOptimization#Chained_Semijoins" title="LucidDbJoinOptimization">chained semijoins</a> are being used, then materializing that portion of the query can be beneficial.
+</p><p>The following shows an example where a chained semijoin is used.  STATE is filtered on the value 'New York', and it turn filters CUSTOMER, which finally filters the SALES fact table.  The relational subexpression corresponding to the scan on STATE followed by the index lookup and scan on CUSTOMER is executed twice -- once to process the semijoin to filter SALES, and then to join SALES and CUSTOMER.  Again, the common relational subexpression <code>RelNode</code>s are highlighted in bold.
+</p>
+<pre>
+explain plan for
+select * from sales s, state st, customer c
+   where s.customer = c.id and c.city = st.city and
+   st.state = 'New York';
+</pre>
+<pre>'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 8, 9, 5, 6, 7&#93;&#93;, outputRowType=&#91;RecordType(INTEGER SID, INTEGER PRODUCT_ID, INTEGER SALESPERSON, INTEGER CUSTOMER, INTEGER QUANTITY, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NOT NULL CITY, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" STATE, INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" COMPANY, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NOT NULL CITY0) NOT NULL&#93;)'
+'    LhxJoinRel(leftKeys=&#91;&#91;3&#93;&#93;, rightKeys=&#91;&#91;5&#93;&#93;, joinType=&#91;INNER&#93;)'
+'      LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, projection=&#91;*&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$SALES$CUSTOMER, SYS$CLUSTERED_INDEX$SALES$PRODUCT_ID, SYS$CLUSTERED_INDEX$SALES$QUANTITY, SYS$CLUSTERED_INDEX$SALES$SALESPERSON, SYS$CLUSTERED_INDEX$SALES$SID&#93;&#93;)'
+'        LcsIndexMergeRel(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;2&#93;)'
+'          LcsIndexSearchRel(table=&#91;&#91;LOCALDB, SJ, SALES&#93;&#93;, index=&#91;I_SALES_CUST&#93;, projection=&#91;*&#93;, inputKeyProj=&#91;*&#93;, inputDirectiveProj=&#91;&#91;&#93;&#93;, startRidParamId=&#91;0&#93;, rowLimitParamId=&#91;0&#93;)'
+'            FennelSortRel(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'              FennelReshapeRel(projection=&#91;&#91;0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER ID) NOT NULL&#93;)'
+'                <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$CUSTOMER$ID&#93;&#93;)'
+'                  <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'                    <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, index=&#91;I_CUSTOMER_CITY&#93;, projection=&#91;*&#93;, inputKeyProj=&#91;*&#93;, inputDirectiveProj=&#91;&#91;&#93;&#93;, startRidParamId=&#91;0&#93;, rowLimitParamId=&#91;0&#93;)'
+'                      <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                        <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, STATE&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$STATE$CITY, SYS$CLUSTERED_INDEX$STATE$STATE&#93;&#93;, residual columns=&#91;&#91;1&#93;&#93;)'
+'                          <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'
+'      FennelReshapeRel(projection=&#91;&#91;0, 1, 2, 3, 4, 0&#93;&#93;, outputRowType=&#91;RecordType(INTEGER NOT NULL ID, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" COMPANY, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NOT NULL CITY, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" NOT NULL CITY0, CHAR(20) CHARACTER SET "ISO-8859-1" COLLATE "ISO-8859-1$en_US$primary" STATE, INTEGER CAST($0):INTEGER) NOT NULL&#93;)'
+'        LhxJoinRel(leftKeys=&#91;&#91;2&#93;&#93;, rightKeys=&#91;&#91;0&#93;&#93;, joinType=&#91;INNER&#93;)'
+'          <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, projection=&#91;*&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$CUSTOMER$CITY, SYS$CLUSTERED_INDEX$CUSTOMER$COMPANY, SYS$CLUSTERED_INDEX$CUSTOMER$ID&#93;&#93;)'
+'            <b>LcsIndexMergeRel</b>(consumerSridParamId=&#91;0&#93;, segmentLimitParamId=&#91;0&#93;, ridLimitParamId=&#91;1&#93;)'
+'              <b>LcsIndexSearchRel</b>(table=&#91;&#91;LOCALDB, SJ, CUSTOMER&#93;&#93;, index=&#91;I_CUSTOMER_CITY&#91;, projection=&#91;*&#93;, inputKeyProj=&#91;*&#93;, inputDirectiveProj=&#91;&#91;&#93;&#93;, startRidParamId=&#91;0&#93;, rowLimitParamId=&#91;0&#93;)'
+'                <b>FennelSortRel</b>(key=&#91;&#91;0&#93;&#93;, discardDuplicates=&#91;false&#93;)'
+'                  <b>LcsRowScanRel</b>(table=&#91;&#91;LOCALDB, SJ, STATE&#93;&#93;, projection=&#91;&#91;0&#93;&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$STATE$CITY, SYS$CLUSTERED_INDEX$STATE$STATE&#93;&#93;, residual columns=&#91;&#91;1&#93;&#93;)'
+'                    <b>FennelValuesRel</b>(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'
+'          LcsRowScanRel(table=&#91;&#91;LOCALDB, SJ, STATE&#93;&#93;, projection=&#91;*&#93;, clustered indexes=&#91;&#91;SYS$CLUSTERED_INDEX$STATE$CITY, SYS$CLUSTERED_INDEX$STATE$STATE&#93;&#93;, residual columns=&#91;&#91;1&#93;&#93;)'
+'            FennelValuesRel(tuples=&#91;&#91;{ '&#91;', 'New York            ', '&#93;', 'New York            ' }&#93;&#93;)'
+</pre>
+<h1> <span class="mw-headline" id="Fennel_Changes"> Fennel Changes </span></h1>
+<h2> <span class="mw-headline" id="New_and_Modified_Classes"> New and Modified Classes </span></h2>
+<p>Fennel already has a class named <code>SegBufferExecStream</code> that buffers its input and then returns the buffered data as its output.  The buffered data can be returned multiple times, which is required if the buffered data is the right hand input into a cartesian join.
+</p><p>What we need to materialize common relational subexpressions is to buffer an input and then make the buffered data available to multiple consumer streams.  One design that was initially considered was to extend <code>SegBufferExecStream</code>, making it a <code>DiffluenceExecStream</code>, so it can return multiple outputs.  In other words, assuming X is the input that needs to be buffered, <code>MultiOutputSegBufferExecStream</code> is an extension of <code>SegBufferExecStream</code>, and each input into <code>CartesianJoinExecStream</code> consumes the buffered data, the stream graph would look like the following:
+</p>
+<pre>
+     CartesianJoinExecStream
+        /             \
+  MultiOutputSegBufferExecStream
+              |
+              X
+</pre>
+<p>The problem with this design though is that it does not handle the case where the consumer of the buffered data needs to do restart-open of the buffered data, as is the case for a cartesian product join.  It's not possible to restart one of the outputs without restarting both.  (Nested loop joins also potentially have this problem.)
+</p><p>The design we decided to go with instead separates the functionality into two new streams -- a writer and a reader version of <code>SegBufferExecStream</code>.  The writer stream will be named <code>SegBufferWriterExecStream</code>, and the reader stream will be named <code>SegBufferReaderExecStream</code>.  Both new streams are subsets of the functionality currently in <code>SegBufferExecStream</code>.  <code>SegBufferWriterExecStream</code> takes a single input and writes the input into a buffer, so it can be read by one or more <code>SegBufferReaderExecStream</code>s.  It writes as its output a single tuple containing the first pageId of the buffered data it has created.  That pageId is written to one or more consumer <code>SegBufferReaderExecStream</code>s.  Each <code>SegBufferReaderExecStream</code> takes that input, reads the buffered data generated by the corresponding <code>SegBufferWriterExecStream</code>, and writes the buffered data it reads to its output.  Having separate streams also makes the design cleaner.
+</p><p>For example, a simple stream graph with two <code>SegBufferReaderExecStream</code>s will look like the following.
+</p>
+<pre>
+                       MergeExecStream
+                      /               \
+ SegBufferReaderExecStream      SegBufferReaderExecStream
+               ^                              ^
+                \                            /
+                 \                          /
+                  SegBufferWriterExecStream
+                             |
+                       writer's input
+</pre>
+<p>Another variation of this design that was also considered was to communicate the pageId of the buffered data via a dynamic parameter instead of through the dataflow between the two streams.  As a result, there would be no explicit dataflow between the two streams and only an implicit dataflow so that the streams are connected.  However, having implicit dataflows requires adding new code to the schedulers, and you no longer have the explicit dataflows that the scheduler can use to decide which consumer to execute next after the writer stream has finished buffering its input.
+</p><p>Since there is existing code in <code>SegBufferExecStream</code> that can be reused by the new classes, the common code will be refactored into two new helper classes -- <code>SegBufferReader</code> and <code>SegBufferWriter</code>.  Both helper classes will obviously be used by <code>SegBufferExecStream</code>, while <code>SegBufferWriterExecStream</code> only needs a <code>SegBufferWriter</code>, and <code>SegBufferReaderExecStream</code> only needs a <code>SegBufferReader</code>.
+</p><p>One difference between the new classes and <code>SegBufferExecStream</code> is that the latter has an option that allows the buffered data to be regenerated when the stream is reopened in restart mode.  The stream has a <code>multipass</code> parameter which needs to be set to false if those are the desired semantics.  That option is not supported in the new streams because it may not be possible to destroy the buffered data when <code>SegBufferWriterExecStream</code> is reopened in restart mode.  The buffered data may still be in use by <code>SegBufferReaderExecStream</code>s elsewhere in the stream graph.  To support this, we would have to support multiple sets of active buffers, and keep track of which readers are using which buffers.  Since the existing use cases don't need this functionality, to simplify things, we will not support it.
+</p>
+<h2> <span class="mw-headline" id="Scheduler_Changes"> Scheduler Changes </span></h2>
+<p>As noted in the previous section, because we are not using implicit dataflows between the reader and writer streams, we do not need to modify the schedulers to handle implicit dataflows.
+</p><p>However, there is one change that is needed in <code>DfsTreeExecStreamScheduler</code>.  Currently, when determining which consumer stream to execute after a producer stream has executed, the scheduler looks for the first stream it finds that has an incoming dataflow that is a non-underflow state.  However, what we want is to give lower priority to streams that have an empty state, as those are streams that have not explicitly pulled from their inputs.  This makes a difference in some cases.  By executing a stream with an empty incoming dataflow vs a stream that has data in its input stream, a hang will result in the following scenario.  If the <code>SegBufferReaderExecStream</code> that initiated the request is upstream from a producer that's a <i>sink</i> in the middle of the stream graph, e.g., a producer that's the input into a UDX, and it's not in the first outgoing dataflow from the <code>SegBufferWriterExecStream</code>, then that initiating <code>SegBufferReaderExecStream</code> will never get rescheduled.  The <code>SegBufferReaderExecStream</code> which did not explicitly request data will be executed instead.
+</p><p>To address this, <code>SegBufferWriterExecStream</code> needs to first write to its outputs that are in an underflow state over those with an empty state.  And <code>DfsTreeExecStreamScheduler::findNextConsumer</code> needs to ignore empty dataflows if there are other available non-underflow dataflows.
+</p><p>The parallel scheduler (<a href="/wiki/FennelParallelExecStreamScheduler" title="FennelParallelExecStreamScheduler"><code>ParallelExecStreamScheduler</code></a>) does not need to be changed because it already schedules all non-underflow consumers to execute after a stream has produced.
+</p>
+<h2> <span class="mw-headline" id="Early_Closes"> Early Closes </span></h2>
+<p>Fennel supports early closes.  This allows an execution stream to close all of its producers and their producers after it has finished some part of its execution.  For example, <code>ExternalSortExecStream</code> does an early close as soon as it has finished reading all of its input and is ready to start sorting the data.  By closing certain producers early instead of waiting for the entire stream graph to be closed, resources associated with those early-closing producers can be freed up early. 
+</p><p>Early closes are also necessary to make certain types of queries work correctly.  For example, if the underlying data storage does not support page versioning, a self-insert statement like the following:
+</p>
+<pre>
+insert into tab select * from tab;
+</pre>
+<p>requires an early close after the select portion of the stream graph has finished processing all its data.  That's because the select portion of the stream is holding a shared lock on the last page it has read.  The insert portion of the stream graph may need to insert data into that same page and will wait until it can acquire exclusive access to the page.  This results in the statement hanging.  Doing an early close releases the shared lock and allows the insert to acquire the exclusive lock.
+</p><p>Since the <code>SegBufferWriterExecStream</code> creates the buffered data that's read by the reader streams, it also makes sense for it to destroy it.  However, it cannot destroy the data until all of its readers have finished executing.  Ignoring early closes for the moment, that works ok because readers end up being closed before the corresponding writer and therefore, there will be no active readers of the buffered data when the <code>SegBufferWriterExecStream</code> is closed.
+</p><p>Early closes, however, pose problems.  
+Consider the following stream, where the SBW is a <code>SegBufferWriterExecStream</code> and the SBRs are corresponding <code>SegBufferReaderExecStream</code>s.
+</p>
+<pre>
+  SBW -----&gt; SBR --
+   |               \ 
+   |                Y ----- Z 
+   |               /       /
+   |           X --  SBR --
+   |                  ^
+   |                  |     
+   |-------------------
+</pre>
+<p>If Y initiates an early close, because SBW is connected to the top SBR, that results in the <code>SegBufferWriterExecStream</code> being closed, which results in the buffered data that's shared being destroyed, even though the bottom <code>SegBufferReaderExecStream</code> may not have finished, or even started, reading the buffered data.
+</p><p>To address early closes, a dynamic parameter will be shared between a <code>SegBufferWriterExecStream</code> and its corresponding <code>SegBufferReaderExecStream</code>s.  That parameter will be used as a reference counter to keep track of the number of active readers of the buffer generated by the <code>SegBufferWriterExecStream</code>.  The counter will be incremented whenever any of the <code>SegBufferReaderExecStream</code>s are opened, and it will be decremented whenever they are closed.  If the reference count is non-zero, when an attempt is made to early close a <code>SegBufferWriterExecStream</code>, the early close on the <code>SegBufferWriterExecStream</code> will be ignored.  A new method <code>canEarlyClose</code> will be added to <code>ExecStream</code> that returns true by default.  <code>SegBufferWriterExecStream</code> will override the method and return a value based on the value of the reference counter.
+</p>
+<h3> <span class="mw-headline" id="New_Dynamic_Parameter_Counters"> New Dynamic Parameter Counters </span></h3>
+<p>To support dynamic parameters that are used as reference counters, the following methods will be added to the <code>DynamicParamManager</code> class:
+</p>
+<pre>
+/**
+ * Creates a new dynamic parameter that will be used as a counter.
+ * Initializes the parameter value to 0.
+ *
+ * @param dynamicParamId unique ID of parameter within this manager; IDs
+ * need not be contiguous, and must be assigned by some other authority
+ *
+ * @param failIfExists if true (the default) an assertion failure
+ * will occur if dynamicParamId is already in use
+ */
+void createCounterParam(
+    DynamicParamId dynamicParamId,
+    bool failIfExists = true);
+
+/**
+ * Increments a dynamic parameter that corresponds to a counter.
+ *
+ * @param dynamicParamId ID with which the counter parameter was created
+ */
+void incrementCounterParam(DynamicParamId dynamicParamId);
+
+/**
+ * Decrements a dynamic parameter that corresponds to a counter.
+ *
+ * @param dynamicParamId ID with which the counter parameter was created
+ */
+void decrementCounterParam(DynamicParamId dynamicParamId);
+</pre>
+<p>Dynamic parameters that are created as counters are different from existing dynamic parameters in that the new increment and decrement methods can be called on them.  The increment and decrement are atomic operations.  The existing methods to read and set dynamic parameter values can also be used on them.  Their values will be stored as 8-byte signed integers.  Lastly, their ids co-exist with the ids of regular dynamic parameters.  In other words, once you've assigned a dynamic parameter id to a counter parameter, you cannot use that same id for a different parameter, even if that other parameter is a non-counter.
+</p>
+<h1> <span class="mw-headline" id="Farrago_Changes"> Farrago Changes </span></h1>
+<h2> <span class="mw-headline" id="Hep_Changes"> Hep Changes </span></h2>
+<p>LucidDB uses <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">Hep</a> to optimize queries.  Hep executes <code>HepInstruction</code>s, which correspond to some collection of optimizer rules.  A new type of instruction will be added to Hep, corresponding to rules that will only be applied on common relational subexpressions.
+</p><p>Common relational subexpressions will be detected by examining the query graph that Hep builds.  Each vertex in the graph corresponds to a relational expression in the query.  Directed edges connect the vertices together representing parent-child relationships between the different relational expressions.  Any vertex in the graph that has more than one parent vertex is a common relational subexpression because it means that the subexpression appears in multiple places in the graph.  Note, however, that if the same relational expression appears as multiple inputs into the same parent, there is only a single edge from the parent vertex to the child vertex.  So, simply counting the number of edges into a vertex is not sufficient.
+</p><p>A new abstract base class named <code>CommonRelSubExprRule</code> will be created.  The rule will extend from <code>RelOptRule</code>.  Any rules that potentially can be applied on common relational subexpressions will derive from this new base class.
+</p><p>Hep will be extended so the new instruction can be added to the appropriate places in a <code>HepProgram</code>.  When the new instruction is invoked, Hep will attempt to pattern match any <code>CommonRelSubExprRule</code>s against subgraphs where the root vertex is a common relational subexpression.  Once a match is found, Hep will pass along a list of the parent vertices corresponding to the common relational subexpression to the matching rule.  The <code>CommonRelSubExprRule</code> can use this additional information in its decision making logic.  For example, from the list of parent vertices, it can determine how many times the common relational subexpression is used and use that number in some cost calculation.
+</p>
+<h2> <span class="mw-headline" id="Converting_the_Common_Relational_Subexpressions"> Converting the Common Relational Subexpressions </span></h2>
+<p>A new rule named <code>BufferCommonRelSubExprRule</code> will derive from <code>CommonRelSubExprRule</code>.  The rule simply matches on any <code>RelNode</code>.
+</p><p>Based on the number of times the common relational subexpression is used (N), the rule will compare the cost of  executing the common relational subexpression N times versus the cost of executing it once, buffering the result, and reading the buffered result N times.  If the rule determines that buffering is beneficial, it will place a <code>FennelMultiUseBufferRel</code> on top of the original relational expression.  The new class <code>FennelMultiUseBufferRel</code> will be derived from the existing <code>FennelBufferRel</code> class.
+</p><p>To avoid an infinite loop, the rule is a no-op if the matching <code>RelNode</code> is already a <code>FennelMultiUseBufferRel</code>.
+</p><p>Note that when the <code>FennelMultiUseBufferRel</code> is created, there is no distinction yet between whether the <code>FennelMultiUseBufferRel</code> is being used as a reader or writer.  That distinction will not be made until either <code>FennelMultiUseBufferRel.toStreamDef</code> or <code>FennelMultiUseBufferRel.implementFennelChild</code> is called.
+</p><p>For each <code>FennelMultiUseBufferRel</code> object, we want to create a single writer stream and one reader stream for each reference to that object in the stream graph.  The child input into the <code>FennelMultiUseBufferRel</code> will only feed into the writer stream.  That means then that we only want to call the method pairs <code>FennelMultiUseBufferRel.visitFennelChild</code> and <code>FennelMultiUseBufferRel.implementFennelChild</code> once for the child input of a <code>FennelMultiUseBufferRel</code> object.  Thus, those calls should only correspond to a writer instance of a streamDef.  Note that when a stream graph has a mix of Fennel and Java <code>RelNode</code>s, there need to be matching calls to <code>visitFennelChild</code> and <code>implementFennelChild</code>.  Otherwise, if <code>implementFennelChild</code> is called, but there is no corresponding <code>visitFennelChild</code> call, this will result in dangling <code>FarragoTransformDef</code>s.
+</p><p>It might seem like doing the extra book-keeping necessary to avoid the extra calls is superfluous, and we can always call visitFennelChild/implementFennelChild multiple times for a <code>FennelMultiUseBufferRel</code> object and simply <i>throw away</i> the results.  However, consider the following query tree, where the "B"s are the buffering nodes.
+</p>
+<pre>
+     Z
+    / \
+   Y  B1
+  / \
+ B2 B2
+ |   |
+ X   X
+ |   |
+ B1 B1
+</pre>
+<p>If we were to call <code>implementFennelChild</code> on every node, but throw away the unneeded results from the <code>visitFennelChild</code> calls, we would end up with the following stream graph.  The "R"s are the reader streams, and the "W"s are the writer streams.
+</p>
+<pre>
+     Z
+    / \
+   Y   \
+  / \   \
+ R2 R2   \
+  \ /     \ 
+   W2      |
+   |       |
+   X  X    |
+   |  |    |
+  R1 R1    R1
+   \ /     |
+    W1-----|
+</pre>
+<p>Note that the rightmost X ends up producing data to nowhere.  That's because when <code>visitFennelChild</code> was called on the rightmost B2, that resulted in the rightmost X-R1 stream being created.  Since W1 is the writer stream for B1, a dataflow is added from W1 to all of the "R1"s, resulting in the dangling streamDef.
+</p><p>Deciding which <code>FennelMultiUseBufferRel</code> instance should be assigned the role of writer will be based on the instance that calls either <code>implementFennelChild</code> or <code>toStreamDef</code> first.  Both calls need to be taken into account.  If we make the assignment based solely on only one of the two calls, then that doesn't work for a case like the following.  Again, the "B"s are the <code>FennelMultiUseBufferRel</code>s, and the "IFC"s are <code>IteratorToFennelConverter</code>s.
+</p>
+<pre>
+        -- X --
+       /       \
+       B        Y
+       |      /   \
+      IFC1  IFC2   Z
+              |
+              B
+              |
+             IFC1
+</pre>
+<p>If we assign the writer based on the instance that calls <code>toStreamDef</code> first, then the lower B, which is a child of a <code>IteratorToFennelConverter</code>, ends up calling <code>toStreamDef</code> first, and is therefore assigned the writer role.  However, <code>implementFennelChild</code> was already called on the topmost B.  Thus, when converting IFC2 to a streamDef, we end up with mismatched <code>RelPathEntry</code>s because we only have the <code>RelPathEntry</code> list corresponding to the topmost B, rather than the desired lower one.
+</p><p>Doing the reverse also doesn't solve the problem.  If we assign the writer based on the instance that calls <code>implementFennelChild</code> first, then the topmost B is the writer, but because <code>toStreamDef</code> ends up being called first on the lower B, we again end up with a mismatch.
+</p><p>To properly assign the writer role, we'll need to extend <code>FarragoRelImplementor</code> so it maintains two new maps:
+</p>
+<ul><li> A map from a <code>RelNode</code> to its <code>RelPathEntry</code> list at the time of the first call to either  <code>toStreamDef</code> or <code>implementFennelChild</code>.  Once the first call has been made, subsequent calls to those methods will not modify the map.
+</li><li> A map from a <code>RelNode</code> to the list of <code>FemExecutionStreamDef</code>s that it has been converted to.
+</li></ul>
+<p>This first map will be maintained as part of a new interface method that will be added to <code>FennelRelImplementor</code> -- <code>isFirstTranslationInstance</code>.  <code>FennelMultiUseBufferRel</code> will call this new method in both its <code>toStreamDef</code> and <code>implementFennelChild</code> methods.  If the call returns true, then we know that the current instance is the writer instance.
+</p><p>The second map will be maintained as part of the existing call to <code>FennelRelImplementor.registerRelStreamDef</code>.  A new method <code>FennelRelImplementor.getRegisteredStreamDefs(RelNode)</code> will be added to retrieve the mapping.
+</p><p>In <code>FennelMultiUseBufferRel.implementFennelChild</code>, if the instance is not the writer, then <code>implementFennelChild</code> is not called on the child.  In <code>FennelMultiUseBufferRel.toStreamDef</code>, if the instance is the writer, then both a writer and reader stream will be created.  Otherwise, only a reader stream will be created.  If a writer stream hasn't yet been created when a reader stream is created, we'll have to defer setting the incoming dataflows and dynamic parameter for the stream until later when we have the writer stream available.  That's why we need to keep track of all of the streams that have already been created for the <code>FennelMultiUseBufferRel</code> object.  Once we've created the writer stream, then we will need to go back and create the dataflows from the newly created writer to those previously created readers.
+</p><p>Also, only if the current instance has created a writer will we call <code>visitFennelChild</code> on the child input and create a dataflow from the input to the writer.
+</p>
+<h2> <span class="mw-headline" id="Applying_the_Common_Relational_Subexpression_Rule"> Applying the Common Relational Subexpression Rule </span></h2>
+<p>LucidDB's Hep program will be to be extended to add the new instruction for common relational subexpression rules.  It would seem like for simplicity, we could just apply the rule once late in the Hep program to allow other optimizer rules to do all the necessary conversions to create the full range of common relational subexpressions.  For example, it would not make sense to apply the instruction before <code>RemoveDistinctAggregateRule</code> is called because the common relational subexpression corresponding to the aggregate inputs have not been created yet.
+</p><p>However, applying the rule too late also does not work.  To see why, study the explain outputs from the <a href="#Use_Cases">use case section</a>.  For the aggregation example, look at the <code>LcsRowScanRel</code>s that scan on SALES.  Notice that they have different projections.  The first is &#91;&#91;1,4&#93;&#93; while the second is only &#91;&#91;1&#93;&#93;.  As a result, the two relational expressions corresponding to those joins are <b>not</b> the same.
+</p><p>The problem also occurs in the semijoin example.  Note that the projections in the row scans on CUSTOMER are also different.  The one used as part of the semijoin only projects a single column while the one that's part of the join projects all columns.
+</p><p>To ensure that there are common relational subexpressions that will allow count-distinct aggregations and semijoins to be optimized, the common relational subexpression instruction needs to be applied according to the following criteria:
+</p>
+<ol><li> The new rule needs to be applied after the rules that add the common relational subexpressions (<code>RemoveDistinctAggregateRule</code> and <code>LcsIndexSemiJoinRule</code>) have been applied.
+</li><li> After the common relational subexpressions have been introduced and before the new rule is applied, there cannot be any pushdowns of projections that will result in eliminating the common relational subexpressions.
+</li><li> The new rule needs to be applied after rules that remove joins (<code>LoptOptimizeJoinRule</code> and <code>LoptRemoveSelfJoinRule</code>) are applied.  Otherwise, if there are common relational subexpressions that participate in joins that are removed by either of these rules, then we could end up buffering a relational subexpression that ends up only being used once in the final query tree.  Or worse, the buffering could prevent the join from being removed.
+</li><li> The new rule needs to be applied after filters have been pushed down.  Otherwise, a common relational subexpression corresponding to a cartesian product join could be buffered.
+</li></ol>
+<p>To satisfy the above criteria, the following will be done:
+</p>
+<ul><li> We'll add the new instruction call once -- after semijoin-related rules are applied.  Since semijoin-related rules are applied after the join ordering and removal rules, that satisfies criteria 3 and 4.
+</li><li> Move the application of <code>RemoveDistinctAggregateRule</code> so it's done later, but before the join ordering rules are applied, since <code>RemoveDistinctAggregateRule</code> can introduce a new join.  This also needs to be done so criteria 2 is met.  Currently, <code>RemoveDistinctAggregateRule</code> is applied very early in LucidDB's Hep program.  In order to meet criteria 2, had we left the rule where it currently is, we would have had to add a second instruction call to locate common relational subexpressions early in the Hep program.  Doing so, however, would violate rules 3 and 4.
+</li></ul>
+<p>These changes will address both use cases.  In the future, as additional use cases for materializing common relational subexpressions are identified, if the existing instruction call is insufficient to detect those common relational subexpressions, then further tweaking of the instruction calls will be required.
+</p>
+<h1> <span class="mw-headline" id="Unit_Tests"> Unit Tests </span></h1>
+<h2> <span class="mw-headline" id="Fennel_Unit_Tests"> Fennel Unit Tests </span></h2>
+<p>New tests will be added to <code>ExecStreamTestSuite</code> to exercise the new Fennel classes.  We can use the following simple stream graphs in the test cases.
+</p>
+<pre>
+                     MergeExecStream
+                    /               \
+ SegBufferReaderExecStream     SegBufferReaderExecStream
+              ^                           ^
+               \                         /
+                SegWriterBufferExecStream
+                           |
+                 MockProducerExecStream
+
+
+                 CartesianJoinExecStream
+                    /               \
+ SegBufferReaderExecStream     SegBufferReaderExecStream
+              ^                           ^
+               \                         /
+                SegWriterBufferExecStream
+                           |
+                 MockProducerExecStream
+</pre>
+<p>The stream graph with <code>CartesianJoinExecStream</code> will exercise restart-opens on the <code>SegBufferReaderExecStream</code>.  The test cases will be added to both <code>ExecStreamTestSuite</code> and <code>ParallelExecStreamSchedulerTest</code>.
+</p><p>By adding <code>SegBufferExecStream</code>s on top of the <code>SegBufferReaderExecStream</code>s, that will exercise early closes, since a <code>SegBufferExecStream</code> closes its producer after it has read all of its input.
+</p>
+<h2> <span class="mw-headline" id="Farrago_Unit_Tests"> Farrago Unit Tests </span></h2>
+<p>A new test case will be added to <code>FarragoOptRulesTest</code> to exercise the new common relational subexpression instruction and rule.
+</p><p>Existing SQL tests should exercise common relational subexpression materialization for count-distinct aggregates and semijoins.  Additional SQL statements will be added if the existing tests don't provide sufficient coverage.
+</p>
+<h1> <span class="mw-headline" id="Performance_Results"> Performance Results </span></h1>
+<p>As an initial test to measure the benefits of this change, I started off using TPC-H queries with 1G and 10GB dataset sizes.  Queries 2, 10, and 16 will utilize the optimization for semijoins.  Query 5 potentially could as well, but based on costing, the optimizer rule rejected the buffering.  None of the TPC-H queries have both a count-distinct and regular aggregate.  However, query 16 has a count-distinct aggregate, so I modified query 16 to include <b>SUM(P_RETAILPRICE)</b>.  That's noted as query 16a in the table below.  As a result, query 16a uses buffering for both semijoins and count-distinct.  To isolate the benefits of using buffering for only count-distinct, I modified query 16a to remove the IN filter on the PART table and the GROUP BY.  Doing so prevents the query from using semijoins.  That's noted as query 16b.
+</p><p>Of the 3 original queries, query 16 showed visible improvement for both dataset sizes.  The two modified queries, 16a and 16b, also showed improvement for both dataset sizes.  Query 10 showed improvement with a 10GB dataset size.  The other cases showed no or marginal improvement.  As you would expect, the cases where there's greatest improvement are those where the cost of executing the common relational subexpression is most expensive.
+</p>
+<table border="1" cellpadding="5" cellspacing="0">
+
+<tr>
+<td rowspan="2"> Query #
+</td>
+<td colspan="3" align="center"> 1 GB Dataset
+</td>
+<td colspan="3" align="center"> 10 GB Dataset
+</td></tr>
+<tr>
+<td> Without Buffering </td>
+<td> With Buffering </td>
+<td>&#160;% Improvement </td>
+<td> Without Buffering </td>
+<td> With Buffering </td>
+<td>&#160;% Improvement
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> 9.1s </td>
+<td> 8.7s </td>
+<td> 4.4% </td>
+<td> 24.6s </td>
+<td> 25.6s </td>
+<td> -
+</td></tr>
+<tr>
+<td> 10 </td>
+<td> 18.4s </td>
+<td> 18s </td>
+<td> 2.2% </td>
+<td> 110.3s </td>
+<td> 94.2s </td>
+<td> 14.6%
+</td></tr>
+<tr>
+<td> 16 </td>
+<td> 13.5s </td>
+<td> 10.9s </td>
+<td> 19.3% </td>
+<td> 61.3s </td>
+<td> 38.8s </td>
+<td> 36.7%
+</td></tr>
+<tr>
+<td> 16a </td>
+<td> 21.2s </td>
+<td> 13.8s </td>
+<td> 34.9% </td>
+<td> 95.4s </td>
+<td> 53.6s </td>
+<td> 43.8%
+</td></tr>
+<tr>
+<td> 16b </td>
+<td> 15.6s </td>
+<td> 11.7s </td>
+<td> 25% </td>
+<td> 79.8s </td>
+<td> 48.2s </td>
+<td> 39.6%
+</td></tr>
+</table>
+<p>These tests were run on the same hardware noted <a href="/wiki/LucidDbTpch#Scale_Factor_10_Benchmark_Machine_Specifications" title="LucidDbTpch">here</a>.  In the 1 GB case, the default buffer pool size of 5000 pages was used.  In the 10 GB case, it was increased to 49,000 pages.  Each query was run in its own standalone LucidDB server instance to prevent any previously cached data from skewing the results.
+</p>
+<h2> <span class="mw-headline" id="Modified_Queries"> Modified Queries </span></h2>
+<p>Query 16a:
+</p>
+<pre>
+SELECT
+    P_BRAND, P_TYPE, P_SIZE,
+    COUNT(DISTINCT PS_SUPPKEY) AS SUPPLIER_CNT, SUM(P_RETAILPRICE)
+FROM TPCH.PARTSUPP, TPCH.PART
+WHERE
+    P_PARTKEY = PS_PARTKEY AND P_BRAND &lt;&gt; 'Brand#45'
+    AND P_TYPE NOT LIKE 'MEDIUM POLISHED%'
+    AND P_SIZE IN (49, 14, 23, 45, 19, 3, 36, 9)
+    AND PS_SUPPKEY NOT IN (
+        SELECT S_SUPPKEY FROM TPCH.SUPPLIER
+        WHERE S_COMMENT LIKE '%Customer%Complaints%')
+GROUP BY P_BRAND, P_TYPE, P_SIZE
+ORDER BY SUPPLIER_CNT DESC, P_BRAND, P_TYPE, P_SIZE;
+</pre>
+<p>Query 16b:
+</p>
+<pre>
+SELECT
+    P_BRAND, P_TYPE, P_SIZE,
+    COUNT(DISTINCT PS_SUPPKEY) AS SUPPLIER_CNT, SUM(P_RETAILPRICE)
+FROM TPCH.PARTSUPP, TPCH.PART
+WHERE
+    P_PARTKEY = PS_PARTKEY AND P_BRAND &lt;&gt; 'Brand#45'
+    AND P_TYPE NOT LIKE 'MEDIUM POLISHED%'
+    AND PS_SUPPKEY NOT IN (
+        SELECT S_SUPPKEY FROM TPCH.SUPPLIER
+        WHERE S_COMMENT LIKE '%Customer%Complaints%');
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 166/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1957-0!*!0!!en!*!* and timestamp 20140414191212 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbCommonRelationalSubExpressionMaterialization&amp;oldid=5900">http://luciddb.org/wiki/index.php?title=LucidDbCommonRelationalSubExpressionMaterialization&amp;oldid=5900</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbCommonRelationalSubExpressionMaterialization" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbCommonRelationalSubExpressionMaterialization&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbCommonRelationalSubExpressionMaterialization&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbCommonRelationalSubExpressionMaterialization&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbCommonRelationalSubExpressionMaterialization&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbCommonRelationalSubExpressionMaterialization" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbCommonRelationalSubExpressionMaterialization" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbCommonRelationalSubExpressionMaterialization&amp;oldid=5900" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 30 March 2009, at 16:46.</li>
+		<li id="viewcount">This page has been accessed 11,523 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.138 secs. --></body></html>

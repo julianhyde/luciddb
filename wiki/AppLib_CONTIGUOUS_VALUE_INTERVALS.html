@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>AppLib CONTIGUOUS VALUE INTERVALS - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "AppLib_CONTIGUOUS_VALUE_INTERVALS", "wgTitle": "AppLib CONTIGUOUS VALUE INTERVALS", "wgCurRevisionId": 6774, "wgArticleId": 1888, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-AppLib_CONTIGUOUS_VALUE_INTERVALS action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">AppLib CONTIGUOUS VALUE INTERVALS</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Syntax"><span class="tocnumber">1</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Purpose"><span class="tocnumber">2</span> <span class="toctext">Purpose</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Parameters"><span class="tocnumber">3</span> <span class="toctext">Parameters</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Example"><span class="tocnumber">4</span> <span class="toctext">Example</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Source_Code"><span class="tocnumber">5</span> <span class="toctext">Source Code</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<pre>
+select * from table(
+    applib.contiguous_value_intervals(
+        cursor( SQL_QUERY ), 
+        row( PARTITIONING_COLUMNS ),
+        row( TIMESTAMP_COLUMN )));
+</pre>
+<h2> <span class="mw-headline" id="Purpose"> Purpose </span></h2>
+<p>The Contiguous Value Intervals UDX takes in an input table that has partitioning column(s), a timestamp column, and a clumping column. The input table must be sorted in ascending order of partitioning column(s) and timestamp column. The UDX output a table that has all input columns plus five extra columns (see details below). Within one input partition, adjacent rows having the same value of clumping column are clumped into one output row which has the value of current partition, current clump, timestamps at which the clump starts and ends. The output row also contains information about the value and timestamp of previous and next clump within the partition.
+</p>
+<h2> <span class="mw-headline" id="Parameters"> Parameters </span></h2>
+<p><b>Input:</b>
+</p>
+<ul><li> <b>SQL_QUERY:</b> - rows to be aggregated, presorted on PARTITIONING_COLUMNS plus TIMESTAMP_COLUMN
+</li><li> <b>PARTITIONING_COLUMNS:</b> - one or more columns of the input which are used to break the input set into independent partitions
+</li><li> <b>TIMESTAMP_COLUMN:</b> - one column from the input with TIMESTAMP type
+</li></ul>
+<p><b>Output:</b>
+</p>
+<ul><li> a table with the same columns as the input table, plus the five additional columns below
+<ul><li> UNTIL_TIMESTAMP[TIMESTAMP]: indicates when current clumping ends
+</li><li> PREVIOUS_CLUMP[VARCHAR]: the previous clumping value
+</li><li> PREVIOUS_FROM_TIMESTAMP[TIMESTAMP]: when the previous clumping starts
+</li><li> NEXT_CLUMP[VARCHAR]: the next clumping value
+</li><li> NEXT_UNTIL_TIMESTAMP[TIMESTAMP]: when the next clumping ends 
+</li></ul>
+</li></ul>
+<p><b>Calculation:</b>
+</p><p>Let the input column which is not a PARTITIONING_COLUMNS or TIMESTAMP_COLUMN be referred to as the clumping column. For each distinct key within PARTITIONING_COLUMNS in the input set, identify a corresponding set of contiguous rows having that key as a partition. Within a partition, adjacent rows are clumped into contiguous runs all having the same value for the clumping column. For each partition, the result set contains a corresponding partition with number of output rows equal to corresponding number of input clumps. Ordering of partitions is preserved from input to output, as is the clumping column value within a partition.
+</p>
+<ul><li> For PARTITIONING_COLUMNS, the output values for a given partition are the same as the input values (which are the same for the entire partition).
+</li><li> For the clumping column, the output value for a given row (after the clumping operation described above) is the same as the input value. There should be one row of output per clump. If a partition goes through the same clumping values more than once (meaning the same value appears in non-adjacent rows), there will be multiple output rows. E.g. if an opportunity goes through stages COLD for 2 days, WARM for 3 days, COLD for 10 more days, HOT for 4 days, we'll produce two different rows for COLD since the original input rows aren't adjacent.
+</li><li> For the TIMESTAMP_COLUMN, the output value for a given row is equal to the timestamp from the first row in the corresponding clump of input rows
+</li><li> For the UNTIL_TIMESTAMP column, the output value for a given row is equal to the timestamp from the next row following the corresponding clump of input rows, or NULL for the last clump within a partition
+</li><li> For the PREVIOUS_CLUMP column, the output value for a given row is equal to the clumping column value from the previous clump within a partition, or NULL if it is the first clump within a partition
+</li><li> For the PREVIOUS_FROM_TIMESTAMP column, the output value for a given row is equal to the timestamp column value from the previous clump within a partition, or NULL if it is the first clump within a partition
+</li><li> For the NEXT_CLUMP column, the output value for a given row is equal to the clumping column value from the next clump within a partition, or NULL if it is the last clump within a partition
+</li><li> For the NEXT_UNTIL_TIMESTAMP column, the output value for a given row is equal to the until timestamp column value from the next clump within a partition, or NULL if it is the last clump within a partition 
+</li></ul>
+<p><b>Boundary cases:</b>
+</p>
+<ul><li> Empty input will return an empty table
+</li><li> There is no special handing for null values, other than for the timestamp column
+<ul><li> This means that if a clumping column value is null, it will be outputted as is
+</li><li> The same goes for nulls in partitioning columns - null is a valid partition 
+</li></ul>
+</li><li> Comparisons will be done using net.sf.farrago.syslib.FarragoSyslibUtil.compareKeyUsingGroupBySemantics
+<ul><li> this means that empty string and a string of spaces are considered the same
+</li></ul>
+</li><li> Same Timestamp: For a partition and the clumping column, there could be multiple rows with the same Timestamp. In that case, only one output row is produced. Note that multiple rows with same timestamp but different clump values are treated as separated clumps following evaluation rules above
+</li><li> The input table can have more than one columns of type timestamp. One or more of these columns can be in PARITIONING_COLUMNS, but only one of these can be used as the TIMESTAMP_COLUMN.
+</li></ul>
+<p><b>Exceptions:</b>
+</p><p>A fatal run-time exception is thrown under any of the following conditions:
+</p>
+<ul><li>  Input table does not have exactly one clumping column (number of columns in the input table does not equal to the number of partitioning columns + 1 (for the timestamp column) + 1 (for clumping column)) 
+</li><li> The extra column in the input table (ie, the clumping column), is not of type CHAR or VARCHAR. This restriction may be lifted after enhancements has been made to the framework as specified in <a href="/wiki/FarragoUdxResultTypeDerivation" title="FarragoUdxResultTypeDerivation">FarragoUdxResultTypeDerivation</a>
+</li><li> Input table is not presorted correctly in ascending order of PARTITIONING_COLUMNS plus TIMESTAMP_COLUMN (as defined by SQL:2003 ORDER BY semantics, with NULLS first, and PAD SPACE collation characteristics for partitioning columns which are of VARCHAR datatype
+<ul><li> for rules related to NULLS FIRST ordering, see SQL:2003 Part 2 Section 10.10 General Rule 1.e
+</li><li> for specifics of VARCHAR and PAD SPACE, see SQL:2003 Part 2 Section 4.2.2 
+</li></ul>
+</li><li> TIMESTAMP_COLUMN is not a row of exactly one column that is of type TIMESTAMP
+</li><li> Any of the values in the timestamp column contains a NULL
+</li><li> The column in TIMESTAMP_COLUMN or the CLUMPING COLUMN is in PARTITIONING_COLUMNS
+</li></ul>
+<h2> <span class="mw-headline" id="Example"> Example </span></h2>
+<pre>
+select * from table(
+    applib.contiguous_value_intervals(
+        cursor(
+            select &quot;OpportunityId&quot;, &quot;OpportunityChangeTimestamp&quot;, &quot;Stage&quot; from opportunity_change_history
+            order by &quot;OpportunityId&quot;, &quot;OpportunityChangeTimestamp&quot;
+        ), 
+        row(&quot;OpportunityId&quot;),
+        row(&quot;OpportunityChangeTimestamp&quot;)));
+</pre>
+<p><b>INPUT_TABLES:</b>
+</p>
+<table border="1">
++ Input
+<tr>
+<th> OpportunityId </th>
+<th> OpportunityChangeTimestamp </th>
+<th> Stage
+</th></tr>
+<tr>
+<td> (null) </td>
+<td> 1800-01-01 00:00:00 </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> (null) </td>
+<td> 1802-01-01 00:00:00 </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-12 12:23:41 </td>
+<td> F
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-13 00:00:00 </td>
+<td> F
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-14 00:00:00 </td>
+<td> F
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 09:00:00 </td>
+<td> G
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> F
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-29 11:45:00 </td>
+<td> H
+</td></tr>
+<tr>
+<td> B </td>
+<td> 2007-09-09 05:00:23 </td>
+<td> F
+</td></tr>
+<tr>
+<td> C </td>
+<td> 2008-01-01 07:27:00 </td>
+<td> G
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-04 16:56:09 </td>
+<td> F
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> G
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 01:00:00 </td>
+<td> H
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 05:00:00 </td>
+<td> H
+</td></tr></table>
+<table border="1">
++ Output
+<tr>
+<th> OpportunityId </th>
+<th> OpportunityChangeTimestamp </th>
+<th> Stage </th>
+<th> UNTIL__TIMESTAMP </th>
+<th> PREV_CLUMP </th>
+<th> PREV_FROM_TIMESTAMP </th>
+<th> NEXT_CLUMP </th>
+<th> NEXT_UNTIL_TIMESTAMP
+</th></tr>
+<tr>
+<td> (null) </td>
+<td> 1800-01-01 00:00:00 </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-10-12 12:23:41 </td>
+<td> F </td>
+<td> 2007-12-01 09:00:00 </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> G </td>
+<td> 2007-12-01 15:00:00
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 09:00:00 </td>
+<td> G </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> F </td>
+<td> 2007-10-12 12:23:41 </td>
+<td> F </td>
+<td> 2007-12-29 11:45:00
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> F </td>
+<td> 2007-12-29 11:45:00 </td>
+<td> G </td>
+<td> 2007-12-01 09:00:00 </td>
+<td> H </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> A </td>
+<td> 2007-12-29 11:45:00 </td>
+<td> H </td>
+<td> (null) </td>
+<td> F </td>
+<td> 2007-12-01 15:00:00 </td>
+<td> (null) </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> B </td>
+<td> 2007-09-09 05:00:23 </td>
+<td> F </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> C </td>
+<td> 2008-01-01 07:27:00 </td>
+<td> G </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-04 16:56:09 </td>
+<td> F </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> (null) </td>
+<td> (null) </td>
+<td> G </td>
+<td> 2007-12-05 01:00:00
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> G </td>
+<td> 2007-12-05 01:00:00 </td>
+<td> F </td>
+<td> 2007-12-04 16:56:09 </td>
+<td> H </td>
+<td> (null)
+</td></tr>
+<tr>
+<td> D </td>
+<td> 2007-12-05 01:00:00  </td>
+<td> H </td>
+<td> (null) </td>
+<td> G </td>
+<td> 2007-12-05 00:00:00 </td>
+<td> (null) </td>
+<td> (null)
+</td></tr></table>
+<h2> <span class="mw-headline" id="Source_Code"> Source Code </span></h2>
+<p><a rel="nofollow" class="external free" href="http://p4web.eigenbase.org/open/lu/dev/luciddb/src/com/lucidera/luciddb/applib/cursor/ContiguousValueIntervalsUdx.java">http://p4web.eigenbase.org/open/lu/dev/luciddb/src/com/lucidera/luciddb/applib/cursor/ContiguousValueIntervalsUdx.java</a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 36/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1888-0!*!0!!en!*!* and timestamp 20140414192824 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;oldid=6774">http://luciddb.org/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;oldid=6774</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/AppLib_CONTIGUOUS_VALUE_INTERVALS" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=AppLib+CONTIGUOUS+VALUE+INTERVALS" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/AppLib_CONTIGUOUS_VALUE_INTERVALS" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/AppLib_CONTIGUOUS_VALUE_INTERVALS" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=AppLib_CONTIGUOUS_VALUE_INTERVALS&amp;oldid=6774" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 16 August 2010, at 06:00.</li>
+		<li id="viewcount">This page has been accessed 3,608 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.256 secs. --></body></html>

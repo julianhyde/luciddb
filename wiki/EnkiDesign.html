@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>EnkiDesign - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "EnkiDesign", "wgTitle": "EnkiDesign", "wgCurRevisionId": 5682, "wgArticleId": 1832, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-EnkiDesign action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">EnkiDesign</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Infrastructure"><span class="tocnumber">2</span> <span class="toctext">Infrastructure</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Code_Generation"><span class="tocnumber">2.1</span> <span class="toctext">Code Generation</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Ant_Tasks"><span class="tocnumber">2.2</span> <span class="toctext">Ant Tasks</span></a>
+<ul>
+<li class="toclevel-3 tocsection-5"><a href="#Code_Generation_2"><span class="tocnumber">2.2.1</span> <span class="toctext">Code Generation</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#Create_.26_Drop_Extent"><span class="tocnumber">2.2.2</span> <span class="toctext">Create &amp; Drop Extent</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#Import_.26_Export_XMI_.26_DTD"><span class="tocnumber">2.2.3</span> <span class="toctext">Import &amp; Export XMI &amp; DTD</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="#Print_Extent_Names"><span class="tocnumber">2.2.4</span> <span class="toctext">Print Extent Names</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="#Enki.2FHibernate-specific_Tasks"><span class="tocnumber">2.2.5</span> <span class="toctext">Enki/Hibernate-specific Tasks</span></a>
+<ul>
+<li class="toclevel-4 tocsection-10"><a href="#Export_Schema"><span class="tocnumber">2.2.5.1</span> <span class="toctext">Export Schema</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-11"><a href="#Common_Enki_Task_Configuration"><span class="tocnumber">2.2.6</span> <span class="toctext">Common Enki Task Configuration</span></a>
+<ul>
+<li class="toclevel-4 tocsection-12"><a href="#Provider_Configuration"><span class="tocnumber">2.2.6.1</span> <span class="toctext">Provider Configuration</span></a></li>
+<li class="toclevel-4 tocsection-13"><a href="#Logging"><span class="tocnumber">2.2.6.2</span> <span class="toctext">Logging</span></a></li>
+<li class="toclevel-4 tocsection-14"><a href="#Model_Code_Classpath_Reference"><span class="tocnumber">2.2.6.3</span> <span class="toctext">Model Code Classpath Reference</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-15"><a href="#Backwards_Compatibility_with_Netbeans_MDR"><span class="tocnumber">2.2.7</span> <span class="toctext">Backwards Compatibility with Netbeans MDR</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-16"><a href="#MOF_Metamodel"><span class="tocnumber">2.3</span> <span class="toctext">MOF Metamodel</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-17"><a href="#Enki.2FHibernate"><span class="tocnumber">3</span> <span class="toctext">Enki/Hibernate</span></a>
+<ul>
+<li class="toclevel-2 tocsection-18"><a href="#Hibernate_Mapping_.26_Code_Generation"><span class="tocnumber">3.1</span> <span class="toctext">Hibernate Mapping &amp; Code Generation</span></a>
+<ul>
+<li class="toclevel-3 tocsection-19"><a href="#Polymorphism"><span class="tocnumber">3.1.1</span> <span class="toctext">Polymorphism</span></a>
+<ul>
+<li class="toclevel-4 tocsection-20"><a href="#Simple_Attributes"><span class="tocnumber">3.1.1.1</span> <span class="toctext">Simple Attributes</span></a></li>
+<li class="toclevel-4 tocsection-21"><a href="#Collection_Attributes"><span class="tocnumber">3.1.1.2</span> <span class="toctext">Collection Attributes</span></a></li>
+<li class="toclevel-4 tocsection-22"><a href="#Entity_Attributes"><span class="tocnumber">3.1.1.3</span> <span class="toctext">Entity Attributes</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-23"><a href="#Associations_and_References"><span class="tocnumber">3.1.2</span> <span class="toctext">Associations and References</span></a>
+<ul>
+<li class="toclevel-4 tocsection-24"><a href="#Generic_Storage"><span class="tocnumber">3.1.2.1</span> <span class="toctext">Generic Storage</span></a></li>
+<li class="toclevel-4 tocsection-25"><a href="#Lazy_Associations"><span class="tocnumber">3.1.2.2</span> <span class="toctext">Lazy Associations</span></a></li>
+<li class="toclevel-4 tocsection-26"><a href="#High_Cardinality_Associations"><span class="tocnumber">3.1.2.3</span> <span class="toctext">High Cardinality Associations</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-27"><a href="#Composition"><span class="tocnumber">3.1.3</span> <span class="toctext">Composition</span></a></li>
+<li class="toclevel-3 tocsection-28"><a href="#Enumerations"><span class="tocnumber">3.1.4</span> <span class="toctext">Enumerations</span></a></li>
+<li class="toclevel-3 tocsection-29"><a href="#Clustered_Package_Imports"><span class="tocnumber">3.1.5</span> <span class="toctext">Clustered Package Imports</span></a></li>
+<li class="toclevel-3 tocsection-30"><a href="#MOF_ID_Generation"><span class="tocnumber">3.1.6</span> <span class="toctext">MOF ID Generation</span></a></li>
+<li class="toclevel-3 tocsection-31"><a href="#Metamodel_Storage"><span class="tocnumber">3.1.7</span> <span class="toctext">Metamodel Storage</span></a></li>
+<li class="toclevel-3 tocsection-32"><a href="#Queries"><span class="tocnumber">3.1.8</span> <span class="toctext">Queries</span></a>
+<ul>
+<li class="toclevel-4 tocsection-33"><a href="#refAllOfClass_and_refAllOfType"><span class="tocnumber">3.1.8.1</span> <span class="toctext">refAllOfClass and refAllOfType</span></a></li>
+<li class="toclevel-4 tocsection-34"><a href="#getByMofId"><span class="tocnumber">3.1.8.2</span> <span class="toctext">getByMofId</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-35"><a href="#Schema_Generation_and_Validation"><span class="tocnumber">3.1.9</span> <span class="toctext">Schema Generation and Validation</span></a></li>
+<li class="toclevel-3 tocsection-36"><a href="#Multiple_Metamodels_Per_Schema"><span class="tocnumber">3.1.10</span> <span class="toctext">Multiple Metamodels Per Schema</span></a></li>
+<li class="toclevel-3 tocsection-37"><a href="#Configuration"><span class="tocnumber">3.1.11</span> <span class="toctext">Configuration</span></a></li>
+<li class="toclevel-3 tocsection-38"><a href="#Constraint_Verification"><span class="tocnumber">3.1.12</span> <span class="toctext">Constraint Verification</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-39"><a href="#Extents"><span class="tocnumber">3.2</span> <span class="toctext">Extents</span></a></li>
+<li class="toclevel-2 tocsection-40"><a href="#Sessions_and_Transactions"><span class="tocnumber">3.3</span> <span class="toctext">Sessions and Transactions</span></a></li>
+<li class="toclevel-2 tocsection-41"><a href="#Packaging"><span class="tocnumber">3.4</span> <span class="toctext">Packaging</span></a>
+<ul>
+<li class="toclevel-3 tocsection-42"><a href="#Plugin_Models"><span class="tocnumber">3.4.1</span> <span class="toctext">Plugin Models</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-43"><a href="#Run-time_Configuration"><span class="tocnumber">3.5</span> <span class="toctext">Run-time Configuration</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-44"><a href="#Enki.2FNetbeans"><span class="tocnumber">4</span> <span class="toctext">Enki/Netbeans</span></a>
+<ul>
+<li class="toclevel-2 tocsection-45"><a href="#Code_Generation_3"><span class="tocnumber">4.1</span> <span class="toctext">Code Generation</span></a></li>
+<li class="toclevel-2 tocsection-46"><a href="#Netbeans_Repository_Wrapper"><span class="tocnumber">4.2</span> <span class="toctext">Netbeans Repository Wrapper</span></a>
+<ul>
+<li class="toclevel-3 tocsection-47"><a href="#Sessions_and_Transactions_2"><span class="tocnumber">4.2.1</span> <span class="toctext">Sessions and Transactions</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-48"><a href="#Enki.2FTransient"><span class="tocnumber">5</span> <span class="toctext">Enki/Transient</span></a>
+<ul>
+<li class="toclevel-2 tocsection-49"><a href="#Code_Generation_4"><span class="tocnumber">5.1</span> <span class="toctext">Code Generation</span></a></li>
+<li class="toclevel-2 tocsection-50"><a href="#Implementation_Notes"><span class="tocnumber">5.2</span> <span class="toctext">Implementation Notes</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-51"><a href="#MDR_API_Extensions"><span class="tocnumber">6</span> <span class="toctext">MDR API Extensions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-52"><a href="#Session_Management"><span class="tocnumber">6.1</span> <span class="toctext">Session Management</span></a></li>
+<li class="toclevel-2 tocsection-53"><a href="#ClassLoader_Management"><span class="tocnumber">6.2</span> <span class="toctext">ClassLoader Management</span></a></li>
+<li class="toclevel-2 tocsection-54"><a href="#Typed_getByMofId"><span class="tocnumber">6.3</span> <span class="toctext">Typed getByMofId</span></a></li>
+<li class="toclevel-2 tocsection-55"><a href="#dropExtentStorage"><span class="tocnumber">6.4</span> <span class="toctext">dropExtentStorage</span></a></li>
+<li class="toclevel-2 tocsection-56"><a href="#Preview_refDelete"><span class="tocnumber">6.5</span> <span class="toctext">Preview refDelete</span></a></li>
+<li class="toclevel-2 tocsection-57"><a href="#Backup.2FRestore"><span class="tocnumber">6.6</span> <span class="toctext">Backup/Restore</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-58"><a href="#Future"><span class="tocnumber">7</span> <span class="toctext">Future</span></a>
+<ul>
+<li class="toclevel-2 tocsection-59"><a href="#Migration_of_Farrago_JMI_Utilities"><span class="tocnumber">7.1</span> <span class="toctext">Migration of Farrago JMI Utilities</span></a></li>
+<li class="toclevel-2 tocsection-60"><a href="#Complete_Implementation_of_Transient_Packages"><span class="tocnumber">7.2</span> <span class="toctext">Complete Implementation of Transient Packages</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>Enki provides build- and run-time support for persistent storage of objects based on the Meta Object Facility (MOF), Java Metadata Interface (JMI), and XML Metadata Interchange (XMI) specifications.
+</p><p>Enki introduces the notion of a metadata repository provider ("provider"), which represents the build- and run-time components necessary to persist objects to a particular storage model. For example, Enki initially provides a Netbeans MDR provider, which wraps and slightly extends the functionality of the old Netbeans MDR libraries and a Hibernate provider, which uses the Hibernate project to store objects in an RDBMS.  In both cases, the provider's build-time code generation is used to produce Java code which is then compiled and makes use of the provider's run-time infrastructure to persist objects.
+</p><p>Build-time support is provided through Enki-specific Ant tasks. Note that Enki's code generation framework is designed to be extended without having to introduce a new provider (see <a href="#Code_Generation">#Code Generation</a>).  A project could provide a code generation that emits model-based code (or other files).  In fact, Enki actually contains code generators that produce information about a metamodel's classes and attributes or produce a <code>.dot</code> format graph file of a metamodel's inheritance hierarchy.
+</p><p>Run-time support is provider-specific and is accessed via a factory class.
+</p>
+<h1> <span class="mw-headline" id="Infrastructure"> Infrastructure </span></h1>
+<p>Enki's provides a generic infrastructure for MDR providers.
+</p>
+<h2> <span class="mw-headline" id="Code_Generation"> Code Generation </span></h2>
+<p>The top-level construct in Enki's code generation infrastructure is the <code>org.eigenbase.enki.codegen.Generator</code>.  A Generator is responsible for loading a MOF metamodel, typically via XMI, and recursively visiting each model element.  For each model element, the Generator invokes one or more <code>org.eigenbase.enki.codegen.Handler</code> instances which are responsible for generating the desired output.  Generators should ignore values in the generic options map that they do not recognize.
+</p><p><b>NOTE:</b> As it stands, the Generator interface contains a great deal of JMI-specific code, which should be refactored into a JMI code generation utility class.
+</p><p>The abstract base class <code>org.eigenbase.enki.codegen.GeneratorBase</code> is provided to implement the majority of the Generator interface.  Concrete implementations instantiate one or more handlers and set the handler's output directory, generic options (via the options map).  <code>org.eigenbase.enki.codegen.MdrGenerator</code> is an abstract base class that automatically instantiates a Netbeans MDR repository, imports an XMI model into it, and invokes its configured handlers.
+</p><p>Handlers are sub-classed for each type of metamodel object: Class proxy, class instance, association,  package, enumeration class, enumeration interface, exception, and structure.  If a particular Handler does not implement, say <code>org.eigenbase.enki.codegen.AssociationHandler</code>, GeneratorBase will simply ignore associations.
+</p><p>Handlers may specify that they required multiple passes over the metamodel.  Each Handler is notified at the start of generation, the start of each pass, the end of each pass, and the end of generation.  Handlers may produce many files (e.g., one per metamodel element), a single file (e.g., one for the entire metamodel), or something in between.  The abstract base class <code>org.eigenbase.enki.codegen.HandlerBase</code> provides support for generating a text file with varying levels of indentation.
+</p><p><br />
+</p>
+<h2> <span class="mw-headline" id="Ant_Tasks"> Ant Tasks </span></h2>
+<p>Enki provides an Ant task, <code>org.eigenbase.enki.ant.EnkiTask</code>, which accepts MDR provider configuration information and provides several subtasks to perform useful build-time functions.  Task properties are documented in each task's JavaDoc.
+</p>
+<h3> <span class="mw-headline" id="Code_Generation_2"> Code Generation </span></h3>
+<p>The <code>org.eigenbase.enki.ant.MapJavaSubTask</code> invokes a subclass of <code>MdrGenerator</code>, optionally passing a set of name/value pair options, which are specific to the generator.
+</p><p>The MapJava subtask cannot be combined with other subtasks, since it always uses Netbeans MDR to load a metamodel and perform code generation.  It ignores any provider configuration information provided at the EnkiTask level.
+</p>
+<h3> <span class="mw-headline" id="Create_.26_Drop_Extent"> Create &amp; Drop Extent </span></h3>
+<p>The <code>org.eigenbase.enki.ant.CreateExtentSubTask</code> and <code>org.eigenbase.enki.ant.DropExtentSubTask</code> create and drop metamodel or model extents.  They take provider configuration from the enclosing EnkiTask.
+</p>
+<h3> <span class="mw-headline" id="Import_.26_Export_XMI_.26_DTD"> Import &amp; Export XMI &amp; DTD </span></h3>
+<p>The <code>org.eigenbase.enki.ant.ImportXmiSubTask</code> and <code>org.eigenbase.enki.ant.ExportXmiSubTask</code> import and export metamodel or model extents to XMI files.  They make use of the Netbeans MDR library's XMI reader and writer.
+</p><p>The <code>org.eigenbase.enki.ant.WriteDtdSubTask</code> generates a DTD that represents the format of the XMI documents produced and accepts by the import and export sub tasks for a specific metamodel.
+</p><p>These tasks take their provider configuration from the enclosing EnkiTask.
+</p>
+<h3> <span class="mw-headline" id="Print_Extent_Names"> Print Extent Names </span></h3>
+<p>The <code>org.eigenbase.enki.ant.PrintExtentNames</code> subtask prints the names of the extents currently instantiated in the configured repository.  This task takes its provider configuration from the enclosing EnkiTask.
+</p>
+<h3> <span class="mw-headline" id="Enki.2FHibernate-specific_Tasks"> Enki/Hibernate-specific Tasks </span></h3>
+<h4> <span class="mw-headline" id="Export_Schema"> Export Schema </span></h4>
+<p>The <code>org.eigenbase.enki.hibernate.ant.ExportSchemaSubTask</code> subtask exports schema creation DDL for the given repository extent.  This task takes its provider configuration from the enclosing EnkiTask.
+</p>
+<h3> <span class="mw-headline" id="Common_Enki_Task_Configuration"> Common Enki Task Configuration </span></h3>
+<h4> <span class="mw-headline" id="Provider_Configuration"> Provider Configuration </span></h4>
+<p>Most of the sub tasks obtain their provider configuration from the enclosing EnkiTask (with MapJavaSubTask being the exception).
+</p><p>The enclosing EnkiTask accepts provider configuration information in two ways:
+</p>
+<ol><li> Primarily, properties are passed via a repository storage properties file.  This file contains, at a minimum, a property called <code>org.eigenbase.enki.implementationType</code> which specifies the name of the Enki provider to use.  All other properties in the file are passed to the provider.
+</li><li> In addition to, or instead of, a properties file, configuration properties can be passed using nested StorageProperty elements.  For example, 
+</li></ol>
+<blockquote><pre>
+&lt;enki.task&gt;
+  &lt;storageProperty name=&quot;foo&quot; value=&quot;bar&quot;/&gt;
+&lt;/enki.task&gt;
+</pre></blockquote>
+<p>Storage properties are scanned for variable references, using the same format as Ant (e.g., "${var.name}").  Variable values are obtained from a nested PropertySet element.  For example,
+</p>
+<blockquote><pre>
+&lt;enki.task&gt;
+  &lt;propertyset&gt;
+    &lt;propertyref name=&quot;CATALOG_DIR&quot;/&gt;
+  &lt;propertyset/&gt;
+&lt;enki.task/&gt;
+</pre></blockquote>
+<h4> <span class="mw-headline" id="Logging"> Logging </span></h4>
+<p>The Enki task takes a <code>java.util.logging</code> configuration properties file to allow log output from Enki operations to be diverted to a file (by default it will appear on the standard output).
+</p>
+<h4> <span class="mw-headline" id="Model_Code_Classpath_Reference"> Model Code Classpath Reference </span></h4>
+<p>The Enki task takes a reference to a classpath containing generated metamodel code.  If this option is not used, the Enki task must typically be invoked from a forked Ant instance in order to pick up JAR files and Java class files generated earlier in the script.
+</p>
+<h3> <span class="mw-headline" id="Backwards_Compatibility_with_Netbeans_MDR"> Backwards Compatibility with Netbeans MDR </span></h3>
+<p>The Netbeans MDR Ant task assumed that its storage properties were passed as Java system properties.
+</p><p>The Enki Ant task provides backwards compatibility by assuming that the properties are typically stored in a file and that Netbeans MDR tasks are typically executed in a forked Ant script.  The storage properties file is may be passed as a system property called <code>enki.compatibility.storagePropertiesFile</code>.  In addition, a single variable can be substituted in those properties via a pair of system properties called <code>enki.compatibility.substPropertyName</code> and <code>enki.compatibility.substPropertyValue</code>.  These properties only come into play when no other storage properties are specified.  Thus, Enki-aware build environments can specify properties explicitly via the <code>PropertyFile</code> attribute (or <code>StorageProperty</code> elements):
+</p>
+<blockquote><pre>
+&lt;enki.task propertiesFile=&quot;xyz.properties&quot;&gt;
+  ...
+&lt;enki.task/&gt;
+</pre></blockquote>
+<p>while old-style build environments needs only have their storage properties file specified as a system property in the Ant script that forks MDR task execution.
+</p>
+<h2> <span class="mw-headline" id="MOF_Metamodel"> MOF Metamodel </span></h2>
+<p>Enki contains an internal implementation of the MOF metamodel, which can be used by Enki providers to implement the MOF extent (wherein MOF is described as a MOF metamodel) and to implement metamodel extents.
+</p><p>The built-in MOF metamodel was generated using Enki's code generation infrastructure (<code>org.eigenbase.enki.codegen.MofGenerator</code> and <code>org.eigenbase.enki.codegen.MofHandler</code>).
+</p>
+<h1> <span class="mw-headline" id="Enki.2FHibernate"> Enki/Hibernate </span></h1>
+<p>The Enki/Hibernate provider name, for the purposes of configuration, is <code>ENKI_HIBERNATE</code>.
+</p>
+<h2> <span class="mw-headline" id="Hibernate_Mapping_.26_Code_Generation"> Hibernate Mapping &amp; Code Generation</span></h2>
+<p>Enki/Hibernate code generation controlled by <code>org.eigenbase.enki.hibernate.code.HibernateGenerator</code>, which instantiates several Handler implementations:
+</p>
+<ol><li> a JmiTemplateHandler to produce the JMI template interfaces
+</li><li> a HibernateJavaHandler to produce implementations of the JMI interfaces and metamodel-specific subclasses of some Enki/Hibernate run-time classes
+</li><li> a HibernateMappingHandler to produce a Hibernate mapping configuration file and an Enki model properties file
+</li><li> a HibernateMofInitHandler to produce an initializer for the built-in MOF metamodel implementation
+</li></ol>
+<h3> <span class="mw-headline" id="Polymorphism"> Polymorphism </span></h3>
+<p>Hibernate provides several ways to model polymorphism in a database schema.  After experimenting with a prototype, we settled on table-per-concrete-subclass.  Each non-abstract metamodel class is represented as a table which contains a column for each of its attributes, references, and associations, including those defined by super classes.
+</p>
+<h4> <span class="mw-headline" id="Simple_Attributes"> Simple Attributes </span></h4>
+<p>Simple attributes are attributes with types from the <code>PrimitiveTypes</code> MOF package with an upper multiplicity bound of 1.
+</p><p>For each simple, mutable attribute, two pairs of methods are generated in the class instance implementation.  The first pair (interface methods) implement the getter and setter methods defined in the class instance interface.  The interface methods generate MDR attribute events as necessary, and then invoke the second pair of methods (Hibernate methods).  The Hibernate methods are referenced in the Hibernate mapping file and always operate on object references.  That is, the interface methods may specify <code>int</code>, but the Hibernate methods use <code>java.lang.Integer</code>.  This allows Enki/Hibernate to detect unset attributes even when the class instance interface calls for a primitive type.  It also allows Hibernate to invoke its getter and setter methods to persist and restore objects without generating spurious MDR attribute events.
+</p>
+<h4> <span class="mw-headline" id="Collection_Attributes"> Collection Attributes </span></h4>
+<p>For attributes with an upper multiplicity bound greater than 1, there is no setter interface method.  The getter method wraps the underlying attribute in <code>org.eigenbase.enki.hibernate.storage.AttributeCollectionWrapper</code> or <code>org.eigenbase.enki.hibernate.storage.AttributeListWrapper</code>, as appropriate.
+</p>
+<h4> <span class="mw-headline" id="Entity_Attributes"> Entity Attributes </span></h4>
+<p>Enki/Hibernate treats entity attributes (attributes whose type is a metamodel class) as associations with special deletion and event semantics.  See <a href="#Composition">#Composition</a>.
+</p>
+<h3> <span class="mw-headline" id="Associations_and_References"> Associations and References </span></h3>
+<p>Associations are modeled in Enki/Hibernate as one of the following basic types:
+</p>
+<table border="1">
+<tr>
+<td> one-to-one
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateOneToOneLazyAssociation</code>
+</td></tr>
+<tr>
+<td> one-to-many (unordered)
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateOneToManyLazyAssociation</code>
+</td></tr>
+<tr>
+<td> one-to-many (ordered)
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateOneToManyLazyOrderedAssociation</code>
+</td></tr>
+<tr>
+<td> one-to-many (unordered, optimized for high cardinality)
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateOneToManyLazyHighCardinalityAssociation</code>
+</td></tr>
+<tr>
+<td> many-to-many (unordered)
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateManyToManyLazyAssociation</code>
+</td></tr>
+<tr>
+<td> many-to-many (ordered)
+</td>
+<td> <code>org.eigenbase.enki.hibernate.storage.HibernateManyToManyLazyOrderedAssociation</code>
+</td></tr></table>
+<p><br />
+Each association end that a metamodel class participates in is represented as a persistent instance of one of those types.  The instance is stored as a property of the class instance implementation.  A getter and setter method is generated for Hibernate to use in persisting and loading the class instance implementation.  In addition, generic methods are generated for each class instance implementation that allow access to the association objects via the association end's name.
+</p><p>Enki/Hibernate provides abstract implementations of the <code>RefAssociation</code> interface for each association type that use the generic class instance methods to obtain and manipulate the association object corresponding to a particular association end for a particular <code>RefObject</code> instance.  A concrete <code>RefAssociation</code> implementation is generated that configures the abstract base class with the correct end names.
+</p><p>References are a special case of associations.  In addition to the code generated for associations, getter methods are generated to allow access to the referenced end of an association as a collection or list when the upper multiplicity bound of the referenced end is not 1.  These methods instantiate a <code>org.eigenbase.enki.hibernate.storage.CollectionProxy</code> or <code>org.eigenbase.enki.hibernate.storage.ListProxy</code> instance configured with the class instance and association end information.  The proxies use the generic methods described above to manipulate the association.  Single-value getter and setter methods are generated to manipulate the referenced end of an association when its upper multiplicity bound is 1.
+</p><p>The <code>RefAssociation</code> base classes and Collection/ListProxy are responsible for firing MDR association events.
+</p>
+<h4> <span class="mw-headline" id="Generic_Storage"> Generic Storage </span></h4>
+<p>Because association ends may refer to types with many sub-types, and because plugin models may introduce new sub-types of a type already participating in an association, Enki/Hibernate provides a custom type mapping class that maps a string to the concrete metamodel type it represents.  The mapping is configured at run-time as metamodels and their plugins are loaded.  Therefore, in the tables that store associations, each object is referenced using two columns: one to store the type name and one to store the object's MOF identifier.
+</p><p>One-to-one associations are stored in a single table with a "parent" and "child" types and identifiers.  The parent refers to the first end of the association and the child the second end.
+</p><p>One-to-many associations are stored in two tables.  The first table contains the "parent" type and identifier.  In this case, the parent always refers to the end of the association with multiplicity 1, regardless of whether it is the first or second end of the association.  The second table refers to the first table and contains the types and identifiers of the "many" end of the association.  The first table contains a flag to indicate whether the association has been reversed.  If true, it means that the "parent" object is actually the second end of the association.
+</p><p>Similar to one-to-many associations, many-to-many associations are also stored in two tables.  "Parent" and "child" are referred to as "source" and "target." Also, each class instance refers to a separate association instance.  So if A1 is in a many-to-many association with B1 and B2, the following many-to-many association instances exist:
+</p>
+<ol><li> A1 as source with B1 and B2 as targets
+</li><li> B1 as source with A1 as a target, with the reversed flag set
+</li><li> B2 as source with A1 as a target, with the reversed flag set
+</li></ol>
+<p>Enki/Hibernate automatically updates the association instances bi-directionally when modifications are made.
+</p>
+<h4> <span class="mw-headline" id="Lazy_Associations"> Lazy Associations </span></h4>
+<p>Enki/Hibernate uses a special type of lazy association whereby Hibernate itself is not aware of the actual associations between objects.  This allows very precise control of when and how objects are loaded as the association is traversed.  In particular is allows association information to be loaded in a single SQL statement via a join.  Subsequent access to the <code>RefObject</code> instances referenced by the association is then batched by the concrete type of the referenced objects.  Because Hibernate is unaware of the relationship between the association instances and the represented objects, it will not prematurely traverse an association to load an object.  This can significantly reduce the number of objects loaded during a repository transaction.
+</p>
+<h4> <span class="mw-headline" id="High_Cardinality_Associations"> High Cardinality Associations </span></h4>
+<p>One-to-many associations with a large number of ends may be configured to use a high cardinality association semantics which do not automatically load the entire collection of association ends in a single join statement.  High cardinality associations are useful for large collections and particularly for associations that are used infrequently.
+</p>
+<h3> <span class="mw-headline" id="Composition"> Composition </span></h3>
+<p>Metamodel associations may be explicitly marked as compositions.  Enki/Hibernate automatically deletes composite class instances when a composed class instance is deleted, as required by MOF/JMI.
+</p><p>In addition, metamodel classes may contain attributes which are themselves metamodel classes.  Such composition is modeled as a special case of association in Enki/Hibernate.  When one metamodel class is composed of an attribute whose type is another metamodel class, an implicit association is generated.  The implicit association operates identically to a normal association except that
+</p>
+<ol><li> collections and lists are proxied by <code>org.eigenbase.enki.hibernate.storage.AttributeCollectionProxy</code> or <code>org.eigenbase.enki.hibernate.storage.AttributeListProxy</code>, which fire MDR attribute events instead of association events, and
+</li><li> when a composed class instance is deleted, it automatically deletes its composite class instances.
+</li></ol>
+<p>Note that <code>RefAssociation</code> instances are not generated for the implicit association used to model composite attributes.
+</p>
+<h3> <span class="mw-headline" id="Enumerations"> Enumerations </span></h3>
+<p>Enumerations are stored as strings.  Generated Enki/Hibernate class instances automatically convert between the string's stored name (the enumeration's literal value) and the static RefEnum instances used by application code.
+</p>
+<h3> <span class="mw-headline" id="Clustered_Package_Imports"> Clustered Package Imports </span></h3>
+<p>Enki supports metamodels which make use of MOF's <i>clustered package import</i> feature for allowing the same package to appear as the child of multiple parent packages.  Enki implements this by arbitrarily designating one such parent as the <i>primary</i>, and the rest as aliases.  The implementation for the containment from the primary is the same as that used for composite package containment; the aliased containment is implementing by looking up a reference to the imported package via the unique containment path through primaries.
+</p>
+<h3> <span class="mw-headline" id="MOF_ID_Generation"> MOF ID Generation </span></h3>
+<p>Enki/Hibernate uses a table to store the next available block of MOF identifiers.  By default the identifiers are grouped in blocks of 1000.  When a particular repository operating against a database schema (perhaps at the same time as another repository) requires a new MOF ID, it grabs the currently block and increments the next available block entry to the next valid value.  This technique was adopted from Hibernate's built-in key generators, but provides keys that are unique across the schema.
+</p><p>Enki/Hiberate stores MOF identifiers as 64-bit integers.  MOF identifiers with the bit 0x4000 0000 0000 0000 set are used internally.
+</p>
+<h3> <span class="mw-headline" id="Metamodel_Storage"> Metamodel Storage </span></h3>
+<p>Enki/Hibernate does not store the metamodel itself in the database.  Instead, Enki's builtin MOF metamodel is used to store the metamodel.  The metamodel is initialized by a metamodel initializer class generated by <code>org.eigenbase.enki.hibernate.codegen.HibernateMofInitHandler</code>.  When an Enki/Hibernate repository is instantiated, it determines which, if any, models and/or metamodels are already stored in the repository.  Stored metamodels are automatically initialized by invoking the generated initializer.
+</p>
+<h3> <span class="mw-headline" id="Queries"> Queries </span></h3>
+<p>Enki/Hibernate uses Hibernate queries for some operations.
+</p>
+<h4> <span class="mw-headline" id="refAllOfClass_and_refAllOfType"> refAllOfClass and refAllOfType </span></h4>
+<p>The Hibernate mapping for each concrete metamodel class contains a query named <code>allOfClass</code> which returns all instances of that exact type by querying the table which stores instances of the exact type.
+</p><p>For each metamodel class (concrete or otherwise), there is a query named "allOfType" and prefixed with the class interface name.  These queries return via Hibernate's polymorphic query all instances of the class interface.  This requires querying each table which stores sub types of the queried type.
+</p>
+<h4> <span class="mw-headline" id="getByMofId"> getByMofId </span></h4>
+<p>To avoid systematically querying every concrete metamodel class table in the implementation of the MDR API method <code>getByMofId</code>, Enki/Hibernate stores a map of each instance's MOF identifier to its concrete type.  When <code>getByMofId</code> is invoked, the type associated with the MOF id is looked up via a Hibernate query, and then the correct table is queried for the instance object.
+</p><p>In addition, Enki/Hibernate is capable of skipping the type lookup via the MDR API extension that looks up a particular type of <code>RefObject</code> by MOF ID.
+</p><p><br />
+</p>
+<h3> <span class="mw-headline" id="Schema_Generation_and_Validation"> Schema Generation and Validation </span></h3>
+<p>Enki/Hibernate operates in multiple modes with respect to the generation of its required database schema.
+</p>
+<ul><li> Automatic: Whenever a model extent is created, Enki/Hibernate automatically validates the database schema to determine whether it matches the schema required by the model.  If validation succeeds, the schema is used without modification.  If validation fails, Enki/Hiberate attempts to update the schema to the version required by the metamodel.
+</li><li> Automatic + Views: Identical to automatic mode, but also creates all-of-type and all-of-class views similar to those presented by the Farrago/LucidDB SYS_FEM and SYS_CWM catalogs.
+</li><li> Views: Creates only all-of-type and all-of-class views.  Tables are never created and are presumed to be correctly created by some external process. See  <a href="#Export_Schema">#Export Schema</a>.
+</li><li> Disabled: Assumes all database objects are created by some external process. See <a href="#Export_Schema">#Export Schema</a>.
+</li></ul>
+<h3> <span class="mw-headline" id="Multiple_Metamodels_Per_Schema"> Multiple Metamodels Per Schema </span></h3>
+<p>The HibernateGenerator provides an option for specifying a prefix to use for all tables in the metamodel.  This allows multiple models, perhaps with similarly named classes, to reside concurrently in the same schema.  The models may be loaded by a single Enki/Hibernate repository or by multiple repositories.
+</p><p><b>TODO:</b> Resolve issues related to duplicate metamodel initialization.
+</p>
+<h3> <span class="mw-headline" id="Configuration"> Configuration </span></h3>
+<p>Enki/Hibernate provides several metamodel tags which can be used to control the behavior of its code generation.
+</p>
+<table border="1" cellspacing="0">
+<caption> Enki/Hibernate Tags
+</caption>
+<tr valign="top" align="left">
+<th>Tag Identifier
+</th>
+<th>Description
+</th></tr>
+<tr valign="top">
+<td> org.eigenbase.enki.maxLength
+</td>
+<td> Controls the maximum length for a string attribute. It may be applied to a simple string attribute, a string collection attribute, or to an entire class. Values of the tag applied to an attribute take precedence over the class's value even if the attribute is inherited from a supertype. Values of the tag applied to a class apply to all to all untagged string attributes in the class. Subclasses inherit the value. The value must be an integer greater than 0 or the special value "unlimited." Lengths greater than 32768 use the Hibernate "text" type.
+</td></tr>
+<tr valign="top">
+<td> org.eigenbase.enki.transientPackage
+</td>
+<td> Controls whether a package is considered transient (not persisted to database). If this tag appears on a package, with any value, the package and its contents (including other packages) are considered transient.
+</td></tr>
+<tr valign="top">
+<td> org.eigenbase.enki.lazyAssociation
+</td>
+<td> Controls whether an association is loaded via <a href="#Lazy_Associations">Enki's lazy association mechanism</a>. This differs from normal Hibernate laziness and is useful for especially large collections.
+</td></tr></table>
+<h3> <span class="mw-headline" id="Constraint_Verification"> Constraint Verification </span></h3>
+<p>Enki/Hibernate supports <code>RefBaseObject.refVerifyConstraints(boolean deepVerify)</code>.  It validates the following constraints:
+</p>
+<ul><li> RefObject
+<ul><li> Attribute multiplicity
+<ul><li> Required attributes (lower bound == upper bound == 1) must have a value
+</li><li> Attributes with a lower bound greater than 0 must have at least that many values
+</li><li> FUTURE: Check upper bound
+</li></ul>
+</li><li> Reference multiplicity
+<ul><li> Required references (lower bound == upper bound == 1) must have a value
+</li><li> References with a lower bound greater than 0 must have at least that many values
+</li><li> FUTURE: Check upper bound
+</li></ul>
+</li></ul>
+</li><li> RefPackage
+<ul><li> Validates integrity of all associations immediately contained by the package.
+</li><li> Insures that all objects referenced by the association exist.
+</li></ul>
+</li></ul>
+<p>Note: The RefObject constraint checks match what Netbeans does and are obviously not complete.
+</p>
+<h2> <span class="mw-headline" id="Extents"> Extents </span></h2>
+<p>Extents are tracked by Enki/Hibernate via a table which contains the extent name and the metamodel that describes it.  Extents that contain metamodels are stored in the same table and refer to the MOF metamodel as their descriptor.
+</p>
+<h2> <span class="mw-headline" id="Sessions_and_Transactions"> Sessions and Transactions </span></h2>
+<p>Enki/Hibernate requires explicit session management to allow Hibernate to perform optimally and to allow callers to re-use repository objects across transaction boundaries.  In addition, Enki/Hibernate provides a mechanism to detach a session from the current thread and reattach it to another thread without disrupting the session or any ongoing transactions.
+</p><p>Enki/Hibernate does not support implicit write transactions.
+</p><p>Enki/Hibernate can be configured to implicitly begin a session if one does not already exist when a transaction is started.
+</p>
+<h2> <span class="mw-headline" id="Packaging"> Packaging </span></h2>
+<p>Enki/Hibernate produces Java interface code for the metamodel, implementations of the interfaces, a Hibernate mapping configuration file to map the the implementation classes to a database schema, a MOF metamodel initializer and a properties file to describe the metamodel contents to Enki/Hibernate at run-time.
+</p><p>Enki/Hibernate searches the available model properties file (those that are on the classpath when the repository is instantiated) and automatically loads the model descriptions.
+</p>
+<h3> <span class="mw-headline" id="Plugin_Models"> Plugin Models </span></h3>
+<p>Plugin models extend another model by providing additional interfaces and classes (which may extend the base model's interfaces), a Hibernate mapping for the plugin classes, a MOF metamodel initializer that adds to the initialization performed by the base model, and a properties file to describe the plugin model's contents to Enki/Hibernate at run-time.
+</p><p><br />
+</p>
+<h2> <span class="mw-headline" id="Run-time_Configuration"> Run-time Configuration </span></h2>
+<p>The following properties may be specified in the repository storage properties for an Enki/Hibernate repository:
+</p>
+<table border="1" cellspacing="0">
+<caption> Enki/Hibernate Repository Storage Properties
+</caption>
+<tr valign="top" align="left">
+<th>Property Name
+</th>
+<th>Description
+</th></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.connection.datasource</code>
+</td>
+<td> Configures the name of the datasource Enki/Hibernate uses for connections.  Enki/Hibernate attempts to look up this datasource via JNDI.  If JNDI is not configured, Enki/Hibernate creates a memory-based SimpleJNDI instance.  If the resource specified by this name exists, it is used to obtain JDBC connections.  Otherwise, if connection parameters are specified (see below), it creates a connection-pooled data source and stores it in the JNDI directory.  Defaults to <code>java:ENKI_DATASOURCE</code>.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.connection.driver_class</code>, <code>org.eigenbase.enki.hibernate.connection.url</code>, <code>org.eigenbase.enki.hibernate.connection.username</code>, <code>org.eigenbase.enki.hibernate.connection.password</code>, <code>org.eigenbase.enki.hibernate.connection.max_idle</code>
+</td>
+<td> Enki/Hibernate connection configuration parameters.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernatejndi.initial_context_factory_class</code>, <code>org.eigenbase.enki.hibernatejndi.provider_url</code>, <code>org.eigenbase.enki.hibernatejndi.*</code>
+</td>
+<td> JNDI configuration parameters.  The first two are used to create a JNDI environment, and their names are converted those that JNDI expects <code>javax.naming.InitialContext</code>.  All other parameters with the given prefix have the prefix stripped from their names and are passed without modification to InitialContext.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.allowImplicitSessions</code>
+</td>
+<td> Controls whether or not implicit sessions are allowed. Defaults to false.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.trackSessions</code>
+</td>
+<td> Controls whether session begin/end pairs are tracked with a unique identifier. Useful for determining where a particular session begins and ends when sessions are unexpectedly nested. Note that the generated identifiers are only unique within a repository instance. Defaults to false.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.typeLookupFlushSize</code>
+</td>
+<td> Controls whether or not and how frequently insertions into the MOF ID/type lookup table are flushed. Defaults to the value of the hibernate.jdbc.batch_size property.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.periodicStats</code>
+</td>
+<td> Controls whether and how frequently Hibernate session and second level cache statistics are dumped to the log.  Default value is -1, which disabled the logging of statistics.  Values of 1 or higher indicate the delay (in seconds) between each dump.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.periodicStats.memStats</code>
+</td>
+<td> If periodic stats are enabled, setting this storage property to true causes estimates of cache size to be dumped in addition to the other statistics.  Computing memory usage requires serializing the cache, which can be very slow.
+</td></tr>
+<tr valign="top">
+<td> <code>org.eigenbase.enki.hibernate.createSchema</code>
+</td>
+<td> Controls the schema creation mode of Enki/Hibernate.  See <a href="#Schema_Generation_and_Validation">#Schema Generation and Validation</a> for description of settings.  Acceptable values are <code>AUTO</code>, <code>AUTO_VIEW</code>, <code>VIEW</code>, or <code>DISABLED</code>.
+</td></tr>
+<tr valign="top">
+<td> <code>hibernate.*</code>
+</td>
+<td> All properties are passed to Hibernate's Configuration without modification. Note that the property <code>hibernate.default.batch_fetch_size</code> controls batch fetch size for lazy associations.
+</td></tr></table>
+<h1> <span class="mw-headline" id="Enki.2FNetbeans"> Enki/Netbeans </span></h1>
+<p>The Enki/Netbeans provider name, for the purposes of configuration, is <code>NETBEANS_MDR</code>.
+</p>
+<h2> <span class="mw-headline" id="Code_Generation_3"> Code Generation </span></h2>
+<p>Enki/Netbeans (<code>org.eigenbase.enki.netbeans</code>) provides a code generator that produces a subset of the interfaces and classes described by the JMI specification.  Interfaces are produced for all packages, classes, associations, and enumerations. Class interfaces include both the class proxy interface (a sub-interface of <code>RefClass</code>) and the class instance interface (a sub-interface of <code>RefObject</code>).  Implementation classes are generated for enumerations.
+</p><p>Note that Enki presently does not support the generation or structure or exception interfaces.
+</p>
+<h2> <span class="mw-headline" id="Netbeans_Repository_Wrapper"> Netbeans Repository Wrapper </span></h2>
+<p>Enki/Netbeans provides a wrapper around the Netbeans MDR implementation of <code>org.netbeans.mdr.api.MDRepository</code>.  The wrapper primarily passes calls through to the underlying MDRepository implementation.  In addition, it implements some common functionality such as dropping repository storage and provides a standardized interface for configuring a custom class loader for metamodel code.
+</p>
+<h3> <span class="mw-headline" id="Sessions_and_Transactions_2"> Sessions and Transactions </span></h3>
+<p>Enki/Netbeans does not require explicit session management, but the wrapper interface provides implementations of the methods for completeness.  Enki/Netbeans does require that a session surround any explicitly created MDR transaction, but does emit warnings to the MDR logger whenever it detects a transaction without a session to help maintain compatibility between Enki/Netbeans and Enki/Hibernate.
+</p>
+<h1> <span class="mw-headline" id="Enki.2FTransient"> Enki/Transient </span></h1>
+<p>The Enki/Transient provider name, for the purposes of configuration, is <code>ENKI_TRANSIENT</code>.
+</p>
+<h2> <span class="mw-headline" id="Code_Generation_4"> Code Generation </span></h2>
+<p>Enki/Transient (<code>org.eigenbase.enki.trans</code>) provides a code generator that produces a subset of the interfaces and classes described by the JMI specification.  Interfaces are produced for all packages, classes, associations, and enumerations. Class interfaces include both the class proxy interface (a sub-interface of <code>RefClass</code>) and the class instance interface (a sub-interface of <code>RefObject</code>).  Implementation classes are generated for enumerations.  In addition, it generates transient (e.g., non-persistent) implementations for the classes and associations
+</p><p>Note that Enki presently does not support the generation or structure or exception interfaces.
+</p>
+<h2> <span class="mw-headline" id="Implementation_Notes"> Implementation Notes </span></h2>
+<p>Enki/Transient does not require explicit session management, but the repository interface provides implementations of the methods for completeness.  Enki/Transient implements locking to prevent multiple simultaneous write transactions, but <b>does not</b> support rolling back transactions.  Enki/Transient <b>does not</b> generate MDR Events.
+</p>
+<h1> <span class="mw-headline" id="MDR_API_Extensions"> MDR API Extensions </span></h1>
+<p>Enki provides several MDR API extensions to facilitate operations fall into several categories:
+</p>
+<ul><li> Operations that were formerly performed in Netbeans MDR using non-public API methods (e.g. <a href="#dropExtentStorage">dropExtentStorage</a> and <a href="#ClassLoader_Management">ClassLoader Management</a>).
+</li><li> Operations that are required for correct operation of Enki/Hibernate (e.g., <a href="#Session_Management">Session Management</a>)
+</li><li> Common operations which can be implemented with improved performance when combined
+</li></ul>
+<p>Enki's MDR API extensions are primarily accessed via the <code>org.eigenbase.enki.mdr.EnkiMDRepository</code> interface.
+</p>
+<h2> <span class="mw-headline" id="Session_Management"> Session Management </span></h2>
+<p>The <code>org.eigenbase.enki.mdr.EnkiMDRepository</code> interface provides methods to begin and end sessions, as well as a method that can be used to detach and reattach sessions from the current thread.
+</p><p>Session management methods are provided in Enki's Netbeans wrapper, but perform no significant actions.
+</p>
+<h2> <span class="mw-headline" id="ClassLoader_Management"> ClassLoader Management </span></h2>
+<p>ClassLoader management allows repository users to provide a <code>java.lang.ClassLoader</code> at runtime which is aware of generated repository code that was not present when the JVM was started.
+</p><p>An <code>org.eigenbase.enki.mdr.ClassLoaderProvider</code> can be passed to Enki via the <code>setClassLoaderProvider</code> method in <code>org.eigenbase.enki.mdr.MDRepositoryFactory</code>.  The default <code>ClassLoader</code> obtained from the provider can be accessed via the <code>getDefaultClassLoader</code> method of the same class or via the similarly named method on the <code>EnkiMDRepository</code> interface.
+</p><p>For Netbeans, these operations delegate to the <code>org.netbeans.mdr.handlers.BaseObjectHandler</code> class's ClassLoader methods.
+</p>
+<h2> <span class="mw-headline" id="Typed_getByMofId"> Typed getByMofId </span></h2>
+<p>Enki provides a method on <code>EnkiMDRepository</code> that allows a <code>RefObject</code> instance to be loaded more quickly if the object's type is known a priori.  For Enki/Netbeans, this method looks up the object using the traditional <code>getByMofId</code> method and then validates that the type is correct.  For Enki/Hibernate, this method bypasses the MOF ID-to-type lookup step.
+</p>
+<h2> <span class="mw-headline" id="dropExtentStorage"> dropExtentStorage </span></h2>
+<p>Closes a repository extent and deletes the contents of the repository.  For Enki/Netbeans, this method obtains the <code>org.netbeans.mdr.Storage</code> object associated with the repository and then invokes the <code>close()</code> and <code>delete()</code> methods on it.  For Enki/Hibernate, this method drops all tables associated with the repository from the underlying database.
+</p>
+<h2> <span class="mw-headline" id="Preview_refDelete"> Preview refDelete </span></h2>
+<p>The methods <code>supportsPreviewRefDelete()</code> and <code>previewRefDelete(RefObject)</code> provide a mechanism that allows determine what cascaded deletions will occur when a particular <code>RefObject</code> is deleted.  Cascaded deletions may be due to composition (explicit or implicit) or due to the actions of MDR event listeners.  If deletion preview is supported, calling the <code>previewRefDelete</code> method causes delete events to be generated as if the deletion were processed, but omits the actual work of deleting objects.
+</p>
+<h2> <span class="mw-headline" id="Backup.2FRestore"> Backup/Restore </span></h2>
+<p>See <a href="/wiki/EnkiBackupDesign" title="EnkiBackupDesign">EnkiBackupDesign</a>.
+</p>
+<h1> <span class="mw-headline" id="Future"> Future </span></h1>
+<p>See also <a href="/wiki/EnkiToDo" title="EnkiToDo">EnkiToDo</a>.
+</p>
+<h2> <span class="mw-headline" id="Migration_of_Farrago_JMI_Utilities"> Migration of Farrago JMI Utilities </span></h2>
+<p>The <a href="/wiki/FarragoDocs" title="FarragoDocs">Farrago</a> project contains a number of JMI-related utility classes that may eventually migrate to Enki.
+</p>
+<h2> <span class="mw-headline" id="Complete_Implementation_of_Transient_Packages"> Complete Implementation of Transient Packages </span></h2>
+<p>Enki/Hibernate currently contains an incomplete implementation of transient packages.  This implementation should eventually be completed and used to implement transient packages in projects such as <a href="/wiki/FarragoDocs" title="FarragoDocs">Farrago</a>.  In addition, the transient packages implementation should be refactored to allow use from Enki/Netbeans as well.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 265/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1832-0!*!0!!en!*!* and timestamp 20140414194447 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=EnkiDesign&amp;oldid=5682">http://luciddb.org/wiki/index.php?title=EnkiDesign&amp;oldid=5682</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/EnkiDesign" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:EnkiDesign&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=EnkiDesign&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=EnkiDesign&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=EnkiDesign" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/EnkiDesign" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/EnkiDesign" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=EnkiDesign&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=EnkiDesign&amp;oldid=5682" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 29 January 2009, at 00:09.</li>
+		<li id="viewcount">This page has been accessed 10,338 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.267 secs. --></body></html>

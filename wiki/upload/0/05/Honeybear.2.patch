@@ -1,0 +1,71 @@
+Index: jdbc/src/java/org/apache/hadoop/hive/jdbc/HiveDatabaseMetaData.java
+===================================================================
+--- jdbc/src/java/org/apache/hadoop/hive/jdbc/HiveDatabaseMetaData.java	(revision 990691)
++++ jdbc/src/java/org/apache/hadoop/hive/jdbc/HiveDatabaseMetaData.java	(working copy)
+@@ -316,7 +316,7 @@
+   }
+ 
+   public String getIdentifierQuoteString() throws SQLException {
+-    throw new SQLException("Method not supported");
++    return "`";
+   }
+ 
+   public ResultSet getImportedKeys(String catalog, String schema, String table)
+Index: jdbc/src/java/org/apache/hadoop/hive/jdbc/HivePreparedStatement.java
+===================================================================
+--- jdbc/src/java/org/apache/hadoop/hive/jdbc/HivePreparedStatement.java	(revision 990691)
++++ jdbc/src/java/org/apache/hadoop/hive/jdbc/HivePreparedStatement.java	(working copy)
+@@ -165,7 +165,7 @@
+     } catch (HiveServerException e) {
+       throw new SQLException(e.getMessage(), e.getSQLState(), e.getErrorCode());
+     } catch (Exception ex) {
+-      throw new SQLException(ex.toString(), "08S01");
++      throw new SQLException(ex.toString(), "08S01", ex);
+     }
+     resultSet = new HiveQueryResultSet(client, maxRows);
+     return resultSet;
+@@ -782,8 +782,6 @@
+    */
+ 
+   public void clearWarnings() throws SQLException {
+-    // TODO Auto-generated method stub
+-    throw new SQLException("Method not supported");
+   }
+ 
+   /**
+Index: bin/ext/honeybear.sh
+===================================================================
+--- bin/ext/honeybear.sh	(revision 0)
++++ bin/ext/honeybear.sh	(revision 0)
+@@ -0,0 +1,31 @@
++THISSERVICE=honeybear
++export SERVICE_LIST="${SERVICE_LIST}${THISSERVICE} "
++
++honeybear () {
++  if $cygwin; then
++    HIVE_LIB=`cygpath -w "$HIVE_LIB"`
++  fi
++
++ if [ -z "$LUCIDDB_HOME" ]; then
++     echo "Error:  required environment variable LUCIDDB_HOME has not been set."
++     exit 1
++ fi
++
++  sed -i.old -e "s|JAVA_LIBRARY_PATH='.*'|JAVA_LIBRARY_PATH='$LUCIDDB_HOME/lib/fennel'|" $HADOOP
++
++  LUCIDDB_OPTS="-Dnet.sf.farrago.home=$LUCIDDB_HOME -Dnet.sf.farrago.catalog=$LUCIDDB_HOME/catalog -Djava.util.logging.config.file=$LUCIDDB_HOME/trace/Trace.properties -Dnet.sf.farrago.defaultSessionFactoryLibraryName=class:org.luciddb.session.LucidDbSessionFactory -XX:MaxPermSize=128m"
++  if [ `uname` = "Darwin" ]; then
++      LUCIDDB_OPTS="$LUCIDDB_OPTS -d32"
++      export DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LUCIDDB_HOME/lib/fennel
++  else
++      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LUCIDDB_HOME/lib/fennel
++  fi
++  export HADOOP_CLASSPATH=${HADOOP_CLASSPATH}:`cat $LUCIDDB_HOME/bin/classpath.gen`
++  CLASS="$LUCIDDB_OPTS org.luciddb.session.LucidDbServer"
++
++  exec $HADOOP $CLASS $HIVE_OPTS "$@"
++}
++
++honeybear_help () {
++  echo "usage ./hive --service honeybear"
++}

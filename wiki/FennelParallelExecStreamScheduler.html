@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelParallelExecStreamScheduler - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelParallelExecStreamScheduler", "wgTitle": "FennelParallelExecStreamScheduler", "wgCurRevisionId": 5592, "wgArticleId": 1868, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelParallelExecStreamScheduler action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelParallelExecStreamScheduler</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Data_Structures"><span class="tocnumber">2</span> <span class="toctext">Data Structures</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Initialization"><span class="tocnumber">3</span> <span class="toctext">Initialization</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Scheduling"><span class="tocnumber">4</span> <span class="toctext">Scheduling</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Result_Processing"><span class="tocnumber">5</span> <span class="toctext">Result Processing</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Applicability"><span class="tocnumber">6</span> <span class="toctext">Applicability</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Shutdown"><span class="tocnumber">7</span> <span class="toctext">Shutdown</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Degree_of_Parallelism"><span class="tocnumber">8</span> <span class="toctext">Degree of Parallelism</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Exception_Handling"><span class="tocnumber">9</span> <span class="toctext">Exception Handling</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Unit_Tests"><span class="tocnumber">10</span> <span class="toctext">Unit Tests</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Open_Issues"><span class="tocnumber">11</span> <span class="toctext">Open Issues</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Attachments"><span class="tocnumber">12</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>The <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structSchedulerDesign.html">Fennel executor design docs</a> describe a simple non-parallel reference implementation of the stream scheduler.  This page documents a parallelized implementation which can be used instead to take advantage of SMP machines.
+</p><p>The implementation described (<b>ParallelExecStreamScheduler</b>) provides <i>vertical parallelism</i> (executing different parts of a stream graph concurrently) rather than <i>horizontal parallelism</i> (concurrently executing copies of the same stream graph on partitioned data sets).  However, the implementation could be used to execute a graph after it has been copied for horizontal parallelism.  This could also effectively combine the two approaches, e.g. to allow one horizontal-parallelism copy to "catch up" with others in the presence of skew or fluctuating processor availability--however, refinements to the scheduling algorithm are likely to be necessary for this to work well.
+</p><p>An important constraint from the scheduling framework is that adjacent streams can never be executing simultaneously.  This allows buffer accessors to be invoked without synchronization (minimizing overhead by isolating all synchronization to the scheduler, at the granularity of per-quantum rather than per-row).
+</p>
+<h1> <span class="mw-headline" id="Data_Structures"> Data Structures </span></h1>
+<p><b>ParallelExecStreamScheduler</b> maintains the following data structures:
+</p>
+<ul><li> a <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/classThreadPool.html">thread pool</a>; the task queue inside of this thread pool represents the <i>runnable</i> queue (each entry is a reference to an <b>ExecStream</b> for which a quantum should be executed)
+</li><li> a map from stream ID to stream state:
+<ul><li> SLEEPING:  this stream is not currently in a state where it would make sense to execute it, implying one of
+<ul><li> an input is in underflow
+</li><li> an output is in overflow
+</li><li> the stream has not yet been reached from a neighbor's execution, and a lazy execution policy is being followed
+</li><li> the stream has produced EOS
+</li></ul>
+</li><li> RUNNING:  this stream has been submitted to the thread pool and has not yet completed execution (we don't currently distinguish between runnable and running)
+</li><li> INHIBITED:  this stream is prevented from executing because at least one adjacent stream is currently in state RUNNING
+<ul><li> for this state, we also keep track of an <i>inhibition count</i> (how <i>many</i> adjacent streams are running)
+</li></ul>
+</li></ul>
+</li><li> a queue of inhibited streams
+</li><li> a <i>result queue</i> of tasks which have completed and are waiting for the scheduler to update itself based on their results (each entry is a reference to an <b>ExecStream</b> which was run, along with an <b>ExecStreamResult</b> code)
+</li></ul>
+<p>Note that instances of <b>ExecStreamGraph</b> contain special <i>sentinel</i> vertices representing output buffers which can be accessed via <b>readStream</b>; these have no associated <b>ExecStream</b> instances, but do have stream map entries to track whether a <b>readStream</b> request is currently being processed.
+</p><p>We may eventually want the thread pool to be shared/reused across statements, but currently it is private to the statement's own scheduler.  (For extension projects where a global scheduler is used, a common pool is already implied.)
+</p><p>When executing in a JVM, it's necessary for native threads to be attached and detached correctly, so <b>ThreadPool</b> takes a <b>ThreadTracker</b> callback interface for this purpose and invokes it on thread start/end.  The default implementation (e.g. for Fennel unit tests) does nothing, but when Fennel is loaded as part of Farrago, a <b>JavaThreadTracker</b> implementation is supplied which makes the correct JNI calls.
+</p>
+<h1> <span class="mw-headline" id="Initialization"> Initialization </span></h1>
+<p>When the scheduler is started, it initializes most streams as SLEEPING in the state map.  However, inhibition counts for producers feeding into the output sentinel node are set to 1, since except during <b>readStream</b> calls, the output buffer is directly accessible by callers.  Each corresponding buffer accessor also receives a <b>requestProduction</b> invocation; this applies the initial "suction" on the graph which will result in upstream execution being scheduled as needed to satisfy <b>readStream</b> requests.
+</p><p>After data structure initialization, the following additional start steps are carrier out:
+</p>
+<ol><li> The thread pool is started.
+</li><li> A <i>manager</i> task is submitted to the thread pool.  This is a task which runs until the scheduler is stopped (never yielding), so it ties up one thread from the pool.  For this reason, when the thread pool is started, the number of threads requested is degreeOfParallelism+1.
+</li></ol>
+<h1> <span class="mw-headline" id="Scheduling"> Scheduling </span></h1>
+<p>We take the approach that only the manager thread can read and write global scheduler state; worker threads in the thread pool just do their assigned work and synchronize access only to the runnable queue and the result queue.  This keeps contention to a minimum.  (In an earlier design, worker threads shared the work of scheduler state maintenance, leading to prohibitive contention.)  The downside of this design is that the manager thread can become a bottleneck; we may want to experiment with boosting its priority.  Think of a manager with a number of workers; as each worker completes a task, he or she comes back to the manager for a new one; as long as the project schedule isn't excessively complicated or bottlenecked, and the manager doesn't get distracted, throughput remains high.  This tends to work best with larger page sizes (each quantum is longer, meaning scheduling overhead is a smaller percentage of the overall work performed, and also less chance for contention on queues).
+</p><p><a href="/wiki/File:ParallelExecStreamScheduler.png" class="image"><img alt="ParallelExecStreamScheduler.png" src="/wiki/upload/7/7d/ParallelExecStreamScheduler.png" width="500" height="378" /></a>
+</p><p>The manager task is a loop which waits for events in the result queue, and for each one, carries out the following <b>processCompletedTask</b> procedure:
+</p>
+<ol><li> The completed stream's state is set to SLEEPING
+</li><li> The inhibition counts for the stream's neighbors are decremented by 1.
+</li><li> Further processing takes place based on the stream execution's result code:
+<ul><li> EOS, underflow, or overflow:  for any output buffer in a state other than underflow, the corresponding consumer is made runnable (if not inhibited); and for any input buffer in the underflow state, the corresponding producer is made runnable (if not inhibited)
+<ul><li> making a stream runnable implies incrementing the inhibition count of its neighbors
+</li><li> for consumers which are output sentinels, further <b>signalSentinel</b> processing is carried out as described later on
+</li></ul>
+</li><li> quantum expired:  the executed stream is made runnable again (since it still has work to do)
+</li></ul>
+</li><li> The inhibited queue is processed, and any streams which have lost their inhibitions (due to the completion of this execution) are made runnable.
+</li></ol>
+<p>Note that the current algorithm is <i>lazy</i>, in that it does not schedule streams until they are known to be related to the output.  An <i>eager</i> algorithm might cause all streams to start pumping out data regardless of demand by consumers.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:39, 30 July 2008 (PDT):  I'm not sure how well the inhibited queue processing is going to scale up with large stream graphs; a more optimized data structure would track inhibition dependencies.
+</p>
+<h1> <span class="mw-headline" id="Result_Processing"> Result Processing </span></h1>
+<p>Special handling is required for the output vertices, which are accessed by outside callers.  The <b>readStream</b> call is implemented as follows:
+</p>
+<ol><li> If the output buffer is in overflow or EOS, the call returns immediately.
+</li><li> If the output buffer is currently empty, <b>requestProduction</b> is called on its buffer accessor so that the scheduler will invoke upstream nodes.
+</li><li> The output vertex is marked as SLEEPING (otherwise no progress could be made, as producers would be inhibited by the RUNNING state of the output vertex).
+</li><li> A special entry is added to the result queue to signal the manager that the output vertex is now in underflow and needs attention.  This entry has the ID of the sentinel vertex, and a result code of <b>EXECRC_BUF_UNDERFLOW</b>.  From the perspective of the manager, it looks just like the completion event for a real stream; this eliminates one special case.
+</li><li> <b>readStream</b> waits on a condition variable (<b>sentinelCondition</b>, with the completion condition that the sentinel state must be RUNNING again) this will be signaled once one of the following happens
+<ul><li> the manager detects a result event for a producer feeding into the sentinel, or
+</li><li> an exception is encountered (in this case, readStream terminates by re-throwing the exception, as described in <a href="#Exception_Handling">a later section</a>)
+</li></ul>
+</li><li> Once <b>readStream</b> wakes up without an exception, it returns the accessor for the filled output buffer.
+</li></ol>
+<p>As mentioned previously, <b>signalSentinel</b> is carried out by the manager when it detects a result event related to the sentinel; here are the steps:
+</p>
+<ol><li> increment the inhibition count on the producers for the sentinel
+</li><li> change the sentinel state from SLEEPING to RUNNING
+</li><li> signal the <b>sentinelCondition</b> condition variable
+</li></ol>
+<p>Why have a dedicated manager thread (i.e. why not just let <b>readStream</b> carry out this role)?  There are two reasons:
+</p>
+<ul><li> in an ExecStreamGraph for a statement containing UDX invocations, there may be concurrent calls to <b>readStream</b> (since each UDX invocation gets its own thread), and our goal is to avoid synchronization in the manager
+</li><li> by making the manager autonomous, processing for queries which produce large result sets can be pipelined beyond the scheduler; the scheduler can be prefetching the next batch of results while the <b>readStream</b> caller is processing the previous batch
+</li></ul>
+<h1> <span class="mw-headline" id="Applicability"> Applicability </span></h1>
+<p>The scheduling algorithm above is useful for stream graphs with a shape like this:
+</p>
+<pre>
+           ___stream1__
+          /            \
+         /              \
+splitter -----stream2----barrier
+         \              /
+          \___stream3__/
+</pre>
+<p>stream1/2/3 can all be executed in parallel.  An example would be a LucidDB column-store load, with each stream loading one column.  Parallel <a href="/wiki/MergeExecStream" title="MergeExecStream">UNION ALL</a> has a shape similar to the right half of the graph above.
+</p><p>The scheduling algorithm can also yield "bucket brigade" pipelined parallelism for a graph with a shape like this:
+</p>
+<pre>
+
+stream1---&gt;membuf1---&gt;stream2---&gt;membuf2---&gt;stream3
+
+</pre>
+<p>To achieve pipelined parallelism, <b>ScratchBufferExecStream</b> cannot be used for the memory buffers, since it would only allow one side (either producer or consumer, but not both) to execute at once.  The reason for this limitation is that the implementation only has a single buffer page, and <b>ExecStreamBufAccessor</b> does not currently implement circular buffer access.  To avoid the complexity of byte-level circular buffer access, we use a simpler page-level approach:
+</p>
+<ul><li> introduce new class <b>DoubleBufferExecStream</b> as an alternative for <b>ScratchBufferExecStream</b>
+</li><li> <b>DoubleBufferExecStream</b> is similar to <b>ScratchBufferExecStream</b>, but it allocates two buffer pages instead of one, and flips between them--standard <a href="http://en.wikipedia.org/wiki/Double_buffering" class="extiw" title="wikipedia:Double buffering">double-buffering</a> technique
+</li><li> <b>DoubleBufferExecStream</b> set its input edges to underflow AND its output edges to overflow simultaneously to indicate that both producer and consumer can execute in parallel (since they are accessing different buffers)
+</li></ul>
+<p>For non-parallel schedulers, we continue to use <b>ScratchBufferExecStream</b> to avoid wasting buffer pool pages.  This is possible since <b>ExecStreamScheduler::createBufferProvisionAdapter</b> is a virtual method, so each scheduler can choose how to instantiate buffer ExecStreams.
+</p>
+<h1> <span class="mw-headline" id="Shutdown"> Shutdown </span></h1>
+<p>The scheduler implements the <b>stop</b> interface method as follows:
+</p>
+<ol><li> Signal the manager to quit
+</li><li> Wait for the manager to shut itself down
+</li><li> Call <b>stop</b> on the thread pool, which waits for any executing threads to complete their work
+</li><li> Clear any pending exception
+</li><li> Discard leftover requests and events from queues
+</li></ol>
+<h1> <span class="mw-headline" id="Degree_of_Parallelism"> Degree of Parallelism </span></h1>
+<p>The number of threads in the pool is controlled by a parameter known as the <a href="http://en.wikipedia.org/wiki/Degree_of_parallelism" class="extiw" title="wikipedia:Degree of parallelism">degree of parallelism</a>.  When Fennel is loaded as part of Farrago, this can be controlled from the SQL level by session parameter "degreeOfParallelism":
+</p>
+<pre>
+alter session set &quot;degreeOfParallelism&quot; = 4;
+</pre>
+<p>The default value is 1, causing the non-parallel scheduler implementation to be plugged in; any value greater than 1 will result in the parallel scheduler being used.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 14:06, 30 July 2008 (PDT):  there is a problem here with statement caching; the DOP gets burned into the XMI for the Fennel stream defs, and affects the resulting stream graph construction, but it does <i>not</i> appear as part of the cache key.  So, one session might set DOP=4, and compile a statement, leaving the parallelized plan in the cache; then another session might attempt to execute the same statement with DOP=1, find the cached entry, and accidentally execute the parallel stream graph.
+</p><p>--<a href="/wiki/index.php?title=User:Rchen&amp;action=edit&amp;redlink=1" class="new" title="User:Rchen (page does not exist)">Rchen</a> 17:50, 19 August 2008 (PDT) Is the run-time DOP static? Or it can take into consideration the "load" of the system?
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 13:27, 21 August 2008 (PDT):  currently it is static; if we move to a thread pool shared across statements (or shared scheduler), then we can address global contention, fairness and governance issues
+</dd></dl>
+<h1> <span class="mw-headline" id="Exception_Handling"> Exception Handling </span></h1>
+<p>If a stream encounters an exception while executing, it will be thrown in the pooled thread context rather than the calling thread context.  Consequently, the scheduler needs to propagate the exception back to the calling thread context.  It does this by wrapping stream execution in a try block, catching the exception, saving it in a state variable <b>pPendingExcn</b> and then signalling the condition variable.  When <b>readStream</b> wakes up and sees this state of affairs, it will rethrow the saved exception, now in the caller's context.
+</p><p>(Due to the way exception handling works in C++, it is necessary to clone the original exception object and ask it to re-throw itself; there is no way to re-throw the original exception object in the new context without slicing it, and we can't do that since it may be a Java exception which needs to be preserved as such.)
+</p><p>Streams executing in parallel will carry on with their current quanta, but subsequent attempts to make streams runnable will be treated as NOP's once an exception is pending, causing the scheduler to quiesce itself.
+</p><p>If multiple streams encounter exceptions, the first one wins (subsequent exception reports are ignored).
+</p><p>Asynchronous abort requests are implemented by simply setting <b>pPendingExcn</b> to a new <b>AbortException</b> and signalling the condition variable.
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 14:06, 30 July 2008 (PDT):  for error conditions which are logged rather than thrown, are there any synchronization issues which need to be dealt with?  Probably not, since we already have accidental parallelism from UDX threading, but worth reviewing.
+</p>
+<h1> <span class="mw-headline" id="Unit_Tests"> Unit Tests </span></h1>
+<p>The parallel scheduler is currently unit tested by class <b>ParallelExecStreamSchedulerTest</b>, which executes all of the pre-existing stream tests from <b>ExecStreamTestSuite</b> with degree of parallelism set to 4 by default (this is parameterized, e.g. you can run <b>ParallelExecStreamSchedulerTest degreeOfParallelism=8</b>).  Much more is needed to exercise real parallel-relevant scenarios and streams (including exceptions and abort requests), as well as to verify that concurrent execution is actually taking place.
+</p>
+<h1> <span class="mw-headline" id="Open_Issues"> Open Issues </span></h1>
+<ul><li> tracing needs to be thought out in the parallel context
+<ul><li> a simple way to deal with it is to only trace from the <b>readStream</b> thread; however, for high-verbosity trace levels, this will drastically alter the scheduling, leading to heisenbugs (think of a manager who spends most of the time reading and writing book-length status reports instead of telling people what to do)
+</li></ul>
+</li><li> stream implementations which rely on dynamic parameters may not work with the parallel executor depending on their access patterns; Julian has been adding generic support for declaring dynamic parameter dependencies from streams, so we may need to figure out how to build on that
+</li><li> stream implementations which rely on restart may not work with the parallel executor, since the scheduler is not aware of the restart calls, and they usually are not safe to be run concurrently with execution; if restart is only called when everything upstream is guaranteed to be EOS already, this may not be a problem, but early restarts could spell trouble
+</li><li> stream implementations which block for I/O may prevent full utilization
+</li><li> there may be cases where additional buffering would improve throughput
+<ul><li> in some cases, this could mean a generalization of <b>DoubleBufferExecStream</b> (cycling through multiple buffers instead of just two); or a version of <b>SegBufferExecStream</b> which allows for concurrent reads and writes on an arbitrary-length buffer (i.e. disk-backed as needed)
+</li><li> in other cases, this could mean inserting buffers where currently there are none in the graph (e.g. in between a splitter and a downstream column loader)
+</li></ul>
+</li></ul>
+<p>--<a href="/wiki/index.php?title=User:Rchen&amp;action=edit&amp;redlink=1" class="new" title="User:Rchen (page does not exist)">Rchen</a> 18:16, 19 August 2008 (PDT)Could adjacent non blocking streams be scheduled to one worker? I.e. this "block" of streams share one scheduling state and are always assigned a thread together.
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 13:29, 21 August 2008 (PDT):  Currently the unit of scheduling is one ExecStream, but the possibility of scheduling trains of ExecStreams <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=3D07BFE98C784DA39BC402454A53765B%40mackerel&amp;forum_name=fennel-developers">is being discussed</a>; it could help with minimizing contention on scheduler queues
+</dd></dl>
+<ul><li> boosting the priority of the manager thread seems to help a little bit; need to investigate this further, and if worthwhile, come up with global priority scheme for all threads; but probably that way madness lies
+</li><li> need some sequence/statechart diagrams in this doc
+</li></ul>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:ParallelExecStreamScheduler.odg" title="File:ParallelExecStreamScheduler.odg">Image:ParallelExecStreamScheduler.odg</a>
+</li><li> <a href="/wiki/File:ParallelExecStreamScheduler.png" title="File:ParallelExecStreamScheduler.png">Image:ParallelExecStreamScheduler.png</a>
+</li><li> <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=3D07BFE98C784DA39BC402454A53765B%40mackerel&amp;forum_name=fennel-developers">Minutes of meeting to discuss scheduler designs/collaboration, 2008/8/19</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.nxtbook.com/nxtbooks/cmp/ddj0908/#/50">relevant DDJ article</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 73/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1868-0!*!0!!en!2!* and timestamp 20140414193834 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;oldid=5592">http://luciddb.org/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;oldid=5592</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelParallelExecStreamScheduler" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelParallelExecStreamScheduler&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelParallelExecStreamScheduler" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelParallelExecStreamScheduler" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelParallelExecStreamScheduler" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelParallelExecStreamScheduler&amp;oldid=5592" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 22 December 2008, at 19:05.</li>
+		<li id="viewcount">This page has been accessed 7,033 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.244 secs. --></body></html>

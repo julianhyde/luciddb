@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>EnkiBackupDesign - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "EnkiBackupDesign", "wgTitle": "EnkiBackupDesign", "wgCurRevisionId": 5475, "wgArticleId": 1909, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-EnkiBackupDesign action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">EnkiBackupDesign</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#API"><span class="tocnumber">2</span> <span class="toctext">API</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Enki.2FHibernate_Implementation"><span class="tocnumber">3</span> <span class="toctext">Enki/Hibernate Implementation</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Backup"><span class="tocnumber">3.1</span> <span class="toctext">Backup</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Restore"><span class="tocnumber">3.2</span> <span class="toctext">Restore</span></a>
+<ul>
+<li class="toclevel-3 tocsection-6"><a href="#Missing_Repository-Specific_Storage"><span class="tocnumber">3.2.1</span> <span class="toctext">Missing Repository-Specific Storage</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#Existing_Extent"><span class="tocnumber">3.2.2</span> <span class="toctext">Existing Extent</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="#DDL"><span class="tocnumber">3.2.3</span> <span class="toctext">DDL</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-9"><a href="#Enki.2FNetbeans_Implementation"><span class="tocnumber">4</span> <span class="toctext">Enki/Netbeans Implementation</span></a>
+<ul>
+<li class="toclevel-2 tocsection-10"><a href="#Backup_2"><span class="tocnumber">4.1</span> <span class="toctext">Backup</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Restore_2"><span class="tocnumber">4.2</span> <span class="toctext">Restore</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>Requirements for backing up different types of Enki-based repositories vary based on the repository type.  XMI export is a lowest common denominator, but for large repositories it can be very slow.  Alternatively, Enki/Netbeans can be backed up by making a copy of the underlying storage file(s) and Enki/Hibernate can be backed up using common database tools.
+</p><p>This document describes an API and implementation that abstracts the process of backing up an Enki-based repository so that the caller need not know how the underlying repository is configured.
+</p>
+<h1> <span class="mw-headline" id="API"> API </span></h1>
+<p>The class <a rel="nofollow" class="external text" href="http://www.eigenbase.org/enki/javadoc/org/eigenbase/enki/mdr/EnkiMDRepository.html">EnkiMDRepository</a> provides an extension point where additions to the traditional Netbeans <code>MDRepository</code> can be made.
+</p><p>Two new methods are added <code>EnkiMDRepository</code> to provide for catalog backup and restore:
+</p>
+<blockquote><pre>
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
+/**
+  * Backs up the given extent, writing a single file to the given output stream.
+  * The file written may be a multi-file archive, such as a ZIP, JAR or TAR file.
+  * Typically the file is uncompressed, allowing the caller to apply their choice
+  * of compression.
+  *
+  * @param extentName name of the extent to back up
+  * @param stream an OutputStream to which a single file's data is written
+  * @throws IOException if there is an error writing to the stream
+  */
+public void backupExtent(String extentName, OutputStream stream) throws IOException;
+
+/**
+  * Restores the contents of the given input stream to the named extent.  The
+  * input stream is assumed to contain a single file's data.  The input stream's
+  * close method is &lt;b&gt;not&lt;/b&gt; called, thereby allowing the extent to be restored
+  * from a single entry in a multi-file archive, such as a ZIP, JAR or TAR file.
+  *
+  * @param extentName name of the extent to be created and restore to
+  * @param metaPackageExtentName name of the extent describing the
+  *                              new extent's metamodel
+  * @param metaPckageName name of the root package for the new extent
+  * @throws IOException if there is an error reading from the stream
+  */
+public void restoreExtent(
+    String extentName,
+    String metaPackageExtentName,
+    String metaPackageName,
+    InputStream stream) throws IOException;
+</pre></blockquote>
+<p>Implementations of the API may throw additional runtime exceptions to handle cases where the the backup or restore operations cannot execute due to non-I/O related errors.  For example, some repository implementations may place restrictions on when a backup may occur.  Others may be able to detect a restore-time mismatch between backed up data and pre-configured storage.
+</p>
+<h1> <span class="mw-headline" id="Enki.2FHibernate_Implementation"> Enki/Hibernate Implementation </span></h1>
+<h2> <span class="mw-headline" id="Backup"> Backup </span></h2>
+<p>Enki/Hibernate code generation stores DDL for each model or model plug-in's schema along side the existing model configuration data.  Two files are generated and kept with the model:
+</p>
+<ol><li> DDL to drop each table and view related to the model or model plug-in.  If the database supports it, the drop statements will be conditional.
+</li><li> DDL to create each table and view related to the model or model plug-in.
+</li></ol>
+<p>The backup method for Enki/Hibernate uses a <code>java.util.zip.ZipOutputStream</code> wrapped around the caller's output stream to store multiple files as part of the backup itself. The <code>ZipOutputStream</code> is set to store only, allowing the caller to compress it as desired.
+</p><p>--<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 16:37, 17 November 2008 (EST) Is it possible to use another compression program instead of zip, or for the backup to be uncompressed?  E.g., LucidDB hot backup currently optionally supports gzip compression.  In the future, we may also want to support other programs like bzip2.
+</p>
+<dl><dd>--<a href="/wiki/index.php?title=User:Szuercher&amp;action=edit&amp;redlink=1" class="new" title="User:Szuercher (page does not exist)">Szuercher</a> 12:47, 19 November 2008 (EST) The backup is actually uncompressed, it just uses the ZIP format to store multiple files since the JDK provides ZIP streams. Enki/Hibernate's backup format is meant to be opaque. The idea is that the code that calls backup/restore can pass any Input/OutputStream it desires. I expect LucidDB hot backup will pass either a FileInput/OutputStream (no compression) or a GzipInput/OutputStream wrapped around a FileInput/OutputStream (when compressing).  That lets LucidDB (or any other hypothetical caller) choose the compression algorithm without Enki's participation.  
+</dd></dl>
+<p>For each backup, two files are stored:
+</p>
+<ol><li> A backup descriptor which contains enough information to guarantee that the appropriate metamodel is available upon restoration. The file will also contain the extent's name, minimum MOF ID, package version information and any extent annotation that has been made.
+</li><li> The actual data stored in the repository, excluding provider-specific tables.
+</li></ol>
+<p>The backup descriptor is a simple properties file:
+</p>
+<blockquote><pre>
+enki.extent=FarragoCatalog
+enki.extent.annotation=foobar
+enki.metamodel=FarragoMetamodel
+enki.minMofId=1000
+enki.model.packageVersion=1.0
+</pre></blockquote>
+<p>Restoration requires:
+</p>
+<ol><li> The given metamodel is available on the JVM's classpath
+</li><li> The backup's package version is compatible with the version of the Enki library in use
+</li></ol>
+<p>The data file contains table data in a format that allows streaming of LOB data to MySQL. This eliminates any issues related to the MySQL maximum packet size configured on the server. For each table, the file contains a line indicating the name of a table, followed by its columns:
+</p>
+<blockquote><pre>
+SMPL_Sample_Driver,mofId,name,points
+</pre></blockquote>
+<p>The table and column names are ready to be quoted as necessary for a specific database dialect.  Also note that the table and column names have already been through JMI's name mangling algorithm, which will strip out any commas (in addition to most other punctuation), so there's no need to escape commas embedded in the table or column names.
+</p><p>Each table description is followed by a number indicating how many rows to insert, which is then followed by one line of comma-separated values for each row representing the actual rows to insert.  Data is output in UTF-8 format and uses backslashes to escape embedded end-of-line, or single quote characters. String values are enclosed in single quotes, but do not use SQL-style quote doubling to escape quotes. 64-bit integer values are suffixed with "L", 16-bit integers are suffixed with "s", and regular precision floating-point numbers are suffixed with "f". Null values are specified by the bare word <code>null</code>, which is distinct from a string value containing the word null ('null').  Example data:
+</p>
+<blockquote><pre>
+2
+123L,'Bob\'s\nname is very, very weird',2.5f
+4567L,'Alice',null
+</pre></blockquote>
+<h2> <span class="mw-headline" id="Restore"> Restore </span></h2>
+<p>Repository restore uses a <code>java.util.zip.ZipInputStream</code> wrapped around the caller's input stream to retrieve multiple files.
+</p><p>The following steps are taken to restore a backup:
+</p>
+<ol><li> Find metamodel. The first file will always be a backup descriptor which contains enough information to guarantee that the appropriate metamodel is available upon restoration.  If the metamodel cannot be found, restoration fails.
+</li><li> Check package version.  the backup's package version is compared to those compatible with the version of Enki currently in use.  If the backup is incompatible, restoration fails.
+</li><li> Delete old type/MOF ID mappings.  Delete all type/MOF ID mappings related to any existing copy of the model.
+</li><li> Remove any existing objects from the extent, if any.
+</li><li> Restore data. The data file is read.
+<ul><li> For each table, prepare an insert statement using the table name and columns and the necessary dialect-specific quoting. Then apply the data rows in turn. If any row does not contain exactly the right number of values, the restoration fails.  If any insertion fails, restoration fails. Row values are set on the prepared statement by detecting integer type (integral number + suffix), floating point type (floating point number + suffix), boolean values (true, false), string values (enclosed in single quotes), or nulls.
+</li><li> During restoration, columns named <code>mofId</code> are treated specially. MOF ID values are replaced with newly generated values to insure that no collisions occur in the repository.  At the start of restoration, the next MOF ID is requested and a delta between the new MOF ID and the minimum MOF ID in the backup is computed.  Replacement MOF ID values are then computed by adding the delta to the backup's MOF ID for any given row.  This allows restoration to be ignorant of foreign key relationships between tables so long as the backup stores data in the correct order.
+</li></ul>
+</li><li> Update MOF ID table. The repository's MOF ID table is updated to insure that any MOF IDs generated in the future are greater than any value in use in the model.
+</li><li> Update type/MOF ID mapping. The repository's type/MOF ID mapping table is updated to reflect the newly restored data.
+</li><li> Update extent.  If the extent did not previously exist, create an entry in the extent table.  Otherwise, update the annotation to reflect the backup's annotation.
+</li></ol>
+<h3> <span class="mw-headline" id="Missing_Repository-Specific_Storage"> Missing Repository-Specific Storage </span></h3>
+<p>There are some issues around restoring a database without the necessary provider-specific tables.  Presently, the <code>HibernateMDRepository</code> instance will fail during construction if it cannot find these tables.  It is expected that the necessary provider-specific tables are created by an external process.
+</p>
+<h3> <span class="mw-headline" id="Existing_Extent"> Existing Extent </span></h3>
+<p>Restoring to a database which already contains a version of the same extent will cause the old extent to be lost.
+</p>
+<h3> <span class="mw-headline" id="DDL"> DDL </span></h3>
+<p>Although the metamodel contains scripts to drop and create a metamodel's schema, they are not used during the restore process.  The original design called for the extent to be dropped and re-created via these scripts, but this prevents multiple extents using the same metamodel from existing in the same database.  Instead, we delete the objects for the given extent individually.
+</p><p><b>TODO</b>: Need to make it possible to distinguish the type lookup entries from multiple extents when they reference the same object names.
+</p>
+<h1> <span class="mw-headline" id="Enki.2FNetbeans_Implementation"> Enki/Netbeans Implementation </span></h1>
+<h2> <span class="mw-headline" id="Backup_2"> Backup </span></h2>
+<p>Uses <code>javax.jmi.xmi.XmiWriter</code> to export an XMI file containing the contents of the named extent directly to the caller's output stream.
+</p>
+<h2> <span class="mw-headline" id="Restore_2"> Restore </span></h2>
+<p>Uses <code>javax.jmi.xmi.XmiReader</code> to import an XMI file containing the contents for the named extent directly from the caller's input stream.
+</p><p>TBD: Handle the old Farrago bug where database data, when inserted into the catalog (typically as histogram values for column statistics), must be filtered to prevent XML encoding errors.  Could move these brains into Enki, since it's really an XMI bug that the generated XML isn't escaped properly.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 78/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1909-0!*!0!!en!*!* and timestamp 20140414194449 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=EnkiBackupDesign&amp;oldid=5475">http://luciddb.org/wiki/index.php?title=EnkiBackupDesign&amp;oldid=5475</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/EnkiBackupDesign" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:EnkiBackupDesign&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=EnkiBackupDesign&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=EnkiBackupDesign&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=EnkiBackupDesign" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/EnkiBackupDesign" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/EnkiBackupDesign" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=EnkiBackupDesign&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=EnkiBackupDesign&amp;oldid=5475" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 10 December 2008, at 23:19.</li>
+		<li id="viewcount">This page has been accessed 7,056 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.227 secs. --></body></html>

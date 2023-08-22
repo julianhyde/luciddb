@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="http://luciddb.org/wiki/skins/common/feed.css?303"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;feed=atom&amp;action=history</id>
+		<title>LucidDbUserFaq - Revision history</title>
+		<link rel="self" type="application/atom+xml" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;feed=atom&amp;action=history"/>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;action=history"/>
+		<updated>2014-04-14T20:02:47Z</updated>
+		<subtitle>Revision history for this page on the wiki</subtitle>
+		<generator>MediaWiki 1.18.1</generator>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7187&amp;oldid=prev</id>
+		<title>Smoodoo: /* Creating users and granting rights */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7187&amp;oldid=prev"/>
+				<updated>2012-05-18T17:56:32Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Creating users and granting rights&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 17:56, 18 May 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 410:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 410:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can create a user by following command structure:&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can create a user by following command structure:&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;create user &amp;quot;foodmart&amp;quot; identified by 'foodmart' default schema foodmart;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;create user &amp;quot;foodmart&amp;quot; identified by 'foodmart' default schema foodmart;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;SQL reference for [[LucidDbCreateUser | CREATE USER]].&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can grant on many different things using the [[LucidDbGrant |GRANT]] SQL keyword.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can grant on many different things using the [[LucidDbGrant |GRANT]] SQL keyword.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7186&amp;oldid=prev</id>
+		<title>Smoodoo: /* Creating users and granting rights */ corrected GRANT docs on the FAQ here.</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7186&amp;oldid=prev"/>
+				<updated>2012-05-18T17:52:02Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Creating users and granting rights: &lt;/span&gt; corrected GRANT docs on the FAQ here.&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 17:52, 18 May 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 411:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 411:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;create user &amp;quot;foodmart&amp;quot; identified by 'foodmart' default schema foodmart;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;create user &amp;quot;foodmart&amp;quot; identified by 'foodmart' default schema foodmart;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Two kinds of grants exist.&amp;#160; Granting &lt;/del&gt;on &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;executing functions and granting &lt;/del&gt;for schema &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;access&lt;/del&gt;.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;You can grant &lt;/ins&gt;on &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;many different things using the [[LucidDbGrant |GRANT]] SQL keyword.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;There is also a helper library function to help &lt;/ins&gt;for &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;granting SELECT rights over an entire &lt;/ins&gt;schema. &amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Functions'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Functions &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;- using GRANT&lt;/ins&gt;'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;grant execute on specific procedure&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;grant execute on specific procedure&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;applib.estimate_statistics_for_schema_no_samplingrate to &amp;quot;foodmart&amp;quot;;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;applib.estimate_statistics_for_schema_no_samplingrate to &amp;quot;foodmart&amp;quot;;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Schema'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Schema &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;- Using helper library function.&lt;/ins&gt;'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;CALL APPLIB.GRANT_SELECT_FOR_SCHEMA( 'TESTING', 'pentaho_lucid' );&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;CALL APPLIB.GRANT_SELECT_FOR_SCHEMA( 'TESTING', 'pentaho_lucid' );&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7185&amp;oldid=prev</id>
+		<title>Smoodoo: Show user creation and a schema grant example.</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7185&amp;oldid=prev"/>
+				<updated>2012-05-18T17:48:45Z</updated>
+		
+		<summary type="html">&lt;p&gt;Show user creation and a schema grant example.&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 17:48, 18 May 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 405:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 405:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''sqllineClient''' is a SQL client.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''sqllineClient''' is a SQL client.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;== Creating users and granting rights ==&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;You can create a user by following command structure:&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;pre&amp;gt;create user &amp;quot;foodmart&amp;quot; identified by 'foodmart' default schema foodmart;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Two kinds of grants exist.&amp;#160; Granting on executing functions and granting for schema access.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Functions'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;grant execute on specific procedure&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;applib.estimate_statistics_for_schema_no_samplingrate to &amp;quot;foodmart&amp;quot;;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Schema'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;CALL APPLIB.GRANT_SELECT_FOR_SCHEMA( 'TESTING', 'pentaho_lucid' );&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7177&amp;oldid=prev</id>
+		<title>Ngoodman: /* JDBC Driver Jar files */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7177&amp;oldid=prev"/>
+				<updated>2012-01-03T19:17:16Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;JDBC Driver Jar files&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 19:17, 3 January 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 221:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 221:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Only applications that already have &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;corresponding &lt;/del&gt;libraries (&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;log4j/etc&lt;/del&gt;) like PDI/etc should use LucidDbClient-minimal.jar.&amp;#160; Pentaho Data Integration is an example of such an application.&amp;#160; The Pentaho BI Server itself can also use the LucidDbClient-minimal.jar.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Only applications that already have &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;required &lt;/ins&gt;libraries (&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;commons-logging-1.1.jar&lt;/ins&gt;) like PDI/etc should use LucidDbClient-minimal.jar.&amp;#160; Pentaho Data Integration is an example of such an application.&amp;#160; The Pentaho BI Server itself can also use the LucidDbClient-minimal.jar.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Squirrel SQL client and most other applications will use the LucidDbClient.jar&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Squirrel SQL client and most other applications will use the LucidDbClient.jar&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Slow INSERT performance ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Slow INSERT performance ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Ngoodman</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7176&amp;oldid=prev</id>
+		<title>Smoodoo: Added information about which JDBC driver to use.</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7176&amp;oldid=prev"/>
+				<updated>2012-01-03T19:14:05Z</updated>
+		
+		<summary type="html">&lt;p&gt;Added information about which JDBC driver to use.&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 19:14, 3 January 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 212:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 212:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The &amp;quot;local&amp;quot; driver is local only in the sense &amp;quot;in the same java process&amp;quot;, not in the sense &amp;quot;on the same machine&amp;quot;, so you'll need to&amp;#160; &amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The &amp;quot;local&amp;quot; driver is local only in the sense &amp;quot;in the same java process&amp;quot;, not in the sense &amp;quot;on the same machine&amp;quot;, so you'll need to&amp;#160; &amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;use the HTTP driver.&amp;#160; Use driver class '''org.luciddb.jdbc.LucidDbClientDriver''' unless the client and server are actually running in the same JVM.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;use the HTTP driver.&amp;#160; Use driver class '''org.luciddb.jdbc.LucidDbClientDriver''' unless the client and server are actually running in the same JVM.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;== JDBC Driver Jar files ==&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Question:'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;In luciddb-0.9.4/plugin there are two files, '''LucidDbClient.jar and LucidDbClient-minimal.jar''' that look like they could be used by applications to connect to LucidDB.&amp;#160; Which should I use?&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Answer:'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Only applications that already have corresponding libraries (log4j/etc) like PDI/etc should use LucidDbClient-minimal.jar.&amp;#160; Pentaho Data Integration is an example of such an application.&amp;#160; The Pentaho BI Server itself can also use the LucidDbClient-minimal.jar.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Squirrel SQL client and most other applications will use the LucidDbClient.jar&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Slow INSERT performance ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Slow INSERT performance ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7172&amp;oldid=prev</id>
+		<title>Smoodoo: /* What is the difference between sqllineClient and sqllineEngine? */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7172&amp;oldid=prev"/>
+				<updated>2011-11-21T22:29:50Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;What is the difference between sqllineClient and sqllineEngine?&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 22:29, 21 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 380:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 380:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;What is the difference between sqllineClient and sqllineEngine?&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;What is the difference between sqllineClient and sqllineEngine?&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;sqllineEngine is LucidDB without the client/server part.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;'''&lt;/ins&gt;sqllineEngine&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;''' &lt;/ins&gt;is LucidDB without the client/server part.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Starts the server, connects via &lt;/del&gt;JDBC&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;.&amp;#160; When you &amp;quot;quit&amp;quot; engine&lt;/del&gt;, &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;the database shuts down&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;sqllineEngine is &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;like single user mode&lt;/del&gt;.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;There are two typs of &lt;/ins&gt;JDBC &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;services&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Engine and vJDBC&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Engine allows something else in Java machine (ie&lt;/ins&gt;, &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;sqllineEngine) to connect&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;JDBC starts listening on port 8034 to allow remote JDBC to connect&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;sqllineEngine &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;starts Engine&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;lucidDbServer starts vJDBC&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;sqllineClient connects to lucidDbServer via vJDBC&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;'''sqllineClient''' &lt;/ins&gt;is &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;a SQL client&lt;/ins&gt;.&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7171&amp;oldid=prev</id>
+		<title>Smoodoo: Added FAQ - difference between sqllineClient and sqllineEngine</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7171&amp;oldid=prev"/>
+				<updated>2011-11-21T22:18:08Z</updated>
+		
+		<summary type="html">&lt;p&gt;Added FAQ - difference between sqllineClient and sqllineEngine&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 22:18, 21 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 373:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 373:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;create_table_as ('select &amp;quot;myCol&amp;quot; from &amp;quot;myTable&amp;quot;', '&amp;quot;TARGETtable&amp;quot;')&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;create_table_as ('select &amp;quot;myCol&amp;quot; from &amp;quot;myTable&amp;quot;', '&amp;quot;TARGETtable&amp;quot;')&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;== What is the difference between sqllineClient and sqllineEngine? ==&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Question:'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;What is the difference between sqllineClient and sqllineEngine?&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Answer:'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;sqllineEngine is LucidDB without the client/server part.&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Starts the server, connects via JDBC.&amp;#160; When you &amp;quot;quit&amp;quot; engine, the database shuts down&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;sqllineEngine is like single user mode.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7170&amp;oldid=prev</id>
+		<title>Smoodoo: /* Identifier Quoting */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7170&amp;oldid=prev"/>
+				<updated>2011-11-16T20:50:43Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Identifier Quoting&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:50, 16 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 322:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 322:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;See the discussion on the ext3 barrier setting in [http://n2.nabble.com/Row-has-too-many-columns-td2789557.html this thread], which contains a workaround.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;See the discussion on the ext3 barrier setting in [http://n2.nabble.com/Row-has-too-many-columns-td2789557.html this thread], which contains a workaround.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Identifier Quoting ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Identifier Quoting &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;- Dealing with mixed case Schema, Table and Column names &lt;/ins&gt;==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Question:'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Question:'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7169&amp;oldid=prev</id>
+		<title>Smoodoo: /* Identifier Quoting */ Updated quoting examples</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=7169&amp;oldid=prev"/>
+				<updated>2011-11-16T20:49:04Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Identifier Quoting: &lt;/span&gt; Updated quoting examples&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:49, 16 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 357:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 357:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;So if user FRANCISCO logs in, he'll get SCHEMA_FOR_FRANCISCO set as default after executing the expression above.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;So if user FRANCISCO logs in, he'll get SCHEMA_FOR_FRANCISCO set as default after executing the expression above.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Normal SQL Queries with mixed case table or column names'''&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;When you use normal '''SELECT''' style queries you can expect to use double quotes to work around case issues.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Example:&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;select &amp;quot;tableOne&amp;quot;.&amp;quot;myColumn&amp;quot; from &amp;quot;SchemaName&amp;quot;.&amp;quot;tableOne&amp;quot;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Function Calls with mixed case table or column names'''&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;Look at how the parameter itself is in single quotes, the column name is in double quotes.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;create_table_as ('select &amp;quot;myCol&amp;quot; from &amp;quot;myTable&amp;quot;', '&amp;quot;TARGETtable&amp;quot;')&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=6617&amp;oldid=prev</id>
+		<title>Jvs: /* Default Port */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;diff=6617&amp;oldid=prev"/>
+				<updated>2010-06-20T02:01:23Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Default Port&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 02:01, 20 June 2010&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 186:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 186:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Answer:'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;By default, LucidDB&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;'s RMI registry &lt;/del&gt;listens on port &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;5434&lt;/del&gt;.&amp;#160; If you want to specify it explicitly from the client side, use a URL like &amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;By default, LucidDB listens &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;for HTTP connections &lt;/ins&gt;on port &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;8034&lt;/ins&gt;.&amp;#160; If you want to specify it explicitly from the client side, use a URL like &amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;jdbc:luciddb:&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;rmi&lt;/del&gt;://1.2.3.4:&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;5434&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;jdbc:luciddb:&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;http&lt;/ins&gt;://1.2.3.4:&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;8034&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can change a server's port number by setting system parameter '''&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;serverRmiRegistryPort&lt;/del&gt;'''; see [[LucidDbSystemParameters]] for more information.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;You can change a server's port number by setting system parameter '''&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;serverHttpPort&lt;/ins&gt;'''; see [[LucidDbSystemParameters]] for more information.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== JDBC Driver Class ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== JDBC Driver Class ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	</feed>

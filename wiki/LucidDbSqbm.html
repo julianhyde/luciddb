@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbSqbm - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbSqbm", "wgTitle": "LucidDbSqbm", "wgCurRevisionId": 2325, "wgArticleId": 1574, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbSqbm action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbSqbm</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Create_Schema"><span class="tocnumber">2</span> <span class="toctext">Create Schema</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Create_Data_Source"><span class="tocnumber">3</span> <span class="toctext">Create Data Source</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Load_Data_.28Unindexed.29"><span class="tocnumber">4</span> <span class="toctext">Load Data (Unindexed)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Index_and_Analyze"><span class="tocnumber">5</span> <span class="toctext">Index and Analyze</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Run_Queries"><span class="tocnumber">6</span> <span class="toctext">Run Queries</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Q1"><span class="tocnumber">6.1</span> <span class="toctext">Q1</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Q2A"><span class="tocnumber">6.2</span> <span class="toctext">Q2A</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Q2B"><span class="tocnumber">6.3</span> <span class="toctext">Q2B</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Q3A"><span class="tocnumber">6.4</span> <span class="toctext">Q3A</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Q3B"><span class="tocnumber">6.5</span> <span class="toctext">Q3B</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Q4"><span class="tocnumber">6.6</span> <span class="toctext">Q4</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Q5"><span class="tocnumber">6.7</span> <span class="toctext">Q5</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Q6A"><span class="tocnumber">6.8</span> <span class="toctext">Q6A</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Q6B"><span class="tocnumber">6.9</span> <span class="toctext">Q6B</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p><b>This page is under construction.</b>
+</p><p>This page provides the LucidDB-specific setup needed to run the classic <a rel="nofollow" class="external text" href="http://www.cs.umb.edu/~poneil/SetQBM.pdf">Set Query Benchmark</a>.  These are not formal benchmark execution and reporting compliance steps; for those, see the benchmark spec.  For some informal comparative results, see <a href="/wiki/LucidDbSqbmComparativeResults" title="LucidDbSqbmComparativeResults">LucidDbSqbmComparativeResults</a>.
+</p>
+<h2> <span class="mw-headline" id="Create_Schema"> Create Schema </span></h2>
+<p>First, create the schema and table which will hold the loaded data:
+</p>
+<pre>
+CREATE SCHEMA SQBM;
+SET SCHEMA 'SQBM';
+
+CREATE TABLE BENCH1M (
+  KSEQ  INTEGER  PRIMARY KEY,
+  K2    INTEGER,
+  K4    INTEGER,
+  K5    INTEGER,
+  K10   INTEGER,
+  K25   INTEGER,
+  K100  INTEGER,
+  K1K   INTEGER,
+  K10K  INTEGER,
+  K40K  INTEGER,
+  K100K INTEGER,
+  K250K INTEGER,
+  K500K INTEGER,
+  S1    VARCHAR(8),
+  S2    VARCHAR(20),
+  S3    VARCHAR(20),
+  S4    VARCHAR(20),
+  S5    VARCHAR(20),
+  S6    VARCHAR(20),
+  S7    VARCHAR(20),
+  S8    VARCHAR(20)
+);
+</pre>
+<h2> <span class="mw-headline" id="Create_Data_Source"> Create Data Source </span></h2>
+<p>Download the <a rel="nofollow" class="external text" href="http://downloads.sourceforge.net/luciddb/luciddb-sqbm-testdata.tar.bz2">pregenerated dataset tarball</a> and unpack it, resulting in a directory named <b>luciddb-sqbm-testdata</b> containing a single file named <b>bench1M.csv</b>.  Execute the following SQL to register the flatfile contents as a foreign table, but first change the DIRECTORY option to the location where you unpacked it.
+</p>
+<pre>
+CREATE SERVER FF_SERVER
+FOREIGN DATA WRAPPER SYS_FILE_WRAPPER
+OPTIONS(
+    DIRECTORY '/path/to/luciddb-sqbm-testdata',
+    FILE_EXTENSION '.csv',
+    CTRL_FILE_EXTENSION '.bcp',
+    FIELD_DELIMITER ',',
+    LINE_DELIMITER '\n',
+    QUOTE_CHAR '&quot;',
+    ESCAPE_CHAR '',
+    WITH_HEADER 'yes',
+    NUM_ROWS_SCAN '3'
+);
+
+CREATE FOREIGN TABLE BENCH_SOURCE (
+    C1 INTEGER,
+    C2 INTEGER,
+    C4 INTEGER,
+    C5 INTEGER,
+    C10 INTEGER,
+    C25 INTEGER,
+    C100 INTEGER,
+    C1K INTEGER,
+    C10K INTEGER,
+    C40K  INTEGER,
+    C100K INTEGER,
+    C250K INTEGER,
+    C500K INTEGER
+)
+SERVER FF_SERVER
+OPTIONS(
+    SCHEMA_NAME 'BCP',
+    FILENAME 'bench1M'
+);
+</pre>
+<h2> <span class="mw-headline" id="Load_Data_.28Unindexed.29"> Load Data (Unindexed) </span></h2>
+<p>Now, execute the following SQL to load the data from the flatfile into the LucidDB table.  This will load actual data for the columns whose names start with K, whereas per the benchmark specs, it will synthesize constant data for the columns whose names starts with S.
+</p>
+<pre>
+INSERT INTO BENCH1M (
+    KSEQ,K2,K4,K5,K10,K25,K100,K1K,K10K,K40K,K100K,K250K,K500K, S1, S2, S3, S4, S5, S6, S7, S8)
+SELECT C1,C2,C4,C5,C10,C25,C100,C1K,C10K,C40K,C100K,C250K,C500K,
+'12345678', '12345678900987654321', '12345678900987654321', 
+'12345678900987654321', '12345678900987654321',
+'12345678900987654321', 
+'12345678900987654321', '12345678900987654321'
+FROM BENCH_SOURCE;
+</pre>
+<h2> <span class="mw-headline" id="Index_and_Analyze"> Index and Analyze </span></h2>
+<p>Run the following SQL to create indexes and compute histograms for all of the indexed columns:
+</p>
+<pre>
+CREATE INDEX B1M_K2_IDX ON BENCH1M(K2);
+CREATE INDEX B1M_K4_IDX ON BENCH1M(K4);
+CREATE INDEX B1M_K5_IDX ON BENCH1M(K5);
+CREATE INDEX B1M_K10_IDX ON BENCH1M(K10);
+CREATE INDEX B1M_K25_IDX ON BENCH1M(K25);
+CREATE INDEX B1M_K100_IDX ON BENCH1M(K100);
+CREATE INDEX B1M_K1K_IDX ON BENCH1M(K1K);
+CREATE INDEX B1M_K10K_IDX ON BENCH1M(K10K);
+CREATE INDEX B1M_K40K_IDX ON BENCH1M(K40K);
+CREATE INDEX B1M_K100K_IDX ON BENCH1M(K100K);
+CREATE INDEX B1M_K250K_IDX ON BENCH1M(K250K);
+CREATE INDEX B1M_K500K_IDX ON BENCH1M(K500K);
+CREATE INDEX B1M_K2_K100_IDX ON BENCH1M(K2,K100);
+CREATE INDEX B1M_K4_K25_IDX ON BENCH1M(K4,K25);
+CREATE INDEX B1M_K10_K25_IDX ON BENCH1M(K10,K25);
+
+ANALYZE TABLE BENCH1M COMPUTE STATISTICS FOR COLUMNS(KSEQ,K2,K4,K5,K10,K25,K100,K1K,K10K,K40K,K100K,K250K,K500K);
+</pre>
+<h2> <span class="mw-headline" id="Run_Queries"> Run Queries </span></h2>
+<p>Here are the benchmark SQL queries.  If you run them through sqlline, it will report the execution time, but for queries which return a large result set, this can be misleading (a lot of the time may be spent on printing results), so using a JDBC program to time the fetch is more reliable.
+</p>
+<h3> <span class="mw-headline" id="Q1"> Q1 </span></h3>
+<pre>
+
+SELECT COUNT(*) FROM BENCH1M WHERE KSEQ = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K100K = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K10K = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K1K = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K100 = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K25 = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K10 = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K5 = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K4 = 2;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2;
+</pre>
+<h3> <span class="mw-headline" id="Q2A"> Q2A </span></h3>
+<pre>
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND KSEQ = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K100K = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K10K = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K1K = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K100 = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K25 = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K10 = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K5 = 3;
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND K4 = 3;
+</pre>
+<h3> <span class="mw-headline" id="Q2B"> Q2B </span></h3>
+<pre>
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (KSEQ = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K100K = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K10K = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K1K = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K100 = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K25 = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K10 = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K5 = 3);
+
+SELECT COUNT(*) FROM BENCH1M WHERE K2 = 2 AND NOT (K4 = 3);
+</pre>
+<h3> <span class="mw-headline" id="Q3A"> Q3A </span></h3>
+<pre>
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K100K = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K10K = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K100 = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K25 = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K10 = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K5 = 3;
+
+SELECT SUM(K1K) FROM BENCH1M
+WHERE KSEQ BETWEEN 400000 AND 500000 AND K4 = 3;
+</pre>
+<h3> <span class="mw-headline" id="Q3B"> Q3B </span></h3>
+<pre>
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K100K = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K10K = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K100 = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K25 = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K10 = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K5 = 3;
+
+SELECT COUNT(*) FROM BENCH1M
+WHERE
+      (KSEQ BETWEEN 40000 AND 41000
+  OR   KSEQ BETWEEN 42000 AND 43000
+  OR   KSEQ BETWEEN 44000 AND 45000
+  OR   KSEQ BETWEEN 46000 AND 47000
+  OR   KSEQ BETWEEN 48000 AND 50000)
+  AND  K4 = 3;
+</pre>
+<h3> <span class="mw-headline" id="Q4"> Q4 </span></h3>
+<pre>
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+       K2 = 1
+  AND  K100 &gt; 80
+  AND  K10K BETWEEN 2000 AND 3000;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+       K100 &gt; 80
+  AND  K10K BETWEEN 2000 AND 3000
+  AND  K5 = 3;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+       K10K BETWEEN 2000 AND 3000
+  AND  K5 = 3
+  AND  (K25 = 11 OR K25 = 19);
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K5 = 3
+  AND (K25 = 11 OR K25 = 19)
+  AND K4 = 3;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+     (K25 = 11 OR K25 = 19)
+ AND K4 = 3
+ AND K100 &lt; 41;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+     K4 = 3
+ AND K100 &lt; 41
+ AND K1K BETWEEN 850 AND 950;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+     K100 &lt; 41
+ AND K1K BETWEEN 850 AND 950
+ AND K10 = 7;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K1K BETWEEN 850 AND 950
+  AND K10 = 7
+  AND K25 BETWEEN 3 AND 4;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K2 = 1
+ AND  K100 &gt; 80
+ AND  K10K BETWEEN 2000 AND 3000
+ AND  K5 = 3
+ AND  (K25 = 11 OR K25 = 19);
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K100 &gt; 80
+ AND  K10K BETWEEN 2000 AND 3000
+ AND  K5 = 3
+ AND  (K25 = 11 OR K25 = 19)
+ AND  K4 = 3;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K10K BETWEEN 2000 AND 3000
+ AND  K5 = 3
+ AND  (K25 = 11 OR K25 = 19)
+ AND  K4 = 3
+ AND  K100 &lt; 41;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K5 = 3
+ AND  (K25 = 11 OR K25 = 19)
+ AND  K4 = 3
+ AND  K100 &lt; 41
+ AND  K1K BETWEEN 850 AND 950;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      (K25 = 11 OR K25 = 19)
+ AND  K4 = 3
+ AND  K100 &lt; 41
+ AND  K1K BETWEEN 850 AND 950
+ AND  K10 = 7;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+      K4 = 3
+ AND  K100 &lt; 41
+ AND  K1K BETWEEN 850 AND 950
+ AND  K10 = 7
+ AND  K25 BETWEEN 3 AND 4;
+
+SELECT KSEQ, K500K FROM BENCH1M
+WHERE
+       K100 &lt; 41
+ AND   K1K BETWEEN 850 AND 950
+ AND   K10 = 7
+ AND   K25 BETWEEN 3 AND 4
+ AND   K2 = 1;
+</pre>
+<h3> <span class="mw-headline" id="Q5"> Q5 </span></h3>
+<pre>
+SELECT K2, K100, COUNT(*) FROM BENCH1M
+GROUP BY K2, K100;
+
+SELECT K4, K25, COUNT(*) FROM BENCH1M
+GROUP BY K4, K25;
+
+SELECT K10, K25, COUNT(*) FROM BENCH1M
+GROUP BY K10, K25;
+</pre>
+<h3> <span class="mw-headline" id="Q6A"> Q6A </span></h3>
+<pre>
+SELECT COUNT(*) FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K100K = 49
+AND  B1.K250K = B2.K500K;
+
+SELECT COUNT(*) FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K40K = 49
+AND  B1.K250K = B2.K500K;
+
+SELECT COUNT(*) FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K10K = 49
+AND  B1.K250K = B2.K500K;
+
+SELECT COUNT(*) FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K1K = 49
+AND  B1.K250K = B2.K500K;
+
+SELECT COUNT(*) FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K100 = 49
+AND  B1.K250K = B2.K500K;
+</pre>
+<h3> <span class="mw-headline" id="Q6B"> Q6B </span></h3>
+<pre>
+SELECT B1.KSEQ, B2.KSEQ
+FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K40K = 99
+AND  B1.K250K = B2.K500K
+AND  B2.K25 = 19;
+
+SELECT B1.KSEQ, B2.KSEQ
+FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K10K = 99
+AND  B1.K250K = B2.K500K
+AND  B2.K25 = 19;
+
+SELECT B1.KSEQ, B2.KSEQ
+FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K1K = 99
+AND  B1.K250K = B2.K500K
+AND  B2.K25 = 19;
+
+SELECT B1.KSEQ, B2.KSEQ
+FROM BENCH1M B2, BENCH1M B1
+WHERE
+     B1.K100 = 99
+AND  B1.K250K = B2.K500K
+AND  B2.K25 = 19;
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 169/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1574-0!*!0!!en!*!* and timestamp 20140414191141 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbSqbm&amp;oldid=2325">http://luciddb.org/wiki/index.php?title=LucidDbSqbm&amp;oldid=2325</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbSqbm" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbSqbm&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbSqbm&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbSqbm&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbSqbm" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbSqbm" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbSqbm" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbSqbm&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbSqbm&amp;oldid=2325" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 30 April 2007, at 04:58.</li>
+		<li id="viewcount">This page has been accessed 6,951 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.223 secs. --></body></html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FennelBuildSystem - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FennelBuildSystem", "wgTitle": "FennelBuildSystem", "wgCurRevisionId": 6981, "wgArticleId": 1961, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FennelBuildSystem action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FennelBuildSystem</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Toolchain_Dependencies"><span class="tocnumber">2</span> <span class="toctext">Toolchain Dependencies</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#initBuild.sh_script"><span class="tocnumber">3</span> <span class="toctext">initBuild.sh script</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Thirdparty_Library_Dependencies"><span class="tocnumber">3.1</span> <span class="toctext">Thirdparty Library Dependencies</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#CMakeLists.txt"><span class="tocnumber">4</span> <span class="toctext">CMakeLists.txt</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Generated_Makefiles"><span class="tocnumber">5</span> <span class="toctext">Generated Makefiles</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Windows_Build_Hacks"><span class="tocnumber">6</span> <span class="toctext">Windows Build Hacks</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Windows_DLL_Exports"><span class="tocnumber">7</span> <span class="toctext">Windows DLL Exports</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Template_Instance_Inheritance_Special_Case"><span class="tocnumber">7.1</span> <span class="toctext">Template Instance Inheritance Special Case</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Tests"><span class="tocnumber">8</span> <span class="toctext">Tests</span></a>
+<ul>
+<li class="toclevel-2 tocsection-11"><a href="#Windows_Test_Runner_Problems"><span class="tocnumber">8.1</span> <span class="toctext">Windows Test Runner Problems</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#Future_Work"><span class="tocnumber">9</span> <span class="toctext">Future Work</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This page describes the workings of the Fennel build.  It is intended as a guide for anyone who needs to use, maintain or enhance the build system.
+</p><p>On Linux, both 32-bit and 64-bit builds are supported.  For 64-bit machines which support both build environments, see <a href="/wiki/Fennel64Bit#Build_Machine_Setup_Notes" title="Fennel64Bit">Fennel64Bit#Build Machine Setup Notes</a>.
+</p><p>For Windows 32-bit and 64-bit builds, see also <a href="/wiki/WindowsBuildSetup" title="WindowsBuildSetup">WindowsBuildSetup</a>.
+</p><p>Mac OS X builds as of Fennel 0.9.3 (so far tested with Snow Leopard, 32-bit only; see <a href="/wiki/FennelPlatformsOSX" title="FennelPlatformsOSX">FennelPlatformsOSX</a>).
+</p><p>No other platforms are supported yet (see <a href="#Future_Work">#Future Work</a>).
+</p><p>If you are building Fennel as part of Farrago or LucidDB, follow the corresponding top-level build instructions instead; however, you should still read through this page to make sure you have the necessary build tools available, and for debugging the build if anything goes wrong.
+</p>
+<h1> <span class="mw-headline" id="Toolchain_Dependencies"> Toolchain Dependencies </span></h1>
+<p>The build system is based on <a rel="nofollow" class="external text" href="http://www.cmake.org">cmake</a>.  At least cmake 2.6 is required; you can find the documentation <a rel="nofollow" class="external text" href="http://www.cmake.org/cmake/help/cmake2.6docs.html">here</a>.
+</p><p><i>Older Fennel versions used autotools (autoconf/automake/libtool) instead, but those had to be abandoned when we moved the Windows build from mingw gcc to Microsoft Visual C++ (MSVC).</i>
+</p><p>Additional tools:
+</p>
+<ul><li> bison
+</li><li> flex
+</li><li> misc dependencies (gawk, unzip, chrpath for dist builds)
+</li><li> on Linux:  g++ toolchain (at least 4.1.x; there are currently some problems with 4.3.2)
+</li><li> on Windows:  <a rel="nofollow" class="external text" href="http://www.microsoft.com/express/download/">MSVC 2008 Express</a>
+</li><li> on Windows:  <a rel="nofollow" class="external text" href="http://www.cygwin.com/">Cygwin</a> for shell scripting support, bison, flex, etc
+<ul><li> <b>NOTE:</b> We use Cygwin for the build, but NOT for runtime!  In the past, we used mingw for the runtime, but no longer; now it is just bare Windows.
+</li></ul>
+</li><li> on OSX: <a rel="nofollow" class="external text" href="http://www.macports.org/install.php">MacPorts</a> provides cmake, bison, flex, gawk (for tests), etc.  <a rel="nofollow" class="external text" href="http://developer.apple.com/tools/xcode/">XCode</a> from Apple provides gcc/g++ etc
+</li></ul>
+<p>On Ubuntu, you can install cmake with <b>apt-get install cmake</b>.  Run <b>cmake --version</b> and make sure it is at least 2.6; if it is older, do <b>apt-get remove cmake</b> and then (still as root):
+</p>
+<pre>
+wget http://www.cmake.org/files/v2.6/cmake-2.6.3.tar.gz
+tar xzf cmake-2.6.3.tar.gz
+cd cmake-2.6.3
+./bootstrap
+make
+make install
+</pre>
+<p>Or download an architecture-specific binary (e.g. <b>cmake-2.6.3-Linux-i386.tar.gz</b>) from <a rel="nofollow" class="external text" href="http://www.cmake.org/cmake/resources/software.html">the cmake download site</a>.
+</p>
+<h1> <span class="mw-headline" id="initBuild.sh_script"> initBuild.sh script </span></h1>
+<p>When building in a new sandbox, the initial build must run certain one-time steps in order to perform activities such as generating Makefiles.  This is encapsulated by the <b>initBuild.sh</b> script.
+</p><p>initBuild can also be re-run later in an existing sandbox in order to rebuild everything from clean.
+</p><p>Options:
+</p>
+<ul><li> --with[out]-farrago:  Controls whether to build the JNI glue code needed for integrating Fennel into the companion Farrago (Java) project.  If --with-farrago is specified, the JAVA_HOME environment variable must be defined so that JNI includes can be found.
+</li><li> --with[out]-optimization:  See <a href="/wiki/FennelBuildVariations" title="FennelBuildVariations">FennelBuildVariations</a>.
+</li><li> --with[out]-debug:  See <a href="/wiki/FennelBuildVariations" title="FennelBuildVariations">FennelBuildVariations</a>.
+</li><li> --without-thirdparty-build:  Controls whether thirdparty components such as STLport and Boost should be (re)built too.
+</li><li> --with[out]-tests:  Controls whether tests are run as part of the build.
+</li><li> --with[out]-aio-required:  Controls whether libaio is treated on mandatory on Linux.
+</li></ul>
+<p>The initBuild script works as follows:
+</p>
+<ol><li> Parse the command-line options
+</li><li> If needed, unpack thirdparty components needed by Fennel
+</li><li> Clean out any cached cmake information to make sure the build starts from scratch
+</li><li> Run <b>cmake</b> to generate Makefiles, passing down flags via command-line parameters such as <b>OPT_FLAG=--with-optimization</b>
+</li><li> Windows only:  see <a href="#Windows_Hacks">#Windows Hacks</a> below
+</li><li> Unless --without-thirdparty-build is specified:  build STLport and boost by invoking the scripts <b>build/buildStlportLibs.sh</b> and <b>build/buildBoostLibs.sh</b>
+</li><li> <b>make clean</b>
+<ul><li> (On Windows, <b>nmake</b> is used instead of <b>make</b>)
+</li></ul>
+</li><li> <b>make all</b>
+</li><li> If --with-tests is specified:  <b>make check</b> to run all tests
+</li></ol>
+<p>The generated Makefiles are capable of automatically re-running cmake as needed after any <b>CMakeLists.txt</b> script is edited.
+</p>
+<h2> <span class="mw-headline" id="Thirdparty_Library_Dependencies"> Thirdparty Library Dependencies </span></h2>
+<p>Fennel depends on <a rel="nofollow" class="external text" href="http://www.stlport.org">STLport</a> and <a rel="nofollow" class="external text" href="http://www.boost.org">Boost</a>.  If you are working from a full Eigenbase source distribution, the correct versions are already available in the thirdparty directory (a sibling of the fennel directory).  If you are working from a Fennel-only source distribution, you'll need to download the source distributions for these libraries independently, create a thirdparty directory in the correct location, and unpack them there.
+</p>
+<h1> <span class="mw-headline" id="CMakeLists.txt"> CMakeLists.txt </span></h1>
+<p><b>CMakeLists.txt</b> contains the directives which control how cmake generates Makefiles (similar to <b>Makefile.am</b> for automake).
+</p><p>The top-level file has directives for the following:
+</p>
+<ul><li> include needed cmake modules (e.g. CTest for running tests)
+</li><li> check flags passed down from initBuild.sh and configure compiler and linker options accordingly
+</li><li> check existence of necessary headers (e.g. <b>libaio.h</b>) and libraries (e.g. <b>uuid</b>)
+</li><li> generate non-Makefiles needed at build-time such as <b>fennelenv.sh</b> and <b>config.h</b>
+</li><li> process component subdirectories (each of which contains its own CMakeLists.txt)
+</li><li> define custom Makefile targets <b>check</b>, <b>checkPreambles</b>, <b>tags</b>, <b>emacs_cscope</b>, and <b>cscope</b>
+</li></ul>
+<p>Subdirectory builds can be classified as follows:
+</p>
+<ul><li> components (btree, cache, calculator, common, db, device, exec, flatfile, ftrs, hashexe, segment, sorter, synch, tuple, txn):  these build object files from sources, but do not build any DLLs
+</li><li> non-JNI DLL builds (libfennel, lucidera/libfennel_lu):  these build DLL's from components
+</li><li> JNI DLL builds (farrago, lucidera/farrago):  these build JNI DLL's which glue additional code on top of component DLL's
+</li><li> tests (test, calctest, lucidera/test):  these build test libraries and unit test executables
+</li><li> util:  utility program executables
+</li></ul>
+<p>Dependencies between components are described in the <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structLibraryDesign.html">library overview</a> (slightly out-of-date, but the principles hold).
+</p><p>In some cases (e.g. common+synch), multiple components are rolled into a single DLL.
+</p>
+<h1> <span class="mw-headline" id="Generated_Makefiles"> Generated Makefiles </span></h1>
+<p>The generated makefiles take care of standard needs such as header file dependencies automatically.  They also support parallel make (e.g. <b>make -j 2</b>).
+</p><p>By default, the make output is a terse progress report:
+</p>
+<pre>
+jvs@bagheera:~/open/tpu/fennel$ make
+Scanning dependencies of target common
+[  0%] Building CXX object common/CMakeFiles/common.dir/Backtrace.cpp.o
+[  0%] Building CXX object common/CMakeFiles/common.dir/BernoulliRng.cpp.o
+[  0%] Building CXX object common/CMakeFiles/common.dir/ByteArrayInputStream.cpp.o
+[  1%] Building CXX object common/CMakeFiles/common.dir/ByteArrayOutputStream.cpp.o
+...
+</pre>
+<p>To get details such as compiler options, use <b>VERBOSE=1</b>:
+</p>
+<pre>
+jvs@bagheera:~/open/tpu/fennel$ VERBOSE=1 make
+[  1%] Building CXX object common/CMakeFiles/common.dir/ByteArrayOutputStream.cpp.o
+cd /home/jvs/open/tpu/fennel/common &amp;&amp; /usr/bin/c++   -DFENNEL_COMMON_EXPORTS -pipe -ftemplate-depth-64 -Wall -Wno-unused-parameter -Wno-unused -Wno-sign-compare -Werror -DHAVE_CONFIG_H -D_REENTRANT 
+-D_STLP_USE_DYNAMIC_LIB=1 -D_STLP_NO_ANACHRONISMS=1 -DBOOST_NO_HASH=1 -DLITTLEENDIAN -D_STLP_DEBUG=1 -D_STLP_DEBUG_UNINITIALIZED=1 -DDEBUG -g -fPIC -DPIC -g -I/home/jvs/open/tpu/thirdparty/stlport/stlport 
+-I/home/jvs/open/tpu/thirdparty/boost -I/home/jvs/open/tpu/fennel -I/home/jvs/open/tpu/fennel/..   -o CMakeFiles/common.dir/ByteArrayOutputStream.cpp.o -c /home/jvs/open/tpu/fennel/common/ByteArrayOutputStream.cpp
+...
+</pre>
+<h1> <span class="mw-headline" id="Windows_Build_Hacks"> Windows Build Hacks </span></h1>
+<p>On Windows, a few hacks are needed to deal with cmake limitations.
+</p><p>The first one is based on <a rel="nofollow" class="external text" href="http://www.vtk.org/Wiki/CMake_FAQ#Does_that_mean_I_have_to_build_all_my_library_objects_twice.2C_once_for_shared_and_once_for_static.3F.21__I_don.27t_like_that.21">this cmake FAQ entry</a> for how to create convenience libraries.  On Linux, we just use the <b>-whole-archive</b> approach, but that doesn't work on Windows, so there, we use the hack described <a rel="nofollow" class="external text" href="http://www.cmake.org/Bug/view.php?id=5155">here</a> for both.  This is implemented in macros <b>generate_obj_list</b> and <b>generate_subdir_obj_list</b>.
+</p><p>The second one compensates for some other cmake problem arising from the first hack (again, Windows only).  For some reason, cmake 2.6.2 and up thinks all the <b>FileName.cpp.obj</b> files should already exist even before the build starts.  To fix this, the macros above touch the file locations (creating 0-sized files) to satisfy the dependency checks; afterwards, initBuild.sh deletes them before running <b>nmake</b> (otherwise the linker would complain about corrupted object files).
+</p><p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 23:41, 15 April 2009 (EDT):  If anyone can figure out a better solution for this, please let me know!  Currently, this hack makes the Windows build environment less usable.
+</p>
+<h1> <span class="mw-headline" id="Windows_DLL_Exports"> Windows DLL Exports </span></h1>
+<p>On Windows, it is necessary for each DLL to declare which symbols it exports, and for referencing DLLs to declare corresponding imports.  We define one compiler macro per module for this purpose, and use it to decorate definitions in .h files (usually classes), e.g.
+</p>
+<pre>
+class FENNEL_DEVICE_EXPORT RandomAccessFileDevice
+   &#160;: public RandomAccessDevice, public FileDevice
+</pre>
+<p>On non-Windows platforms, the <b>FENNEL_DEVICE_EXPORT</b> macro expands to an empty string.  On Windows, it is defined conditionally as follows:
+</p>
+<pre>
+#ifdef FENNEL_DEVICE_EXPORTS
+#define FENNEL_DEVICE_EXPORT __declspec(dllexport)
+#else
+#define FENNEL_DEVICE_EXPORT __declspec(dllimport)
+#endif
+</pre>
+<p>The pluralized macro <b>FENNEL_DEVICE_EXPORTS</b> is defined in <b>device/CMakeLists.txt</b>:
+</p>
+<pre>
+add_definitions(-DFENNEL_DEVICE_EXPORTS)
+</pre>
+<p>This causes it to be enabled for building the device DLL, resulting in <b>dllexport</b>; when the code for other DLLs is built, <b>dllimport</b> is used instead.
+</p><p>If you forget to decorate a class definition, the build will work fine on Linux, but it will fail on Windows.  (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 00:01, 16 April 2009 (EDT):  Can anyone think of a way to make it fail on Linux too?)
+</p><p>Class definitions take care of most exports, but free functions need special treatment, e.g.
+</p>
+<pre>
+extern void FENNEL_COMMON_EXPORT hexDump(
+    std::ostream &amp;,void const *,uint cb,
+    uint cbOffsetInitial = 0);
+</pre>
+<p><b>NOTE:</b> Do <i>not</i> decorate template class definitions!  The mechanism used for expanding templates and resolving duplicates is different from the non-template resolution mechanism.
+</p>
+<h2> <span class="mw-headline" id="Template_Instance_Inheritance_Special_Case"> Template Instance Inheritance Special Case </span></h2>
+<p>A messy special-case arises because of the way the tuple library defined classes such as <b>TupleProjection&#160;: public std::vector&lt;uint&gt;</b>.
+</p><p>The export rules say that if a derived class extends a base class, the base class methods are automatically exported as well.  However, we need this to happen in a specific module, otherwise we end up with duplicate (conflicting) exports from different modules, leading to linker errors.  The solution is to introduce <b>class FENNEL_COMMON_EXPORT VectorOfUint&#160;: public std::vector&lt;uint&gt;</b>; then anywhere we would normally use <b>std::vector&lt;uint&gt;</b>, we use <b>VectorOfUint</b> instead.
+</p>
+<h1> <span class="mw-headline" id="Tests"> Tests </span></h1>
+<p><a href="/wiki/FennelUnitTests" title="FennelUnitTests">Fennel unit tests</a> are based on the <a rel="nofollow" class="external text" href="http://www.boost.org/doc/libs/1_38_0/libs/test/doc/html/index.html">Boost test library</a>, but when run as a batch, they are registered and invoked from the build via <a rel="nofollow" class="external text" href="http://vtk.org/Wiki/CMake_Testing_With_CTest">ctest</a> (a companion to cmake).  
+</p><p>Before running tests (whether individually or batch), you must modify your environment so that shared libraries can be found.  The build automatically generates a script for this purpose; invoke it with either <b>.</b> or <b>source</b>:
+</p>
+<pre>
+$ source fennelenv.sh
+</pre>
+<p>The top-level <b>make check</b> target invokes ctest and tells it to run all unit tests:
+</p>
+<pre>
+jvs@bagheera:~/open/tpu/fennel$ make check
+UpdateCTestConfiguration  from&#160;:/home/jvs/open/tpu/fennel/DartConfiguration.tcl
+Parse Config file:/home/jvs/open/tpu/fennel/DartConfiguration.tcl
+Start processing tests
+UpdateCTestConfiguration  from&#160;:/home/jvs/open/tpu/fennel/DartConfiguration.tcl
+Parse Config file:/home/jvs/open/tpu/fennel/DartConfiguration.tcl
+Test project /home/jvs/open/tpu/fennel
+Constructing a list of tests
+Done constructing a list of tests
+Changing directory into /home/jvs/open/tpu/fennel/test
+  1/ 67 Testing ExternalSortExecStreamTest    
+Test command: /home/jvs/open/tpu/fennel/test/ExternalSortExecStreamTest
+Test timeout computed to be: 1500
+Running 7 test cases...
+
+*** No errors detected
+-- Process completed
+   Passed
+  2/ 67 Testing FlatFileExecStreamTest        
+...
+</pre>
+<p>CMakeLists.txt contains directives for generating the necessary <b>CTestTestfile.cmake</b> and <b>DartConfiguration.tcl</b> files.  You can run the <b>ctest</b> executable directly for more control over how tests are run.
+</p>
+<h2> <span class="mw-headline" id="Windows_Test_Runner_Problems"> Windows Test Runner Problems </span></h2>
+<ul><li> Currently, most Fennel unit tests on Windows encounter a crash at the very end as the process is exiting (after Boost has already reported "No errors detected").  No one has debugged this one yet.
+</li><li> Also on exit, some tests also encounter memory leak notifications on Windows, probably bogus.  These can be suppressed with <b>export BOOST_TEST_DETECT_MEMORY_LEAK=0</b>.
+</li></ul>
+<h1> <span class="mw-headline" id="Future_Work"> Future Work </span></h1>
+<ul><li> OpenSolaris port
+</li><li> <s>MacOS X port [<a rel="nofollow" class="external text" href="http://jira.eigenbase.org/browse/FNL-85">FNL-85</a>]</s>
+</li><li> Visual C++ IDE and debugger workspace
+</li><li> <s>64-bit Windows port [<a rel="nofollow" class="external text" href="http://jira.eigenbase.org/browse/FNL-87">FNL-87</a>]</s>
+</li><li> Improvements noted in <a href="/wiki/FennelBuildVariations" title="FennelBuildVariations">FennelBuildVariations</a>
+</li><li> Use cpack to build .rpm, .deb, ...
+</li><li> resurrect ICU support as part of Unicode-enabling the Fennel calculator
+</li><li> see if we can use the MODULE library type (instead of SHARED) to get rid of some old mystery hacks:  explicit dlopen (in JNI_OnLoad) and FENNEL_JNI_ONLOAD_COMMON, plus the companion AWT hack in org.eigenbase.util.Util.loadLibrary
+</li><li> fix/suppress compiler warnings on Windows
+</li><li> fix LucidDB development environment on Windows (sqlline and lucidDbServer scripts aren't working correctly)
+</li><li> fix Windows test runner problems above
+</li><li> <b>make check</b> should depend on test executables (this used to work with autotools); for now it's necessary to run <b>make</b> first before <b>make check</b>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 127/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1961-0!*!0!!en!*!* and timestamp 20140414193625 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FennelBuildSystem&amp;oldid=6981">http://luciddb.org/wiki/index.php?title=FennelBuildSystem&amp;oldid=6981</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FennelBuildSystem" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FennelBuildSystem&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FennelBuildSystem&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FennelBuildSystem&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FennelBuildSystem" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FennelBuildSystem" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FennelBuildSystem" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FennelBuildSystem&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FennelBuildSystem&amp;oldid=6981" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 29 August 2011, at 15:58.</li>
+		<li id="viewcount">This page has been accessed 7,450 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.198 secs. --></body></html>

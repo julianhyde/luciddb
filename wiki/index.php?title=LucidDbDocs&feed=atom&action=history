@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="http://luciddb.org/wiki/skins/common/feed.css?303"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;feed=atom&amp;action=history</id>
+		<title>LucidDbDocs - Revision history</title>
+		<link rel="self" type="application/atom+xml" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;feed=atom&amp;action=history"/>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;action=history"/>
+		<updated>2014-04-14T19:39:08Z</updated>
+		<subtitle>Revision history for this page on the wiki</subtitle>
+		<generator>MediaWiki 1.18.1</generator>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7195&amp;oldid=prev</id>
+		<title>Smoodoo: /* Commercial Support */ Updated the link to the source code</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7195&amp;oldid=prev"/>
+				<updated>2013-04-09T22:33:08Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Commercial Support: &lt;/span&gt; Updated the link to the source code&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 22:33, 9 April 2013&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 100:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 100:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Commercial support is no longer being offered.&amp;#160; LucidDB is now fully out in the open and community supported.'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Commercial support is no longer being offered.&amp;#160; LucidDB is now fully out in the open and community supported.'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Source on github https://github.com/&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;dynamobi&lt;/del&gt;/luciddb'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Source on github https://github.com/&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;LucidDB&lt;/ins&gt;/luciddb'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''-- Monday, July 23, 2012'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''-- Monday, July 23, 2012'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7194&amp;oldid=prev</id>
+		<title>Smoodoo: /* Commercial Support */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7194&amp;oldid=prev"/>
+				<updated>2012-07-23T20:58:48Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Commercial Support&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:58, 23 July 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 100:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 100:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Commercial support is no longer being offered.&amp;#160; LucidDB is now fully out in the open and community supported.'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''Commercial support is no longer being offered.&amp;#160; LucidDB is now fully out in the open and community supported.'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Source on github https://github.com/dynamobi/luciddb'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''-- Monday, July 23, 2012'''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''-- Monday, July 23, 2012'''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7193&amp;oldid=prev</id>
+		<title>Smoodoo: /* Commercial Support */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7193&amp;oldid=prev"/>
+				<updated>2012-07-23T20:55:58Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Commercial Support&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:55, 23 July 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 98:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 98:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Commercial Support ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Commercial Support ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''Commercial support is no longer being offered.&amp;#160; LucidDB is now fully out in the open and community supported.'''&amp;lt;br&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;'''-- Monday, July 23, 2012'''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7180&amp;oldid=prev</id>
+		<title>Smoodoo: /* Administrator Guides */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7180&amp;oldid=prev"/>
+				<updated>2012-05-18T17:23:27Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Administrator Guides&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 17:23, 18 May 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 47:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 47:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;LucidDB is designed to require as little administration as possible, so we hope this section can remain short :)&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;LucidDB is designed to require as little administration as possible, so we hope this section can remain short :)&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;* [[Best_Practices | Beginner Best Practices]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMemoryManagement | Memory Management]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMemoryManagement | Memory Management]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** [[LucidDbBufferPoolSizing | Buffer Pool Sizing]] &amp;lt;br&amp;gt;You should also increase the buffer pool sizing to increase the amount of memory that LucidDB uses to &amp;quot;run queries&amp;quot; &amp;lt;br&amp;gt;(the Java adjustments will only increase the catalog/parsing/optimizer memory settings but not the actual execution engine).&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** [[LucidDbBufferPoolSizing | Buffer Pool Sizing]] &amp;lt;br&amp;gt;You should also increase the buffer pool sizing to increase the amount of memory that LucidDB uses to &amp;quot;run queries&amp;quot; &amp;lt;br&amp;gt;(the Java adjustments will only increase the catalog/parsing/optimizer memory settings but not the actual execution engine).&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7178&amp;oldid=prev</id>
+		<title>Smoodoo: Added FAQ so it appears in the TOC</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7178&amp;oldid=prev"/>
+				<updated>2012-01-05T22:05:53Z</updated>
+		
+		<summary type="html">&lt;p&gt;Added FAQ so it appears in the TOC&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 22:05, 5 January 2012&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 194:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 194:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbHive | Hive]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbHive | Hive]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;: Walk-through document showing how to combine LucidDB with [http://hadoop.apache.org/hive/ Apache Hadoop's Hive].&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;: Walk-through document showing how to combine LucidDB with [http://hadoop.apache.org/hive/ Apache Hadoop's Hive].&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;== Frequently Asked Questions ==&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;[[LucidDbUserFaq | Frequently Asked Questions]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= LucidDB Developer Documentation =&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;= LucidDB Developer Documentation =&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7168&amp;oldid=prev</id>
+		<title>Smoodoo: /* Connectors to External Data Sources (SQL/MED) ([http://farrago.sourceforge.net/design/sqlmed.html Management of External Data]) */  Added first dirty information about installing CouchDB connector.</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7168&amp;oldid=prev"/>
+				<updated>2011-11-14T17:17:49Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Connectors to External Data Sources (SQL/MED) ([http://farrago.sourceforge.net/design/sqlmed.html Management of External Data]): &lt;/span&gt;  Added first dirty information about installing CouchDB connector.&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 17:17, 14 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 86:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 86:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/08/sql-access-to-couchdb-views/ SQL access to couchdb views]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/08/sql-access-to-couchdb-views/ SQL access to couchdb views]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/22/sql-access-to-couchdb-views-easy-reporting/ SQL access to CouchDB views : Easy Reporting]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/22/sql-access-to-couchdb-views-easy-reporting/ SQL access to CouchDB views : Easy Reporting]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;** Forum: Installing the CouchDB connector [http://www.luciddb.org/forums/discussion/comment/1313#Comment_1313]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;** Download the connector from [http://www.dynamobi.com/c/downloads/stable/]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7165&amp;oldid=prev</id>
+		<title>Smoodoo: /* Administrator Guides */ memory management</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7165&amp;oldid=prev"/>
+				<updated>2011-11-14T16:33:33Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Administrator Guides: &lt;/span&gt; memory management&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 16:33, 14 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 49:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 49:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMemoryManagement | Memory Management]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMemoryManagement | Memory Management]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** [[LucidDbBufferPoolSizing | Buffer Pool Sizing]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;** [[LucidDbBufferPoolSizing | Buffer Pool Sizing]] &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;br&amp;gt;You should also increase the buffer pool sizing to increase the amount of memory that LucidDB uses to &amp;quot;run queries&amp;quot; &amp;lt;br&amp;gt;(the Java adjustments will only increase the catalog/parsing/optimizer memory settings but not the actual execution engine).&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbSystemProcedures | System Procedures]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbSystemProcedures | System Procedures]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;: Useful for: Backup/Restore, Generating DDL for tables and other objects, managing sessions.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;: Useful for: Backup/Restore, Generating DDL for tables and other objects, managing sessions.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 67:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 67:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMoveCatalog | Moving the LucidDB Database Catalog]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbMoveCatalog | Moving the LucidDB Database Catalog]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbScriptingLucidUsingBASH | Scripting LucidDB using BASH shell scripts]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[LucidDbScriptingLucidUsingBASH | Scripting LucidDB using BASH shell scripts]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Function and SQL Language Reference Guides ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Function and SQL Language Reference Guides ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7164&amp;oldid=prev</id>
+		<title>Smoodoo: /* Connectors to External Data Sources (SQL/MED) ([http://farrago.sourceforge.net/design/sqlmed.html Management of External Data]) */  Add couchdb information</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7164&amp;oldid=prev"/>
+				<updated>2011-11-14T16:23:10Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Connectors to External Data Sources (SQL/MED) ([http://farrago.sourceforge.net/design/sqlmed.html Management of External Data]): &lt;/span&gt;  Add couchdb information&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 16:23, 14 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 85:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 85:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[FarragoMedJdbcPlugin | JDBC Data Wrapper]] - Connector enabling presentation of external database tables in LucidDB&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[FarragoMedJdbcPlugin | JDBC Data Wrapper]] - Connector enabling presentation of external database tables in LucidDB&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[FarragoMedSalesforcePlugin|Salesforce Data Wrapper]] - Connector for presenting Salesforce tables in LucidDB&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;* [[FarragoMedSalesforcePlugin|Salesforce Data Wrapper]] - Connector for presenting Salesforce tables in LucidDB&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;* CouchDB connections:&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/08/sql-access-to-couchdb-views/ SQL access to couchdb views]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;** Blog: [http://www.nicholasgoodman.com/bt/blog/2011/06/22/sql-access-to-couchdb-views-easy-reporting/ SQL access to CouchDB views : Easy Reporting]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7158&amp;oldid=prev</id>
+		<title>Smoodoo: /* Commercial Support */  moved the logo down a bit.</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7158&amp;oldid=prev"/>
+				<updated>2011-11-04T20:44:40Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Commercial Support: &lt;/span&gt;  moved the logo down a bit.&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:44, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 97:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 97:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Quick, reliable service and support is available to you from DynamoBI, the commercial sponsor of LucidDB.&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:Dynamobi logo large2.png|right|200px]]&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Quick, reliable service and support is available to you from DynamoBI, the commercial sponsor of LucidDB.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''DynamoBI Global Headquarters'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''DynamoBI Global Headquarters'''&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:Dynamobi logo large2.png|right|200px]]&lt;/ins&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;42nd Floor&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;42nd Floor&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;601 Union Street&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;601 Union Street&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7157&amp;oldid=prev</id>
+		<title>Smoodoo: /* Commercial Support */</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbDocs&amp;diff=7157&amp;oldid=prev"/>
+				<updated>2011-11-04T20:43:52Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;span class=&quot;autocomment&quot;&gt;Commercial Support&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:43, 4 November 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 96:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 96:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Commercial Support ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Commercial Support ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:Dynamobi logo large2.png|right|200px]]&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Quick, reliable service and support is available to you from DynamoBI, the commercial sponsor of LucidDB.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Quick, reliable service and support is available to you from DynamoBI, the commercial sponsor of LucidDB.&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;[[Image:Dynamobi logo large2.png|right|200px]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''DynamoBI Global Headquarters'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;'''DynamoBI Global Headquarters'''&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 110:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 110:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br style=&amp;quot;clear: both&amp;quot; /&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Community Involvement ==&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;== Community Involvement ==&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;LucidDB is one of the best databases in the world because of the people, not just the technology.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;LucidDB is one of the best databases in the world because of the people, not just the technology.&amp;lt;br&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	</feed>

@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="http://luciddb.org/wiki/skins/common/feed.css?303"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;feed=atom&amp;action=history</id>
+		<title>LucidDbSquirrel - Revision history</title>
+		<link rel="self" type="application/atom+xml" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;feed=atom&amp;action=history"/>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;action=history"/>
+		<updated>2014-04-14T20:09:09Z</updated>
+		<subtitle>Revision history for this page on the wiki</subtitle>
+		<generator>MediaWiki 1.18.1</generator>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=7036&amp;oldid=prev</id>
+		<title>Smoodoo at 21:24, 22 September 2011</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=7036&amp;oldid=prev"/>
+				<updated>2011-09-22T21:24:19Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 21:24, 22 September 2011&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 12:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 12:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:Squirrel-driver-setup.jpg]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:Squirrel-driver-setup.jpg]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;== Video Tutorial ==&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;[[http://www.youtube.com/watch?v=C7OEQlgYf7Y Installing and configuring Squirrel SQL client to connect to LucidDB]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Smoodoo</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6546&amp;oldid=prev</id>
+		<title>Ngoodman at 16:50, 12 May 2010</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6546&amp;oldid=prev"/>
+				<updated>2010-05-12T16:50:16Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 16:50, 12 May 2010&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 9:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 9:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;''IMPORTANT: As of 0.9.2 the correct driver classname is: org.luciddb.jdbc.LucidDbClientDriver.&amp;#160; Example URL: jdbc:luciddb:http://localhost''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;''IMPORTANT: As of 0.9.2 the correct driver classname is: org.luciddb.jdbc.LucidDbClientDriver.&amp;#160; Example URL: jdbc:luciddb:http://localhost''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:Squirrel-driver-setup.jpg]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:Squirrel-driver-setup.jpg]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Ngoodman</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6545&amp;oldid=prev</id>
+		<title>Ngoodman: screenshot courtesy of Smoodo</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6545&amp;oldid=prev"/>
+				<updated>2010-05-12T16:50:05Z</updated>
+		
+		<summary type="html">&lt;p&gt;screenshot courtesy of Smoodo&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 16:50, 12 May 2010&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 8:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 8:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;''IMPORTANT: &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Driver in below screenshot is incorrect.&amp;#160; &lt;/del&gt;As of 0.9.2 the correct driver classname is: org.luciddb.jdbc.LucidDbClientDriver.&amp;#160; Example URL &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;should be&lt;/del&gt;: jdbc:luciddb:http://localhost''&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;''IMPORTANT: As of 0.9.2 the correct driver classname is: org.luciddb.jdbc.LucidDbClientDriver.&amp;#160; Example URL: jdbc:luciddb:http://localhost''&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;SquirrelDriver&lt;/del&gt;.&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;png&lt;/del&gt;]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Squirrel-driver-setup&lt;/ins&gt;.&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;jpg&lt;/ins&gt;]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Ngoodman</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6365&amp;oldid=prev</id>
+		<title>Ngoodman at 20:42, 12 November 2009</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=6365&amp;oldid=prev"/>
+				<updated>2009-11-12T20:42:02Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:42, 12 November 2009&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 8:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 8:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;''IMPORTANT: Driver in below screenshot is incorrect.&amp;#160; As of 0.9.2 the correct driver classname is: org.luciddb.jdbc.LucidDbClientDriver.&amp;#160; Example URL should be: jdbc:luciddb:http://localhost''&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:SquirrelDriver.png]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:SquirrelDriver.png]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Ngoodman</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=2498&amp;oldid=prev</id>
+		<title>Ngoodman at 16:09, 27 May 2007</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=2498&amp;oldid=prev"/>
+				<updated>2007-05-27T16:09:56Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 16:09, 27 May 2007&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your LucidDB server is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your LucidDB server is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&amp;#160; The client jar can be found in the plugin directory beneath your LucidDB installation root.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&amp;#160; The client jar can be found in the plugin directory beneath your LucidDB installation root.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password. &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt; &lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs. &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;(''NOTE: If you are receiving ConnectException errors, you might want to check out this article: [[ClientServerLocalhost]]'')&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:SquirrelDriver.png]]&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;[[Image:SquirrelDriver.png]]&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Ngoodman</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1495&amp;oldid=prev</id>
+		<title>Jvs at 08:23, 31 July 2006</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1495&amp;oldid=prev"/>
+				<updated>2006-07-31T08:23:22Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 08:23, 31 July 2006&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 3:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 3:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your LucidDB server is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your LucidDB server is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;.&amp;#160; The client jar can be found in the plugin directory beneath your LucidDB installation root&lt;/ins&gt;.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1494&amp;oldid=prev</id>
+		<title>Jvs at 08:22, 31 July 2006</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1494&amp;oldid=prev"/>
+				<updated>2006-07-31T08:22:43Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 08:22, 31 July 2006&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 2:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 2:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;LucidDbServer &lt;/del&gt;is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Make sure your &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;LucidDB server &lt;/ins&gt;is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1493&amp;oldid=prev</id>
+		<title>Jvs at 08:22, 31 July 2006</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1493&amp;oldid=prev"/>
+				<updated>2006-07-31T08:22:33Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 08:22, 31 July 2006&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 2:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 2:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Download a copy from [http://squirrel-sql.sourceforge.net Sourceforge].&amp;#160; Either download an installer and install it, or just get the &amp;quot;optional&amp;quot; zipfile, unzip it, and run squirrel-sql.sh or squirrel-sql.bat.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;# Make sure your LucidDbServer is running.&amp;#160; (See [[LucidDbGettingStarted]].)&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create a new driver, filling out the information using the screenshot below.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1478&amp;oldid=prev</id>
+		<title>Jvs at 07:55, 31 July 2006</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1478&amp;oldid=prev"/>
+				<updated>2006-07-31T07:55:43Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 07:55, 31 July 2006&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 6:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 6:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# SQuirreL doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;[[Image:SquirrelDriver.png]]&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1476&amp;oldid=prev</id>
+		<title>207.213.213.102 at 07:51, 31 July 2006</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDbSquirrel&amp;diff=1476&amp;oldid=prev"/>
+				<updated>2006-07-31T07:51:08Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 07:51, 31 July 2006&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 5:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 5:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Create an alias for that driver, using the example localhost URL if your server is running on the same machine.&amp;#160; Use sa for the username, and no password.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# Connect to the alias and you should get a tree showing a lot of local and foreign catalogs.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# &lt;del class=&quot;diffchange diffchange-inline&quot;&gt;SQuireL &lt;/del&gt;doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;# &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;SQuirreL &lt;/ins&gt;doesn't understand catalogs and schemas very well, so it shows each schema under every catalog (instead of only under its parent). Almost everything an end-user would care about is in the LOCALDB catalog.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>207.213.213.102</name></author>	</entry>
+
+	</feed>

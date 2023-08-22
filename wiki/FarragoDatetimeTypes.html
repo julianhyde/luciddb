@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoDatetimeTypes - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoDatetimeTypes", "wgTitle": "FarragoDatetimeTypes", "wgCurRevisionId": 4872, "wgArticleId": 1514, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoDatetimeTypes action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoDatetimeTypes</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This document discusses date, time, and timestamp types (datetimes) within Farrago. Currently, Farrago supports a subset of the SQL standard, datetimes &quot;without time zone&quot;. Note that in this document, we sometimes use slightly different wording than the SQL spec.<br />
+<br />
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#The_SQL_Standard_.28Part_2_Chapter_4.6.29"><span class="tocnumber">1</span> <span class="toctext">The SQL Standard (Part 2 Chapter 4.6)</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Time_Intervals"><span class="tocnumber">1.1</span> <span class="toctext">Time Intervals</span></a></li>
+<li class="toclevel-2"><a href="#Daylight_Saving_Time.2C_etc."><span class="tocnumber">1.2</span> <span class="toctext">Daylight Saving Time, etc.</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Farrago_implementation"><span class="tocnumber">2</span> <span class="toctext">Farrago implementation</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Type_Protocol"><span class="tocnumber">2.1</span> <span class="toctext">Type Protocol</span></a></li>
+<li class="toclevel-2"><a href="#Encoding"><span class="tocnumber">2.2</span> <span class="toctext">Encoding</span></a></li>
+<li class="toclevel-2"><a href="#Datetime_Arithmetic"><span class="tocnumber">2.3</span> <span class="toctext">Datetime Arithmetic</span></a></li>
+<li class="toclevel-2"><a href="#Datetime_Support"><span class="tocnumber">2.4</span> <span class="toctext">Datetime Support</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Timestamp_with_Local_Time_Zone"><span class="tocnumber">3</span> <span class="toctext">Timestamp with Local Time Zone</span></a></li>
+</ul>
+</td></tr></table>
+<h2 id="tocFarragoDatetimeTypes0"> <span class="mw-headline" id="The_SQL_Standard_.28Part_2_Chapter_4.6.29">The SQL Standard (Part 2 Chapter 4.6)</span></h2>
+<p><br />
+SQL 2003 describes two kinds of datetime types. Both have basic attributes, such as day, month, and year. However, one kind (without time zone) is plain data with no notion of time zone or actual time, much like a string. The other kind (with time zone) represents an instant in GMT time, along with a time offset. The time offset describes the time offset that was in effect for the datetime when it was created. For example:<br />
+<br />
+<a href="/wiki/File:SqlDatetimeTypes.gif" class="image"><img alt="SqlDatetimeTypes.gif" src="/wiki/upload/9/97/SqlDatetimeTypes.gif" width="573" height="167" /></a>
+<br />
+It is possible to convert directly from a datetime with time zone to a datetime without timezone. A conversion in the other direction relies on a session time zone. (SQL specifies a &quot;time zone&quot; as a time offset, but Oracle allows a proper time zone as an extension, and can therefore handle Daylight Saving Time.)<br />
+</p><p><br />
+<em>Zoneless</em> <em>time = GMT time + Explicit time offset [1]</em><br />
+<em>GMT time = Zoneless time - Session time offset [2]</em><br />
+<br />
+</p>
+<h3 id="tocFarragoDatetimeTypes1"> <span class="mw-headline" id="Time_Intervals">Time Intervals</span></h3>
+<p>Time intervals are described in Section 4.6.3. There are two kinds of intervals, Year/Month intervals and Day/Time intervals. Intervals can cover a range of fields allowed within the interval type (for example, DAY to SECOND) or they may cover a single field (ex: DAY). An interval such as MONTH to DAY is not allowed. Normally fields can have two digits, but DAY and YEAR are allowed to have as many as the specified &quot;start precision&quot; and SECOND is allowed to have &quot;seconds precision&quot;.<br />
+</p><p><br />
+Allowed operations include<br />
+</p>
+<ul>
+    <li>Subtracting two dates to get an interval</li>
+    <li>Adding or subtracting an interval from a date</li>
+    <li>Arithmetic (+/-) between intervals</li>
+    <li>Multiplying and dividing intervals by numbers</li>
+    <li>Casting to strings or perhaps exact numeric (when there is only one field)</li>
+    <li>Extracting fields of an interval</li>
+</ul>
+<p><br />
+</p>
+<h3 id="tocFarragoDatetimeTypes2"> <span class="mw-headline" id="Daylight_Saving_Time.2C_etc.">Daylight Saving Time, etc.</span></h3>
+<p>In describing the general way times work, the SQL spec states, &quot;where applicable, a time zone offset changes at the beginning and end of Daylight time.&quot; However the spec does not provide a mechanism by which date arithmetic could change a time zone offset. Note that due to DST there is no &quot;2:30am on Apr 2, 2006&quot; if the local time zone is PST. And &quot;1:30am on Oct 29&quot; may occur twice. The SQL spec does not concern itself with such issues. The SQL spec also touches on leap seconds used to adjust UTC, but does not say much or require anything.<br />
+</p><p><br />
+</p>
+<h2 id="tocFarragoDatetimeTypes3"> <span class="mw-headline" id="Farrago_implementation">Farrago implementation</span></h2>
+<p><br />
+</p>
+<h3 id="tocFarragoDatetimeTypes4"> <span class="mw-headline" id="Type_Protocol">Type Protocol</span></h3>
+<p>Farrago uses the class ZonelessDatetime to represent datetimes without a time zone. This differentiates them from Jdbc (java.sql) types. Since Jdbc is used as a communication protocol, the Farrago server deals with both type families at the same time. Since Farrago clients work with data valid in a client-specific to the time zone, a client library is required to convert the client-specific data into a canonical form (ZonelessDatetime).<br />
+<br />
+<a href="/wiki/File:FarragoDatetimeTypesFlow.gif" class="image"><img alt="FarragoDatetimeTypesFlow.gif" src="/wiki/upload/1/18/FarragoDatetimeTypesFlow.gif" width="525" height="405" /></a>
+<br />
+</p>
+<h3 id="tocFarragoDatetimeTypes5"> <span class="mw-headline" id="Encoding">Encoding</span></h3>
+<p>In order to leverage Java libraries, Farrago encodes datetimes as long values matching the convention of java.util.Date for GMT times. Since tha value is expressed in milliseconds and GMT has no offsets, date and time components may conveniently be extracted as follows:<br />
+<br />
+<em>DateComponent = Value / MillisecondsPerDay</em><br />
+</p><p><em>TimeComponent = Value&#160;% MillisecondsPerDay</em><br />
+<br />
+The Timestamp data type has both components. The Time data type has no date component, while the Date data type has no time component. The date component is relative to 1970-01-01. It is possible to parse and format datetime strings using a Java SimpleDateFormat set to the GMT time zone.<br />
+<br />
+Day/Time intervals are also encoded as milliseconds values. Year/Month intervals are encoded as months.<br />
+<br />
+</p>
+<h3 id="tocFarragoDatetimeTypes6"> <span class="mw-headline" id="Datetime_Arithmetic">Datetime Arithmetic</span></h3>
+<p>With datetimes and intervals all encoded as long values, datetime arithmetic can reduced to long (Bigint) arithmetic. This is true as long as all values are in milliseconds. However, it does not hold for Year/Month intervals. To get the most functionality with limited resources, Farrago implements Day/Time intervals, but not Year/Month intervals. Arithmetic operations include:<br />
+<br />
+<em>Table. Result of datetime arithmetic operations</em><br />
+</p>
+<table border="1">
+    <tr>
+        <td><strong>Operation</strong></td>
+        <td><strong>Result</strong></td>
+    </tr>
+    <tr>
+        <td>Date - Date</td>
+        <td>Interval</td>
+    </tr>
+    <tr>
+        <td>Date + or - Interval</td>
+        <td>Date</td>
+    </tr>
+    <tr>
+
+        <td>Interval + or - Interval</td>
+        <td>Interval</td>
+    </tr>
+    <tr>
+        <td>Interval * or / Integer</td>
+        <td>Interval</td>
+    </tr>
+
+    <tr>
+        <td>Extract field from Interval</td>
+        <td>Integer</td>
+    </tr>
+</table>
+<p><br />
+<u>Details</u><br />
+Farrago describes an interval using an SqlIntervalQualifier. It contains the start and end TimeUnit, and precision fields. There are two Rel data types, one for each kind of interval. Rather than focusing on SQL compliance, the Farrago implementation focuses on functionality. To enable interval arithmetic, Farrago introduces non-standard casts: (1) Datetimes to Bigint and (2) Intervals to Bigint. (Farrago discards the usual interval to numeric cast, whose functionality is available through extract.)<br />
+</p><p><br />
+Interval arithmetic is implemented via a &quot;Convertlet&quot;. These snippets translate one kind of operation into another. For example, subtracting two dates:<br />
+<br />
+</p>
+<pre class="text">StandardConvertletTable.convertDatetimeMinus(datetime arg1, datetime arg2)
+ cast(
+ cast(arg1 as bigint) - cast(arg2 as bigint)
+ as interval ...)</pre>
+<p><br />
+Extract is also implemented as a Convertlet. For example, to extract hours from an interval:<br />
+<br />
+</p>
+<pre class="text">// mask out larger units
+millis = millis&#160;% millis_in_day
+// select desired units
+millis / millis_in_hour</pre>
+<p><br />
+</p>
+<h3 id="tocFarragoDatetimeTypes7"> <span class="mw-headline" id="Datetime_Support">Datetime Support</span></h3>
+<p>The following tables describe code used to support datetimes. The &quot;status&quot; column indicates any known problems.<br />
+<br />
+<u>Literals</u><br />
+(As entered via SQL. See SqlAbstractDateTimeLiteral and children, also see RexLiteral.fromJdbcString)<br />
+</p>
+<table border="1">
+    <tr>
+        <td>Description</td>
+        <td>Implementation</td>
+        <td>Notes</td>
+        <td>Status</td>
+    </tr>
+
+    <tr>
+        <td>Parse literal string</td>
+        <td>Parse via DateTimeUtil, with time zone set to GMT</td>
+        <td>Perhaps it would be safer to use ZonelessDatetime parsing functions</td>
+        <td>ok</td>
+    </tr>
+    <tr>
+
+        <td>Format literal</td>
+        <td>Formatted via a ZonelessDatetime, append precision</td>
+        <td>Precision not handled consistently</td>
+        <td>ok</td>
+    </tr>
+</table>
+<p><br />
+</p><p><u>Farrago Runtime</u><br />
+(SqlDateTimeWithoutTZ and inner classes. Rather than store a long field for value, a ZonelessDatetime field is stored. This requires some trickery with FarragoTypeFactory to access datetime values. Since we want to return ZonelessDatetime, a non-Jdbc value, to the Jdbc driver, we need to modify the way FarragoTupleIterResultSet obtains a raw value. When AbstractResultSet gets the raw object, it must convert it into a Jdbc value for getObject() to fulfill the Jdbc ResultSet contract.)<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td>Category</td>
+        <td>Implementation</td>
+        <td>Notes</td>
+        <td>Status</td>
+    </tr>
+    <tr>
+        <td>Cast string to datetime</td>
+        <td>Parse via ZonelessDatetime</td>
+        <td></td>
+        <td>ok</td>
+    </tr>
+    <tr>
+        <td>Initialize from long value</td>
+        <td>Directly assign to internal value</td>
+        <td>Assuming that we assign from the same type</td>
+        <td>ok</td>
+    </tr>
+
+    <tr>
+        <td>Assign from datetime</td>
+        <td>ZonelessDatetime set zoneless time method</td>
+        <td>Copies value</td>
+        <td>ok</td>
+    </tr>
+    <tr>
+
+        <td>Assign from Jdbc</td>
+        <td>ZonelessDatetime set zoned time method</td>
+        <td>Subtracts time zone offset</td>
+        <td>ok</td>
+    </tr>
+    <tr>
+        <td>Format as string</td>
+        <td>ZonelessDatetime toString</td>
+        <td></td>
+        <td>ok</td>
+    </tr>
+    <tr>
+        <td>Get nullable data</td>
+        <td>Returns value as a Jdbc type, relative to server time zone</td>
+        <td>Used for UDRs (user defined routines)</td>
+        <td>ok</td>
+    </tr>
+    <tr>
+        <td>Get special data</td>
+        <td>Returns value as a ZonelessDatetime</td>
+        <td>Sent to Jdbc Driver, for conversion to Jdbc type relative to client time zone</td>
+        <td>ok</td>
+    </tr>
+</table>
+<p><br />
+<u>Dynamic parameters</u><br />
+(Such as for prepared JDBC statements with wildcards: &quot;insert into t values (?,&#160;?)&quot;. See FarragoJdbc...ParamDef. Each wildcard validates to a target type. Then the client calls setXXX, triggering a conversion from client data to server data.)<br />
+</p><p><br />
+</p>
+<table border="1">
+
+    <tr>
+        <td>Category</td>
+        <td>Implementation</td>
+        <td>Notes</td>
+        <td>Status</td>
+    </tr>
+    <tr>
+
+        <td>String to datetime</td>
+        <td>ZonelessDatetime parse functions</td>
+        <td>Client time zone is irrelevant</td>
+        <td>ok</td>
+    </tr>
+    <tr>
+        <td>Client to server datetime</td>
+        <td>ZonelessDatetime set zoned time method</td>
+        <td>Relies on provided Calendar</td>
+        <td>ok</td>
+    </tr>
+</table>
+<p><br />
+<u>External data</u><br />
+Since the runtime differentiates between ZonelessDatetime and Jdbc values, we should now be able to handle external Jdbc data without modifying it.<br />
+</p><p><br />
+<u>Current_Date, etc.</u><br />
+These functions should run relative to the session time zone. But currently, they run relative to the server time zone.<br />
+<br />
+</p>
+<h2 id="tocFarragoDatetimeTypes8"> <span class="mw-headline" id="Timestamp_with_Local_Time_Zone">Timestamp with Local Time Zone</span></h2>
+<p><br />
+Two major shortcomings of timestamps, as described in the SQL spec are<br />
+</p>
+<ol>
+    <li>Timestamps values are not localized when viewed in different time zones. 2006-07-01 12:00:00 will look the same, whether viewed from PST or GMT or anywhere else. A global organization, that deals with times all over the world might want their times converted into their current time zone. 2006-07-01 12:00:00 EST means 2006-07-01 10:00:00 PST.</li>
+    <li>The spec ignores Daylight Saving Time. In PST, 2006-04-02 00:30:00 + 2 hours might equal 2006:04:02 02:30:00, a time which doesn't exist. There is no way to differentiate between the two values for 2006-10-29 01:30:00.<br />
+
+</li>
+</ol>
+<p><br />
+At one point in time, Farrago had a Java-like timestamp without these limitations. However this functionality was not maintained due to code complexity. In the future, we may want to reintroduce this functionality as a non-standard feature, as Oracle has done with its &quot;timestamp with local time zone&quot; type.<br />
+<br />
+Note: in the United States, Daylight Savings Time starts on the 1st Sunday of April and reverts the last Sunday of October. (In 2006 it runs from Apr 2 to Oct 29.) The Energy Policy Act of 2005 lengthens DST for an indefinite trial period starting 2007. It will start earlier (2nd Sunday of March) and end later (1st Sunday of November). For DST, we spring forward at &quot;2:00&quot; i.e. move from &quot;1:59&quot; PST to &quot;3:00&quot; PDT and fall backwards at &quot;2:00&quot; i.e. move from 1:59 PDT to 1:00 PST.
+</p><p><a href="http://issues.eigenbase.org/browse/FRG-272" class="extiw" title="eigenjira:FRG-272">eigenjira:FRG-272</a> tracks a bug having to do with points in time corresponding to the DST transition hours which are meaningful in some timezones but not others.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 99/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1514-0!*!*!!en!2!* and timestamp 20140414194600 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoDatetimeTypes&amp;oldid=4872">http://luciddb.org/wiki/index.php?title=FarragoDatetimeTypes&amp;oldid=4872</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoDatetimeTypes" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoDatetimeTypes&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoDatetimeTypes&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoDatetimeTypes&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoDatetimeTypes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoDatetimeTypes" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoDatetimeTypes" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoDatetimeTypes&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoDatetimeTypes&amp;oldid=4872" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 2 October 2008, at 20:32.</li>
+		<li id="viewcount">This page has been accessed 2,832 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.297 secs. --></body></html>

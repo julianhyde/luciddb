@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbUserFaq - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbUserFaq", "wgTitle": "LucidDbUserFaq", "wgCurRevisionId": 7187, "wgArticleId": 1853, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbUserFaq action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbUserFaq</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 17:56, 18 May 2012 by <a href="/wiki/index.php?title=User:Smoodoo&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Smoodoo (page does not exist)">Smoodoo</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Smoodoo&amp;action=edit&amp;redlink=1" class="new" title="User talk:Smoodoo (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Smoodoo" title="Special:Contributions/Smoodoo">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="/wiki/index.php?title=LucidDbUserFaq&amp;diff=prev&amp;oldid=7187" title="LucidDbUserFaq">diff</a>) <a href="/wiki/index.php?title=LucidDbUserFaq&amp;direction=prev&amp;oldid=7187" title="LucidDbUserFaq">← Older revision</a> | Latest revision (diff) | Newer revision → (diff)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#FAQ_List"><span class="tocnumber">1</span> <span class="toctext">FAQ List</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Startup_Error_for_libgcj"><span class="tocnumber">1.1</span> <span class="toctext">Startup Error for libgcj</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Startup_Error_for_xlib_xcb"><span class="tocnumber">1.2</span> <span class="toctext">Startup Error for xlib xcb</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Startup_Error_For_libaio"><span class="tocnumber">1.3</span> <span class="toctext">Startup Error For libaio</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Startup_Error_For_mmap"><span class="tocnumber">1.4</span> <span class="toctext">Startup Error For mmap</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Startup_Error_For_Windows"><span class="tocnumber">1.5</span> <span class="toctext">Startup Error For Windows</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Client_Connectivity_Problems"><span class="tocnumber">1.6</span> <span class="toctext">Client Connectivity Problems</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Loading_Large_Data_Files"><span class="tocnumber">1.7</span> <span class="toctext">Loading Large Data Files</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#ETL_Tutorial"><span class="tocnumber">1.8</span> <span class="toctext">ETL Tutorial</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Case-Sensitive_Foreign_Schema_Name"><span class="tocnumber">1.9</span> <span class="toctext">Case-Sensitive Foreign Schema Name</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Default_Port"><span class="tocnumber">1.10</span> <span class="toctext">Default Port</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#JDBC_Driver_Class"><span class="tocnumber">1.11</span> <span class="toctext">JDBC Driver Class</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#JDBC_Driver_Jar_files"><span class="tocnumber">1.12</span> <span class="toctext">JDBC Driver Jar files</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Slow_INSERT_performance"><span class="tocnumber">1.13</span> <span class="toctext">Slow INSERT performance</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Missing_Columns"><span class="tocnumber">1.14</span> <span class="toctext">Missing Columns</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Running_As_A_Service_Or_Daemon"><span class="tocnumber">1.15</span> <span class="toctext">Running As A Service Or Daemon</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#J2EE_Embedding"><span class="tocnumber">1.16</span> <span class="toctext">J2EE Embedding</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Catalog_File_Locking"><span class="tocnumber">1.17</span> <span class="toctext">Catalog File Locking</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#Debug_Builds"><span class="tocnumber">1.18</span> <span class="toctext">Debug Builds</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#Beyond_Java"><span class="tocnumber">1.19</span> <span class="toctext">Beyond Java</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#Compression_Statistics"><span class="tocnumber">1.20</span> <span class="toctext">Compression Statistics</span></a></li>
+<li class="toclevel-2 tocsection-22"><a href="#OpenSUSE_Performance"><span class="tocnumber">1.21</span> <span class="toctext">OpenSUSE Performance</span></a></li>
+<li class="toclevel-2 tocsection-23"><a href="#Identifier_Quoting_-_Dealing_with_mixed_case_Schema.2C_Table_and_Column_names"><span class="tocnumber">1.22</span> <span class="toctext">Identifier Quoting - Dealing with mixed case Schema, Table and Column names</span></a></li>
+<li class="toclevel-2 tocsection-24"><a href="#What_is_the_difference_between_sqllineClient_and_sqllineEngine.3F"><span class="tocnumber">1.23</span> <span class="toctext">What is the difference between sqllineClient and sqllineEngine?</span></a></li>
+<li class="toclevel-2 tocsection-25"><a href="#Creating_users_and_granting_rights"><span class="tocnumber">1.24</span> <span class="toctext">Creating users and granting rights</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="FAQ_List"> FAQ List </span></h1>
+<p>This page is the FAQ list for LucidDB users.  For questions about the project, see <a rel="nofollow" class="external text" href="http://www.luciddb.org/projectFaq.html">the project FAQ on the website</a>.
+</p>
+<h2> <span class="mw-headline" id="Startup_Error_for_libgcj"> Startup Error for libgcj </span></h2>
+<p><b>Question</b>
+</p><p>I got an error about initializeClass on startup.  How do I fix it?
+</p>
+<pre>
+Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: 
+net.sf.farrago.db.FarragoDatabase
+    at java.lang.Class.initializeClass(libgcj.so.90)
+    at 
+net.sf.farrago.db.FarragoDbSingleton.pinReference(FarragoDbSingleton.java:100)
+    at 
+net.sf.farrago.server.FarragoAbstractServer.start(FarragoAbstractServer.java:232)
+    at com.lucidera.farrago.LucidDbServer.main(LucidDbServer.java:61)
+</pre>
+<p><b>Answer:</b>
+</p><p>The GCJ virtual machine (packaged by default with many Linux distributions) is not sufficient for use with LucidDB.  Instead, please install a <a rel="nofollow" class="external text" href="http://java.sun.com/javase/downloads/index.jsp">Sun Java JVM</a>, set your JAVA_HOME to the Sun JRE, then do a fresh unzip/install.
+</p>
+<h2> <span class="mw-headline" id="Startup_Error_for_xlib_xcb"> Startup Error for xlib xcb </span></h2>
+<p><b>Question:</b>
+</p><p>I got an error similar to one of the ones below on startup.  How do I fix it?
+</p>
+<pre>
+java: xcb_xlib.c:50: xcb_xlib_unlock: Assertion `c-&gt;xlib.lock' failed.
+</pre>
+<pre>
+Locking assertion failure. Backtrace:
+#0 /usr/lib/libxcb-xlib.so.0 [0xb7361767]
+#1 /usr/lib/libxcb-xlib.so.0(xcb_xlib_unlock+0x31) [0xb73618b1]
+#2 /usr/lib/libX11.so.6(_XReply+0xfd) [0x99e591bd]
+#3 /usr/lib/jvm/java-1.5.0-sun-1.5.0.16/jre/lib/i386/xawt/libmawt.so [0x9b539dce]
+#4 /usr/lib/jvm/java-1.5.0-sun-1.5.0.16/jre/lib/i386/xawt/libmawt.so [0x9b523d77]
+#5 /usr/lib/jvm/java-1.5.0-sun-1.5.0.16/jre/lib/i386/xawt/libmawt.so [0x9b523ef3]
+#6 /usr/lib/jvm/java-1.5.0-sun-1.5.0.16/jre/lib/i386/xawt/libmawt.so(Java_sun_awt_X11GraphicsEnvironment_initDisplay+0x26) [0x9b524136] 
+</pre>
+<p><b>Answer:</b>
+</p><p>The easiest way is to edit the <b>bin/lucidDbServer</b> startup script and add <b>-Dorg.eigenbase.util.AWT_WORKAROUND=off</b> to the Java command line.  (This will be done as part of the out-of-the-box packaging in the next release since this seems to be a common problem.)
+</p><p>See <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/message.php?msg_id=613385.33648.qm%40web30806.mail.mud.yahoo.com">this mailing list thread</a> for more discussion.
+</p>
+<h2> <span class="mw-headline" id="Startup_Error_For_libaio"> Startup Error For libaio </span></h2>
+<p><b>Question:</b> 
+</p><p>I got the error below on startup.  How do I fix it?
+</p>
+<pre>
+Loading database...
+Exception in thread &quot;main&quot; org.eigenbase.util.EigenbaseException: Failed to load database
+    at net.sf.farrago.resource.FarragoResource$_Def1.ex(FarragoResource.java:1789)
+    at net.sf.farrago.db.FarragoDatabase.&lt;init&gt;(FarragoDatabase.java:269)
+    at net.sf.farrago.db.FarragoDbSingleton.pinReference(FarragoDbSingleton.java:89)
+    at net.sf.farrago.server.FarragoAbstractServer.start(FarragoAbstractServer.java:183)
+    at com.lucidera.farrago.LucidDbServer.main(LucidDbServer.java:61)
+Caused by: org.eigenbase.util.EigenbaseException: FennelResource.en_US.libaioRequired()
+    at net.sf.farrago.resource.FarragoResource$_Def0.ex(FarragoResource.java:1766)
+    at net.sf.farrago.fennel.FennelDbHandle.handleNativeException(FennelDbHandle.java:315)
+    at net.sf.farrago.fennel.FennelDbHandle.executeCmd(FennelDbHandle.java:242)
+    at net.sf.farrago.fennel.FennelDbHandle.&lt;init&gt;(FennelDbHandle.java:90)
+    at net.sf.farrago.db.FarragoDatabase.loadFennel(FarragoDatabase.java:509)
+    at net.sf.farrago.db.FarragoDatabase.&lt;init&gt;(FarragoDatabase.java:189)
+    ... 3 more
+</pre>
+<p><b>Answer:</b>
+</p><p>On a Debian-based system such as Ubuntu:
+</p>
+<pre>
+apt-get install libaio1
+</pre>
+<p>(on older versions it may be libaio instead of libaio1)
+</p><p>On A RedHat-based system:
+</p>
+<pre>
+yum install libaio1
+</pre>
+<p>After that, you should be able to start the server.  If you keep the default setting of aioLinux, you'll want to increase LucidDB's buffer pool size, and also preallocate data files, as mentioned in <a href="/wiki/LucidDbPerformanceTuning#I.2FO_Scheduler" title="LucidDbPerformanceTuning">LucidDbPerformanceTuning#I.2FO_Scheduler</a>.
+</p>
+<h2> <span class="mw-headline" id="Startup_Error_For_mmap"> Startup Error For mmap </span></h2>
+<p><b>Question:</b> 
+</p><p>I got the error below on startup, or when trying to increase the <a href="/wiki/LucidDbBufferPoolSizing" title="LucidDbBufferPoolSizing">buffer pool size</a>.  How do I fix it?
+</p>
+<pre>
+Error: System call failed:  mmap failed: Cannot allocate memory (state=,code=0)
+</pre>
+<p><b>Answer:</b>
+</p><p>Assuming you actually have sufficient physical memory, and are using a 64-bit build if trying to allocate a large buffer pool, check these:
+</p>
+<ol><li> Make sure <b>ulimit -v</b> returns the string "unlimited".  Setting a quota on virtual memory size can cause the error above.
+</li><li> Make sure you aren't accidentally using a <a href="#Debug_Builds">debug build</a>.  Debug builds use <b>mprotect</b> to guard against buffer overruns, and this eats up a lot of additional memory and OS page table space.
+</li></ol>
+<h2> <span class="mw-headline" id="Startup_Error_For_Windows"> Startup Error For Windows </span></h2>
+<p><b>Question:</b> 
+</p><p>I got an error trying to load the native code DLL's on startup.  How do I fix it?
+</p><p><b>Answer:</b>
+</p><p>Make sure you have installed the <a rel="nofollow" class="external text" href="http://www.microsoft.com/downloads/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&amp;displaylang=en">Visual C++ 2008 Redistributable Package</a>.
+</p>
+<h2> <span class="mw-headline" id="Client_Connectivity_Problems"> Client Connectivity Problems </span></h2>
+<p><b>Question:</b>
+</p><p>I can't get sqllineClient, Squirrel, and other clients to talk to the LucidDB server.  What's wrong?
+</p><p><b>Answer:</b>
+</p><p>You may need to follow the instructions in <a href="/wiki/ClientServerLocalhost" title="ClientServerLocalhost">ClientServerLocalhost</a> to fix <b>/etc/hosts</b>.
+</p>
+<h2> <span class="mw-headline" id="Loading_Large_Data_Files"> Loading Large Data Files </span></h2>
+<p><b>Question:</b> 
+</p><p>I have a large data file in txt format. I need to bulk load it into Lucid tables. What's the best way to do this?
+</p><p><b>Answer:</b>
+</p><p>Create a flat file foreign table corresponding to your flat file, and then use an INSERT-SELECT statement to load from the flat file table to your target table.
+</p><p>See <a href="/wiki/LucidDbFlatFileWrapper" title="LucidDbFlatFileWrapper">LucidDbFlatFileWrapper</a> for details.
+</p><p><a href="/wiki/LucidDbEtlTutorial#Define_Sources" title="LucidDbEtlTutorial">LucidDbEtlTutorial#Define_Sources</a> also has an example that shows you how to create a flatfile foreign data wrapper, import it, and then access tables within the imported foreign schema.
+</p>
+<h2> <span class="mw-headline" id="ETL_Tutorial"> ETL Tutorial </span></h2>
+<p><b>Question:</b>
+</p><p>In attempting to follow the ETL Tutorial I got an error because directory examples/etl/filedata/ does not exist.  What should I do?
+</p><p><b>Answer</b>
+</p><p>Make sure you followed the instructions to start the server like this:
+</p>
+<pre>
+bin/lucidDbServer
+</pre>
+<p>The tutorial relies on this for the relative paths to come out right.  Otherwise, you need to edit the scripts so that they supply absolute paths.
+</p>
+<h2> <span class="mw-headline" id="Case-Sensitive_Foreign_Schema_Name"> Case-Sensitive Foreign Schema Name </span></h2>
+<p><b>Question:</b>
+</p><p>I'm trying to import a foreign schema from a server like PostgreSQL with case-sensitive identifiers, and I'm not getting any tables back.  How come?
+</p><p><b>Answer</b>
+</p><p>Make sure you quote the foreign schema name in the IMPORT FOREIGN SCHEMA command:
+</p>
+<pre>
+import foreign schema &quot;public&quot;
+from server postgres_abc
+into ldb_schema 
+</pre>
+<p>Likewise for <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=4891317F.3040406%40gmail.com&amp;forum_name=luciddb-users">foreign tables</a>.
+</p>
+<h2> <span class="mw-headline" id="Default_Port"> Default Port </span></h2>
+<p><b>Question:</b>
+</p><p>What is the default listening port number for LucidDB?
+</p><p><b>Answer:</b>
+</p><p>By default, LucidDB listens for HTTP connections on port 8034.  If you want to specify it explicitly from the client side, use a URL like 
+</p>
+<pre>
+jdbc:luciddb:http://1.2.3.4:8034
+</pre>
+<p>You can change a server's port number by setting system parameter <b>serverHttpPort</b>; see <a href="/wiki/LucidDbSystemParameters" title="LucidDbSystemParameters">LucidDbSystemParameters</a> for more information.
+</p>
+<h2> <span class="mw-headline" id="JDBC_Driver_Class"> JDBC Driver Class </span></h2>
+<p><b>Question:</b>
+</p><p>I'm trying to connect to LucidDB from my own program, but I always get an exception like java.lang.ClassNotFoundException: org.luciddb.jdbc.LucidDbClientDriver.  What should I do to fix it?
+</p><p><b>Answer</b>:
+</p><p>Make sure you have <b>luciddb/plugin/LucidDbClient.jar</b> on your program's classpath.
+</p><p><b>Question:</b>
+</p><p>I'm trying to use LucidDbLocalDriver to access the server from a client program running on the same (local) machine, but it doesn't work.  Why not?
+</p><p><b>Answer:</b>
+</p><p>The "local" driver is local only in the sense "in the same java process", not in the sense "on the same machine", so you'll need to  
+use the HTTP driver.  Use driver class <b>org.luciddb.jdbc.LucidDbClientDriver</b> unless the client and server are actually running in the same JVM.
+</p>
+<h2> <span class="mw-headline" id="JDBC_Driver_Jar_files"> JDBC Driver Jar files </span></h2>
+<p><b>Question:</b>
+</p><p>In luciddb-0.9.4/plugin there are two files, <b>LucidDbClient.jar and LucidDbClient-minimal.jar</b> that look like they could be used by applications to connect to LucidDB.  Which should I use?
+</p><p><b>Answer:</b>
+</p><p>Only applications that already have required libraries (commons-logging-1.1.jar) like PDI/etc should use LucidDbClient-minimal.jar.  Pentaho Data Integration is an example of such an application.  The Pentaho BI Server itself can also use the LucidDbClient-minimal.jar.
+</p><p>Squirrel SQL client and most other applications will use the LucidDbClient.jar
+</p>
+<h2> <span class="mw-headline" id="Slow_INSERT_performance"> Slow INSERT performance </span></h2>
+<p><b>Question:</b>
+</p><p>I'm trying to INSERT lots of rows using the INSERT command, but the performance is terrible!  What can I do to improve the performance?
+</p><p><b>Answer</b>:
+</p><p>There are inherent issues with single row INSERTs in a column store database.  Bulk INSERTs or UPDATEs are best accomplished (with orders of magnitude increases in performance) via a bulk loading method (see <a href="/wiki/LucidDbEtlTutorial" title="LucidDbEtlTutorial">LucidDbEtlTutorial</a> for an example).
+</p>
+<h2> <span class="mw-headline" id="Missing_Columns"> Missing Columns </span></h2>
+<p><b>Question:</b>
+</p><p>I created a wide table, and some of the columns seem to have gone AWOL.  What gives?
+</p><p><b>Answer:</b>
+</p><p>If you're using sqlline, see this <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=221131.98865.qm%40web51307.mail.re2.yahoo.com&amp;forum_name=luciddb-users">mailing list thread</a>.
+</p>
+<h2> <span class="mw-headline" id="Running_As_A_Service_Or_Daemon"> Running As A Service Or Daemon </span></h2>
+<p><b>Question:</b>
+</p><p>How do I run LucidDB as a service on Windows or a daemon on Unix?
+</p><p><b>Answer:</b>
+</p><p>See <a href="/wiki/LucidDbAsDaemonService" title="LucidDbAsDaemonService">LucidDbAsDaemonService</a>.
+</p>
+<h2> <span class="mw-headline" id="J2EE_Embedding"> J2EE Embedding </span></h2>
+<p><b>Question:</b>
+</p><p>How do I run LucidDB inside of a J2EE app server?
+</p><p><b>Answer:</b>
+</p><p>See <a href="/wiki/LucidDbAsManagedBean" title="LucidDbAsManagedBean">LucidDbAsManagedBean</a>.
+</p>
+<h2> <span class="mw-headline" id="Catalog_File_Locking"> Catalog File Locking </span></h2>
+<p><b>Question:</b>
+</p><p>I got an exception about "Failed to lock catalog file" on server startup; what does this mean?
+</p><p><b>Answer:</b>
+</p><p>It means you already have a server process running from the same installation, and only one can be running at a time.  See this <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=381602.46904.qm%40web51306.mail.re2.yahoo.com&amp;forum_name=luciddb-users">mailing list thread</a>.  For information on how to start LucidDB on a remote server, see <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_name=4890A61F.3050505%40gmail.com&amp;forum_name=luciddb-users">this thread</a>.
+</p>
+<h2> <span class="mw-headline" id="Debug_Builds"> Debug Builds </span></h2>
+<p><b>Question:</b>
+</p><p>I built LucidDB <a href="/wiki/LucidDbBuildFromSourceDistribution" title="LucidDbBuildFromSourceDistribution">from source</a> and now it's really slow.  How come?
+</p><p><b>Answer:</b>
+</p><p>By default, <b>initBuild.sh</b> produces an unoptimized debug build, which is an order of magnitude slower than release builds.  Be sure to specify the <b>--with-optimization --without-debug</b> flags to match the release configuration, unless you're actually planning to hack on LucidDB native code and use gdb.
+</p>
+<h2> <span class="mw-headline" id="Beyond_Java"> Beyond Java </span></h2>
+<p><b>Question:</b>
+</p><p>Can I use LucidDB in a non-Java application?
+</p><p><b>Answer:</b>
+</p><p><a href="/wiki/LucidDbNonJavaClients" title="LucidDbNonJavaClients">Maybe</a>.
+</p>
+<h2> <span class="mw-headline" id="Compression_Statistics"> Compression Statistics </span></h2>
+<p><b>Question:</b>
+</p><p>How can I tell how well compression is working?
+</p><p><b>Answer:</b>
+</p><p>It can be difficult to determine this from the size of <b>db.dat</b>, since not all of the pages may be currently in use.
+</p><p>To find out how many pages are currently in use across all tables, across all page versions, execute this:
+</p>
+<pre>
+alter system deallocate old;
+select counter_value from sys_root.dba_performance_counters where counter_name='DatabasePagesAllocated';
+</pre>
+<p>Multiply the result by 32KB (the size of one page).
+</p><p>To study compression effectiveness for a particular table, execute this:
+</p>
+<pre>
+alter system deallocate old;
+analyze table t estimate statistics for all columns;
+select index_name, pages from sys_boot.mgmt.page_counts_view where table_schem='YOUR_SCHEMA_NAME' and table_name='YOUR_TABLE_NAME';
+</pre>
+<p>Indexes with names starting with "SYS$CLUSTERED" represent the compressed column storage.  Every table has a single "SYS$DELETION_INDEX" which tracks deleted rows.  A table may have SYS$ indexes corresponding to PRIMARY KEY and UNIQUE constraint defintions.  Any other indexes are named indexes you have created.
+</p>
+<h2> <span class="mw-headline" id="OpenSUSE_Performance"> OpenSUSE Performance </span></h2>
+<p><b>Question:</b>
+</p><p>Why is LucidDB so slow for short queries on OpenSUSE?
+</p><p><b>Answer:</b>
+</p><p>See the discussion on the ext3 barrier setting in <a rel="nofollow" class="external text" href="http://n2.nabble.com/Row-has-too-many-columns-td2789557.html">this thread</a>, which contains a workaround.
+</p>
+<h2> <span class="mw-headline" id="Identifier_Quoting_-_Dealing_with_mixed_case_Schema.2C_Table_and_Column_names"> Identifier Quoting - Dealing with mixed case Schema, Table and Column names </span></h2>
+<p><b>Question:</b>
+</p><p>Why are the rules for this so confusing?
+</p><p><b>Answer:</b>
+</p><p>LucidDB strictly adheres to SQL:2003 in this regard.  When you don't quote identifiers, they are implicitly uppercased as part of parsing (e.g. yoUr_table becomes YOUR_TABLE).  When you quote them, case is preserved (e.g. "yoUr_table" stays exactly like that).  You must quote them if they are reserved words or contain special characters.  For compound identifiers, the quotes go around each component, e.g. "yoUr_schema"."yoUr_table" not "yoUr_schema.yoUr_table").
+</p><p>One point of confusion arises from the SET SCHEMA command.  The actual syntax is <b>SET SCHEMA &lt;character-expression&gt;</b>, not <b>SET SCHEMA &lt;identifier&gt;</b>.  So, you have to write
+</p>
+<pre>
+SET SCHEMA '&quot;yoUr_schema&quot;'
+</pre>
+<p>not
+</p>
+<pre>
+SET SCHEMA &quot;yoUr_schema&quot;
+</pre>
+<p>If you have a schema named EXTRACTION_SCHEMA (all upper case), this works:
+</p>
+<pre>
+SET SCHEMA 'extraction_schema'
+</pre>
+<p>The reason this works is that the single quotes are delimiting the character literal (not the identifier).  The parsing for this expression first evaluates the character expression, then interprets the result as a (possibly-quoted) identifier.  This allows you to do things like
+</p>
+<pre>
+SET SCHEMA 'SCHEMA_FOR_' || CURRENT_USER
+</pre>
+<p>So if user FRANCISCO logs in, he'll get SCHEMA_FOR_FRANCISCO set as default after executing the expression above.
+<br />
+<br />
+<b>Normal SQL Queries with mixed case table or column names</b><br />
+<br />
+When you use normal <b>SELECT</b> style queries you can expect to use double quotes to work around case issues.
+Example:<br />
+</p>
+<pre>
+select &quot;tableOne&quot;.&quot;myColumn&quot; from &quot;SchemaName&quot;.&quot;tableOne&quot;
+</pre>
+<p><br />
+<b>Function Calls with mixed case table or column names</b><br />
+<br />
+Look at how the parameter itself is in single quotes, the column name is in double quotes.
+</p>
+<pre>
+create_table_as ('select &quot;myCol&quot; from &quot;myTable&quot;', '&quot;TARGETtable&quot;')
+</pre>
+<h2> <span class="mw-headline" id="What_is_the_difference_between_sqllineClient_and_sqllineEngine.3F"> What is the difference between sqllineClient and sqllineEngine? </span></h2>
+<p><b>Question:</b>
+</p><p>What is the difference between sqllineClient and sqllineEngine?
+</p><p><b>Answer:</b><br />
+<br />
+<b>sqllineEngine</b> is LucidDB without the client/server part.<br />
+<br />
+There are two typs of JDBC services<br />
+Engine and vJDBC<br />
+Engine allows something else in Java machine (ie, sqllineEngine) to connect<br />
+JDBC starts listening on port 8034 to allow remote JDBC to connect<br />
+sqllineEngine starts Engine<br />
+lucidDbServer starts vJDBC<br />
+sqllineClient connects to lucidDbServer via vJDBC<br />
+<br />
+<b>sqllineClient</b> is a SQL client.<br />
+</p>
+<h2> <span class="mw-headline" id="Creating_users_and_granting_rights"> Creating users and granting rights </span></h2>
+<p><br />
+You can create a user by following command structure:<br />
+</p>
+<pre>create user &quot;foodmart&quot; identified by 'foodmart' default schema foodmart;</pre>
+<p><br />
+SQL reference for <a href="/wiki/LucidDbCreateUser" title="LucidDbCreateUser"> CREATE USER</a>.
+<br />
+You can grant on many different things using the <a href="/wiki/LucidDbGrant" title="LucidDbGrant">GRANT</a> SQL keyword.
+There is also a helper library function to help for granting SELECT rights over an entire schema. 
+<br />
+<b>Functions - using GRANT</b>
+</p>
+<pre>
+grant execute on specific procedure
+applib.estimate_statistics_for_schema_no_samplingrate to &quot;foodmart&quot;;
+</pre>
+<p><b>Schema - Using helper library function.</b>
+</p>
+<pre>
+CALL APPLIB.GRANT_SELECT_FOR_SCHEMA( 'TESTING', 'pentaho_lucid' );
+</pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 269/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1853-0!*!0!!en!*!* and timestamp 20140414191014 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;oldid=7187">http://luciddb.org/wiki/index.php?title=LucidDbUserFaq&amp;oldid=7187</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbUserFaq" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbUserFaq&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbUserFaq&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbUserFaq&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbUserFaq&amp;returntoquery=oldid%3D7187%26printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbUserFaq" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbUserFaq" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbUserFaq&amp;oldid=7187" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.151 secs. --></body></html>

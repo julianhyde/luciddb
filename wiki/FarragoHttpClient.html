@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoHttpClient - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoHttpClient", "wgTitle": "FarragoHttpClient", "wgCurRevisionId": 6528, "wgArticleId": 2006, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoHttpClient action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoHttpClient</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page is a proposal for moving the default JDBC client/server protocol for Farrago (and dependencies such as LucidDB) from RMI to http.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Rationale"><span class="tocnumber">1</span> <span class="toctext">Rationale</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#New_Thirdparty_Dependencies"><span class="tocnumber">2</span> <span class="toctext">New Thirdparty Dependencies</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Impact"><span class="tocnumber">3</span> <span class="toctext">Impact</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Server_Configuration"><span class="tocnumber">3.1</span> <span class="toctext">Server Configuration</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Client_Configuration"><span class="tocnumber">3.2</span> <span class="toctext">Client Configuration</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Documentation"><span class="tocnumber">3.3</span> <span class="toctext">Documentation</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Testing_Needed"><span class="tocnumber">4</span> <span class="toctext">Testing Needed</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Out_of_Scope"><span class="tocnumber">5</span> <span class="toctext">Out of Scope</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Rationale"> Rationale </span></h1>
+<p>RMI has a number of shortcomings:
+</p>
+<ul><li> it is sensitive to machine name resolution configurations (see discussion in <a href="/wiki/ClientServerLocalhost" title="ClientServerLocalhost">ClientServerLocalhost</a> and <a href="http://issues.eigenbase.org/browse/FRG-32" class="extiw" title="eigenjira:FRG-32">eigenjira:FRG-32</a>), causing trouble for new users and system administrators
+</li><li> the distributed garbage collector can cause random failures (see <a href="http://issues.eigenbase.org/browse/FRG-316" class="extiw" title="eigenjira:FRG-316">eigenjira:FRG-316</a> for an example)
+</li><li> by default, it uses dynamic ports, which is firewall-unfriendly; there's a solution (setting the parameter serverSingleListenerPort), but this is less efficient, and still requires two ports to be opened instead of just one
+</li><li> client-side classloading can lead to bogus exceptions (e.g. due to spaces in .jar paths on Windows; see <a rel="nofollow" class="external text" href="http://n2.nabble.com/MalformedURLException-when-trying-to-connect-to-Lucid-using-JDBC-on-MS-Windows-td3720729.html#a3720729">this mailing list thread</a> for an example)
+</li></ul>
+<p>As a result, we would like to transition from VJDBC's RMI support to its HTTP support as the default (up until now, HTTP support has been considered experimental and has not gotten a lot of testing).
+</p><p>Note that dependencies (such as SQLstream) which are still using RmiJdbc instead of VJDBC will remain on RMI for now.
+</p>
+<h1> <span class="mw-headline" id="New_Thirdparty_Dependencies"> New Thirdparty Dependencies </span></h1>
+<p>In order to make this change, Farrago will need to become dependent on a servlet container to host the VJDBC servlet.  We have chosen <a rel="nofollow" class="external text" href="http://www.eclipse.org/jetty/">Jetty 7</a> for this purpose since it is the most lightweight embeddable container available with known quality.
+</p><p>Deployments which do not need http support (such as SQLstream) or which supply an alternative servlet container (e.g. <a href="/wiki/LucidDbAsManagedBean" title="LucidDbAsManagedBean">LucidDbAsManagedBean</a>) will be able to omit the Jetty dependency in order to avoid bloat/conflicts.
+</p>
+<h1> <span class="mw-headline" id="Impact"> Impact </span></h1>
+<h2> <span class="mw-headline" id="Server_Configuration"> Server Configuration </span></h2>
+<p>Existing scripts such as <b>farragoServer</b>, <b>lucidDbServer</b>, and <b>sqllineClient</b> will continue to work unchanged, but using http as the new default.
+</p><p>In order to revert back to RMI support for a server, it will be necessary to set the <b>serverRmiRegistryPort</b> parameter explicitly:
+</p>
+<pre>
+alter system set &quot;serverRmiRegistryPort&quot; = 5434;
+</pre>
+<p>Otherwise, the default value of -1 will indicate that HTTP should be used instead.  (As a consequence, if the port has already been set explicitly on a server migrated from an earlier version, it will be necessary to set it back to -1 in order to enable HTTP support.)
+</p><p>A new system parameter <b>serverHttpPort</b> will be defined to allow the default HTTP port to be changed.  As with the old RMI parameter, a value of -1 will indicate that a system-dependent default should be used.  In order to minimize the chance of conflicts with application servers, port 8080 will <b>not</b> be used as a default.  Instead, we'll use 80xx where xx is the last two digits of the corresponding RMI port:
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td><strong>RMI Port</strong></td>
+        <td><strong>HTTP Port</strong></td>
+        <td><strong>Project</strong></td>
+    </tr>
+    <tr>
+        <td>5433</td>
+        <td>8033</td>
+        <td>Farrago</td>
+    </tr>
+    <tr>
+        <td>5434</td>
+        <td>8034</td>
+        <td>LucidDB</td>
+    </tr>
+    <tr>
+        <td>5435</td>
+        <td>8035</td>
+        <td>SQLstream (http not used yet but reserved)</td>
+    </tr>
+    <tr>
+        <td>5437 (reserved, but not used) </td>
+        <td>8037</td>
+        <td>DynamoDB</td>
+    </tr>
+</table>
+<p>If both the RMI and HTTP ports are explicitly set, the RMI setting will be ignored and HTTP will be used (simultaneous use of both protocols will not be supported).
+</p>
+<h2> <span class="mw-headline" id="Client_Configuration"> Client Configuration </span></h2>
+<p>Client scripts such as <b>sqllineClient</b> will be updated to default to the new protocol default for the server URL parameter, e.g. <b>jdbc:luciddb:http://localhost</b>.  For a server reverted to RMI, it will be necessary to override the URL and driver from client invocations, e.g.
+</p>
+<pre>
+sqllineClient -d com.lucidera.jdbc.LucidDbRmiDriver -u jdbc:luciddb:rmi://localhost
+</pre>
+<p>For existing installations of tools such as SQuirreL, it will be necessary to update connection settings to specify HTTP instead of RMI.
+</p>
+<h2> <span class="mw-headline" id="Documentation"> Documentation </span></h2>
+<p>Wiki pages which need to be updated:
+</p>
+<ul><li> <a href="/wiki/JdbcUrlConventions" title="JdbcUrlConventions">JdbcUrlConventions</a>
+</li><li> <a href="/wiki/LucidDbSystemParameters" title="LucidDbSystemParameters">LucidDbSystemParameters</a>
+</li><li> <a href="/wiki/LucidDbAsManagedBean" title="LucidDbAsManagedBean">LucidDbAsManagedBean</a>
+</li><li> <a href="/wiki/FarragoSystemParameters" title="FarragoSystemParameters">FarragoSystemParameters</a>
+</li><li> <a href="/wiki/ClientServerLocalhost" title="ClientServerLocalhost">ClientServerLocalhost</a>
+</li><li> <a href="/wiki/LucidDbUserFaq" title="LucidDbUserFaq">LucidDbUserFaq</a>
+</li><li> <a href="/wiki/LucidDbNonJavaClients" title="LucidDbNonJavaClients">LucidDbNonJavaClients</a>
+</li><li> pages such as <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDbGettingStarted</a> and <a href="/wiki/LucidDbSquirrel" title="LucidDbSquirrel">LucidDbSquirrel</a> which display <b>jdbc:luciddb:rmi</b> and <b>jdbc:farrago:rmi</b> in examples (need to search/replace for wiki text, plus find and update screenshots)
+</li></ul>
+<p>--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 16:00, 24 January 2010 (EST):  Also, in LucidDB 0.9.3, we're moving the RMI JDBC driver from com.lucidera.jdbc to org.luciddb.jdbc, so need to roll in those updates too.
+</p>
+<h1> <span class="mw-headline" id="Testing_Needed"> Testing Needed </span></h1>
+<p>Here are some areas which need to be tested as part of the switch:
+</p>
+<ul><li> longevity:  long-running server can continue to serve new and existing connections without failures or leaks (this should be at least as good and probably better than RMI)
+</li><li> concurrency:  concurrent session execution should be at least as good as RMI
+</li><li> latency:  requests are served with latency no worse than RMI
+</li><li> throughput:  large result sets are streamed back with throughput at least as good as RMI
+</li><li> reliability:  network faults can be recovered or at least result in good diagnostics
+</li></ul>
+<h1> <span class="mw-headline" id="Out_of_Scope"> Out of Scope </span></h1>
+<p>We are not addressing https configuration currently, although in theory it should not be difficult (most of the complexity is in setting up a certificate).
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 59/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2006-0!*!0!!en!*!* and timestamp 20140414194633 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoHttpClient&amp;oldid=6528">http://luciddb.org/wiki/index.php?title=FarragoHttpClient&amp;oldid=6528</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoHttpClient" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk"><a href="/wiki/Talk:FarragoHttpClient" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoHttpClient&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoHttpClient&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoHttpClient" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoHttpClient" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoHttpClient" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoHttpClient&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoHttpClient&amp;oldid=6528" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 1 April 2010, at 17:11.</li>
+		<li id="viewcount">This page has been accessed 3,846 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.196 secs. --></body></html>

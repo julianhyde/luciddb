@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>BeanCounting17Feb2006 - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "BeanCounting17Feb2006", "wgTitle": "BeanCounting17Feb2006", "wgCurRevisionId": 2240, "wgArticleId": 1563, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-BeanCounting17Feb2006 action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">BeanCounting17Feb2006</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Attendees"><span class="tocnumber">1</span> <span class="toctext">Attendees</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Summary"><span class="tocnumber">2</span> <span class="toctext">Summary</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Job_Control"><span class="tocnumber">3</span> <span class="toctext">Job Control</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Reasoning_About_Resources_and_Workloads_over_Time"><span class="tocnumber">4</span> <span class="toctext">Reasoning About Resources and Workloads over Time</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#ExecStreamGraph"><span class="tocnumber">5</span> <span class="toctext">ExecStreamGraph</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Attendees">Attendees</span></h2>
+<p>jhyde, jpham, jvs, mberkowitz, qtran, rchen, zfong
+</p>
+<h2> <span class="mw-headline" id="Summary">Summary</span></h2>
+<p>In response to <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?thread_id=9648570&amp;forum_id=45738">some mailing list traffic</a>, attendees discussed two related topics:
+</p>
+<ul><li> Job control at the system level (we avoid the term "global scheduling" since that has another meaning in distributed systems)
+</li><li> Fine-grained resource allocation at the ExecStreamGraph level (including some history on how the equivalent system worked in Broadbase)
+</li></ul>
+<p>The main purpose of the meeting was to familiarize everyone with the major challenges and to propose approaches so that we can start thinking about designing common interfaces at the Eigenbase level. Job control is forward-looking for everyone involved, so there was no specific action item on that topic other than to keep ruminating, but at the ExecStream-level, JVS will propose some interface enhancements in the near-term.
+</p>
+<h2> <span class="mw-headline" id="Job_Control">Job Control</span></h2>
+<p>This is the part of the system that is supposed to take an incoming workload of operations to be executed, possibly together with quality-of-service (QoS) constraints and affinity information, and make decisions such as:
+</p>
+<ul><li> Whether to allow execution at all. Some job controllers may reject operations based on resource limitations. (<b>Question</b>: is it reasonable to equate one operation with one SQL statement? Or is finer granularity such as individual cursor fetches required?).
+</li><li> When to begin execution. Job controllers may queue operations.
+</li><li> How much to allocate in terms of coarse-grained resources. Examples include cache memory and parallelism (degree in an SMP environment, plus node ID's in a distributed system). Distributed systems may account for network bandwidth.
+</li><li> Whether and when to kill jobs. Controllers may choose to do this for good reason, e.g. governance (the system detects that a query has gone wild), administration (a user requests that an operation be killed), QoS (a higher-priority operation has been requested and resources in use by a low-priority operation must be stolen to satisfy a service-level agreement), or replanning (some part of the system has realized that a better plan exists for a long-running operation).
+</li><li> Whether and when to attempt to dynamically adjust resource allocations for existing jobs.
+</li></ul>
+<p>No such critter exists yet in Eigenbase (statements are always executed immediately with minimum resources regardless of what else is already executing). And it's unlikely that there will be a one-size-fits-all implementation to satisfy everyone. So we will take our usual plugin approach:
+</p>
+<ul><li> Define the JobController interface in such a way that it is possible for multiple implementations to be written without higher-level components knowing which one is in use. Here "higher-level" includes important infrastructure such as tracing and workload history capture.
+</li><li> Provide a (possibly simplistic) reference implementation as a green-zone component.
+</li><li> Refine lower-level interfaces such as ExecStreamScheduler so that they can interact with a JobController, without either component being required to know anything about the other's implementation details. (Of course, covariant implementations which know about each other are allowed too.)
+</li></ul>
+<h2> <span class="mw-headline" id="Reasoning_About_Resources_and_Workloads_over_Time">Reasoning About Resources and Workloads over Time</span></h2>
+<p>Julian drew a representation of resource allocation over a slice of time for a given workload; for some reason it came out looking like artwork by Piet Mondrian:
+<img src="http://meyerweb.com/eric/css/examples/themes/ui/mondrian/mond.jpg" alt="mond.jpg" />
+One dimension (say width) represents time, and the other some resource quantity (e.g. memory) of which there is a fixed global supply (height). Individual rectangles represent allotments of resources to specific operations. In the image above, the system is running at full utilization (one can always dream).
+</p><p>Depending on the operation, it may be possible to resize the rectangle by adjusting the resource allocation. For example, if a sorter gets enough memory to fit the entire input in memory, it can run very quickly; if it gets only a tiny amount of memory, it can still finish the job, but it will take a long time. There are typically limits along either dimension (giving the sorter more memory than the input size doesn't provide any additional benefit, and below a certain minimum number of buffers, it can't run at all). Julian pointed out that the area of a rectangle always has a lower bound analogous to Planck's constant (physical processes can take take place over a long time with very little energy expenditure, or very quickly with a lot of energy, but the product of time and energy has a lower bound).
+</p><p>In reality, the job controller has to face a bit of adversity in its quest to achieve high utilization while meeting QoS constraints:
+</p>
+<ul><li> Ignorance of the future. The job controller has to base its decisions on current queue state and workload/utilization history (if available).
+</li><li> Imperfect knowledge. In a distributed utility-computing system, the node running the controller may receive only coarse state updates from worker nodes, and even that comes with lag. Even in a single-node system, measures such as completion progress of a statement's execution are approximate at best.
+</li><li> Algorithmic complexity. Even imagining a system with perfect lookahead and knowledge of global state, there are lots of known NP-hard problems in this area.
+</li></ul>
+<p>We discussed some approaches for dealing with these:
+</p>
+<ul><li> Add infrastructure for capturing, analyzing, and simulating histories as a means of predicting the future.
+</li><li> For jobs without low-latency constraints, always use queueing to give the controller a better chance of finding an optimal allocation.
+</li><li> Add interfaces for querying time estimates for a given job: answers might come from the optimizer, the executable plan, historical pattern-matching (e.g. the same ETL job runs every night), or external systems (e.g. a workflow engine). Actual progress updates from the executing statement are important too.
+</li><li> Leverage fault-tolerance. If the system already has to deal with node failures gracefully, then the controller can be somewhat reckless. For example, it might attempt to run a statement even when it can't guarantee its declared minimum of resources (it's easier to ask forgiveness than permission). And as mentioned earlier, the ability to explicitly kill a job (which is equivalent to a fault from the point of view of the job itself) gives the job controller the option to take action if it starts to "regret" its existing allocations.
+</li><li> Dynamic renegotiation. For some ExecStreams, it is possible to adjust their resource consumption during execution (either immediately on request, or after some delay). This allows for trapezoids and other interesting shapes instead of just rectangles in the diagram.
+</li></ul>
+<h2> <span class="mw-headline" id="ExecStreamGraph">ExecStreamGraph</span></h2>
+<p>The embodiment of a portion of an executable job on a particular node is an ExecStreamGraph, and much of the information needed by the job controller has to come from this component:
+</p>
+<ul><li> Allocation requirements
+</li><li> Time estimates
+</li><li> Progress estimates
+</li></ul>
+<p>Limitations of the current interface are discussed in the second half of <a href="/wiki/FennelResourceAllocation" title="FennelResourceAllocation">FennelResourceAllocation</a>. In addition to the enhancements mentioned there and above, the following proposals were raised at the meeting:
+</p>
+<ul><li> Instead of characterizing the allocation-to-efficiency curve via just two breakpoints ("minimal" and "optimal"), come up with something having more expressive power (e.g. for a sorter, there is a discontinuity at the transition between in-memory sort and external sort, and between different depths of external sort).
+</li><li> Allow for expression of overlapping resource curves across mutiple ExecStreams (e.g. a hash-join releasing its memory as a consuming sorter starts increasing in tandem).
+</li><li> Turn overdraft into a recoverable exception (replacing the current assertion-failure behavior). Recoverable here means the consumer would call its scheduler to ask what to do (e.g. suspend, retry, fail), and in the failure case, would throw a well-defined exception so that the "reckless" job controller would know it was worth retrying (as opposed to a user error).
+</li><li> Infer resource consumption optimizations from specific graph topologies and vertices (e.g. resources consumed upstream of a BarrierExecStream acting as a bottleneck are reusable downstream of the barrier once it has returned EOS).
+</li></ul>
+<p>It is worth noting that resource allocation among the vertices of an ExecStreamGraph is similar to the job controller's problem of allocation across jobs, except with the additional constraint of dataflow dependencies.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 18/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1563-0!*!0!!en!*!* and timestamp 20140414193749 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=BeanCounting17Feb2006&amp;oldid=2240">http://luciddb.org/wiki/index.php?title=BeanCounting17Feb2006&amp;oldid=2240</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/BeanCounting17Feb2006" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:BeanCounting17Feb2006&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=BeanCounting17Feb2006&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=BeanCounting17Feb2006&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=BeanCounting17Feb2006" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/BeanCounting17Feb2006" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/BeanCounting17Feb2006" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=BeanCounting17Feb2006&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=BeanCounting17Feb2006&amp;oldid=2240" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 9 April 2007, at 02:53.</li>
+		<li id="viewcount">This page has been accessed 1,507 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.205 secs. --></body></html>

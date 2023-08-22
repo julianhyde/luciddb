@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbBackupRestore - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbBackupRestore", "wgTitle": "LucidDbBackupRestore", "wgCurRevisionId": 6933, "wgArticleId": 1608, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbBackupRestore action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbBackupRestore</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Backup"><span class="tocnumber">2</span> <span class="toctext">Backup</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Types_of_Backup"><span class="tocnumber">2.1</span> <span class="toctext">Types of Backup</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Compression"><span class="tocnumber">2.2</span> <span class="toctext">Compression</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Concurrency"><span class="tocnumber">2.3</span> <span class="toctext">Concurrency</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Restore"><span class="tocnumber">3</span> <span class="toctext">Restore</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This page explains how to backup and restore an instance of LucidDB.
+</p><p>Before reading the procedures, here are a few important points to note:
+</p>
+<ul><li> Starting from release 0.8.0, LucidDB supports <i>hot</i> backup.  This means that you do not have to shut down the server before backing up.  You can run queries, updates, and even DDL while the backup is in progress.  An older, <a href="/wiki/LucidDbColdBackupRestore" title="LucidDbColdBackupRestore"><i>cold</i> backup</a> procedure required a server shutdown.
+</li><li> LucidDB currently only supports <i>physical</i> backup.  This means copying binary data files rather than exporting data and metadata in a platform-neutral format (e.g. DDL scripts and INSERT statements).  For logical data-level export, see the <a href="/wiki/LucidDbSysRoot_EXPORT_SCHEMA_TO_FILE" title="LucidDbSysRoot EXPORT SCHEMA TO FILE"> EXPORT_SCHEMA_TO_FILE system procedure</a>.  Metadata export in DDL form is not currently available.  (A lot of the underlying components needed are available, so putting them together into a system procedure would be a great contribution.)
+</li><li> Binary data files are architecture specific, so physical <b>backup/restore is only possible from installations on the same architecture</b> (Linux 64 bit to Linux 64 bit will work but Linux 32 bit to Linux 64 bit will NOT work).  If you need to move between architectures, use the logical data level export outlined above.
+</li><li> Reliable backup/restore procedures are defined here, but no automation scripts are available in packaged builds yet (another potential for a good contribution).  Developer source builds include ant targets <b>backupCatalog</b> and <b>restoreCatalog</b> which carry out these procedures (skipping the verification steps).
+</li><li> LucidDB hot backups will avoid backing up free data pages.  Using the <a href="/wiki/LucidDbPerformanceTuning#Pre-allocating_File_Space_.28Linux_Only.29" title="LucidDbPerformanceTuning">LucidDB preallocation utility</a>, it's possible to pre-allocate space in your db.dat file.  Regardless of the size of the db.dat file, the backup will bypass all free pages.  Therefore, it generally is a good idea to run <a href="/wiki/LucidDbAlterSystem" title="LucidDbAlterSystem"><code>ALTER SYSTEM DEALLOCATE OLD</code></a> before doing a backup to avoid backing up pages that are no longer in use, but haven't yet been freed.
+</li></ul>
+<h1> <span class="mw-headline" id="Backup"> Backup </span></h1>
+<p>To create a backup, two system procedures are provided:
+</p>
+<ul><li> <a href="/wiki/LucidDbSysRoot_BACKUP_DATABASE" title="LucidDbSysRoot BACKUP DATABASE"> BACKUP_DATABASE</a>
+</li><li> <a href="/wiki/LucidDbSysRoot_BACKUP_DATABASE_IF_SPACE_AVAILABLE" title="LucidDbSysRoot BACKUP DATABASE IF SPACE AVAILABLE"> BACKUP_DATABASE_IF_SPACE_AVAILABLE</a>
+</li></ul>
+<p>Creating a backup is simply a matter of calling one of these two procedures.
+</p><p>Both procedures take as a parameter the pathname of a directory where the backups will be written.  The directories must be writable.  They do not need to be empty, but they cannot contain files with the following reserved names, as these are the files that will be written out by the backup.
+</p>
+<ul><li> <b>backup.properties</b> - text file containing a description of the backup
+</li><li> <b>FarragoCatalogDump</b> (or <b>FarragoCatalogDump.gz</b> if using compression) - an XMI dump of the system catalogs
+</li><li> <b>FennelDataDump.dat</b> (or <b>FennelDataDump.dat.gz</b> if using compression) - a copy of the data pages in use at the start of the backup and system-level metadata pages
+</li></ul>
+<p>The second procedure shown above will estimate if there is sufficient space to create the backup before proceeding with backup of the data pages.  However, because LucidDB can only <i>estimate</i> the space requirements, there's still a possibility that the backup will fail due to lack of space.
+</p><p>Only one backup can be running at any given time.
+</p><p>A backup cannot be issued if the session has a <a href="/wiki/LucidDbWarehouseLabels" title="LucidDbWarehouseLabels">label setting</a>.
+</p><p>Any failures that occur during a backup will not clean up partially written files in the archive directory.
+</p>
+<h2> <span class="mw-headline" id="Types_of_Backup"> Types of Backup </span></h2>
+<p>In addition to supporting full backups, which back up all data pages, LucidDB also supports incremental and differential backups.
+</p><p><a href="http://en.wikipedia.org/wiki/Backup" class="extiw" title="wikipedia:Backup">Backup terminology</a> copied from wikipedia:
+</p>
+<ul><li> <b>Incremental backup</b>:  A Full + Incremental repository aims to make storing several copies of the source data more feasible. At first, a full backup (of all files) is taken. After that an incremental backup (of only the files that have changed since the previous full or incremental backup) can be taken. Restoring whole systems to a certain point in time would require locating the full backup taken previous to that time and all the incremental backups taken between that full backup and the particular point in time to which the system is supposed to be restored. This model offers a high level of security that something can be restored and can be used with removable media such as tapes and optical disks. The downside is dealing with a long series of incrementals and the high storage requirements.
+</li><li> <b>Differential backup</b>:  A full + differential backup differs from a full + incremental in that after the full backup is taken, each partial backup captures all files created or changed since the full backup, even though some may have been included in a previous partial backup. Its advantage is that a restore involves recovering only the last full backup and then overlaying it with the last differential backup.
+</li></ul>
+<p>An error will be returned if you attempt to create either a differential or incremental backup without first having created some other backup.
+</p>
+<h2> <span class="mw-headline" id="Compression"> Compression </span></h2>
+<p>The files containing the catalog dump and data pages can be optionally compressed using <b>gzip</b>.  The backup procedures will try to locate the <b>gzip</b> executable by first searching <b>/bin</b>, then <b>/usr/bin</b>.  If the executable is in neither of those directories, then the the executable must be in the user's <b>PATH</b> environment variable.
+</p><p>Note that compression is currently only supported on Linux.
+</p>
+<h2> <span class="mw-headline" id="Concurrency"> Concurrency </span></h2>
+<p>As noted earlier, backups can run concurrently with other SQL statements.  However, <code>ALTER SYSTEM DEALLOCATE OLD</code> is a no-op if it's run during a backup.  This ensures that pages that need to be backed up aren't freed in the middle of the backup.
+</p><p>During the initial phase of the backup while creating the catalog dump and backing up system-level metadata, locks are placed on the system catalog, which will cause other SQL statements to wait.  This is a short duration lock, so the concurrency impact is minimized.  During the lengthier portion of the backup when data pages are being backed up, no locks are held.  It is possible to cancel the backup.
+</p><p>See <a href="/wiki/LucidDbConcurrencyControl" title="LucidDbConcurrencyControl">LucidDbConcurrencyControl</a> for background on concurrency control in LucidDB.
+</p>
+<h1> <span class="mw-headline" id="Restore"> Restore </span></h1>
+<p>Restore is also invoked via SQL using the system procedure, <a href="/wiki/LucidDbSysRoot_RESTORE_DATABASE" title="LucidDbSysRoot RESTORE DATABASE">RESTORE_DATABASE</a>.  The procedure takes as a parameter the pathname of the archive directory written by an earlier backup.  The directory must exist and be readable to LucidDB.
+</p><p>There are two variations of the restore UDR.  One restores both data pages and catalog data, while the other only restores data pages.  If a sequence of backups are required to restore LucidDB, then the very last restore in the sequence must restore both data pages and catalog data.  Otherwise, LucidDB will be inaccessible until the catalog data is restored.  By bypassing the restore of catalog data for the earlier backups in the restore sequence, that will speed up the total time required to complete the entire restore.
+</p><p>Restore will grow <b>db.dat</b> as necessary to bring it back to the same size as of backup time, but better performance can be achieved by using <a href="/wiki/LucidDbPerformanceTuning#Pre-allocating_File_Space_.28Linux_Only.29" title="LucidDbPerformanceTuning">the LucidDB storage preallocation utility</a> to do this before bringing the server up for restore.  Restore will never shrink <b>db.dat</b>, and does not precheck the available disk space if <b>db.dat</b> needs to grow.
+</p><p>No other users can be connected to LucidDB while a restore is in-progress, and the restore session cannot have a <a href="/wiki/LucidDbWarehouseLabels" title="LucidDbWarehouseLabels">label setting</a>.
+</p><p>The restore will fail (leaving the database unmodified) if the expected reserved filenames do not exist in the archive directory.
+</p><p>For a restore from an incremental or differential backup, the restore will fail (leaving the database unmodified) if the commit sequence number recorded with the backup does not match the commit sequence number recorded as "previous" or "previous full" (respectively) at the time the backup was taken.  Therefore, it's important that in between any two restores in a sequence, no SQL statements other than  the restore procedure calls (or read-only queries) are issued.
+</p><p>If a restore request fails in the middle (e.g. due to an I/O error or due to a user cancel request), the database may be left in an unusable state, in which case, it is necessary to start over from the beginning of a full restore sequence.
+</p><p>LucidDB must be restarted after each restore completes.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 22/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1608-0!*!0!!en!*!* and timestamp 20140414191115 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbBackupRestore&amp;oldid=6933">http://luciddb.org/wiki/index.php?title=LucidDbBackupRestore&amp;oldid=6933</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbBackupRestore" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbBackupRestore&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbBackupRestore&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbBackupRestore&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbBackupRestore&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbBackupRestore" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbBackupRestore" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbBackupRestore&amp;oldid=6933" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 20 April 2011, at 23:08.</li>
+		<li id="viewcount">This page has been accessed 11,458 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.143 secs. --></body></html>

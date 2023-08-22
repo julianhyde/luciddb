@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbHive - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbHive", "wgTitle": "LucidDbHive", "wgCurRevisionId": 6857, "wgArticleId": 2050, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbHive action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbHive</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><div class="floatright"><a href="/wiki/File:Honeybear.jpg" class="image"><img alt="Honeybear.jpg" src="/wiki/upload/7/7a/Honeybear.jpg" width="161" height="240" /></a></div>
+<p>This page describes experimental integration (code-named <i>honeybear</i>) between <a rel="nofollow" class="external text" href="http://www.luciddb.org">LucidDB</a> and <a rel="nofollow" class="external text" href="http://hadoop.apache.org/hive">Apache Hadoop's Hive project</a>.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Getting_Started"><span class="tocnumber">2</span> <span class="toctext">Getting Started</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Running_both_LucidDB_and_Hive_Servers"><span class="tocnumber">3</span> <span class="toctext">Running both LucidDB and Hive Servers</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Accessing_Hive_Tables"><span class="tocnumber">4</span> <span class="toctext">Accessing Hive Tables</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Copying_Data_From_Hive_to_LucidDB"><span class="tocnumber">5</span> <span class="toctext">Copying Data From Hive to LucidDB</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Pushing_Down_SQL"><span class="tocnumber">6</span> <span class="toctext">Pushing Down SQL</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Understanding_SQL_Language_Differences"><span class="tocnumber">7</span> <span class="toctext">Understanding SQL Language Differences</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Roadmap"><span class="tocnumber">8</span> <span class="toctext">Roadmap</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Attachments"><span class="tocnumber">9</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p><a href="/wiki/File:LucidDbHive.png" class="image"><img alt="LucidDbHive.png" src="/wiki/upload/7/71/LucidDbHive.png" width="354" height="394" /></a>
+</p><p>In the first place, why would you want to put together LucidDB (a single-node column store relational database with no map/reduce execution) with Hive (a SQL layer built on top of Hadoop's map/reduce architecture)?
+</p><p>Well, Hive is great for storing and crunching massive (up to petabyte-scale) amounts of data on large clusters of machines (up to thousands of nodes).  However, Hadoop scheduling and lack of indexing can mean that queries which only need to reference small amounts of data may not come back with results for minutes (or even hours on a very busy cluster).  This can make it frustrating or impossible to carry out OLAP, exploratory or iterative analysis over small subsets of data within Hive.  Also, Hive's support for the SQL language is still incomplete, making it more difficult to express some queries.
+</p><p>In contrast, LucidDB can comfortably handle amounts of data under a terabyte (with much better performance than a traditional row-oriented databases), and supports features such as bitmap indexing and star join optimization, which are important for fast response times on analytic queries.  And its SQL support and client drivers are quite a bit more advanced and standards-compliant than Hive.  However, LucidDB can not yet scale out to a cluster in the way that Hive can, and LucidDB does not yet parallelize execution of individual queries even on a single node.  So for "big data" queries (e.g. over tens of terabytes of data), LucidDB by itself can't do the job.
+</p><p>So, for huge data warehouses, it makes sense to introduce a division of labor in which LucidDB servers are used for creating and accessing small "data marts" hanging off of a large Hive cluster.  In addition, LucidDB supports the ability to push down SQL queries into foreign database servers such as Hive, so even when the data is all kept in Hive, in some cases it may be possible to use LucidDB as a middleman for translating standard/advanced SQL into the dialect understood by Hive.  The fact that both Hive and LucidDB are Java-based makes integration smooth (a single JVM can host the LucidDB server with the Hive client components completely embedded).
+</p><p>The rest of this document explains how to set up the integration, what is currently supported, and the roadmap for tighter integration going forward.
+</p><p>There is a <a rel="nofollow" class="external text" href="http://www.nicholasgoodman.com/entry_images/2010-06-28_2026.swf">short technical video from Nicholas Goodman</a> that demonstrates this experimental integration.
+</p>
+<h1> <span class="mw-headline" id="Getting_Started"> Getting Started </span></h1>
+<p>Here's what you'll need:
+</p>
+<ul><li> An installation of LucidDB 0.9.3 or later (use the download links on the <a rel="nofollow" class="external text" href="http://www.luciddb.org">LucidDB home page</a>).
+</li><li> A Hive build from latest trunk (follow the instructions in <a rel="nofollow" class="external text" href="http://wiki.apache.org/hadoop/Hive/HowToContribute">the Hive wiki</a>), with HADOOP_HOME set
+</li></ul>
+<p>Then:
+</p>
+<ol><li> Shut down your LucidDB server if it is still running
+</li><li> Download <a href="/wiki/upload/0/05/Honeybear.2.patch" class="internal" title="Honeybear.2.patch">Honeybear.2.patch</a> and apply it to your Hive trunk checkout with <b>patch -p0 &lt; Honeybear.2.patch</b>
+</li><li> Run Hive's <b>ant package</b> command to rebuild Hive
+</li><li> export LUCIDDB_HOME=/path/to/your/install/of/luciddb-0.9.3
+</li><li> From Hive trunk, run <b>build/dist/bin/hive --service honeybear</b>
+</li></ol>
+<p>This will start up the Honeybear service, with LucidDB running as a server containing an embedded instance of the Hive client.  (Note that while this is running, you should not try to start running the normal LucidDB server script at the same time; it will fail since they are configured to share the same location on disk.  Likewise, if you are using Hive's default Derby metastore, you won't be able to start the Hive CLI while the Honeybear service is running.)
+</p><p>You will see a lot more noise on usual than console, since the Hadoop startup redirects log4j output to console, allowing you to diagnose problems there.  LucidDB-specific logging will mostly still go to luciddb-0.9.3/trace/Trace.log.
+</p><p>Now you can use LucidDB <b>sqllineClient</b> to connect and issue LucidDB SQL commands to Honeybear.
+</p>
+<h1> <span class="mw-headline" id="Running_both_LucidDB_and_Hive_Servers"> Running both LucidDB and Hive Servers </span></h1>
+<p>Alternatively, if you'd like to run two different servers so that
+</p>
+<ul><li> LucidDB is running using its standard scripts
+</li><li> Hive is running using its standard scripts and available to remote clients 
+</li></ul>
+<p>Follow steps above all the way through rebuilding Hive.  Then do the following
+</p><p>Step 1 - Copy the following jars to $LUCIDDB_HOME/lib/hadoop (new directory) 
+</p>
+<pre>
+from hadoop:
+hadoop-0.20.0-core.jar
+
+from hive:
+hive-exec-0.7.0.jar
+hive-jdbc-0.7.0.jar
+hive-metastore-0.7.0.jar
+hive-service-0.7.0.jar
+libfb303.jar
+log4j-1.2.15.jar
+</pre>
+<p>Step 2 - If you're using an existing LucidDB server, manually edit the classpath.gen and add the newly added jars.  Alternatively, simple remove classpath.gen, an rm -rf trace/ and run the "install.sh" script again to generate it.
+</p><p>Step 3 - Start the Hive server as you normally would
+</p>
+<pre>
+cd build/dist
+./hive.sh --service hiveserver
+</pre>
+<p>Step 4 - Start LucidDB as you normally would
+</p>
+<pre>
+cd $LUCDDB_HOME/bin
+./lucidDbServer
+</pre>
+<p>Only difference in subsequent sections is to use the remote URL instead of the embedded URL when creating the foreign table
+</p>
+<pre>
+jdbc:hive://localhost:10000/default
+</pre>
+<h1> <span class="mw-headline" id="Accessing_Hive_Tables"> Accessing Hive Tables </span></h1>
+<p>Next, let's see how to query Hive tables with LucidDB as a middleman.  First, follow the instructions in <a rel="nofollow" class="external text" href="http://wiki.apache.org/hadoop/Hive/GettingStarted">Hive's Getting Started Guide</a> for creating table <b>pokes</b> and loading data into it.  Do this part from the normal Hive CLI (not from sqlline), and verify that you can <b>select * from pokes</b> there and see the loaded data.
+</p><p>Now, in sqlline, execute these commands:
+</p>
+<pre>
+create server hive_link
+foreign data wrapper sys_jdbc
+options(
+driver_class 'org.apache.hadoop.hive.jdbc.HiveDriver',
+url 'jdbc:hive://',
+-- use this instead if running Hive with thrift server
+-- url 'jdbc:hive://localhost:10000/default',
+user_name 'SA',
+schema_name 'METASTORE',
+table_types 'TABLE,VIEW',
+skip_type_check 'TRUE');
+
+create schema hive_test;
+
+create foreign table hive_test.pokes
+server hive_link
+options (table_name 'pokes');
+</pre>
+<p>The first command tells LucidDB how to talk to Hive (via Hive's own JDBC driver).  The second command copies metadata about table pokes from Hive's metastore into LucidDB's catalog.  (Note that the rules for identifiers are different in the two systems, so in Hive, the tablename is kept lowercased, whereas in LucidDB, it is implicitly uppercased because it is unquoted.)
+</p><p>Now you should be able to do
+</p>
+<pre>
+select * from hive_test.pokes;
+</pre>
+<p>or
+</p>
+<pre>
+select &quot;bar&quot; from hive_test.pokes where &quot;foo&quot; = 200;
+</pre>
+<p>It's necessary to quote the column names because they were imported as lowercase in LucidDB's catalog.
+</p><p>If you do
+</p>
+<pre>
+!set maxwidth 1000
+select * from sys_root.dba_columns where table_name='POKES';
+</pre>
+<p>you will see the imported definitions for the two columns.  Note that the VARCHAR column was imported as VARCHAR(1024); that is because the Hive metastore does not put any limits on strings, whereas LucidDB does, so a default of 1024 was chosen.
+</p><p>You can override the column types (but not names) during the import as follows:
+</p>
+<pre>
+create foreign table hive_test.pokes2(
+    &quot;foo&quot; int,
+    &quot;bar&quot; varchar(128)
+)
+server hive_link
+options (table_name 'pokes');
+</pre>
+<h1> <span class="mw-headline" id="Copying_Data_From_Hive_to_LucidDB"> Copying Data From Hive to LucidDB </span></h1>
+<p>So far, we have just been using LucidDB as a middleman, without actually storing any data in it.  Here's how to make a copy of a table from Hive to LucidDB, index one of the columns, and collect stats:
+</p>
+<pre>
+create table hive_test.pokes_copy(
+    foo int,
+    bar varchar(128))
+create index pokes_bar on hive_test.pokes_copy(bar);
+
+insert into hive_test.pokes_copy select * from hive_test.pokes;
+
+analyze table hive_test.pokes_copy estimate statistics for all columns;
+</pre>
+<p>For the LucidDB table, we can avoid quoting the column names.
+</p><p>Now when you do something like <b>select * from hive_test.pokes_copy</b> you will see no activity in the Hive log on server console since all of the data is being retrieved directly from LucidDB's storage.
+</p>
+<h1> <span class="mw-headline" id="Pushing_Down_SQL"> Pushing Down SQL </span></h1>
+<p>When you run a query like <b>select "bar" from hive_test.pokes where "foo"=200</b>, what happens?  Currently, LucidDB pulls the entire table over from Hive and then performs the filtering and projection locally.  You can see that this is happening by either examining the Hive log output, or using EXPLAIN PLAN in LucidDB:
+</p>
+<pre>
+0: jdbc:luciddb:http://localhost&gt; explain plan for select &quot;bar&quot; from hive_test.pokes where &quot;foo&quot;=200;
++--------------------------------------------------------------------------------------------------+
+|                                                                                                  |
++--------------------------------------------------------------------------------------------------+
+| FennelToIteratorConverter                                                                        |
+|   FennelReshapeRel(projection=[[1]], filterOp=[COMP_EQ], filterOrdinals=[[0]], filterTuple=[[200 |
+|     IteratorToFennelConverter                                                                    |
+|       ResultSetToFarragoIteratorConverter                                                        |
+|         MedJdbcQueryRel(foreignSql=[SELECT *                                                     |
+| FROM `pokes`])                                                                                   |
++--------------------------------------------------------------------------------------------------+
+</pre>
+<p>In some cases, this is a good thing, since when Hive sees a query of the form <b>select * from t</b>, it executes it without running a map/reduce job; instead, it just pulls the data directly from HDFS.
+</p><p>However, if the query is doing a lot of data reduction (e.g. via filtering or aggregation), then we want LucidDB to push down most of the SQL query to Hive.
+</p><p>LucidDB is capable of doing this for a number of SQL constructs, but currently Hive's JDBC driver prevents it from happening.  The later section on roadmap discusses how we will address this.  In the meantime, you can make still make this happen manually with this procedure:
+</p>
+<ol><li> Create a view in Hive which expresses the filter condition
+</li><li> Create a foreign table in LucidDB which maps to the Hive view
+</li><li> Select from the foreign table in LucidDB
+</li></ol>
+<p>For example, in Hive CLI, do
+</p>
+<pre>
+create view pokes_view as select bar from pokes where foo=200;
+</pre>
+<p>Then in sqlline:
+</p>
+<pre>
+create foreign table hive_test.pokes_view(
+    &quot;bar&quot; varchar(128)
+)
+server hive_link
+options (table_name 'pokes_view');
+
+select * from hive_test.pokes_view;
+</pre>
+<p>You should see a map/reduce job running on the Hive side for evaluating the view's query.
+</p>
+<h1> <span class="mw-headline" id="Understanding_SQL_Language_Differences"> Understanding SQL Language Differences </span></h1>
+<p>There are many differences between Hive and LucidDB SQL support; here are a few of the major ones to be aware of:
+</p>
+<ul><li> In almost all cases, LucidDB strictly conforms to the ISO/IEC SQL standards; Hive tends to be very lax instead (more like MySQL).  For example, LucidDB prevents you from comparing strings and numerics (you instead have to explicitly cast one of them to make them compatible); Hive tries to be friendly by allowing this and auto-casting one to the other (but not necessarily with the results you expect)
+</li><li> LucidDB suppports (and requires) usage of schema qualifiers on tables; Hive does not currently support them (all tables live in one global namespace)
+</li><li> Unquoted identifiers in LucidDB are implicitly uppercased; in Hive, they are implicitly lowercased
+</li><li> LucidDB uses the standard double-quote (") for quoting identifiers; Hive uses the MySQL backtick (`) convention instead
+</li><li> LucidDB uses the standard INSERT INTO T SELECT ... whereas Hive uses its extension INSERT OVERWRITE TABLE T SELECT ... as well as variations for multi-table INSERT
+</li><li> LucidDB uses <b>FROM T TABLESAMPLE SYSTEM(5.0)</b> where Hive would use <b>FROM T TABLESAMPLE(BUCKET 1 OUT OF 20 ON RAND())</b>
+</li><li> LucidDB supports fixed-point NUMERIC, DATE, TIME, and TIMESTAMP; Hive does not
+</li><li> LucidDB does not suppor the MAP, ARRAY, and STRUCT types supported by Hive
+</li><li> LucidDB supports almost all forms of joins, and optimizes them automatically; Hive is very restricted on its join types (e.g. equijoins only), and requires the user to manually optimize them via hints such as MAPJOIN and STREAMTABLE
+</li><li> LucidDB supports both uncorrelated and (with some known bugs) correlated subqueries; the only subqueries Hive supports are those nested in the FROM clause
+</li><li> LucidDB does not have a concept of partitioned or bucketed tables; in Hive, these are key concept for managing huge data volumes
+</li><li> LucidDB uses the standard IN (subquery) where Hive uses the non-standard LEFT SEMI JOIN
+</li><li> LucidDB does not support Hive's map/reduce extensions such as TRANSFORM, MAP, REDUCE, DISTRIBUTE BY, CLUSTER BY, and SORT BY
+</li></ul>
+<h1> <span class="mw-headline" id="Roadmap"> Roadmap </span></h1>
+<ul><li> fix Hive's JDBC driver to allow metadata to be retrieved from a PreparedStatement; this is required for SQL pushdown optimizations to work
+</li><li> fix some multi-threading issues in Hive
+</li><li> add a TableOutputFormat to Hive to allow data to be pushed into LucidDB (so that we can use multiple reducers to do seamless end-to-end parallelization for copy of query results from Hive into LucidDB)
+</li><li> enhance LucidDB's pushdown support to cover all expressions
+</li><li> add UDAF support to LucidDB, and write bridges to make UDF's, UDAF's, and UDX/UDTF's reusable between Hive and LucidDB
+</li><li> add a function mapping feature so that builtin and user-defined functions in LucidDB can be correctly mapped to their corresponding functions in Hive during pushdown
+</li><li> <s>add catalog metadata calls to Hive's JDBC driver so that we can automatically import multiple table definitions at once from Hive's metastore into LucidDB's catalog</s> This has been fixed with the commit of HIVE-1126
+</li><li> pull <a rel="nofollow" class="external text" href="http://firewater.sourceforge.net/">Firewater</a> and maybe <a rel="nofollow" class="external text" href="http://db.cs.yale.edu/hadoopdb/hadoopdb.html">HadoopDB</a> into the picture...
+</li></ul>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:LucidDbHive.png" title="File:LucidDbHive.png">Image:LucidDbHive.png</a>
+</li><li> <a href="/wiki/File:Honeybear.1.patch" title="File:Honeybear.1.patch">Image:Honeybear.1.patch</a>
+</li><li> <a href="/wiki/File:Honeybear.2.patch" title="File:Honeybear.2.patch">Image:Honeybear.2.patch</a>
+</li><li> <a href="/wiki/File:Honeybear.jpg" title="File:Honeybear.jpg">Image:Honeybear.jpg</a> (used under Creative Commons attribution from <a rel="nofollow" class="external free" href="http://www.flickr.com/photos/jleveque/4579392719">http://www.flickr.com/photos/jleveque/4579392719</a>)
+</li><li> <a href="/wiki/File:Honeybear.odg" title="File:Honeybear.odg">Image:Honeybear.odg</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 152/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2050-0!*!*!!en!2!* and timestamp 20140414191202 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbHive&amp;oldid=6857">http://luciddb.org/wiki/index.php?title=LucidDbHive&amp;oldid=6857</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbHive" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbHive&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbHive&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbHive&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbHive" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbHive" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbHive" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbHive&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbHive&amp;oldid=6857" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 30 August 2010, at 04:32.</li>
+		<li id="viewcount">This page has been accessed 11,072 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.306 secs. --></body></html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>View source - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="next" href="http://luciddb.org/wiki/LucidDbJoinImplementation" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if IE 8]><link rel="stylesheet" href="/wiki/skins/common/IE80Fixes.css?303" media="screen" /><![endif]-->
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbJoinImplementation", "wgTitle": "LucidDbJoinImplementation", "wgCurRevisionId": 6864, "wgArticleId": 1626, "wgIsArticle": false, "wgAction": "edit", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": true, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbJoinImplementation action-edit skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">View source</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">for <a href="/wiki/LucidDbJoinImplementation" title="LucidDbJoinImplementation">LucidDbJoinImplementation</a></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>You do not have permission to edit this page, for the following reason:
+</p>
+<div class="permissions-errors">
+<p>The action you have requested is limited to users in the group: <a href="/wiki/index.php?title=LucidDB_Wiki:Users&amp;action=edit&amp;redlink=1" class="new" title="LucidDB Wiki:Users (page does not exist)">Users</a>.
+</p>
+</div>
+<p>You can view and copy the source of this page:
+</p><textarea id="wpTextbox1" name="wpTextbox1" cols="80" rows="25" readonly="">=Introduction=
+JOIN combines rows from two relational expressions to produce the result relation. A relational expression could be either a table scan or the result of other joins and aggregations. Join Condition matches rows from its input relations, and Join Types decide how result rows are formed. LucidDB currently does not support supports Full Outer Join with non-equality condition; for all others, based on the Join Condition and Join Types, one or more Join Implementations are possible. 
+
+This document explains which join conditions and join types are supported in LucidDB, and how join implementations are chosen. It also gives an overview of the design of the various join implementations.
+
+=Join Conditions and Join Filters=
+
+==WHERE clause vs ON clause==
+ANSI SQL syntax allows a user to specify join conditions in the WHERE clause of a query for inner joins, or in the ON clause for all join types. For example,
+
+        SELECT A.c1, B.c1
+        FROM A, B
+        WHERE A.c1 = B.c1
+
+        SELECT A.c1, B.c1
+        FROM A JOIN B
+        ON A.c1 = B.c1
+
+These join conditions are often AND'ed together. In later discussions, they are referred to as Join Conditions if both inputs to the join are referenced, or Filter Conditions if only one input is referenced. There can be additional WHERE clause in a query with ON clause conditions. In the following example, "A.c1 = B.c1" is a Join Condition given in the ON clause. "A.c1 &lt;> 2" is a Filter Condition from the WHERE clause, and "A.c1 + B.c1 &lt; 10" is a Join Condition in the WHERE clause.
+
+        SELECT A.c1, B.c1
+        FROM A JOIN B
+        ON A.c1 = B.c1
+        WHERE A.c1 &lt;> 2 AND A.c1 + B.c1 &lt; 10
+
+ANSI join semantics require ON clause conditions be applied before forming the join result, and WHERE clause conditions applied after the join and on the result of the join. To illustrate the difference between ON clause and WHERE clause conditions, consider the following data set of tables A and B.
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A
+! width="50"|A.c1
+|-
+| 1
+|-
+| 2
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|B
+! width="50"|B.c1
+|-
+| 2
+|-
+| 3
+|-
+|}
+
+These queries, with the same inputs but different ON clause and WHERE clause conditions, produce different result sets.
+
+        Q1:
+        SELECT A.c1, B.c1
+        FROM A LEFT OUTER JOIN B
+        ON A.c1 = B.c1;
+
+        Q2:
+        SELECT A.c1, B.c1
+        FROM A LEFT OUTER JOIN B
+        ON A.c1 = B.c1 AND A.c1 &lt;> 2;
+
+        Q3:
+        SELECT A.c1, B.c1
+        FROM A LEFT OUTER JOIN B
+        ON A.c1 = B.c1
+        WHERE A.c1 &lt;> 2;
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q1 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| 1 || NULL
+|-
+| 2 || 2
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q2 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| 1 || NULL
+|-
+| 2 || NULL
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q3 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| 1 || NULL
+|-
+|}
+
+Contrast the above results with those of RIGHT OUTER JOIN:
+
+        Q4:
+        SELECT A.c1, B.c1
+        FROM A RIGHT OUTER JOIN B
+        ON A.c1 = B.c1;
+
+        Q5:
+        SELECT A.c1, B.c1
+        FROM A RIGHT OUTER JOIN B
+        ON A.c1 = B.c1 AND A.c1 &lt;> 2;
+
+        Q6:
+        SELECT A.c1, B.c1
+        FROM A RIGHT OUTER JOIN B
+        ON A.c1 = B.c1
+        WHERE A.c1 &lt;> 2;
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q4 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| 2 || 2
+|-
+| NULL || 3
+|-
+|}
+
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q5 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| NULL || 2
+|-
+| NULL || 3
+|-
+|}
+
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Q6 Result Set
+! width="50" | A.c1
+! width="50" | B.c1
+|-
+| ||
+|-
+|}
+
+
+Note that Q6 returns an empty result because the NULL in A.c1 does not qualify the "A.c1 &lt;> 2" filter.
+
+==Equi-Join vs Non Equi-Join Conditions==
+Equi-Join Conditions are those that can be expressed as an equality check between an expression referencing columns from a row in the LHS input with one that references a row from the RHS. Equi-Join Conditions can be AND'ed together to form more complex Join Conditions. For example:
+
+    (f(L) = g(R)) AND (j(R) = k(L))
+
+Here f(L) and k(L) represent any two expressions that reference the LHS input to the Hash Join, and g(R)/j(R) expressions on the RHS.
+
+Some Joins might not look like Equi-Joins, for exmaple, the query Q2 above. However, after rewriting the Join Condition, they can be transformed into Equi-Joins. This transformation can be very useful when the Join Type is Outer Join, because Outer Join support in LucidDB depends on the Join Conditions.
+
+Non Equi-Join conditions are those that cannot be transformed to an equality check between an expression on the LHS and one on the RHS. Inner Non Equi-Joins can be implemented either as Nested Loop Join(NLJ) or Cartesian Product with Filter. If the join is Left or Right Outer Join, only NLJ can be used. In its current form, LucidDB NLJ cannot be used to support Full Outer Join with non Equi-Join Conditions.
+
+==Outer Join Support==
+Different implementations of predicates and joins can use different strategies to evaluate the conditions in the ON and WHERE clauses of a query. Often the strategy used can affect the SQL support in a particular implementation. In LucidDB, there are three join methods: Cartesian Product with Filtering, Hash Join and Nested Loop Join. Cartesian Product itself does not evaluate the Join Conditions. It relies on a Filter(called a "post-join filter") to evaluate the Join Conditions. This limits the usage of Cartesian Product mostly to Inner Join types, because the Filter cannot produce NULLs for non-joining tuples. There is a very special class of Outer Join that can be supported using Cartesian Product. This is described in the section on [[#Cartesian_Product|Cartesian Product]] below.
+
+For more general types of Outer Joins, there are two candidate join methods: Hash Join and Nested Loop Join. Based on Join Conditions and Join Types, one will be chosen. If both are feasible, then Hash Join will be used. 
+
+Hash Join needs to evaluate the ON clause conditions within the join itself. It does so in two ways. For Join Conditions, Hash Join evaluates the Equi-Join Conditions, say f(R) = g(L), by matching the hash values of f(R) and g(L). For a Filter Condition in the ON clause, like the "A.c1 &lt;> 2" in Q2 above, it is first transformed to an equivalent Equality Condition ("(A.c1 &lt;> 2) = TRUE"). The opposite input, B in this case, will produce the constant value "TRUE" and the new Equality predicate is transformed into an Equi-Join Condition that can be evaluated by Hash Join, as if the following query and data set is submitted:
+
+        Q2 equivalent:
+        SELECT A1.c1, B1.c1
+        FROM A1 LEFT OUTER JOIN B1
+        ON A1.c1 = B1.c1 AND A1.c2 = B1.c2;
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| A1
+! width="50" | A1.c1
+! width="50" | A1.c2(defined as A1&lt;>2)
+|-
+| 1 || TRUE
+|-
+| 2 || FALSE
+|-
+|}
+
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| B1
+! width="50" | B1.c1
+! width="50" | B1.c2(always TRUE)
+|-
+| 2 || TRUE
+|-
+| 3 || TRUE
+|-
+|}
+
+Nested Loop Join(NLJ) is feasible for Left/Right Outer Join with certain join conditions. NLJ can only decide if a row from one input does not match any row from the other input when the other input is scanned completely. This means that the NULL generating side needs to be the RHS and the preserved side needs to be the LHS. To evaluate  Right Outer Join, NLJ effectively transforms it into a Left Outer Join before evaluation.
+
+==Filter Pushdown==
+For a Filter Condition, which is ON clause or WHERE clause condition that only references one input, it is often advantageous to "push down" the filter so that it is evaluated in the input to reduce the input size. However, not every Filter Condition can be pushed into the inputs of any type of join. The rule is that ON clause Filter Conditions can be pushed into the input on the non-preserved side(or the side that generates NULLs), and WHERE clause Filter Conditions can be pushed into the input on the preserved side. Again considering the query Q2 above, if the ON clause filter "A.c1 &lt;> 2" is evaluated before A is input into the join, as if query Q1 is submitted with this data set:
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A2
+! width="50"|A2.c1
+|-
+| 1
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|B2
+! width="50"|B2.c1
+|-
+| 2
+|-
+| 3
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Left Outer Join Result Set
+! width="50" | A2.c1
+! width="50" | B2.c1
+|-
+| 1 || NULL
+|-
+|}
+
+
+the result set differs from that of Q2, and is identical to Q3. In the case of LEFT OUTER JOIN, the Filter on the LEFT side, the preserved side(or the side that does not generate NULLs), can be pushed down if it appears in the WHERE clause. If it in the ON clause, it can not be pushed into the input. Now let's look at the result of pushing down the same Filter in a RIGHT OUTER JOIN:
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"| Right Outer Join Result Set
+! width="50" | A2.c1
+! width="50" | B2.c1
+|-
+| NULL || 2
+|-
+| NULL || 3
+|-
+|}
+
+It is the same as the result for Q5, but differs from Q6. This example shows that ON clause Filters can be pushed into the input of the non-preserved side. Note that for FULL OUTER JOIN, any side is both preserved side as well as un-preserved, so no Filter can be pushed down to the inputs. For Filter Conditions that are not pushed down into the inputs, Hash Join evaluates them using the transformation technique described above.
+
+==Summary of Supported Join Conditions and Join Types==
+To sum it up, here is a list of supported Join Conditions and Join Types, with corresponding candidate join methods. In most cases, Hash Join is considered the better performing method and is chosen over both Nested Loop Join and Cartesian Product, whereas Nested Loop Join is chosen over Cartesian Product.
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1"
+|+ style="font-size:12pt"| Join Types and Conditions supported in LucidDB
+! width="200" | Join Type
+! width="100" | Join Condition
+! width="200" | Join Method
+! width="400" | Filter Optimization
+|-
+| INNER || Equi-Join || Cartesian Product (+ Filter) || Push down Filter Conditions into referenced input.
+|-
+| INNER || Equi-Join || Nested Loop Join (+ Filter)
+| Push down Filter Conditions into referenced input.
+|-
+| INNER || Equi-Join || Hash Join || Push down Filter Conditions into referenced input.
+|-
+| INNER || Non Equi-Join || Cartesian Product (+ Filter) || Push down Filter Conditions into referenced input.
+|-
+| INNER || Non Equi-Join || Nested Loop Join (+ Filter)
+| Push down Filter Conditions into referenced input.
+|-
+| LEFT OUTER or RIGHT OUTER || TRUE(after pushing down Filter Conditions) || Cartesian Product without Filter || Filter Conditions need to be pushed down completely into referenced input, if the input is not the NULL generating side for WHERE clause Filters, or if the input is the NULL generating side for ON clause Filters.
+|-
+| LEFT OUTER or RIGHT OUTER || Equi-Join || Hash Join || Push down Filter Conditions into referenced input, if the input is not the NULL generating side for WHERE clause Filters, or if the input is the NULL generating side for ON clause Filters. Filters not pushed down are transformed into Join Conditions and evaluated by Hash Join.
+|-
+| LEFT OUTER or RIGHT OUTER || Non Equi-Join || Nested Loop Join
+| The pushdowns described for left and right hash outer joins also apply here.
+|-
+| FULL OUTER || Equi-Join || Hash Join || Filters can not be pushed down. They are transformed into Join Conditions and evaluated by Hash Join.
+|}
+
+=Join Implementations=
+==Cartesian Product==
+Cartesian Product produces the combination of every row in the left input with every row the right input. It is used when there is no Join Condition, or when Filter Conditions are completely pushed into the inputs. Cartesian Product in itself can not evaluate a Join Condition. When implementing Inner Joins using Cartesian Product, a Filter is required to check if the Join Condition satisfies for each row coming out of the Cartesian Product.
+
+===Joins using Cartesian Product===
+A special type of left outer join can also be implemented by Cartesian Product, if the RHS rows are guaranteed to match all the LHS row or if the RHS is empty. In the following example, if there's no row from B that satisfies the condition B.c1 = 1, the query will return all rows from the LHS with null values extended on the RHS; if there are rows from B that satisfy the condition, Cartesian product will return the combination of every row in A with every qualifying row in B. Same is possible for right outer join if LHS rows are guaranteed to match or if LHS is empty.
+
+&lt;pre>
+Q1
+
+explain plan for select * from A left outer join B on B.c1 = 1;
+
+'FennelToIteratorConverter'
+'  FennelCartesianProductRel(leftouterjoin=[true])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1]], residual columns=[[0]])'
+'      FennelValuesRel(tuples=[[{ '[', 1, ']', 1 }]])'
+&lt;/pre>
+
+Cartesian Product with filtering is also used in subquery plans:
+
+&lt;pre>
+Q2
+
+explain plan for select * from A where A.c1 = (select min(B.c1) from B);
+
+'IterCalcRel(expr#0..1=[{inputs}], expr#2=[=($t0, $t1)], C1=[$t0], $condition=[$t2])'
+'  FennelToIteratorConverter'
+'    FennelCartesianProductRel(leftouterjoin=[true])'
+'      LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'      FennelRenameRel(fieldNames=[[EXPR$0]])'
+'        FennelAggRel(groupCount=[0], agg#0=[MIN(0)])'
+'          FennelRenameRel(fieldNames=[[$f0]])'
+'            LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1]])'
+&lt;/pre>
+
+===Buffering RHS===
+Because RHS is scanned for each row from LHS, caching the RHS in memory can improve performance. Sometimes buffering RHS is even required, for example, if the RHS can only be read from once for a query. This could happen when RHS sources from a stream, or if the source does not support repeatable scans(e.g, a foreign table referencing a JDBC connection). LucidDB query optimizer decides whether to buffer RHS if it is not restartable or if the cost of Cartesian Product with buffering is lower than without. The cost with buffer can be lower for example when the LHS is very large and the RHS fits in memory.
+
+&lt;pre>
+Q1 with Buffering
+
+'IterCalcRel(expr#0..1=[{inputs}], expr#2=[=($t0, $t1)], C1=[$t0], $condition=[$t2])'
+'  FennelToIteratorConverter'
+'    FennelCartesianProductRel(leftouterjoin=[true])'
+'      LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'      FennelBufferRel(inMemory=[false], multiPass=[true])'
+'        FennelRenameRel(fieldNames=[[EXPR$0]])'
+'          FennelAggRel(groupCount=[0], agg#0=[MIN(0)])'
+'            FennelRenameRel(fieldNames=[[$f0]])'
+'              LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1]])'
+&lt;/pre>
+
+==Nested Loop Join==
+This is the most straight forward join algorithm. For each tuple from the left input, the entire right input is scanned for matching tuples. In this form, Nested Loop Join(NLJ) has comparable performance as Cartesian Product followed by filters. However, if the join condition is sargable, an index on the inner table can improve the performance. LucidDB implementation of NLJ has this feature.
+
+Nested Loop Join is used to support non-equi join conditions for inner, left outer and right outer joins. 
+
+&lt;pre>
+Q3
+
+explain plan for select * from A join B on B.c1 &lt;= A.c1 and B.c2 >= A.c1;
+
+'FennelToIteratorConverter'
+'  FennelNestedLoopJoinRel(joinType=[INNER], leftJoinKeys=[[0]], joinKeyParamIds=[[1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    FennelReshapeRel(projection=[[0, 1]], filterOp=[COMP_GE], filterOrdinals=[[1]], dynamicParameters=[[1]], paramCompareOffsets=[[1]], outputRowType=[RecordType(INTEGER C1, INTEGER C2) NOT NULL])'
+'      FennelTempIdxSearchRel(indexKeys=[[0]], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], searchKeyParamIds=[[1]], keyOffsets=[[1]], rootPageIdParamId=[2])'
+'        FennelValuesRel(tuples=[[{ '(', null, ']', null }]])'
+'    FennelIdxWriteRel(discardDuplicates=[false], monotonicInserts=[true], rootPageIdParamId=[2], indexCols=[[0]])'
+'      FennelSortRel(key=[[0]], discardDuplicates=[false])'
+'        LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+Notice the plan sorts the RHS input before building index on it. This makes the index insert monotonic and helps with performance because there's no need to do a search to locate the position where the new records will be inserted -- records are always appended at the end of the tree.
+
+===Implementation Highlights===
+
+The LucidDB implementation of NLJ first creates a temporary index on B(c1). For Inner Joins, the smaller table is chosen to build the index on. It then uses every row from A to look up the index on B(c1), finding all the rows from B that satisfies the first predicate B.c1 &lt;= A.c1. These rows are passed through an additional filter evaluating the condition B.c2 >= A.c1. Finally, all qualifying rows from B is joined with this row from A to form the result.
+
+A few things to note:
+
+* Any table level filtering is performed before NLJ to reduce input size.
+
+* Without the additional condition B.c2 >= A.c1, the index lookup will find all the qualifying rows from B for a row from A. The resulting plan will not have the filter on FennelReshapeRel.
+
+&lt;pre>
+Q4
+
+explain plan for select * from A join B on B.c1 &lt;= A.c1;
+
+'FennelToIteratorConverter'
+'  FennelNestedLoopJoinRel(joinType=[INNER], leftJoinKeys=[[0]], joinKeyParamIds=[[1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    FennelTempIdxSearchRel(indexKeys=[[0]], inputKeyProj=[[1, 3]], inputDirectiveProj=[[0, 2]], searchKeyParamIds=[[1]], keyOffsets=[[1]], rootPageIdParamId=[2])'
+'      FennelValuesRel(tuples=[[{ '(', null, ']', null }]])'
+'    FennelIdxWriteRel(discardDuplicates=[false], monotonicInserts=[true], rootPageIdParamId=[2], indexCols=[[0]])'
+'      FennelSortRel(key=[[0]], discardDuplicates=[false])'
+'        LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+* If the join condition is not sargable, i.e. no part of the condition can be evaluated by any index lookup, for example when the query contains OR conditions:
+
+&lt;pre>
+Q5
+
+explain plan for select * from A join B on B.c1 &lt;= A.c1 or B.c2 >= A.c1;
+&lt;/pre>
+
+the plan will not contain any index lookup. The join condition is evaluated by a filter situated above the RHS and binds to one row from A for each scan through all rows from B. Compared to Cartesian Product followed by filter, this form of NLJ supports Left Outer Join.
+
+&lt;pre>
+Q5 Plan
+
+'FennelToIteratorConverter'
+'  FennelNestedLoopJoinRel(joinType=[INNER], leftJoinKeys=[[0]], joinKeyParamIds=[[1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..2=[{inputs}], expr#3=[&lt;=($t0, $t2)], expr#4=[>=($t1, $t2)], expr#5=[OR($t3, $t4)], proj#0..1=[{exprs}], $condition=[$t5])'
+'        FennelToIteratorConverter'
+'          FennelReshapeRel(projection=[[0, 1]], dynamicParameters=[[1]], paramCompareOffsets=[[-1]], outputRowType=[RecordType(INTEGER C1, INTEGER C2, INTEGER C1) NOT NULL])'
+'            LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+* Similar to Cartesian Product, the RHS of a NLJ needs to be restarted. Buffering the RHS could improve the performance. This is enabled by cost.
+
+&lt;pre>
+Q5 with Buffering
+
+'FennelToIteratorConverter'
+'  FennelNestedLoopJoinRel(joinType=[INNER], leftJoinKeys=[[0]], joinKeyParamIds=[[1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    IteratorToFennelConverter'
+'      IterCalcRel(expr#0..2=[{inputs}], expr#3=[&lt;=($t0, $t2)], expr#4=[>=($t1, $t2)], expr#5=[OR($t3, $t4)], proj#0..1=[{exprs}], $condition=[$t5])'
+'        FennelToIteratorConverter'
+'          FennelReshapeRel(projection=[[0, 1]], dynamicParameters=[[1]], paramCompareOffsets=[[-1]], outputRowType=[RecordType(INTEGER C1, INTEGER C2, INTEGER C1) NOT NULL])'
+'            FennelBufferRel(inMemory=[false], multiPass=[true])'
+'              LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+==Hash Join==
+Hash Join is one of the most efficient join implementations. It has the advantage of reading both inputs only once and not requiring a sort to match LHS and RHS rows. The basic idea is to build an in-memory hash table based on one input(usually the smaller one), and use the other input to probe this hash table for matching rows. Given this algorithm, hash join can only support equality conditions. Hash join can be used for all four join types: inner, left, right and full outer. Semi join and anti join, for example from queries with set operators intersect and except, can also be implemented using Hash Join.
+
+In LucidDB, the same Hash Table support used by Hash Join is also used for duplicate removal and aggregation over a single input.
+
+===Queries Using Hash Join===
+====Inner Join====
+
+The numerals in the leftKeys/rightKeys field for the LhxJoinRel(which implements a Hash Join) represent the key positions relative to each input. Here the first column from either input is used as the join key. The inputs are both simple Scans(LcsRowScanRel implements a column-store scan). The numerals in "projection" field indicates the columns to be projected, or "*" if all columns are projected. The "clustered indexes" field lists the columns(internally organized as indexes) that are scanned. The index names, with the standard "SYS$CLUSTERED_INDEX" prefixes, are generated by LucidDB when the table was created.
+
+&lt;pre>
+Q6
+
+explain plan for select * from A join B on A.c1 = B.c1;
+
+'FennelToIteratorConverter'
+'  LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[INNER])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+====Left Outer Join====
+This query returns any row from A with all its matching rows from B, or if no matching row exists for this row from A, the result row will include the fields from A plus NULLs for the fields from B. After building the Hash Table, Hash Join processes rows from A. It outputs joining rows like it does for Inner Join. For any non-joining row, it appends NULL values to the row and output that as the result row. 
+ 
+&lt;pre>
+Q7
+
+explain plan for select * from A left outer join B on A.c1 = B.c1;
+
+'FennelToIteratorConverter'
+'  LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[LEFT])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+====Right Outer Join====
+
+Here the Hash Join returns any row from B with its matching rows from A, or if no matching rows from A exists for this row from B, the result row will consists of "null-extended" left portion with this row from B. Hash Join performs the join in two steps after the Hash Table on B has been built. First all rows from A are processes and any matching rows from the Hash Table(containing B) are returned. The Hash Table also remembers if a row in B ever sees a matching row from A in this step. The join algorithm then returns all rows form B(kept in the Hash Table) that have never been matched, appending nulls to form the result row. 
+
+&lt;pre>
+Q8
+
+explain plan for select * from A right outer join B on A.c1 = B.c1;
+
+'FennelToIteratorConverter'
+'  LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[RIGHT])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1, SYS$CLUSTERED_INDEX$B$C2]])'
+&lt;/pre>
+
+====Semi Join====
+
+Notice the new field "setop" in the description of LhxJoinRel. This tells us that a special "no-duplicate" join semantics apply here. The query performs a set operation. Any row from table A shows up in the result set only once, regardless of how many matching rows for it exist in table B. This is different from the typical Join semantics, where each row from A is combined with each matching row from B to form the result. Further more, duplicated values from A will be removed from the result set. This is done by a setting a bit in the Hash Table if a particular join key value from B has already been match by a row in A. If so, then this row from A will not be in the result set.
+
+&lt;pre>
+Q9
+
+explain plan for select A.c1 from A intersect select B.c1 from B;
+
+'FennelToIteratorConverter'
+'  LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[LEFTSEMI], setop=[true])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1]])'
+&lt;/pre>
+
+With these inputs,
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A
+! width="50"|A.c1
+|-
+| 1
+|-
+| 1
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|B
+! width="50"|B.c1
+|-
+| 1
+|-
+| 2
+|-
+|}
+
+the above query will produce this result:
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A
+! width="50"|A.c1
+|-
+| 1
+|-
+|}
+
+Notice duplicates from A are removed.
+
+====Anti Join====
+
+Same "setop" flag indicates that every non joining row from A is returned only once. Notice the plan reverts the join inputs. This is because except requires duplicates to be removed from the result and HJ uses the Hash Table to remove duplicated non-matching rows. So the first input to Except needs to be on the side to build the hash table on.
+
+&lt;pre>
+Q10
+
+explain plan for select A.c1 from A except select B.c1 from B;
+
+'FennelToIteratorConverter'
+'  LhxJoinRel(leftKeys=[[0]], rightKeys=[[0]], joinType=[RIGHTANTI], setop=[true])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, B]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$B$C1]])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+
+&lt;/pre>
+
+With these inputs,
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A
+! width="50"|A.c1
+|-
+| 1
+|-
+| 1
+|-
+|}
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|B
+! width="50"|B.c1
+|-
+| 2
+|-
+|}
+
+Q10 will produce this result:
+
+{| style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: nowrap; align: left;" border="1"
+|+ style="font-size:12pt"|A
+! width="50"|A.c1
+|-
+| 1
+|-
+|}
+
+Notice duplicates from A are removed.
+
+====Hash Aggregation====
+
+Hash Table now remembers the group by key and the aggregate calculated so far for this key. With each new row, if it contains a new group by key(discovered when Hash Table lookup using this key fails), the new key and the initial aggregate value are inserted to the Hash Table; if the group by key exists in the Hash Table, then the aggregate is updated accordingly. For example, count aggregates will be incremented by one and min/max aggregates are updated based on the value of the aggregate field.
+
+&lt;pre>
+Q11
+
+explain plan for select count(*) from A group by A.c1;
+
+'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=[[1]], outputRowType=[RecordType(BIGINT NOT NULL EXPR$0) NOT NULL])'
+'    LhxAggRel(groupCount=[1], agg#0=[COUNT()])'
+'      FennelRenameRel(fieldNames=[[$f0]])'
+'        LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[[0]], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+
+&lt;/pre>
+
+====Duplicate Removal====
+
+This is a special case of Hash Aggregate where there is no additional aggregates. Hash Table stores just the group by key.
+
+&lt;pre>
+Q12
+
+explain plan for select distinct A.c1 from A;
+
+'FennelToIteratorConverter'
+'  LhxAggRel(groupCount=[1])'
+'    LcsRowScanRel(table=[[LOCALDB, SALES, A]], projection=[*], clustered indexes=[[SYS$CLUSTERED_INDEX$A$C1]])'
+
+&lt;/pre>
+
+Note this query is equivalent to:
+
+&lt;pre>
+Q13
+
+select A.c1 from group by A.c1;
+&lt;/pre>
+
+===Implementation Highlights===
+
+====Join Inputs====
+LucidDB Query Optimizer selects which join input to build hash table on and which to probe the hash table with. Hash Join is given certain numbers of cache blocks by the Resource Governor.  It first tries to build an in-memory hash table using the RHS input. Because HJ performs better if the Hash Table fits in memory, the optimizer will produce a hash join plan with the smaller inputs on the RHS, if possible. Some join types, for example, right-anti join or left-semi join, cannot switch input sides. For these, the hash table might be built on the larger input.
+
+====Partitioning====
+Hash Join handles large inputs by partitioning to disk. If the hash table does not fit in memory, for example if the RHS is very large, the entire hash table plus rows from RHS that are not yet inserted into the hash table, is partitioned into smaller chunks based on the join key value and written to the disk. LHS is partitioned into the same set of chunks using the join key from the LHS. One chunk from the LHS with its matching chunk from the RHS forms a partition. Once both inputs are partitioned, the hash join algorithm will resume on each partition. This can be a recursive process, until the hash table of a recursion level fits in memory. There is a limit on the recursion depth(&lt; 63). Usually this limit is only hit if either the wrong build side is picked by the optimizer because the inputs do not have updated stats, or if the the join key contains large number of duplicates.
+
+====Partition Stats====
+Hash Join optimizes join inputs on the fly by keeping stats on the size of the two input chunks. It will swich join inputs if the chunk corresponding the original LHS is smaller after partitioning.
+
+====Filtering While Partitioning====
+[http://en.wikipedia.org/wiki/Bloom_filter Bloom filter] reduces the amount of data that needs to be written to disk. When writing chunks of the build input to the disk, a small bitmap is built using the hash value of the join keys. When partitioning the probe input, a row will only be written to disk if the hash value of its join key is found in the bitmap. Also, this bitmap can be used to filter the build input of the next iteration if the partition still does not fit in memory.
+
+====Pre-aggregate Before Partitioning====
+When using hash table to perform aggregation, instead of join key and data columns, the hash table stores group by key and aggregate field. The aggregate field is updated when a new row with the same group by key causes the up to date aggregate value to change. It is possible for hash table built for aggregation purpose to grow larger than the resource allocated. When partitioning aggregate input to disk, instead of input data rows, (partial) aggregates are written to the disk. These partial aggregates are then read and used to calculate the final aggregate values.
+
+=Note=
+*[http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp?topic=/com.ibm.perf.doc/perf369.htm Informix Join Filter] and [http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp?topic=/com.ibm.sqls.doc/sqls678.htm Informix On Clause] contain some discussions of using ON clause filter vs. WHERE clause filter in the Informix server and related implementation technique. Note the term "dominant table" means the "preserved join input" or the "non NULL generating join input". If the URL changes, the google search phrase is "join filter ON clause".
+*The LucidDB implementation of ANSI MERGE statement uses a LEFT OUTER JOIN between the source and the target to split source tuples into the update set and the insert set. The join conditions are specified in the ON clause of the MERGE statement. Here is an introduction to [http://blogs.ittoolbox.com/oracle/guide/archives/merge-aka-upsert-a-definition-in-plain-english-5246 Merge(upsert) syntax].  If the upsert omits the WHEN NOT MATCHED clause, then an inner join is used instead.</textarea><div class='templatesUsed'>
+
+</div>
+<p id="mw-returnto">Return to <a href="/wiki/LucidDbJoinImplementation" title="LucidDbJoinImplementation">LucidDbJoinImplementation</a>.</p>
+<div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/LucidDbJoinImplementation">http://luciddb.org/wiki/LucidDbJoinImplementation</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbJoinImplementation" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbJoinImplementation&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource" class="selected"><a href="/wiki/index.php?title=LucidDbJoinImplementation&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbJoinImplementation&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbJoinImplementation&amp;returntoquery=action%3Dedit" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbJoinImplementation" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbJoinImplementation" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.action.edit", "mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.157 secs. --></body></html>

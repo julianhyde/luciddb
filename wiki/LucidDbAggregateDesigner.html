@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbAggregateDesigner - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbAggregateDesigner", "wgTitle": "LucidDbAggregateDesigner", "wgCurRevisionId": 5007, "wgArticleId": 1900, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbAggregateDesigner action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbAggregateDesigner</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>Pentaho Aggregate Designer is a project for automatically defining and populating <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/aggregate_tables.php">aggregate tables</a> for use in accelerating Mondrian query performance.  This page documents a LucidDB add-on (available for the 0.7.4 release) which integrates the Pentaho Aggregate Designer into LucidDB as a server-side procedure.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Prerequisites"><span class="tocnumber">2</span> <span class="toctext">Prerequisites</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Install_the_Client"><span class="tocnumber">3</span> <span class="toctext">Install the Client</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Install_The_Add-on"><span class="tocnumber">4</span> <span class="toctext">Install The Add-on</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Call_The_Procedure"><span class="tocnumber">5</span> <span class="toctext">Call The Procedure</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Test_The_Aggregates"><span class="tocnumber">6</span> <span class="toctext">Test The Aggregates</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Implementation_Notes"><span class="tocnumber">7</span> <span class="toctext">Implementation Notes</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Improvements_Needed"><span class="tocnumber">8</span> <span class="toctext">Improvements Needed</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>For background on the Pentaho Aggregate Designer, see <a rel="nofollow" class="external text" href="http://downloads.sourceforge.net/pentaho/Pentaho_ce_aggregation_designer_UG_v1.0.pdf">its user guide</a>.
+</p><p>This diagram illustrates how the aggregate designer can be used with LucidDB, with the numbered steps explained below:
+</p><p><a href="/wiki/File:LucidDbAggdesigner.png" class="image"><img alt="LucidDbAggdesigner.png" src="/wiki/upload/9/90/LucidDbAggdesigner.png" width="386" height="500" /></a>
+</p>
+<ul><li> [1] The first step, as always, is to define a warehouse schema and ETL for extracting source data and loading it into warehouse tables. At this point, a Mondrian schema can be defined, without any aggregations.
+</li><li> [2] The aggregate designer UI can be run as a LucidDB client; however, the add-on allows the aggregate designer to be installed into LucidDB as a server-side system procedure, and then invoked via SQL with parameters telling it where to find the Mondrian schema definition, which algorithm to use, etc.  When the add-on procedure is invoked, the aggregate designer executes its algorithm, and as each aggregation gets selected, a callback executes DDL to create the corresponding LucidDB table definition, and then executes an INSERT statement to populate it (with warehouse tables as the source of the INSERT and aggregate tables as the target). The aggregate designer also emits an augmented version of the Mondrian schema, with the selected aggregate specifications included.  The add-on takes care of post-processing such as ANALYZE for the aggregate tables as well.
+</li><li> [3] Mondrian can then be used with the augmented schema, with queries automatically accelerated by aggregate tables wherever possible.
+</li></ul>
+<h1> <span class="mw-headline" id="Prerequisites"> Prerequisites </span></h1>
+<p>Before continuing, carry out the procedure in <a href="/wiki/LucidDbMondrianReplication" title="LucidDbMondrianReplication">LucidDbMondrianReplication</a> to get LucidDB set up with a copy of the FOODMART database.  Be sure to follow the steps for creating a separate FOODMART user, since we'll need that in order for the aggregate designer to be able to pick up the right schema automatically.
+</p><p>Verify your setup by checking the loaded table row counts:
+</p>
+<pre>
+0: jdbc:luciddb:rmi://localhost&gt; select table_name, current_row_count from sys_root.dba_stored_tables;
++----------------------+--------------------+
+|      TABLE_NAME      | CURRENT_ROW_COUNT  |
++----------------------+--------------------+
+| store                | 25                 |
+| time_by_day          | 730                |
+| product              | 1560               |
+| product_class        | 110                |
+| warehouse            | 24                 |
+| sales_fact_1997      | 86837              |
+| promotion            | 1864               |
+| customer             | 10281              |
+| inventory_fact_1997  | 4070               |
+| salary               | 21252              |
+| employee             | 1155               |
+| position             | 18                 |
+| department           | 12                 |
+| employee_closure     | 7179               |
+| store_ragged         | 25                 |
++----------------------+--------------------+
+</pre>
+<h1> <span class="mw-headline" id="Install_the_Client"> Install the Client </span></h1>
+<p>Now, let's walk through using Pentaho Aggregate Designer UI as a client against LucidDB.
+</p>
+<ol><li> Download the aggregate designer package <a rel="nofollow" class="external text" href="http://downloads.sourceforge.net/pentaho/pad-ce-1.0.0-RC1.zip">here</a> and unpack it.
+</li><li> Copy <b>luciddb/plugin/LucidDbClient.jar</b> to the <b>aggregation-designer/drivers</b> directory.
+</li><li> Launch the aggregate designer UI (<b>startaggregationdesigner.sh/.bat</b>)
+</li><li> Fill in the database connection info as follows:
+<ul><li> Connection Type:  Generic database
+</li><li> Access:  Native (JDBC)
+</li><li> Custom Connection URL:  jdbc:luciddb:rmi://localhost
+</li><li> Custom Driver Class Name:  com.lucidera.jdbc.LucidDbRmiDriver
+</li><li> User Name:  FOODMART
+</li></ul>
+</li><li> Test the connection
+</li><li> Provide the location for FoodMart.xml
+</li><li> Click Apply, choose the Sales cube, and connect
+</li><li> You can ignore the validation error regarding primary keys
+</li><li> Click the Advisor button, fill in 5 for max aggregates and 10 seconds for max runtime, and then click Recommend
+</li><li> You should end up with a nice display like the one below:
+</li></ol>
+<p><a href="/wiki/File:LucidDbAggExample.png" class="image"><img alt="LucidDbAggExample.png" src="/wiki/upload/2/2b/LucidDbAggExample.png" width="1024" height="604" /></a>
+</p><p>At this point, you are supposed to be able to create the selected aggregates automatically by clicking the Export button and then the various Execute buttons.  However, currently this won't work with LucidDB, because the aggregate designer attempts to start a transaction, and LucidDB does not support user-level transactions.  You could export each script individually and then execute them via sqlline.  (If you try this, see <a href="#Implementation_Notes">#Implementation Notes</a> for some dialect search/replace needed to avoid errors.)  Or...you could use the add-on to let LucidDB do everything in one procedure call, as described in the following sections.
+</p>
+<h1> <span class="mw-headline" id="Install_The_Add-on"> Install The Add-on </span></h1>
+<p>Eventually, we would like to build the add-on to be a pure plugin for LucidDB, requiring no changes to the LucidDB installation.  A few "jar hell" issues are currently hindering this, so for now, it's necessary for some of the code involved to be loaded off of the system classpath instead of via dynamic classloading.  Shut down LucidDB and modify <b>luciddb/bin/classpath.gen</b> (or <b>farrago/classpath.gen</b> for a LucidDB developer build), adding the following entries (without line breaks) and changing the paths as appropriate to point to your Pentaho aggregation-designer installation:
+</p>
+<pre>
+:/aggregation-designer/lib/log4j-1.2.9.jar:/aggregation-designer/lib/mondrian-3.0.4.jar:/aggregation-designer/lib/commons-vfs-1.0.jar
+:/aggregation-designer/lib/commons-math-1.0.jar:/aggregation-designer/lib/javacup-10k.jar
+</pre>
+<p>Restart the LucidDB server; you'll see some warning noise from VJDBC complaining about log4j, but you can ignore this.
+</p><p>Download the <a rel="nofollow" class="external text" href="http://downloads.sourceforge.net/luciddb/luciddb-aggdes-0.7.4.zip">luciddb-aggdes add-on</a> and unpack it.
+</p><p>Next, from a sqlline client connected as <b>sa</b>, execute the following after adjusting the jar path:
+</p>
+<pre>
+create or replace jar applib.aggdes_jar
+library 'file:/path/to/luciddb-aggdes-0.7.4/luciddb-aggdes.jar'
+options(0);
+
+create or replace procedure applib.create_mondrian_aggregates(
+    schema_file varchar(1024),
+    cube_name varchar(128),
+    algorithm_class varchar(128),
+    time_limit_seconds int,
+    aggregate_limit int,
+    output_schema_file varchar(128))
+language java
+modifies sql data
+external name 'applib.aggdes_jar:net.sf.luciddb.aggdes.CreateMondrianAggregatesUdp.execute';
+
+grant execute 
+on specific procedure applib.create_mondrian_aggregates 
+to foodmart;
+</pre>
+<h1> <span class="mw-headline" id="Call_The_Procedure"> Call The Procedure </span></h1>
+<p>Disconnect from sqllineClient and reconnect as user <b>FOODMART</b>, then invoke the procedure as follows, again adjusting paths as appropriate:
+</p>
+<pre>
+call applib.create_mondrian_aggregates(
+    '/path/to/open/mondrian/demo/FoodMart.xml',
+    'Sales',
+    'org.pentaho.aggdes.algorithm.impl.AdaptiveMonteCarloAlgorithm',
+    300,
+    10,
+    '/path/to/output/FoodMartAgg.xml');
+</pre>
+<p>To see what is happening, check LucidDB's <b>trace</b> directory.  You should see activity such as the following:
+</p>
+<pre>
+...
+INFO: -- Aggregate table agg_sttpsssssss
+-- Estimated 480 rows, 23040 bytes
+CREATE TABLE &quot;agg_sttpsssssss&quot; (
+    &quot;store_Store_Sqft&quot; INTEGER,
+    &quot;time_by_day_Year&quot; SMALLINT,
+    &quot;time_by_day_Quarter&quot; VARCHAR(30),
+    &quot;product_class_Product_Family&quot; VARCHAR(30),
+    &quot;sales_fact_1997_Unit_Sales&quot; DOUBLE,
+    &quot;sales_fact_1997_Store_Cost&quot; DOUBLE,
+    &quot;sales_fact_1997_Store_Sales&quot; DOUBLE,
+    &quot;sales_fact_1997_Sales_Count&quot; INTEGER,
+    &quot;sales_fact_1997_Customer_Count&quot; INTEGER,
+    &quot;sales_fact_1997_Promotion_Sale&quot; DOUBLE,
+    &quot;sales_fact_1997_fact_count&quot; INTEGER)
+...
+INFO: -- Populate aggregate table agg_sttpsssssss
+INSERT INTO &quot;agg_sttpsssssss&quot; (
+    &quot;store_Store_Sqft&quot;,
+    &quot;time_by_day_Year&quot;,
+    &quot;time_by_day_Quarter&quot;,
+    &quot;product_class_Product_Family&quot;,
+    &quot;sales_fact_1997_Unit_Sales&quot;,
+    &quot;sales_fact_1997_Store_Cost&quot;,
+    &quot;sales_fact_1997_Store_Sales&quot;,
+    &quot;sales_fact_1997_Sales_Count&quot;,
+    &quot;sales_fact_1997_Customer_Count&quot;,
+    &quot;sales_fact_1997_Promotion_Sale&quot;,
+    &quot;sales_fact_1997_fact_count&quot;)
+select 
+    &quot;store&quot;.&quot;store_sqft&quot; as &quot;store_Store_Sqft&quot;, 
+    &quot;time_by_day&quot;.&quot;the_year&quot; as &quot;time_by_day_Year&quot;, 
+    &quot;time_by_day&quot;.&quot;quarter&quot; as &quot;time_by_day_Quarter&quot;, 
+    &quot;product_class&quot;.&quot;product_family&quot; as &quot;product_class_Product_Family&quot;, 
+    sum(&quot;sales_fact_1997&quot;.&quot;unit_sales&quot;) as &quot;sales_fact_1997_Unit_Sales&quot;, 
+    sum(&quot;sales_fact_1997&quot;.&quot;store_cost&quot;) as &quot;sales_fact_1997_Store_Cost&quot;, 
+    sum(&quot;sales_fact_1997&quot;.&quot;store_sales&quot;) as &quot;sales_fact_1997_Store_Sales&quot;, 
+    count(&quot;sales_fact_1997&quot;.&quot;product_id&quot;) as &quot;sales_fact_1997_Sales_Count&quot;, 
+    count(distinct &quot;sales_fact_1997&quot;.&quot;customer_id&quot;) as &quot;sales_fact_1997_Customer_Count&quot;, 
+    sum((case when &quot;sales_fact_1997&quot;.&quot;promotion_id&quot; = 0 then 0 else &quot;sales_fact_1997&quot;.&quot;store_sales&quot; end)) as &quot;sales_fact_1997_Promotion_Sale&quot;, 
+    count(*) as &quot;sales_fact_1997_fact_count&quot;
+from 
+    &quot;sales_fact_1997&quot; as &quot;sales_fact_1997&quot;, 
+    &quot;store&quot; as &quot;store&quot;, 
+    &quot;time_by_day&quot; as &quot;time_by_day&quot;, 
+    &quot;product_class&quot; as &quot;product_class&quot;, 
+    &quot;product&quot; as &quot;product&quot;
+where 
+    &quot;sales_fact_1997&quot;.&quot;store_id&quot; = &quot;store&quot;.&quot;store_id&quot; and 
+    &quot;sales_fact_1997&quot;.&quot;time_id&quot; = &quot;time_by_day&quot;.&quot;time_id&quot; and 
+    &quot;sales_fact_1997&quot;.&quot;product_id&quot; = &quot;product&quot;.&quot;product_id&quot; and 
+    &quot;product&quot;.&quot;product_class_id&quot; = &quot;product_class&quot;.&quot;product_class_id&quot;
+group by 
+    &quot;store&quot;.&quot;store_sqft&quot;, 
+    &quot;time_by_day&quot;.&quot;the_year&quot;, 
+    &quot;time_by_day&quot;.&quot;quarter&quot;, 
+    &quot;product_class&quot;.&quot;product_family&quot;
+...
+INFO: ANALYZE TABLE &quot;agg_sttpsssssss&quot; ESTIMATE STATISTICS FOR ALL COLUMNS
+...
+</pre>
+<p>You'll also see some chatter in the lucidDbServer console, since the aggdesigner command-line interface writes to System.out.
+</p><p>Once the procedure completes, verify that it actually created new tables:
+</p>
+<pre>
+0: jdbc:luciddb:rmi://localhost&gt; select table_name, current_row_count from sys_root.dba_stored_tables;
++----------------------+--------------------+
+|      TABLE_NAME      | CURRENT_ROW_COUNT  |
++----------------------+--------------------+
+| store                | 25                 |
+| time_by_day          | 730                |
+| product              | 1560               |
+| product_class        | 110                |
+| warehouse            | 24                 |
+| sales_fact_1997      | 86837              |
+| promotion            | 1864               |
+| customer             | 10281              |
+| inventory_fact_1997  | 4070               |
+| salary               | 21252              |
+| employee             | 1155               |
+| position             | 18                 |
+| department           | 12                 |
+| employee_closure     | 7179               |
+| store_ragged         | 25                 |
+| agg_sttpsssssss      | 132                |
+| agg_sssccsssssss     | 205                |
+| agg_sssttcsssssss    | 180                |
+| agg_stccsssssss      | 12                 |
+| agg_tttsssssss       | 12                 |
+| agg_ttpcsssssss      | 110                |
+| agg_ssscsssssss      | 12                 |
+| agg_pccsssssss       | 28                 |
+| agg_ttpcsssssss0     | 12                 |
+| agg_pccsssssss0      | 6                  |
++----------------------+--------------------+
+</pre>
+<h1> <span class="mw-headline" id="Test_The_Aggregates"> Test The Aggregates </span></h1>
+<p>Now to verify that Mondrian can actually use the generated aggregates.
+</p><p>Assuming you've already pointed Mondrian at LucidDB, first make sure you have disabled aggregate table usage in the Mondrian .properties file (this is the default):
+</p>
+<pre>
+mondrian.rolap.aggregates.Use=false
+mondrian.rolap.aggregates.Read=false
+</pre>
+<p>Run this MDX query:
+</p>
+<pre>
+select {[Measures].[Unit Sales]} on columns,
+{[Product].[All Products]} on rows
+from [Sales];
+</pre>
+<p>Check LucidDB's trace file, and it should be hitting the fact table:
+</p>
+<pre>
+INFO: select &quot;time_by_day&quot;.&quot;the_year&quot; as &quot;c0&quot;, sum(&quot;sales_fact_1997&quot;.&quot;unit_sales&quot;) as &quot;m0&quot; 
+from &quot;time_by_day&quot; as &quot;time_by_day&quot;, &quot;sales_fact_1997&quot; as &quot;sales_fact_1997&quot; 
+where &quot;sales_fact_1997&quot;.&quot;time_id&quot; = &quot;time_by_day&quot;.&quot;time_id&quot; and &quot;time_by_day&quot;.&quot;the_year&quot; = 1997 group by &quot;time_by_day&quot;.&quot;the_year&quot;
+</pre>
+<p>Change Mondrian properties to enable agg table usage:
+</p>
+<pre>
+mondrian.rolap.aggregates.Use=true
+mondrian.rolap.aggregates.Read=true
+</pre>
+<p>And change the Mondrian setup to use the generated <b>FoodMartAgg.xml</b> (instead of the original <b>FoodMart.xml</b>).
+</p><p>Run the MDX query above again:
+</p>
+<pre>
+Mondrian Error:Too many errors, '1', while loading/reloading aggregates.
+? 42792 [main] ERROR mondrian.rolap.aggmatcher.AggTableManager  - ExplicitRecognizer.matchLevel:Recognizer.makeLevel: 
+Double Match for candidate aggregate table 'agg_sssccsssssss' for fact table 'sales_fact_1997' and column 'store_Store_Country' 
+matched two hierarchies: 1) table='store_ragged', column='store_Store_Country' and 2) table='store', column='store_Store_Country'
+Mondrian Error:Too many errors, '1', while loading/reloading aggregates.
+</pre>
+<p>Oops, what happened?  Well, there's a second cube [Sales Ragged] in Foodmart, and its presence is messing things up.  So in <b>FoodMartAgg.xml</b>, delete its definition and then try again.
+</p><p>Now the MDX query should be hitting an agg table:
+</p>
+<pre>
+INFO: select &quot;agg_tttsssssss&quot;.&quot;time_by_day_Year&quot; as &quot;c0&quot;, sum(&quot;agg_tttsssssss&quot;.&quot;sales_fact_1997_Unit_Sales&quot;) as &quot;m0&quot; 
+from &quot;agg_tttsssssss&quot; as &quot;agg_tttsssssss&quot; 
+where &quot;agg_tttsssssss&quot;.&quot;time_by_day_Year&quot; = 1997 group by &quot;agg_tttsssssss&quot;.&quot;time_by_day_Year&quot;
+</pre>
+<p>Success!
+</p>
+<h1> <span class="mw-headline" id="Implementation_Notes"> Implementation Notes </span></h1>
+<p>The source code for the add-on is available in <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org/open/dev/luciddb/ext/aggdes/src/net/sf/luciddb/aggdes/">perforce.eigenbase.org</a>:
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org/open/dev/luciddb/ext/aggdes/src/net/sf/luciddb/aggdes/CreateMondrianAggregatesUdp.java">CreateMondrianAggregatesUdp.java</a>:  entry point which converts SQL arguments into an argument array understood by the aggdesigner's command-line interface, and then calls that interface (<b>org.pentaho.aggdes.Main.main</b>), all within the LucidDB procedure invocation
+</li><li> <a rel="nofollow" class="external text" href="http://p4web.eigenbase.org/open/dev/luciddb/ext/aggdes/src/net/sf/luciddb/aggdes/LucidDbAggResultHandler.java">LucidDbAggResultHandler.java</a>:  implements the aggdesigner's <b>ResultHandler</b> interface by executing the generated DDL and DML commands against LucidDB in order to immediately create and populate the recommended aggregate tables
+</li></ul>
+<p>The procedure executes all DDL and DML as the same user who invoked it.  For everything to work, that user must have been created with the correct default schema (FOODMART in this example).  See <a href="/wiki/LucidDbCreateUser" title="LucidDbCreateUser">LucidDbCreateUser</a> for syntax.
+</p><p>Currently, the aggregate designer produces invalid SQL:2003 DDL for some datatypes.  To work around this, the add-on performs the following post-processing on the DDL before executing it in LucidDB:
+</p>
+<pre>
+            sql = sql.replaceAll(&quot;INTEGER\\(.*\\)&quot;, &quot;INTEGER&quot;);
+            sql = sql.replaceAll(&quot;BIGINT\\(.*\\)&quot;, &quot;BIGINT&quot;);
+            sql = sql.replaceAll(&quot;SMALLINT\\(.*\\)&quot;, &quot;SMALLINT&quot;);
+</pre>
+<p>You'll need to do the same if you use the aggregate designer UI to generate scripts.
+</p><p>For a future release, the real fix for this needs to be applied to the <b>org.pentaho.aggdes.model.mondrian.MondrianDialect.supportsPrecision</b> method in the Pentaho codebase as follows:
+</p>
+<pre>
+--- src/org/pentaho/aggdes/model/mondrian/MondrianDialect.java  (revision 33317)
++++ src/org/pentaho/aggdes/model/mondrian/MondrianDialect.java  (working copy)
+@@ -91,6 +91,6 @@
+     // hsqldb v1.8 returns 'HSQL Database Engine'
+     return 
+       (meta.getDatabaseProductName().toUpperCase().indexOf(&quot;HSQL&quot;) &lt; 0) &amp;&amp;
+-      (!dialect.isPostgres() || (type.toUpperCase().indexOf(&quot;CHAR&quot;) &gt;= 0));
++      ((!dialect.isPostgres() &amp;&amp;&#160;!dialect.isLucidDB()) || (type.toUpperCase().indexOf(&quot;CHAR&quot;) &gt;= 0));
+   }
+ }
+</pre>
+<h1> <span class="mw-headline" id="Improvements_Needed"> Improvements Needed </span></h1>
+<p>Here are some features which will probably be needed for heavy-duty usage patterns:
+</p>
+<ul><li> generate index and constraint definitions for aggregate tables
+</li><li> generate the population script (with pretruncation) as a separate procedure which can be called at any time after the warehouse has been refreshed
+</li><li> override the default StatisticsProvider implementation to retrieve rowcount, cardinality and histogram information from LucidDB's catalog (perhaps plugging in some of the LucidDB optimizer's cost functions as well)
+</li><li> similarly, override the default StatisticsProvider's <b>getSpace</b> and <b>getLoadTime</b> estimates to match LucidDB, in particular, taking the benefits of column store compression into account
+</li><li> improved packaging for auto-installation of the add-on
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 157/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1900-0!*!0!!en!2!* and timestamp 20140414191034 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbAggregateDesigner&amp;oldid=5007">http://luciddb.org/wiki/index.php?title=LucidDbAggregateDesigner&amp;oldid=5007</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbAggregateDesigner" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbAggregateDesigner&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbAggregateDesigner&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbAggregateDesigner&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbAggregateDesigner" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbAggregateDesigner" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbAggregateDesigner" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbAggregateDesigner&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbAggregateDesigner&amp;oldid=5007" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 20 October 2008, at 00:42.</li>
+		<li id="viewcount">This page has been accessed 12,711 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.247 secs. --></body></html>

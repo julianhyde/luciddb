@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoMedMqlPlugin - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedMqlPlugin", "wgTitle": "FarragoMedMqlPlugin", "wgCurRevisionId": 5626, "wgArticleId": 1945, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedMqlPlugin action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoMedMqlPlugin</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Set_Up_Eigenbase_Release"><span class="tocnumber">2</span> <span class="toctext">Set Up Eigenbase Release</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Set_Up_The_Plugin"><span class="tocnumber">3</span> <span class="toctext">Set Up The Plugin</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Test_The_Plugin"><span class="tocnumber">4</span> <span class="toctext">Test The Plugin</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Tracing"><span class="tocnumber">5</span> <span class="toctext">Tracing</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Server_Options"><span class="tocnumber">6</span> <span class="toctext">Server Options</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Enhancements_Needed"><span class="tocnumber">7</span> <span class="toctext">Enhancements Needed</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Attachments"><span class="tocnumber">8</span> <span class="toctext">Attachments</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction"> Introduction </span></h1>
+<p>This page describes an experimental <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/sqlmed.html">Farrago SQL/MED</a> plugin which allows <a rel="nofollow" class="external text" href="http://www.freebase.com/">Freebase</a> (or any <a rel="nofollow" class="external text" href="http://www.metaweb.com/">Metaweb</a> server) to be queried via JDBC+SQL.  The plugin converts relational algebra expressions into <a rel="nofollow" class="external text" href="http://www.freebase.com/view/en/documentation">MQL</a> queries and sends them to an mqlread web service, then converts the JSON results back into tuples for further processing inside of Farrago's own executor.
+</p><p><a href="/wiki/File:FarragoMedMql.png" class="image"><img alt="FarragoMedMql.png" src="/wiki/upload/9/96/FarragoMedMql.png" width="386" height="500" /></a>
+</p><p>MQL is designed for queries over semistructured graph-oriented data, so in general, it should be used directly.  However, an optional relational view may also be useful:
+</p>
+<ul><li> for cases where query complexity requires SQL operators such as join, aggregation, union, and subqueries
+</li><li> for federated SQL queries over a metaweb graph combined with tables or other SQL/MED data sources
+</li><li> for cases where a front end wants to talk JDBC+SQL (intergalactic dataspeak)
+</li></ul>
+<p>This page walks through the setup and a few examples.
+</p>
+<h1> <span class="mw-headline" id="Set_Up_Eigenbase_Release"> Set Up Eigenbase Release </span></h1>
+<p>The first step is to download and install a binary release of Eigenbase 0.8.0.  Pick the right one for your platform from <a rel="nofollow" class="external text" href="http://sourceforge.net/project/showfiles.php?group_id=127783&amp;package_id=152643">the Sourceforge download page</a>.  We'll use Linux in the examples on this page.
+</p><p>Make sure you have JAVA_HOME pointing to a 1.5 JDK or JRE.
+</p><p>Unpack the Eigenbase distribution, and then under the <b>eigenbase-0.8.0/install</b> directory, run <b>install.sh</b> (or <b>install.bat</b> for Windows).
+</p><p>A <a href="/wiki/LucidDbGettingStarted" title="LucidDbGettingStarted">LucidDB 0.8.0 distribution</a> should work also since it is derived from Eigenbase (the LucidDB SQL optimizer may give better results for complex queries).
+</p>
+<h1> <span class="mw-headline" id="Set_Up_The_Plugin"> Set Up The Plugin </span></h1>
+<p>Download and unpack the plugin from <a rel="nofollow" class="external text" href="http://downloads.sourceforge.net/farrago/farrago-mql-plugin-0.8.0.zip">downloads.sourceforge.net</a>.
+</p><p>Then, start sqllineEngine for running SQL commands interactively:
+</p>
+<pre>
+$ cd eigenbase-0.8.0/bin/
+~/eigenbase-0.8.0/bin$ ./sqllineEngine 
+Connecting to jdbc:farrago:
+Connected to: Eigenbase Data Management System (version 0.8.0)
+Driver: FarragoJdbcDriver (version 0.8)
+Autocommit status: true
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+sqlline version 1.0.5-eb by Marc Prud'hommeaux
+0: jdbc:farrago:&gt; 
+</pre>
+<p>Edit the following script to match the paths for your site, and then paste it into sqlline to execute it:
+</p>
+<pre>
+create schema metaweb;
+
+create or replace foreign data wrapper mql_wrapper
+library '/path/to/farrago-mql-plugin/farrago-mql.jar'
+language java;
+
+create or replace server mql_server
+foreign data wrapper mql_wrapper;
+
+create or replace jar metaweb.mql_jar
+library 'file:/path/to/farrago-mql-plugin/farrago-mql.jar'
+options(0);
+</pre>
+<p>Then run this additional setup step (no path editing required):
+</p>
+<pre>
+create or replace function metaweb.mql_query(
+  url varchar(4096),
+  mql varchar(65535), 
+  row_type varchar(65535))
+returns table(
+  objects varchar(128))
+language java
+parameter style system defined java
+dynamic_function
+no sql
+external name 'metaweb.mql_jar:net.sf.farrago.namespace.mql.MedMqlUdx.execute';
+</pre>
+<p>The plugin is now installed and ready for use.
+</p>
+<h1> <span class="mw-headline" id="Test_The_Plugin"> Test The Plugin </span></h1>
+<p>The plugin is not yet capable of retrieving metadata, so we need to explicitly create a table definition corresponding to the Metaweb type of interest:
+</p>
+<pre>
+create or replace foreign table metaweb.artists(
+    &quot;name&quot; varchar(128), &quot;id&quot; varchar(128))
+server mql_server
+options (metaweb_type '/music/artist');
+</pre>
+<p>The columns of interest need to be explicitly referenced and assigned types; they can be a subset of all of the available attributes on the type.  Note that the plugin is not yet capable of dealing with multivalued attributes (e.g. the tracks of an album), so omit those.
+</p><p>Now you can run queries against the foreign table:
+</p>
+<pre>
+0: jdbc:farrago:&gt; select &quot;name&quot; from metaweb.artists where &quot;id&quot;='/en/gene_kelly';
++-------------+
+|    name     |
++-------------+
+| Gene Kelly  |
++-------------+
+</pre>
+<pre>
+0: jdbc:farrago:&gt; select count(*) from metaweb.artists;
++---------+
+| EXPR$0  |
++---------+
+| 100     |
++---------+
+</pre>
+<p>(Well, there are actually a lot more than 100, but by default MQL imposes a limit on the number of results returned!)
+</p><p>You can also combine local data with MQL data:
+</p>
+<pre>
+create table metaweb.artist_list(name varchar(128) not null primary key);
+insert into metaweb.artist_list values ('Gene Kelly'), ('Depeche Mode'), ('ABBA');
+select &quot;id&quot; from metaweb.artists, metaweb.artist_list where artists.&quot;name&quot; = artist_list.name;
+</pre>
+<p>(There are some bugs with subqueries, so use a join instead.)
+</p>
+<h1> <span class="mw-headline" id="Tracing"> Tracing </span></h1>
+<p>You can see the MQL sent to the webservice by using <a href="/wiki/FarragoExplainPlanExplained" title="FarragoExplainPlanExplained">EXPLAIN PLAN</a>:
+</p>
+<pre>
+0: jdbc:farrago:&gt;&#160;!set maxwidth 1000
+0: jdbc:farrago:&gt;&#160;!set outputformat csv
+0: jdbc:farrago:&gt; explain plan for select &quot;id&quot; from metaweb.artists where &quot;name&quot; = 'Gene Kelly';
+'column0'
+'FennelToIteratorConverter'
+'  FennelReshapeRel(projection=[[1]], outputRowType=[RecordType(VARCHAR(128) CHARACTER SET &quot;ISO-8859-1&quot; COLLATE &quot;ISO-8859-1$en_US$primary&quot; id) NOT NULL])'
+'    IteratorToFennelConverter'
+'      FarragoJavaUdxRel(invocation=[CAST(MQL_QUERY(CAST('http://api.freebase.com/api/service/mqlread'):VARCHAR(4096) CHARACTER SET &quot;ISO-8859-1&quot; COLLATE &quot;ISO-8859-1$en_US$primary&quot;, 
+CAST('{&quot;query&quot;:[{&quot;type&quot;:&quot;/music/artist&quot;,&quot;id&quot;:null,&quot;name&quot;:&quot;Gene Kelly&quot;}]}'):VARCHAR(65535)...
+</pre>
+<p>You can also see the full MQL request/response by turning on trace <b>net.sf.farrago.namespace.mql.level=FINE</b> in <b>trace/Trace.properties</b> and then checking the output in <b>trace/Trace.log</b> after executing a query.
+</p><p>Currently, the optimization rules only support projections and simple conjunctive filters of the form <b>COLUMN1 = literal1 AND COLUMN2 = literal2 AND ...</b>.  Non-equality operators are not translated, and are instead executed by Farrago:
+</p>
+<pre>
+0: jdbc:farrago:&gt; explain plan for select &quot;id&quot; from metaweb.artists where &quot;name&quot; like 'Gene%';
+'column0'
+'IterCalcRel(expr#0..1=[{inputs}], expr#2=['Gene%'], expr#3=[LIKE($t0, $t2)], id=[$t1], $condition=[$t3])'
+'  FarragoJavaUdxRel(invocation=[CAST(MQL_QUERY(CAST('http://api.freebase.com/api/service/mqlread'):VARCHAR(4096) CHARACTER SET &quot;ISO-8859-1&quot; COLLATE &quot;ISO-8859-1$en_US$primary&quot;, 
+CAST('{&quot;query&quot;:[{&quot;type&quot;:&quot;/music/artist&quot;,&quot;id&quot;:null,&quot;name&quot;:null}]}'):...
+</pre>
+<h1> <span class="mw-headline" id="Server_Options"> Server Options </span></h1>
+<p>By default, the URL <b>http://api.freebase.com/api/service/mqlread</b> is used for communicating with the mqlread service.  You can override this with an option on the server definition, e.g. to switch to a sandbox:
+</p>
+<pre>
+create or replace server mql_server
+foreign data wrapper mql_wrapper
+options (url 'http://api.sandbox.freebase.com/api/service/mqlread');
+</pre>
+<h1> <span class="mw-headline" id="Enhancements_Needed"> Enhancements Needed </span></h1>
+<p>The plugin is currently just a proof of concept.  For real use, a lot of enhancements would be needed:
+</p>
+<ul><li> use a real JSON library; the current result set parsing makes a lot of assumptions about the formatting, meaning it will break if the metaweb service implementation changes anything
+</li><li> fix some assumptions about field name translation (currently causing the query <b>select "id" from metaweb.artists where "name" in (select * from metaweb.artist_list);</b> to return no results)
+</li><li> push down joins, sorts, and aggregations into MQL (not just projections and filters)
+</li><li> support retrieval of large results via cursors instead of using the default 100-item limit
+</li><li> add comprehensive filter translation support
+</li><li> allow complex MQL queries to be specified in foreign table definitions (instead of just type extents)
+</li><li> feed MQL's result count estimation up into the SQL optimizer
+</li><li> implement the SQL/MED metadata retrieval interfaces so that relations can be inferred from types automatically
+</li><li> when Farrago multiset and UDT support gets completed, allow mapping hierarchical result sets from MQL back into SQL
+</li></ul>
+<h1> <span class="mw-headline" id="Attachments"> Attachments </span></h1>
+<ul><li> <a href="/wiki/File:FarragoMedMql.odg" title="File:FarragoMedMql.odg">Image:FarragoMedMql.odg</a>
+</li><li> <a href="/wiki/File:FarragoMedMql.png" title="File:FarragoMedMql.png">Image:FarragoMedMql.png</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 129/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1945-0!*!0!!en!2!* and timestamp 20140414194616 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoMedMqlPlugin&amp;oldid=5626">http://luciddb.org/wiki/index.php?title=FarragoMedMqlPlugin&amp;oldid=5626</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedMqlPlugin" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedMqlPlugin&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoMedMqlPlugin&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedMqlPlugin&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedMqlPlugin" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedMqlPlugin" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedMqlPlugin" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoMedMqlPlugin&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoMedMqlPlugin&amp;oldid=5626" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 12 January 2009, at 22:56.</li>
+		<li id="viewcount">This page has been accessed 5,921 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.205 secs. --></body></html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbDataStorageAndAccess - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbDataStorageAndAccess", "wgTitle": "LucidDbDataStorageAndAccess", "wgCurRevisionId": 6144, "wgArticleId": 1612, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbDataStorageAndAccess action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbDataStorageAndAccess</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 14:49, 20 June 2009 by <a href="/wiki/index.php?title=User:Freyes&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Freyes (page does not exist)">Freyes</a>  <span class="mw-usertoollinks">(<a href="/wiki/index.php?title=User_talk:Freyes&amp;action=edit&amp;redlink=1" class="new" title="User talk:Freyes (page does not exist)">Talk</a> | <a href="/wiki/Special:Contributions/Freyes" title="Special:Contributions/Freyes">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;diff=prev&amp;oldid=6144" title="LucidDbDataStorageAndAccess">diff</a>) <a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;direction=prev&amp;oldid=6144" title="LucidDbDataStorageAndAccess">← Older revision</a> | Latest revision (diff) | Newer revision → (diff)</div>
+			</div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Data_Storage"><span class="tocnumber">2</span> <span class="toctext">Data Storage</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Physical_Storage"><span class="tocnumber">2.1</span> <span class="toctext">Physical Storage</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Logical_Storage"><span class="tocnumber">2.2</span> <span class="toctext">Logical Storage</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Column_Store_Tables"><span class="tocnumber">2.3</span> <span class="toctext">Column Store Tables</span></a>
+<ul>
+<li class="toclevel-3 tocsection-6"><a href="#Clusters"><span class="tocnumber">2.3.1</span> <span class="toctext">Clusters</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#Rid-to-PageId_BTree_Map"><span class="tocnumber">2.3.2</span> <span class="toctext">Rid-to-PageId BTree Map</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="#Compressed_Data_Storage"><span class="tocnumber">2.3.3</span> <span class="toctext">Compressed Data Storage</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="#Batches"><span class="tocnumber">2.3.4</span> <span class="toctext">Batches</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="#Non-compressed_Batches"><span class="tocnumber">2.3.5</span> <span class="toctext">Non-compressed Batches</span></a></li>
+<li class="toclevel-3 tocsection-11"><a href="#Additional_Compression"><span class="tocnumber">2.3.6</span> <span class="toctext">Additional Compression</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-12"><a href="#Bitmap_Indexes"><span class="tocnumber">2.4</span> <span class="toctext">Bitmap Indexes</span></a>
+<ul>
+<li class="toclevel-3 tocsection-13"><a href="#Compressed_Bitmaps"><span class="tocnumber">2.4.1</span> <span class="toctext">Compressed Bitmaps</span></a></li>
+<li class="toclevel-3 tocsection-14"><a href="#Index_Builds"><span class="tocnumber">2.4.2</span> <span class="toctext">Index Builds</span></a></li>
+<li class="toclevel-3 tocsection-15"><a href="#Unique_Key_Values"><span class="tocnumber">2.4.3</span> <span class="toctext">Unique Key Values</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-16"><a href="#Page_Versioning"><span class="tocnumber">3</span> <span class="toctext">Page Versioning</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="#Updating_and_Deleting_Data"><span class="tocnumber">4</span> <span class="toctext">Updating and Deleting Data</span></a>
+<ul>
+<li class="toclevel-2 tocsection-18"><a href="#Deletes"><span class="tocnumber">4.1</span> <span class="toctext">Deletes</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#Upserts"><span class="tocnumber">4.2</span> <span class="toctext">Upserts</span></a>
+<ul>
+<li class="toclevel-3 tocsection-20"><a href="#Basic_Operation"><span class="tocnumber">4.2.1</span> <span class="toctext">Basic Operation</span></a></li>
+<li class="toclevel-3 tocsection-21"><a href="#Execution_Flow"><span class="tocnumber">4.2.2</span> <span class="toctext">Execution Flow</span></a></li>
+<li class="toclevel-3 tocsection-22"><a href="#Optimizations"><span class="tocnumber">4.2.3</span> <span class="toctext">Optimizations</span></a>
+<ul>
+<li class="toclevel-4 tocsection-23"><a href="#Filtering_Non-Updated_Rows"><span class="tocnumber">4.2.3.1</span> <span class="toctext">Filtering Non-Updated Rows</span></a></li>
+<li class="toclevel-4 tocsection-24"><a href="#Replacement_of_Updated_Columns"><span class="tocnumber">4.2.3.2</span> <span class="toctext">Replacement of Updated Columns</span></a></li>
+<li class="toclevel-4 tocsection-25"><a href="#Updates_Written_As_Upserts"><span class="tocnumber">4.2.3.3</span> <span class="toctext">Updates Written As Upserts</span></a></li>
+<li class="toclevel-4 tocsection-26"><a href="#Unique_Indexes"><span class="tocnumber">4.2.3.4</span> <span class="toctext">Unique Indexes</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-27"><a href="#Upserts_and_Page_Versioning"><span class="tocnumber">4.2.4</span> <span class="toctext">Upserts and Page Versioning</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-28"><a href="#Truncate_Table"><span class="tocnumber">4.3</span> <span class="toctext">Truncate Table</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-29"><a href="#Table_Maintenance"><span class="tocnumber">5</span> <span class="toctext">Table Maintenance</span></a>
+<ul>
+<li class="toclevel-2 tocsection-30"><a href="#Table_Rebuild"><span class="tocnumber">5.1</span> <span class="toctext">Table Rebuild</span></a>
+<ul>
+<li class="toclevel-3 tocsection-31"><a href="#Table_Rebuild_and_Page_Versioning"><span class="tocnumber">5.1.1</span> <span class="toctext">Table Rebuild and Page Versioning</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-32"><a href="#Analyze_Table"><span class="tocnumber">5.2</span> <span class="toctext">Analyze Table</span></a></li>
+<li class="toclevel-2 tocsection-33"><a href="#Alter_Table_Add_Column"><span class="tocnumber">5.3</span> <span class="toctext">Alter Table Add Column</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-34"><a href="#Data_Access"><span class="tocnumber">6</span> <span class="toctext">Data Access</span></a>
+<ul>
+<li class="toclevel-2 tocsection-35"><a href="#Row_Scans"><span class="tocnumber">6.1</span> <span class="toctext">Row Scans</span></a>
+<ul>
+<li class="toclevel-3 tocsection-36"><a href="#Reading_Data"><span class="tocnumber">6.1.1</span> <span class="toctext">Reading Data</span></a></li>
+<li class="toclevel-3 tocsection-37"><a href="#Filtering"><span class="tocnumber">6.1.2</span> <span class="toctext">Filtering</span></a></li>
+<li class="toclevel-3 tocsection-38"><a href="#Intelligent_Pre-Fetch"><span class="tocnumber">6.1.3</span> <span class="toctext">Intelligent Pre-Fetch</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-39"><a href="#Indexed_Scans"><span class="tocnumber">6.2</span> <span class="toctext">Indexed Scans</span></a>
+<ul>
+<li class="toclevel-3 tocsection-40"><a href="#Individual_Index_Lookups"><span class="tocnumber">6.2.1</span> <span class="toctext">Individual Index Lookups</span></a></li>
+<li class="toclevel-3 tocsection-41"><a href="#Intersecting_Multiple_Index_Lookups"><span class="tocnumber">6.2.2</span> <span class="toctext">Intersecting Multiple Index Lookups</span></a></li>
+<li class="toclevel-3 tocsection-42"><a href="#Subtracting_Deleted_Rids"><span class="tocnumber">6.2.3</span> <span class="toctext">Subtracting Deleted Rids</span></a></li>
+<li class="toclevel-3 tocsection-43"><a href="#Other_Indexing_Operations_.28Future.29"><span class="tocnumber">6.2.4</span> <span class="toctext">Other Indexing Operations (Future)</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Introduction">Introduction</span></h1>
+<p>This page describes the portions of the LucidDB architecture that relate to data storage and access.  This includes the underlying physical and logical storage mechanisms, the structure of LucidDB tables and indexes, and how those tables and indexes are written to and read.
+</p><p>This page assumes that the reader has a high-level understanding of LucidDB column store tables and bitmap indexes.  See <a rel="nofollow" class="external free" href="http://www.luciddb.org/arch.html">http://www.luciddb.org/arch.html</a> for the necessary background information.
+</p>
+<h1> <span class="mw-headline" id="Data_Storage">Data Storage</span></h1>
+<h2> <span class="mw-headline" id="Physical_Storage">Physical Storage</span></h2>
+<p>Data in LucidDB is stored using 32K pages in an operating system file named <b>db.dat</b>.  Pages are allocated from that underlying random-access file.  When LucidDB is first initialized 2000 pages, equivalent to 62MB, are allocated for that file.  The first two pages are reserved for storing system state (e.g., checkpoint information).  The two pages store identical information.  By having two pages and writing them out synchronously during checkpoints, this ensures that LucidDB will always have at least one good copy of the page, in case of a system crash while in the middle of writing out one of the two pages.
+</p><p>The remaining pages are available for storing user-data, although there are also metadata pages sprinkled in between those user pages.  As the database grows, additional new pages are allocated, by default, in blocks of 1000 pages (31MB).  That value is configurable.  Once additional database pages are allocated, the size of the underlying file never shrinks, even if the pages are not being used.
+</p><p>Other <b>*.dat</b> files are also created by LucidDB for storing temporary data during query processing and for transaction logging and recovery.
+</p><p>Pages are accessed randomly by a unique blockId.  This blockId, in turn, maps to an offset within the physical file.  The pages are read into a buffer pool.  The number of pages in the buffer pool is configurable and defaults to 5000 pages (~160MB).  Hash buckets are used to efficiently locate pages in the buffer pool.  Dirty pages are flushed to disk by one of the following:
+</p>
+<ul><li> During checkpoints that occur on transaction commits, all outstanding dirty pages modified by the current transaction are flushed to disk.
+</li><li> If the buffer pool fills up and if a page is not currently being accessed, it can potentially be victimized, resulting in it being flushed before it's removed from the buffer pool.  Pages are victimized using a <a rel="nofollow" class="external text" href="http://www.vldb.org/conf/1994/P439.PDF">2Q victimization policy</a>.
+</li><li> During data loads, when data and index pages fill up, those pages will no longer be written to and therefore are flushed asynchronously, to minimize the number of dirty pages that will need to be flushed during checkpoints.
+</li><li> A lazy page writer periodically flushes dirty pages to disk when a certain percentage of the buffer pool is dirty.
+</li></ul>
+<p>See <a href="/wiki/LucidDbPerformanceTuning#Background" title="LucidDbPerformanceTuning">LucidDbPerformanceTuning#Background</a> for further details on the LucidDB buffer pool and I/O scheduling.
+</p>
+<h2> <span class="mw-headline" id="Logical_Storage">Logical Storage</span></h2>
+<p>Pages are logically stored in what are known in LucidDB as segments.  Pages within a segment are logically identified using pageIds.  The underlying segments therefore provide a mapping from the logical pageId to the corresponding physical blockId.
+</p><p>LucidDB utilizes several segments to map logical pages.  These segments provide the following capabilities:
+</p>
+<ul><li> Allows pageIds to be numbered sequentially from 0 to N
+</li><li> Allows pages to be randomly allocated and deallocated
+</li><li> Allows pages to be versioned to support point-in-time reads
+</li><li> Allows pages to be recovered during database crashes
+</li></ul>
+<p>See <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structSegmentDesign.html">Segment Library</a> for a more detailed description of LucidDB segments.
+</p>
+<h2> <span class="mw-headline" id="Column_Store_Tables">Column Store Tables</span></h2>
+<h3> <span class="mw-headline" id="Clusters">Clusters</span></h3>
+<p>All LucidDB tables are column store tables.  A column store table consists of a set of clusters.  A cluster denotes the granularity by which you are vertically partitioning the columns within a table.  By default, each column maps to a single cluster.  This is likely the most typical usage.  However, it is possible to associate multiple columns with a single cluster.  A single cluster page, therefore, stores the values for a specific set of rids (short for row ids), for all columns in that cluster.
+</p><p>As noted above, when loading data into clusters, once a cluster page fills up, rather than waiting for an explicit checkpoint, that cluster page is immediately written to disk asynchronously.
+</p><p>Each cluster is loaded in bulk, independent of the other clusters in the table.
+</p>
+<h3> <span class="mw-headline" id="Rid-to-PageId_BTree_Map">Rid-to-PageId BTree Map</span></h3>
+<p>To allow LucidDB to quickly access a column value associated with a specified rid value, each cluster also has associated with it a btree index.  The btree index maps rid values to pageIds.  The rid values correspond to the first rid value stored on each page within a cluster, and the cluster pages are identified by their pageIds.  E.g., if we're trying to access rid 1000, and the btree indicates that cluster pageId 50's first rid value is 1248, while cluster pageId 49's first rid value is 984, then we know that we want pageId 49.  Note that in order to locate that desired entry in the btree, a greatest lower bound (as opposed to a least upper bound) search on key "1000" is done.
+</p><p>Each cluster is uniquely identified by the pageId of the root page in this btree index.
+</p><p><a href="/wiki/File:RidToPageIdBTreeMap.png" class="image"><img alt="RidToPageIdBTreeMap.png" src="/wiki/upload/6/64/RidToPageIdBTreeMap.png" width="291" height="197" /></a>
+</p>
+<h3> <span class="mw-headline" id="Compressed_Data_Storage">Compressed Data Storage</span></h3>
+<p>Within a cluster page, column values, by default, are stored in a compressed format, which allows LucidDB to minimize storage requirements.  The idea here is instead of storing each column value for every rid value on a page, we instead store just the unique column values.  We then associate with each column value a bit-encoded vector.  For example, if you have 50 unique values, corresponding to US states, you can encode those values using a 6-bit vector.  However, to make access to these bit encodings more efficient, at the expense of using slightly more space, we only encode the bits using up to two vectors that contain either 1, 2, 4, 8, or 16 bits.  So, in this example, we would use a 4-bit vector along with a 2-bit vector to represent the 50 values.  If we needed 7 bits to represent a set of unique values, we would just use a single 8-bit vector.
+</p>
+<h3> <span class="mw-headline" id="Batches">Batches</span></h3>
+<p>Within a single page, rids associated with each column in a cluster are stored in units known as batches.  Therefore, the number of batches on a page is a multiple of the number of columns in a cluster.  Each batch within a page shares the same set of unique column values associated with that page.  So, in the case where a page is fully compressed, the unique column values stored on that page represent the unique values across all columns within that cluster, for that page.
+</p><p>Unless the batch is on the very last page and corresponds to the last set of batches for the columns in a cluster, the number of rids stored in a batch is always a multiple of 8.  This is necessary for two optimizations that utilize the compressed data format described in the <a href="#Compressed_Data_Storage">previous section</a>.  These optimizations will be described further below.
+</p><p><a href="/wiki/File:CompressedBatch.png" class="image"><img alt="CompressedBatch.png" src="/wiki/upload/a/a7/CompressedBatch.png" width="690" height="424" /></a>
+</p>
+<h3> <span class="mw-headline" id="Non-compressed_Batches">Non-compressed Batches</span></h3>
+<p>When constructing a batch, LucidDB assumes that the data will be stored using the compressed format described earlier.  However, if the values to be stored within a batch contain very few duplicates, then the additional space you need to store the mapping from bit encodings to column values may outweigh the savings you get from storing only unique column values.  In that case, LucidDB will revert to one of two other batch storage modes -- either fixed or variable.  In the case of the former, the data values are always stored in fixed-length records, regardless of the actual size of the data.  This avoids having to store additional offset values to locate each value.  In both cases, the column values within the batch are stored multiple times if there are duplicate values.
+</p><p>Once LucidDB has decided to switch a batch from compressed to either fixed or variable mode, it assumes that the next group of batches for a particular column within that cluster also have similar data characteristics and therefore, it will continue to use that same storage format for that column.  It will switch back to making a decision on the fly after it's written out a group of 20 batches.
+</p>
+<h3> <span class="mw-headline" id="Additional_Compression">Additional Compression</span></h3>
+<p>Further compression is achieved by stripping leading zeros from column types that map to 8-byte integers.  This includes SQL types like BIGINT, DATE, TIME, and DECIMAL.  For example, if you need to store the value 127, rather than storing this using 8 bytes, we can instead store it as a variable-length data value that consists of a single byte.
+</p><p>We only do this optimization for 8-byte integers because that's where you get the most benefits, as there is additional processing cost associated with doing this type of compression/de-compression.
+</p>
+<h2> <span class="mw-headline" id="Bitmap_Indexes">Bitmap Indexes</span></h2>
+<h3> <span class="mw-headline" id="Compressed_Bitmaps">Compressed Bitmaps</span></h3>
+<p>Indexes created on column store tables are bitmap indexes.  Bitmap indexes are like btree indexes except instead of storing a list of rids matching each key value in the leaf pages, the lists of rids are replaced with compressed bitmaps representing those rids.  A bitmap consists of a series of bytes, where each bit within a byte corresponds to a rid.  If the bit is set, then that indicates that the corresponding key value contains that rid.  Compression is achieved by stripping off bytes that contain no set bits.  A descriptor within each bitmap entry keeps track of these stripped-off bytes.
+</p><p>In order to determine where the bitmap starts, the entry also contains the initial rid value corresponding to the bytes, rounded down to the nearest 8-byte boundary.  That initial rid value is actually part of the index key.  It's appended to the end of the user-specified index keys.  Since there is a limit on the size of a bitmap entry, it is possible to have multiple bitmap entries corresponding to a key value if there are a large number of rows containing that key value.  By having the rid as part of the index key, it distinguishes those entries and allows them to be stored in rid order.  The rid key is also utilized during certain types of searches, to be described later.
+</p><p>For example, if a key value matches rids  10, 12, and 8001, the compressed bitmap for that entry includes a starting rid value of 8 and 2 bytes representing rid values.  The first byte has bits 2 and 5 set, representing rids 10 and 12, and the second byte has bit 1 set, representing rid 8001.  The 998 zero bytes in between 16 and 8000 are represented in a descriptor, so LucidDB knows that there is that gap in between the 2 bytes.
+</p><p><a href="/wiki/File:CompressedBitmap.png" class="image"><img alt="CompressedBitmap.png" src="/wiki/upload/b/b9/CompressedBitmap.png" width="523" height="325" /></a>
+</p>
+<h3> <span class="mw-headline" id="Index_Builds">Index Builds</span></h3>
+<p>Bitmap indexes are built in bulk after the corresponding table data has been loaded.  The build consists of three phases:
+</p>
+<ol><li> A generator phase during which column data corresponding to newly inserted data is read and individual btree entries corresponding to each key and rid value are built.
+</li><li> A sorter phase during which the btree entries constructed in step 1 are sorted on the index key and rid values in each entry.
+</li><li> A splicer phase during which the sorted btree entries are combined together and inserted into the index.
+</li></ol>
+<p>When a column store batch is stored using the <a href="#Compressed_Data_Storage">compressed data format</a>, 
+LucidDB optimizes step 1 by taking advantage of that format.  Since that storage format already tells us, for a specific data page, the rid values corresponding to each unique key value on that page, rather than creating individual key/rid btree entries, we can instead utilize that information to do early construction of bitmap entries.  Hence, that's one reason why <a href="#Batches">batches</a> within a cluster page must contain multiples of 8 rids.
+</p><p>During the splicer phase, if an index already contains data, the newly constructed entries are also combined with the existing entries, replacing the original entries.
+</p><p><br />
+<a href="/wiki/File:BitmapIndexBuild.png" class="image"><img alt="BitmapIndexBuild.png" src="/wiki/upload/a/ab/BitmapIndexBuild.png" width="653" height="284" /></a>
+</p>
+<h3> <span class="mw-headline" id="Unique_Key_Values">Unique Key Values</span></h3>
+<p>If a bitmap entry consists of a single rid value, then rather than representing that rid using a compressed bitmap, the entry degenerates to a standard btree entry.  Therefore, a unique index looks identical to a standard btree.
+</p>
+<h1> <span class="mw-headline" id="Page_Versioning">Page Versioning</span></h1>
+<p>LucidDB implements concurrency control by <a href="/wiki/LucidDbConcurrencyControl#Page_Multi-versioning" title="LucidDbConcurrencyControl"> versioning pages</a>.  Any operation, whether DML or DDL, that modifies a page will result in the page being versioned.
+</p><p>The original version of a page is known as an <i>anchor page</i>.  As a page is versioned, new versions of the page are chained from its corresponding anchor page.  The newest page is always chained directly from the anchor.  Older pages follow it in the chain, in decreasing timestamp order, eventually looping back to the anchor.  The page chain and timestamp information are stored in metadata entries, one per page.  The timestamp associated with each page corresponds to when the transaction that created and/or modified the page committed.
+</p><p>When <a href="/wiki/LucidDbAlterSystem" title="LucidDbAlterSystem">ALTER SYSTEM DEALLOCATE OLD</a> is run, old page versions no longer in use can be deallocated, provided they do not correspond to anchor pages.  Anchor pages cannot be deallocated because btree and bitmap index entries contain references to anchor pages.  If LucidDB were to deallocate those anchor pages, it would then have to go back and update all index entries referencing those anchor pages.
+</p><p>In the case where a page chain reduces to an anchor page followed by the latest version of a page, you might think that LucidDB can eliminate this page chain by replacing the contents of the anchor page with the contents of the latest page and then deallocating the latest page.  However, this is not feasible because if other transactions are accessing that latest page while LucidDB is trying to deallocate it, the deallocation will fail.
+</p><p>ALTER SYSTEM DEALLOCATE OLD can be run at any time.  It is very efficient because it only accesses and updates page metadata (no data pages are accessed).  As will be described in later sections, this command should be run after table rebuilds and truncates, which cause pages to no longer be needed.  This is important because as noted earlier, db.dat is a grow-only file, and pages that are no longer in use cannot be reallocated for other uses, until they have been reclaimed by ALTER SYSTEM DEALLOCATE OLD.
+</p><p>As noted earlier, LucidDB implements <a href="#Logical_Storage">segments</a> that provide various forms of page mapping.  One such segment provides the abstraction that allows LucidDB to reference the appropriate physical page corresponding to the page snapshot that should be read by each transaction.  This particular segment will walk through a page's version chain, starting at the page linked from the anchor, until it finds a page whose timestamp is smaller than the timestamp at the time the transaction reading the page was initiated.  Due to the order in which pages are chained from the anchor, in the most common case where you want to access the latest version of a page, if the page is versioned, LucidDB only needs to examine two metadata entries -- the anchor's and the one following the anchor.  For each transaction, that page mapping is also cached, so the metadata only needs to be examined the very first time a page is accessed during a transaction.
+</p><p>The following diagram illustrates the metadata for a page chain.
+</p><p><br />
+<a href="/wiki/File:PageVersioning.png" class="image"><img alt="PageVersioning.png" src="/wiki/upload/5/56/PageVersioning.png" width="695" height="122" /></a>
+</p><p>A request to read pageId A at time t(n+1) would read pageId B.  A request to read pageId A at time t2 would read pageId D.
+</p><p>If ALTER SYSTEM DEALLOCATE OLD is run and the above page chain exists, if the oldest active transaction started at time t2, then no pages can be deallocated because that transaction still needs to read pageId D, and pageId A can never be deallocated because it's the anchor.  If the deallocation is done when the oldest active transaction started at time t(n+1), then it is possible to deallocate all pages except pageIds A and B.  As noted earlier, in this case, LucidDB cannot replace the contents of pageId A with the contents of pageId B, in the hope of removing the page chain, because that would require LucidDB to deallocate pageId B, which other transactions may still be referencing.
+</p><p>Note that the semantics of page reclamation differs when warehouse labels are being used.  See <a href="/wiki/LucidDbWarehouseLabels#Space_Reclamation" title="LucidDbWarehouseLabels">LucidDbWarehouseLabels#Space_Reclamation</a> for a discussion of the differences.
+</p>
+<h1> <span class="mw-headline" id="Updating_and_Deleting_Data">Updating and Deleting Data</span></h1>
+<h2> <span class="mw-headline" id="Deletes">Deletes</span></h2>
+<p>LucidDB implements <i>lazy</i> deletes.  In other words, rows are not physically removed from data and index pages when deleted.  Instead, the deleted rids are recorded in an internal deletion index associated with each table.  That deletion index is actually a bitmap index.  Using a bitmap index minimizes the cost of storing the deleted rids.  The index contains a single key, which represents the starting rid value, rounded down to the nearest 8-byte boundary, for each bitmap entry.  The combined bits in the bitmap entries, therefore, represent the deleted rids.
+</p><p>Lazy deletes avoid the complexities associated with having to re-compress the data on a page when a row is deleted.  Remember, one of the fundamental characteristics of a <a href="#Batches">batch</a> is that it stores a multiple of 8 number of rows.
+</p><p>A DELETE statement executes in two parts.  The first part determines the subset of rows that need to be deleted, as specified by the where clause in the statement.  LucidDB will retrieve the set of rids corresponding to these deleted rows, and sort them.  The second part takes the sorted rids and inserts them in bulk into the deletion index, using the same <a href="#Index_Builds">splicer</a> that's used for loading user-created indexes.  When the splicer modifies the existing bitmap entries in the deletion index, it deletes the original entry and replaces it with the new one containing the additional deleted rids.  Note also that the index page update is not done in-place, but instead a new copy of the page is created, as described <a href="#Page_Versioning">earlier</a>.
+</p><p>The splicer requires the rid input to be sorted.  A side effect of doing the sort is that it effectively buffers all of the rid values from the source table before any data is inserted into the deletion index.  Therefore, even though the first part of the delete is reading from the deletion index to filter out rids that are already deleted (see <a href="#Reading_Data">#Reading Data</a>), it does not conflict with the second part of the delete, which is adding rids to the deletion index.  Note though that even without the buffering provided by the sort, the conflict is avoided because of <a href="#Page_Versioning">page versioning</a>.
+</p>
+<h2> <span class="mw-headline" id="Upserts">Upserts</span></h2>
+<h3> <span class="mw-headline" id="Basic_Operation">Basic Operation</span></h3>
+<p>Upserts allow both inserts and updates to be executed within a single statement.  LucidDB supports upsert by implementing the SQL2003 standard <a href="/wiki/LucidDbUpsert" title="LucidDbUpsert">MERGE statement</a>.  A MERGE statement consists of:
+</p>
+<ul><li> A target table
+</li><li> A source, which can be a view
+</li><li> An ON clause that correlates between the target and source using keys; these keys are generally  unique
+</li><li> An INSERT sub-statement that specifies the values for new rows
+</li><li> An UPDATE sub-statement that specifies the values for updated rows
+</li></ul>
+<p>The source view can include <a href="/wiki/LucidDbUdxJavaHowto" title="LucidDbUdxJavaHowto">UDX</a> calls.  UDXs are user-defined routines that return rows as output.  They can be used to perform transformations on a set of input rows, or to produce a set of rows given some seed input.  Therefore, think of the UDX call as just another table in the view definition.
+</p><p>In order to determine which source rows correspond to new rows that need to be inserted vs existing target rows that need to be updated, LucidDB executes a left outer join between the source and the target.  The join query computes the column values for the insert and update rows, and includes a selection of the rid column from the target table.  Hence, a null rid in the join result represents a new source row.
+</p><p>Updates are implemented as deletes followed by inserts.  LucidDB combines the new rows resulting from the updates with the actual new rows into a larger set of rows that are to be inserted into the table.  The original rows that are updated are deleted from the table.
+</p><p>Upserts like all LucidDB DML operations run in single-statement transactions that either run successfully to completion or are rolled back on errors.  However, it is possible to specify that for any single statement, up to a certain number of errors, like unique constraint violations, should be ignored.  In that case, rather than aborting on an error, the error is recorded in a log file, and the statement runs to completion, provided the error limit isn't reached.  See <a href="/wiki/LucidDbErrorHandling" title="LucidDbErrorHandling">LucidDbErrorHandling</a> for details on how this works.
+</p>
+<h3> <span class="mw-headline" id="Execution_Flow">Execution Flow</span></h3>
+<p>Pulling these different pieces together, here's a high-level breakdown of what's actually occurring under the covers during execution of an upsert statement.
+</p>
+<ol><li> Execute an outer join between the source and target.  Note that even though the upsert is reading from the target table and will later be writing to it, there's no need to buffer the result of this outer join because upserts take advantage of <a href="#Page_Versioning">page versioning</a>.  Using page versioning, the source for the upsert can read a snapshot of the target table as of the start of the statement, ignoring modifications that are made concurrently by the rest of the statement.
+</li><li> Separate out the rows corresponding to update rows from the rows corresponding to new insert rows.
+</li><li> Bulk insert the rows corresponding to updated rows followed by rows corresponding to insert rows.  If the rows are being inserted into existing pages, then those pages are versioned.
+</li><li> Bulk delete rows corresponding to the original rows that are being updated.  As described in the <a href="#Deletes">previous section</a>, this entails inserting the deleted rids into the internal, deletion index.
+</li><li> Insert new entries into the target table's bitmap indexes corresponding to the new rows, as described in the <a href="#Index_Builds">Index Build section</a>.  Again, if the entries are being inserted into existing pages, then those pages are versioned.  In order to determine whether or not there is a unique constraint violation, the deletion index is consulted.
+</li><li> If any unique constraint violations were detected in the previous step and errors are to be ignored, then delete those rows by inserting their rids into the deletion index.
+</li></ol>
+<p>The steps above are all sequential, except for 3 and 4, which can occur concurrently.
+</p><p>By deleting the rows in step 4 before inserting new key values in step 5, this addresses the classic problem of executing an update on a unique key column, where you increment the column values by 1.
+</p><p>Note that the order of the inserts in step 3 is important because if a table contains unique constraints, we want to allow rows that update columns, which excludes unique constraint columns, to occur first.  Otherwise, any new rows that create constraint violations will prevent those updates from occurring.
+</p><p>Perhaps, an example will better illustrate the scenario in which this ordering is important.  Suppose you have a table T with columns a and b.  There is a unique constraint on column a.  One of the rows currently in T is (1, 1).  You execute an upsert statement that consists of an update to row (1, 1), where you update column b to the value 2.  That upsert statement also includes an insert of a new row (1, 0).  Assuming you've setup execution to prevent unique constraint violations from aborting statements, if the insert of (1, 0) occurs first, then that's not detected as a unique constraint violation because due to the update of that same row, the rid corresponding to that row has been inserted into the deletion index.  So, it's assumed that the insert of (1, 0) is replacing the original (1, 1) row.  However, having inserted (1, 0), there is now an entry in the unique index for key value 1.  Consequently, the insert of the index entry corresponding to row (1, 2) will fail.  If we reverse the order of the inserts, the insert of row (1, 2) succeeds, and the insert of (1, 0) causes a unique constraint violation, which is the more desirable effect.
+</p><p>See <a href="/wiki/LucidDbUniqueConstraints" title="LucidDbUniqueConstraints">LucidDbUniqueConstraints</a> for further details on the interactions between unique constraints and upserts, and <a href="/wiki/LucidDbErrorHandling" title="LucidDbErrorHandling">LucidDbErrorHandling</a> for information on what happens when errors are encountered.
+</p>
+<h3> <span class="mw-headline" id="Optimizations">Optimizations</span></h3>
+<h4> <span class="mw-headline" id="Filtering_Non-Updated_Rows"> Filtering Non-Updated Rows </span></h4>
+<p>One optimization LucidDB performs is if all updated columns in a row are identical to their original values, then the update of that row is skipped.  Note, however, that as long as any column in a table is updated, in general, this results in an entire new row, which means that new values are inserted into all clusters.
+</p>
+<h4> <span class="mw-headline" id="Replacement_of_Updated_Columns"> Replacement of Updated Columns </span></h4>
+<p>There is an exception to the statement that LucidDB creates entire new rows for upserts.  For certain types of upserts,  LucidDB executes the upsert by replacing entire clusters rather than deleting and inserting individual rows.  Therefore, only the columns that are updated are affected.  This occurs if the following conditions are met.
+</p>
+<ol><li> The upsert is an update-only upsert (i.e., does not contain a WHEN NOT MATCHED clause).
+</li><li> The percentage of the columns updated does not exceed a threshold value.
+</li><li> The percentage of rows updated exceeds a second threshold value that's dependent on the percentage of columns updated.
+</li><li> Only clusters containing single columns are being updated.
+</li><li> The upsert contains an ON condition where the keys from the source are unique.
+</li></ol>
+<p>Savings, in both time and space, occur with this optimization because:
+</p>
+<ul><li> LucidDB avoids having to read and update columns that aren't updated in the upsert statement.
+</li><li> LucidDB avoids having to delete the original rows that are updated by the statement.
+</li><li> Inserts into btree indexes are more efficient because the values are being inserted in strictly monotonic order.
+</li></ul>
+<p>But the tradeoff is there will be additional cost because we have to re-insert all values into columns that are updated, not just the subset of rows that are affected by the statement, as well as rebuilding all indexes that include any of these updated columns. Therefore, that is why conditions 2 and 3 are necessary for this optimization to be beneficial.
+</p>
+<h4> <span class="mw-headline" id="Updates_Written_As_Upserts"> Updates Written As Upserts </span></h4>
+<p>LucidDB did not support the UPDATE statement until version 0.8.1, but an <a href="/wiki/LucidDbUpdate" title="LucidDbUpdate">UPDATE can be expressed as an UPSERT in any version</a>.  Regardless of whether the explicit UPDATE syntax is used vs the MERGE alternative, the optimizations performed on the statement are the same.  If LucidDB were to process these statements as described earlier, it would end up doing a join between the source and target, i.e., in this case, a self-join, to locate the candidate rows for the upsert.  LucidDB avoids this by recognizing these special case upserts.  Instead of the self-join, it simply selects the candidate rows from the target table.
+</p><p>Note that conditions 1 and 5 from the replacement of updated columns optimization are pre-requisites for this optimization.  Therefore, if conditions 2-4 are also met, then both optimizations can be utilized.
+</p>
+<h4> <span class="mw-headline" id="Unique_Indexes"> Unique Indexes </span></h4>
+<p>Another minor optimization LucidDB performs is during step 5 from the <a href="#Execution_Flow">previous section</a>, if the index is a unique one, and the new index entry corresponds to an updated row, rather than inserting a new entry into the index, the existing one is updated.  This way, LucidDB avoids increasing the size of the unique index, when only updates are being executed.
+</p>
+<h3> <span class="mw-headline" id="Upserts_and_Page_Versioning">Upserts and Page Versioning</span></h3>
+<p>The following diagram illustrates the different page versions that are created after an initial load and a subsequent incremental load.
+</p><p><a href="/wiki/File:UpsertsPageVersioning.png" class="image"><img alt="UpsertsPageVersioning.png" src="/wiki/upload/8/87/UpsertsPageVersioning.png" width="672" height="260" /></a>
+</p>
+<ul><li> The grey pages are the original pages from when the table is first created.  These are empty pages.
+</li><li> The blue pages are the pages created and/or versioned by the initial load.
+<ul><li> For the rid-to-pageId btree map, a new page is versioned from the original, empty root page.
+</li><li> Two new cluster pages are created by the load.
+</li><li> No deletion index pages are versioned because the initial load does no updates.
+</li><li> The bitmap index creates a new version of the empty root, and creates two new leaf pages.
+</li></ul>
+</li><li> The green pages are the pages created and/or versioned by the incremental load.
+<ul><li> The load of the cluster results in the last cluster page being versioned, and two new additional cluster pages being created.
+</li><li> The deletion index versions the root and creates two new leaf pages.
+</li><li> One of the leaf pages in the bitmap index is versioned, and a new leaf page is created in front of the existing ones.  The other existing leaf page is unmodified.
+</li></ul>
+</li><li> All anchor pages are marked with the letter "A".
+</li><li> The latest version of each page is marked with hatching.
+</li><li> Red arrows indicate page version chains.
+</li></ul>
+<h2> <span class="mw-headline" id="Truncate_Table">Truncate Table</span></h2>
+<p>One way of removing all rows from a table is to execute a DELETE statement without specifying a WHERE clause.  A more efficient way is to execute a <a href="/wiki/LucidDbTruncate" title="LucidDbTruncate">TRUNCATE TABLE</a> statement.  Unlike a delete, which operates at the row level, a truncate operates at the page level, updating the metadata for those pages.  A truncate creates new versions of the root pages for the btrees associated with each cluster in the table, as well as for the table's bitmap indexes.  The new versions of those root pages contain no entries, effectively removing all rows from the table.
+</p><p>Because of page versioning, it's possible to read from a table while it's being truncated.  Once the truncate table transaction commits, new transactions will see an empty table.  Queries that started before the truncate was initiated and are still running after the truncate commits, will continue to see the pre-truncated table.
+</p><p>Because LucidDB provides this level of concurrency, the pages corresponding to the pre-truncated table are not automatically deallocated as a result of the truncate.  With the exception of the original btree and bitmap index root pages, at the end of the truncate, the pages corresponding to the pre-truncated table are marked as being <i>"old"</i>.  Provided those pages are no longer being referenced by any active transactions, the pages will be deallocated and available for reuse once ALTER SYSTEM DEALLOCATE OLD is run.  The original btree root pages cannot be deallocated because they are recorded in the system catalogs and are used to identify a table's clusters and bitmap indexes.
+</p><p>The following diagrams illustrates what the pages of a table look like pre and post truncate.  The grey pages are the pages, post-truncate, that are candidates for being deallocated by ALTER SYSTEM DEALLOCATE OLD.  The red arrows indicate the page chains that result from versioning the original root pages to new, empty root pages.
+</p><p><br />
+<a href="/wiki/File:TruncatePageVersioning.png" class="image"><img alt="TruncatePageVersioning.png" src="/wiki/upload/c/cb/TruncatePageVersioning.png" width="587" height="234" /></a>
+</p>
+<h1> <span class="mw-headline" id="Table_Maintenance">Table Maintenance</span></h1>
+<h2> <span class="mw-headline" id="Table_Rebuild">Table Rebuild</span></h2>
+<p>By now, the astute reader has probably come to realize that due to the way LucidDB DML is architected, the following overhead are incurred during data access:
+</p>
+<ul><li> As rows are deleted (and updated since updates are deletes followed by inserts), the number of entries in the deletion index increases.  This is minimized by the fact that the deletion index is a bitmap index.
+</li><li> As rows are deleted (and updated), the space occupied by a table increases due to keeping around the old, deleted rows.
+</li><li> As pages are updated, the version chains associated with those pages become longer.  This is exacerbated if your transactions are small and affect very few rows.
+</li></ul>
+<p>The <a href="/wiki/LucidDbAlterTableRebuild" title="LucidDbAlterTableRebuild">ALTER TABLE REBUILD</a> statement alleviates these issues.
+</p><p>The way ALTER TABLE REBUILD works is LucidDB first creates an identical, empty copy of the table, matching all of the clusters and indexes from the original table.  Then it internally issues an insert statement, selecting data from the original table.  This effectively bulk loads the new copy of the table.  Similar to a user-issued select, the selected data excludes deleted rows. 
+Again, due to page versioning, it's possible to rebuild a table while it's being accessed by other read transactions. 
+</p><p>When creating a new copy of the original table, the root pages of the btree maps and bitmap indexes for the table are versioned, similar to what's done in the case of table truncate.  However, in this case, the new versions of those pages will contain the newly loaded data.  Also, as in the case of truncate, except for the original root pages, the pages corresponding to the original table are marked as being old once the copy into the new table has completed.  These old pages, including any pages versioned from those pages, can then be deallocated once they're no longer being accessed by other transactions,
+by running ALTER SYSTEM DEALLOCATE OLD.
+</p><p>Therefore, in summary, the benefits of executing a rebuild are:
+</p>
+<ul><li> The deletion index is emptied.
+</li><li> The deleted rows are removed from the new table, thereby reducing the total number of pages that need to be read to access the entire table.  Note also that as part of the rebuild, the data is re-compressed within the new data pages.
+</li><li> Page chains are eliminated, except in the case of root index pages.
+</li></ul>
+<p>For these reasons, it is a good idea to run rebuild on a periodic basis, if your incremental loads are modifiying existing data in tables.  ALTER SYSTEM DEALLOCATE OLD should be run afterwards to reclaim the pages corresponding to the original tables prior to the rebuild.  This is important because in the worst case, a rebuild can double the number of pages used by a table.
+</p><p>Another reason you may want to run rebuild is if one of your indexes is corrupted.  The rebuild may be able to correct the corruption.  Generally, you'll know if you have a corrupted index, if your load aborts with a <i><b>Duplicate key detected</b></i> error.  This error is an internal one, and normally you should never see it.  Note that it's not the same as the error you get if you have a legitimate unique constraint violation due to duplicate data in primary key or unique constraint columns.
+</p><p>Corrupted indexes can also be detected through an ANALYZE TABLE.  See <a href="#Analyze_Table">below</a> for further details.
+</p>
+<h3> <span class="mw-headline" id="Table_Rebuild_and_Page_Versioning">Table Rebuild and Page Versioning</span></h3>
+<p>The following diagram illustrates the impact of page versioning on a table rebuild.
+</p><p><br />
+<a href="/wiki/File:RebuildPageVersioning.png" class="image"><img alt="RebuildPageVersioning.png" src="/wiki/upload/e/e4/RebuildPageVersioning.png" width="691" height="318" /></a>
+</p>
+<ul><li> The yellow pages are the latest page versions, i.e., those created by the rebuild.
+<ul><li> The yellow root page in the rid-to-pageId btree map only maps the new, yellow cluster pages.
+</li><li> The yellow root page in the deletion index is empty.
+</li></ul>
+</li><li> The grey pages are the original root pages.
+</li><li> The green and blue pages are the pages created by prior loads.  See the <a href="#Upserts_and_Page_Versioning">Upserts and Page Versioning section</a>.
+</li><li> The green and blue pages can be deallocated by ALTER SYSTEM DEALLOCATE OLD, provided no active transactions are referencing them.
+</li><li> Red arrows indicate page version chains.
+</li><li> Anchor pages are marked with the letter "A".
+</li></ul>
+<h2> <span class="mw-headline" id="Analyze_Table">Analyze Table</span></h2>
+<p>Key components of the LucidDB optimizer are cost-based, specifically the components that decide join ordering and which indexes to use when processing filters.  In order to come up with realistic cost estimates to make reasonable choices, the optimizer relies on data statistics.  These statistics are gathered using the <a href="/wiki/LucidDbAnalyzeTable" title="LucidDbAnalyzeTable">ANALYZE TABLE</a> command and are:
+</p>
+<ul><li> the number of rows in the table
+</li><li> the number of distinct values in each column
+</li><li> data distributions for each column
+</li><li> the number of pages in each cluster and each bitmap index, including the internal deletion index
+</li></ul>
+<p>The column level statistics are determined by executing GROUP BY queries on each columns being analyzed.  For example,
+</p>
+<pre>  SELECT col, COUNT(*) FROM tab GROUP BY col;
+</pre>
+<p>To execute these queries, LucidDB scans the entire table, which results in exact statistics.  However, the optimizer generally does not require stats to be exact; they just need to be in the ballpark to prevent the optimizer from choosing bad alternatives.  ANALYZE TABLE has been extended to support sampling.  In other words, LucidDB can estimate column statistics by reading a subset of the table.  This can help significantly for very large tables.  Sampling is achieved by modifying the GROUP BY queries and then using the sample or information gleaned from indexes and constraints to aid in estimating the distinct value count.  The GROUP BY queries become, for example,
+</p>
+<pre>  SELECT col, COUNT(*) FROM tab TABLESAMPLE SYSTEM(p) GROUP BY col;
+</pre>
+<p>Note that the sampling percentage <b>p</b> is based on the number of rows in the table, unless explicitly specified in the ANALYZE TABLE statement.  Statistics estimation uses <b>SYSTEM</b> sampling, which reads 10 equal-sized, equidistant blocks of values from the column.
+</p><p>If analyze is run on only a subset of columns in the table, then the GROUP BY queries are only executed on the column subset.
+</p><p>The number of pages is determined by walking through each page in each cluster/bitmap index. Note that the page counts do not reflect versioning.  In other words, if there are n versions of a single page in a cluster, that page still only contributes a count of 1 to the overall page count for the cluster.  When estimating statistics, the btree walk is also used to count distinct values in a column when it is appropriate.  For example, if <b>col</b> is the first column in an index (with 1 or more columns), the btree walk for the index is configured to return the number of values found in <b>col</b>, which must then be adjusted for the number of deleted rows.
+</p><p>As part of walking through each page, LucidDB also performs sanity checks on the underlying btree indexes.  Therefore, a side effect of ANALYZE TABLE is it will detect if you have a corrupted index.  You'll know that your index is corrupted if you see a <i><b>BTreeVerifier</b></i> error in the server log.  In the event that you do have a corrupted index, the first thing you should try is to run ALTER TABLE REBUILD on the table.  If that doesn't help, then you may have to restore your data from a backup.
+</p><p>Data statistics are also used by the LucidDB resource governor to decide how much memory to assign to each individual operation within a query.  Since hash joins, hash aggregation, and sorting are memory-intensive operations, the resource governor will assign additional memory to these operations, if it's available.  In the absence of stats, the resource governor will equally assign the additional memory across all of these operations.  Hence, it could end up assigning more memory than necessary to an operation that doesn't need the additional memory, at the expense of an operation that could have used it  instead.
+</p><p>Whenever inserts or updates are made to a table that dramatically affect the column cardinalities, data distributions, and/or page counts, ANALYZE TABLE should be rerun.  In the absence of column stats, the optimizer assumes the data within columns are uniformly distributed.  Therefore, if that's not the case, it's important that you run ANALYZE TABLE.  This is especially important for columns that are joined and/or grouped, and to a lesser extent, filtered.  This should be done either on the entire table or a subset of columns, depending on the changes that have occurred.  Note that it isn't necessary to rerun ANALYZE TABLE if the only statistic that has dramatically changed is the table row count.  That's because this statistic is maintained as DML statements are executed.  Therefore, this value is always up-to-date, regardless of whether analyze has been run.
+</p><p>It is best to run ANALYZE TABLE on a pro-active basis, based on what has occurred after a data load.  However, you may find it necessary to run ANALYZE after the fact if your queries are performing poorly, and you suspect that the optimizer has chosen a non-optimal join ordering.  See <a href="/wiki/LucidDbJoinOptimization#Cost_Functions" title="LucidDbJoinOptimization">LucidDbJoinOptimization#Cost Functions</a> for details on how statistics are used by the optimizer to determine optimal join orderings.
+</p><p>In some cases, a poor join ordering can even result in errors that prevent the query from executing to completion.  You'll see these as <i>hash recursion</i> errors.  If you do encounter this error, then you should run ANALYZE TABLE on the tables referenced in the query.
+</p><p>Running ALTER TABLE REBUILD does not update the statistics associated with the table.  They still reflect the statistics as of the last time ANALYZE TABLE was run.  Likewise, for TRUNCATE TABLE, except for the row count, which will reflect the now empty table.
+</p><p>ANALYZE TABLE cannot be run if a DML statement is currently in progress on that table.  This ensures that the statistics are consistent across the table.
+</p>
+<h2> <span class="mw-headline" id="Alter_Table_Add_Column"> Alter Table Add Column </span></h2>
+<p>Adding a column to an existing table is as simple as creating a new empty cluster and inserting one value per existing row into the new cluster, where the values are determined by the new column's DEFAULT clause or identity column sequence generator.  No modifications to the clusters for existing columns are necessary.  Note that if a table has deleted rows, <a href="/wiki/LucidDbAlterTableAddColumn" title="LucidDbAlterTableAddColumn">ALTER TABLE ADD COLUMN</a> will create corresponding entries (which will never be seen by users) in the new cluster (otherwise its values wouldn't correctly line up with the rows in the existing columns).  Validator visibility rules ensure that the new column is not visible to queries until after its creation has successfully completed, so adding a column can be performed at any time without blocking query execution.
+</p>
+<h1> <span class="mw-headline" id="Data_Access">Data Access</span></h1>
+<h2> <span class="mw-headline" id="Row_Scans">Row Scans</span></h2>
+<h3> <span class="mw-headline" id="Reading_Data">Reading Data</span></h3>
+<p>One of the main benefits of the column store data storage is it reduces the data that needs to be read during data selection.  Instead of reading all columns in a row, the LucidDB optimizer detects if a column is not being referenced in a query and avoids reading those clusters that do not contain referenced columns.  The columns that are referenced are individually read, and then their values are combined together to form rows.
+</p><p>In the case where a table is read without the use of bitmap indexes, i.e., a full table scan, LucidDB reads the column values for all rids in the table.  It does this by sequentially reading each rid value, starting at rid 0.  However, because LucidDB supports lazy deletes, some of these rids may correspond to deleted rows.  In that case, LucidDB bypasses these deleted rids and avoids reading them altogether.  The rids corresponding to the deleted rows are passed in as input into the full table row scan.  That input is represented using compressed bitmaps to minimize its size.
+</p><p>If the optimizer decides that bitmap indexes should be used to reduce the rids that the row scan needs to read, then that subset of rid values is passed in as input into the row scan.  The rids are in sort order to ensure locality of data reference.  As with the deleted input rids, they're also passed in using compressed bitmaps.  Any deleted rids are subtracted from this input so in the case of indexed row scans, the row scan doesn't need to do any additional processing to avoid reading deleted rows.  Details on how the bitmap indexes are read is discussed in the <a href="#Indexed_Scans">Indexed Scans</a> section.
+</p>
+<h3> <span class="mw-headline" id="Filtering">Filtering</span></h3>
+<p>In addition to reading column data, LucidDB row scan also does simple data filtering.  We refer to this as residual filtering.  The filters need to be <i>sargable</i>.  This basically means that the filters need to be one of the following:
+</p>
+<ul><li> an equality filter comparing a column to a constant, <i>e.g., col = 10</i>
+</li><li> a range filter on a column, with either lower or upper bounds, or both, and constant bounds; <i>e.g., col BETWEEN 20 and 30</i>
+</li><li> an IN list filter on a column; <i>e.g., col IN (40,50,60)</i>
+</li></ul>
+<p>The same column can be referenced in these filters, provided they are OR'd together.  For example,  
+</p>
+<pre>  col = 10 OR col = 20
+</pre>
+<p>Different columns can be referenced in these filters, provided they're AND'd together.  For example,
+</p>
+<pre>  col1 IN (40,50,60) AND (col2 &lt; 0 OR col2 &gt; 100)
+</pre>
+<p>The row scan will apply these filters and avoid returning non-qualifying rows in its output. If there are residual filters on multiple columns, when a column does not qualify its filter, then LucidDB skips reading the remaining unread columns for that row.
+</p><p>In the case where a batch of rows is stored in <a href="#Compressed_Data_Storage">compressed mode</a>, LucidDB utilizes this to do fast data filtering.  The row scan first applies the residual filters, applicable to that column, on each unique value in the batch and stores the true/false result in a bitmap.  As column values are read for individual rows, rather than re-applying the residual filters, the row scan can simply consult the pre-computed bitmap to decide whether or not the column qualifies.  Hence, this is the second reason why <a href="#Batches">batches</a> contain multiples of 8 rows.
+</p>
+<h3> <span class="mw-headline" id="Intelligent_Pre-Fetch">Intelligent Pre-Fetch</span></h3>
+<p>LucidDB supports pre-fetch of column store cluster pages as well as bitmap index leaf pages.
+</p><p>Without column store pre-fetch, cluster pages would be read on-demand.  In other words, a cluster page would not be read until the row scan is ready to process the rid corresponding to that cluster page.  With intelligent pre-fetch, the row scan looks ahead at the rids that it will need to read.  Using the <a href="#Rid-to-PageId_BTree_Map">rid-to-pageId btree map</a> described earlier, the row scan will determine the sequence of pages corresponding to those look-ahead rid values.  It will then issue asynchronous read calls to read those pages into the buffer pool.  Therefore, by the time the row scan actually needs to process a particular page, it will already be cached in memory.
+</p><p>LucidDB will also automatically detect situations where it does not make sense to incur the additional overhead of tracking which individual pages to selectively pre-fetch.  For example, in the case of a full table scan, all cluster pages will need to be read, so LucidDB turns off intelligent pre-fetch and simply sequentially pre-fetches all pages from the column store cluster.
+</p><p>Bitmap index leaf pages are pre-fetched by scanning the interior nodes of the index first to locate the leaf pages corresponding to the specified search key.  Knowing which leaf pages need to be read, those pages are pre-fetched so by the time they need to be searched, they're cached in memory. After all leaf pages corresponding to a particular search range have been pre-fetched, the interior nodes are read for the next search range, yielding the next set of leaf pages to pre-fetch.
+</p><p>LucidDB also uses prefetch for all temporary segment access (hash join partitions, external sort runs, and miscellaneous buffering).
+</p>
+<h2> <span class="mw-headline" id="Indexed_Scans">Indexed Scans</span></h2>
+<h3> <span class="mw-headline" id="Individual_Index_Lookups">Individual Index Lookups</span></h3>
+<p>Bitmap indexes are searched in the same way as standard btrees.  Let's consider the different scenarios.
+</p><p>The simplest is the case where your filters all contain the equality operator, and the number of filters matches the number of keys in your bitmap index.  For example, suppose you have an index on columns a and b, and equality filters on both columns as follows:
+</p>
+<pre>  CREATE INDEX i ON t(a, b);
+  SELECT * FROM t WHERE a = 10 and b = 20;
+</pre>
+<p>In this case, a btree search is done on the key values (10,20).  The compressed bitmaps corresponding to those key values contain the rids matching that key value pair.  In this case, since the rids in each of the bitmap entries are non-overlapping and are in strictly increasing order, they can be passed directly into the row scan, in the same order in which they appear in the index.
+</p><p>The second case is where you have a multi-key index, but you're using an equality filter on only the first part of the key.  For example, you have the same index as described above, but a query like:
+</p>
+<pre>  SELECT * FROM t WHERE a = 10;
+</pre>
+<p>In this case, a btree search is done on the partial key (10).  Again, there may be multiple entries matching this key value.  But unlike the previous case where you're matching on a full key, the rids in these bitmap entries may not be in increasing order.  For example, suppose you have have the following rids corresponding to keys (a, b) where a = 10:
+</p>
+<table style="font-family:arial,helvetica,sans-serif; font-size:8pt; color:#000000;background-color:#eeeeee; white-space: wrap; align: left;" border="1">
+<tr>
+<th width="20">a
+</th>
+<th width="20">b
+</th>
+<th width="150">rids
+</th></tr>
+<tr>
+<td> 10 </td>
+<td> 1 </td>
+<td> 5, 7, 20, 100, 300
+</td></tr>
+<tr>
+<td> 10 </td>
+<td> 2 </td>
+<td> 1, 15, 80, 200
+</td></tr>
+<tr>
+<td> 10 </td>
+<td> 3 </td>
+<td> 4, 10, 50, 150
+</td></tr></table>
+<p>LucidDB will efficiently combine the matching entries into one or more bitmaps where the rid values in each are in strict sort order.  In other words, in the example above, the sequence of rids in the resulting bitmaps will contain the values 1, 4, 5, 7, 10, 15, 20, 50, 80, 100, 150, 200, and 300.
+</p><p>In the case where a bitmap index is used with a range filter such as the following:
+</p>
+<pre>  SELECT * FROM t WHERE a = 10 and b &gt; 1;
+</pre>
+<p>then multiple bitmap entries can match the range of values.  Again, these bitmaps need to then be combined together and sorted, similar to the partial key case described above.
+</p>
+<h3> <span class="mw-headline" id="Intersecting_Multiple_Index_Lookups">Intersecting Multiple Index Lookups</span></h3>
+<p>LucidDB can also use multiple indexes to process filters on a table.  For example,
+</p>
+<pre>  CREATE TABLE t(a INT, b int);
+  CREATE INDEX it1 ON t(a);
+  CREATE INDEX it2 ON t(b);
+  ...
+  SELECT * FROM t WHERE a &lt; 20 AND b &gt;= 10;
+</pre>
+<p>Because the matching rids from each index are represented as bitmaps, LucidDB can intersect those bitmaps to efficiently find the rids that match all filters applied on the indexes.
+</p><p>As an optimization, if possible, LucidDB will also utilize the bitmaps it has read thus far to skip ahead when reading from the other intersecting indexes.  For example, if 3 bitmap indexes need to be intersected, and the first bitmap index returns a bitmap where the initial rid is X, then if there is a closed lower bound on the second index search, LucidDB sets up the search on the second index to read rids &gt;= X.  Likewise, if the initial rid read from the second index is Y, and there's also a closed lower bound on that third index search, then the lookup key for that index will position on rids &gt;= Y.
+</p><p>So, in the earlier example where we're intersecting two indexes, assuming the index on column a is read first, if the smallest matching rid from that lookup is 100, then if there are two bitmaps entries in the second index where b = 10, one with an initial rid of 0 and the other with an initial rid of 80, then LucidDB will setup the search to skip that first entry.
+</p>
+<h3> <span class="mw-headline" id="Subtracting_Deleted_Rids">Subtracting Deleted Rids</span></h3>
+<p>As noted earlier, when doing an index lookup, rids corresponding to deleted rows are subtracted from the rids returned from the index lookups, before those rids are passed in as input into the row scan.  Because the deleted rids are stored in a bitmap index, this subtraction operation is efficient.  Similar to what's done when intersecting bits, the subtraction also utilizes the rid that's part of the index key to skip past bitmaps that do not overlap with the minuend's bits.
+</p>
+<h3> <span class="mw-headline" id="Other_Indexing_Operations_.28Future.29">Other Indexing Operations <i>(Future)</i></span></h3>
+<p>Note that the mechanism LucidDB uses to subtract deleted rids, when doing indexed scans, could also be used to process filters like:
+</p>
+<pre>  SELECT * FROM t WHERE a = 1 AND NOT(b = 2);
+</pre>
+<p>An index lookup can be done to find rids where "a = 1".  A second index lookup can be done to find rids where "b = 2", and then the rids from that second lookup can be subtracted from the first.
+</p><p>Filters like the following could also be processed using multiple indexes by taking the union of the indexed scan results.
+</p>
+<pre>  SELECT * FROM t WHERE a = 1 OR b = 2;
+</pre>
+<p>Both of these techniques are not currently supported.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 170/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1612-0!*!0!!en!2!* and timestamp 20140414191038 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;oldid=6144">http://luciddb.org/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;oldid=6144</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbDataStorageAndAccess" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbDataStorageAndAccess&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbDataStorageAndAccess&amp;returntoquery=oldid%3D6144" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbDataStorageAndAccess" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbDataStorageAndAccess" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;oldid=6144&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbDataStorageAndAccess&amp;oldid=6144" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.178 secs. --></body></html>

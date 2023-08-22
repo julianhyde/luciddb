@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbUdxJavaHowto - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbUdxJavaHowto", "wgTitle": "LucidDbUdxJavaHowto", "wgCurRevisionId": 2021, "wgArticleId": 1384, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbUdxJavaHowto action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbUdxJavaHowto</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction_to_Table_Functions"><span class="tocnumber">1</span> <span class="toctext">Introduction to Table Functions</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Fetch_from_the_Web"><span class="tocnumber">2</span> <span class="toctext">Fetch from the Web</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Build_and_Install"><span class="tocnumber">3</span> <span class="toctext">Build and Install</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Invoke_from_SQL"><span class="tocnumber">4</span> <span class="toctext">Invoke from SQL</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Tokenize_the_HTML"><span class="tocnumber">5</span> <span class="toctext">Tokenize the HTML</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Invoke_with_Cursor_Input"><span class="tocnumber">6</span> <span class="toctext">Invoke with Cursor Input</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Analyze_This"><span class="tocnumber">7</span> <span class="toctext">Analyze This</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Introduction_to_Table_Functions"> Introduction to Table Functions </span></h2>
+<p>Java UDF's are very powerful, but eventually you are likely to require a transformation that can't be expressed as a simple scalar function.  LucidDB supports an advanced feature known as a "UDX" or user-defined transformation.  A UDX is invoked in the FROM clause rather than in the SELECT/WHERE clauses, meaning that it can combine rows from different tables and produce new rows.  Before trying out a UDX, be sure to work through <a href="/wiki/LucidDbUdfJavaHowto" title="LucidDbUdfJavaHowto">LucidDbUdfJavaHowto</a> first.
+</p>
+<h2> <span class="mw-headline" id="Fetch_from_the_Web"> Fetch from the Web </span></h2>
+<p>Let's start with a UDX which operates as a "leaf" in a query, producing new rows without consuming existing rows.  To make the example interesting, we'll show how a UDX can fetch external data, namely a page off of the web.  (If you don't have a network connection, you can use the same UDX to read from a local file.)
+</p><p>Here's the source code from examples/udx/com/yoyodyne/UrlTextFetchUdx.java:
+</p>
+<pre>
+package com.yoyodyne;
+
+import java.net.*;
+import java.io.*;
+import java.sql.*;
+
+public class UrlTextFetchUdx
+{
+    public static void execute(
+        String urlString,
+        PreparedStatement resultInserter)
+        throws Exception
+    {
+        URL url = new URL(urlString);
+        InputStream inputStream = null;
+        try {
+            inputStream = url.openStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            LineNumberReader lineReader = new LineNumberReader(reader);
+            for (;;) {
+                String line = lineReader.readLine();
+                if (line == null) {
+                    return;
+                }
+                int lineNumber = lineReader.getLineNumber();
+                resultInserter.setInt(1, lineNumber);
+                resultInserter.setString(2, line);
+                resultInserter.executeUpdate();
+            }
+        } finally {
+            if (inputStream&#160;!= null) {
+                inputStream.close();
+            }
+        }
+    }
+}
+</pre>
+<p>The calling convention for a UDX is non-obvious, but once you understand it you'll see that makes life very easy for the author of the UDX.  The implementation of the table function is a Java method which will be invoked by LucidDB to produce rows.  LucidDB gives the UDX a "pipe" into which to write the output rows; this is the <b>resultInserter</b> parameter to the method.  (The <b>urlString</b> is a normal input parameter which tells the UDX the source for the fetch.)  You can think of the pipe interface as a JDBC PreparedStatement something like "INSERT INTO result_pipe values (?,&#160;?, ...)" with one&#160;? per output column.  (LucidDB has already done the work of preparing this statement by the time the UDX is invoked; the pipe is just a memory buffer which connects the UDX thread with the rest of the invoking SQL statement.)
+</p>
+<hr />
+<p>In this case, the UDX opens a connection to the specified URL, sets up a reader to process its content as lines of text, and then for each line fetched, converts it into a row and pumps this into LucidDB.  The output row has two columns:  the first one is the line number, and the second one is a line of text.  By using a try/finally construct, the UDX is careful to clean up its resources even if an exception occurs.  (This is very important for a plugin which will be loaded into a long-running server such as LucidDB!)
+</p>
+<h2> <span class="mw-headline" id="Build_and_Install"> Build and Install </span></h2>
+<p>To test it out, first compile and package the plugin by following the same steps as for a UDF (the wildcards will take care of the next example too):
+</p>
+<pre>
+cd examples/udx
+javac com/yoyodyne/*.java
+jar cf ../../plugin/urlfetch-udx.jar com/yoyodyne/*.class
+</pre>
+<p>Then install it in SQL (<a href="/wiki/LucidDbCreateJavaUdx" title="LucidDbCreateJavaUdx">full syntax</a>):
+</p>
+<pre>
+create schema web;
+set schema 'web';
+
+call sqlj.install_jar('file:${FARRAGO_HOME}/plugin/urlfetch-udx.jar','udx_jar',0);
+
+create function url_text_fetch(url varchar(1024))
+returns table(line_num int, text_line varchar(65535))
+language java
+parameter style system defined java
+no sql
+external name 'web.udx_jar:com.yoyodyne.UrlTextFetchUdx.execute';
+</pre>
+<p>Notes:
+</p>
+<ul><li> The <b>resultInserter</b> parameter to the Java method isn't mentioned in the DDL; its presence is implied by the fact that the function returns a table.  When present, it must always come at the end of the Java parameter list.
+</li><li> The return type is a table rather than a builtin type.  This defines the output row, and must match the pipe calls (setInt, setString) inside of the UDX implementation.
+</li><li> We use varchar(65535) because that's the maximum supported by LucidDB, and Java strings have dynamic length.
+</li><li> The clause <b>parameter style system defined java</b> flags the calling convention as non-standard, since the LucidDB UDX mechanism isn't covered by SQL:2003.
+</li></ul>
+<h2> <span class="mw-headline" id="Invoke_from_SQL"> Invoke from SQL </span></h2>
+<p>Now, invoke the UDX with a Web URL parameter, using the SQL substring function to limit the output row width to 40 characters:
+</p>
+<pre>
+select line_num,substring(text_line, 1, 40) as text_line_start
+from table(web.url_text_fetch('http://www.google.com'));
+</pre>
+<p>The result will look something like this:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select line_num,substring(text_line, 1, 40) as text_line_start
+. . . . . . . . &gt; from table(web.url_text_fetch('http://www.google.com'));
++-----------+-------------------------------------------+
+| LINE_NUM  |              TEXT_LINE_START              |
++-----------+-------------------------------------------+
+| 1         | &lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;content-ty  |
+| 2         | body,td,a,p,.h{font-family:arial,sans-se  |
+| 3         | .h{font-size: 20px;}                      |
+| 4         | .q{color:#0000cc;}                        |
+| 5         | --&gt;                                       |
+| 6         | &lt;/style&gt;                                  |
+| 7         | &lt;script&gt;                                  |
+| 8         | &lt;!--                                      |
+| 9         | function sf(){document.f.q.focus();}      |
+| 10        | // --&gt;                                    |
+| 11        | &lt;/script&gt;                                 |
+| 12        | &lt;/head&gt;&lt;body bgcolor=#ffffff text=#00000  |
+| 13        | &lt;form action=/search name=f&gt;&lt;table borde  |
++-----------+-------------------------------------------+
+</pre>
+<p>Now try it on a local file:
+</p>
+<pre>
+select *
+from table(web.url_text_fetch('file:../COPYING'));
+</pre>
+<p>If you started LucidDB from the bin directory, you should see the text of the GPL in the result set.  Otherwise, change the statement to use an absolute path according to the file URL conventions for your operating system.
+</p>
+<h2> <span class="mw-headline" id="Tokenize_the_HTML"> Tokenize the HTML </span></h2>
+<p>How about a UDX which processes input rows?  Suppose we want to tokenize the HTML returned by Google, breaking each line down into multiple rows, one for each token.  The following UDX (from examples/udx/com/yoyodyne/HtmlTokenizerUdx.java) is a basic implementation:
+</p>
+<pre>
+package com.yoyodyne;
+
+import java.util.*;
+import java.sql.*;
+
+public class HtmlTokenizerUdx
+{
+    public static void execute(
+        ResultSet lineInput,
+        PreparedStatement resultInserter)
+        throws Exception
+    {
+        while (lineInput.next()) {
+            int lineNumber = lineInput.getInt(1);
+            String line = lineInput.getString(2);
+            StringTokenizer tokenizer = new StringTokenizer(
+                line,
+                &quot;&lt;&gt;/-'\&quot;{}(); \t\n\r\f&quot;);
+            int tokenNumber = 0;
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                resultInserter.setInt(1, lineNumber);
+                resultInserter.setInt(2, tokenNumber);
+                resultInserter.setString(3, token);
+                resultInserter.executeUpdate();
+                ++tokenNumber;
+            }
+        }
+    }
+}
+</pre>
+<p>This time, the UDX takes a JDBC ResultSet parameter.  This respresents the input set of rows to be processed.  The UDX breaks down each line into tokens and writes one output row per token.  It preserves the original line number and also provides the offset of each token within the original line.
+</p>
+<h2> <span class="mw-headline" id="Invoke_with_Cursor_Input"> Invoke with Cursor Input </span></h2>
+<p>We already built the UDX above together with the first one, so it's ready to be installed from SQL:
+</p>
+<pre>
+create function tokenize_html(input_lines cursor)
+returns table(line_num int, token_num int, token_text varchar(65535))
+language java
+parameter style system defined java
+no sql
+external name 'web.udx_jar:com.yoyodyne.HtmlTokenizerUdx.execute';
+</pre>
+<p>The only difference from the previous example is that we declare that the function takes one cursor as input, corresponding to the ResultSet parameter in the Java method.  Here's how this looks in SQL (pipelining the two transformations):
+</p>
+<pre>
+select * 
+from table(web.tokenize_html(
+    cursor(
+        select *
+        from table(web.url_text_fetch('http://www.google.com'))
+    )));
+</pre>
+<p>The cursor construct converts the inner select into a ResultSet which can be passed into the outer transformation.  Here are the first few rows of an example result:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select *
+. . . . . . . . &gt; from table(web.tokenize_html(
+. . . . . . . . &gt;     cursor(
+. . . . . . . . &gt;         select *
+. . . . . . . . &gt;         from table(web.url_text_fetch('http://www.google.com'))
+. . . . . . . . &gt;     )));
++-----------+------------+----------------------------------+
+| LINE_NUM  | TOKEN_NUM  |            TOKEN_TEXT            |
++-----------+------------+----------------------------------+
+| 1         | 0          | html                             |
+| 1         | 1          | head                             |
+| 1         | 2          | meta                             |
+| 1         | 3          | http                             |
+| 1         | 4          | equiv=                           |
+| 1         | 5          | content                          |
+| 1         | 6          | type                             |
+| 1         | 7          | content=                         |
+| 1         | 8          | text                             |
+| 1         | 9          | html                             |
+| 1         | 10         | charset=ISO                      |
+| 1         | 11         | 8859                             |
+| 1         | 12         | 1                                |
+| 1         | 13         | title                            |
+| 1         | 14         | Google                           |
+| 1         | 15         | title                            |
+| 1         | 16         | style                            |
+| 1         | 17         |&#160;!                                |
+| 2         | 0          | body,td,a,p,.h                   |
+| 2         | 1          | font                             |
+| 2         | 2          | family:arial,sans                |
+| 2         | 3          | serif                            |
+| 3         | 0          | .h                               |
+| 3         | 1          | font                             |
+| 3         | 2          | size:                            |
+| 3         | 3          | 20px                             |
+| 4         | 0          | .q                               |
+| 4         | 1          | color:#0000cc                    |
+| 6         | 0          | style                            |
+| 7         | 0          | script                           |
+| 8         | 0          |&#160;!                                |
+| 9         | 0          | function                         |
+| 9         | 1          | sf                               |
+| 9         | 2          | document.f.q.focus               |
+| 11        | 0          | script                           |
+...
+</pre>
+<h2> <span class="mw-headline" id="Analyze_This"> Analyze This </span></h2>
+<p>The power of a UDX is that custom transformation logic can be combined effortlessly with the power of standard SQL constructs such as filters, joins, unions, and aggregates.  Let's count the occurrences for each token and sort them in descending order:
+</p>
+<pre>
+select token_text, count(*) as occurrence_count
+from (
+    select * 
+    from table(web.tokenize_html(
+        cursor(
+            select *
+            from table(web.url_text_fetch('http://www.google.com'))
+        )))
+    )
+group by token_text
+order by occurrence_count desc;
+</pre>
+<p>Top few results:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select token_text, count(*) as occurrence_count
+. . . . . . . . &gt; from (
+. . . . . . . . &gt;     select *
+. . . . . . . . &gt;     from table(web.tokenize_html(
+. . . . . . . . &gt;         cursor(
+. . . . . . . . &gt;             select *
+. . . . . . . . &gt;             from table(web.url_text_fetch('http://www.google.com'))
+. . . . . . . . &gt;         )))
+. . . . . . . . &gt;     )
+. . . . . . . . &gt; group by token_text
+. . . . . . . . &gt; order by occurrence_count desc;
++----------------------------------+-------------------+
+|            TOKEN_TEXT            | OCCURRENCE_COUNT  |
++----------------------------------+-------------------+
+| &amp;nbsp                            | 32                |
+| a                                | 28                |
+| href=                            | 14                |
+| font                             | 12                |
+| td                               | 12                |
+| tr                               | 8                 |
+| br                               | 7                 |
+| Google                           | 6                 |
+| table                            | 6                 |
+| class=q                          | 6                 |
+| input                            | 5                 |
+| size=                            | 5                 |
+| 1                                | 5                 |
+| b                                | 4                 |
+...
+</pre>
+<p>Oops, we forgot to treat the equals sign as a delimiter.  Maybe we should have made the delimiter string a parameter to the UDX...
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 122/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1384-0!*!0!!en!*!* and timestamp 20140414191027 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbUdxJavaHowto&amp;oldid=2021">http://luciddb.org/wiki/index.php?title=LucidDbUdxJavaHowto&amp;oldid=2021</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbUdxJavaHowto" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbUdxJavaHowto&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbUdxJavaHowto&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbUdxJavaHowto&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbUdxJavaHowto" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbUdxJavaHowto" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbUdxJavaHowto" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbUdxJavaHowto&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbUdxJavaHowto&amp;oldid=2021" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 28 January 2007, at 22:58.</li>
+		<li id="viewcount">This page has been accessed 8,592 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.206 secs. --></body></html>

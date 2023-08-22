@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>MondrianDevelopment - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "MondrianDevelopment", "wgTitle": "MondrianDevelopment", "wgCurRevisionId": 6935, "wgArticleId": 1995, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-MondrianDevelopment action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">MondrianDevelopment</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>This page is intended as a starting point and reference for anyone work on the development and testing of <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/">Mondrian</a>.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Basics"><span class="tocnumber">1</span> <span class="toctext">Basics</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Mondrian_Community"><span class="tocnumber">2</span> <span class="toctext">Mondrian Community</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Mailing_Lists"><span class="tocnumber">2.1</span> <span class="toctext">Mailing Lists</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Developer_Guide"><span class="tocnumber">2.2</span> <span class="toctext">Developer Guide</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Automated_Regression"><span class="tocnumber">2.3</span> <span class="toctext">Automated Regression</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Setup_Shop"><span class="tocnumber">3</span> <span class="toctext">Setup Shop</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Building_Mondrian"><span class="tocnumber">3.1</span> <span class="toctext">Building Mondrian</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Running_Mondrian"><span class="tocnumber">3.2</span> <span class="toctext">Running Mondrian</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Foodmart_Demo_Database"><span class="tocnumber">3.3</span> <span class="toctext">Foodmart Demo Database</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#CmdRunner"><span class="tocnumber">3.4</span> <span class="toctext">CmdRunner</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Eclipse"><span class="tocnumber">3.5</span> <span class="toctext">Eclipse</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#Testing_Mondrian"><span class="tocnumber">4</span> <span class="toctext">Testing Mondrian</span></a>
+<ul>
+<li class="toclevel-2 tocsection-13"><a href="#Regression_Tests"><span class="tocnumber">4.1</span> <span class="toctext">Regression Tests</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#JVM_Choice"><span class="tocnumber">4.2</span> <span class="toctext">JVM Choice</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Running_Individual_Tests"><span class="tocnumber">4.3</span> <span class="toctext">Running Individual Tests</span></a>
+<ul>
+<li class="toclevel-3 tocsection-16"><a href="#runtest.sh"><span class="tocnumber">4.3.1</span> <span class="toctext">runtest.sh</span></a></li>
+<li class="toclevel-3 tocsection-17"><a href="#Eclipse_2"><span class="tocnumber">4.3.2</span> <span class="toctext">Eclipse</span></a></li>
+<li class="toclevel-3 tocsection-18"><a href="#ant_test"><span class="tocnumber">4.3.3</span> <span class="toctext">ant test</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-19"><a href="#Connecting_to_Derby_Through_sqlline"><span class="tocnumber">4.4</span> <span class="toctext">Connecting to Derby Through sqlline</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-20"><a href="#Development_Tricks_and_Tips"><span class="tocnumber">5</span> <span class="toctext">Development Tricks and Tips</span></a>
+<ul>
+<li class="toclevel-2 tocsection-21"><a href="#Adding_New_Unit_Tests"><span class="tocnumber">5.1</span> <span class="toctext">Adding New Unit Tests</span></a></li>
+<li class="toclevel-2 tocsection-22"><a href="#Mondrian_Tracing"><span class="tocnumber">5.2</span> <span class="toctext">Mondrian Tracing</span></a>
+<ul>
+<li class="toclevel-3 tocsection-23"><a href="#SQL_Tracing_using_java.io.PrintWriter"><span class="tocnumber">5.2.1</span> <span class="toctext">SQL Tracing using java.io.PrintWriter</span></a></li>
+<li class="toclevel-3 tocsection-24"><a href="#log4j_Tracing_for_Debugging"><span class="tocnumber">5.2.2</span> <span class="toctext">log4j Tracing for Debugging</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-25"><a href="#Connecting_Mondrian_to_Other_DBs"><span class="tocnumber">5.3</span> <span class="toctext">Connecting Mondrian to Other DBs</span></a>
+<ul>
+<li class="toclevel-3 tocsection-26"><a href="#Connecting_Mondrian_to_LucidDB"><span class="tocnumber">5.3.1</span> <span class="toctext">Connecting Mondrian to LucidDB</span></a>
+<ul>
+<li class="toclevel-4 tocsection-27"><a href="#Connecting_to_Foodmart"><span class="tocnumber">5.3.1.1</span> <span class="toctext">Connecting to Foodmart</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-28"><a href="#Connecting_Mondrian_to_MySql"><span class="tocnumber">5.3.2</span> <span class="toctext">Connecting Mondrian to MySql</span></a>
+<ul>
+<li class="toclevel-4 tocsection-29"><a href="#Load_Foodmart_into_MySql"><span class="tocnumber">5.3.2.1</span> <span class="toctext">Load Foodmart into MySql</span></a></li>
+<li class="toclevel-4 tocsection-30"><a href="#Connect_Mondrian_to_MySql"><span class="tocnumber">5.3.2.2</span> <span class="toctext">Connect Mondrian to MySql</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-31"><a href="#Connecting_Mondrian_to_Oracle"><span class="tocnumber">5.3.3</span> <span class="toctext">Connecting Mondrian to Oracle</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Basics">Basics</span></h1>
+<p>A good deal of information about Mondrian can be found on the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/">Mondrian project page</a>.  For starters, you should read the following pages:
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/olap.php">What is OLAP?</a>
+</li><li> <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/mdx.php">MDX</a>
+</li><li> <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/architecture.php">Architecture</a>
+</li><li> <a href="/wiki/MondrianCacheOverview" title="MondrianCacheOverview">MondrianCacheOverview</a>
+</li></ul>
+<p>These will provide you with a high-level, introductory overview of Mondrian.  The information is by no means comprehensive so you should consult other sources for a deeper understanding of OLAP and MDX.
+</p>
+<h1> <span class="mw-headline" id="Mondrian_Community"> Mondrian Community </span></h1>
+<p>The Mondrian community is led by Julian Hyde.
+</p>
+<h2> <span class="mw-headline" id="Mailing_Lists"> Mailing Lists</span></h2>
+<p>If you are going to be making changes in the Mondrian source code, it would be a good idea to subscribe to the <a rel="nofollow" class="external text" href="http://lists.pentaho.org/mailman/listinfo/mondrian">Mondrian mailing list</a>.  You can also access that mailing list subscription page by clicking on the "Mailing List" link from the project page.  That page also provides a link to an <a rel="nofollow" class="external text" href="http://lists.pentaho.org/pipermail/mondrian/">archive</a> of past messages posted to the mailing list.  However, that archive only contains more recent mailings.  For the older archive, see the <a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/forum.php?forum_name=mondrian-devel">SourceForge archives</a>.
+</p>
+<h2> <span class="mw-headline" id="Developer_Guide"> Developer Guide </span></h2>
+<p>There are code guidelines and check-in policies that you should follow described here <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/developers_guide.php">Developer Guide</a>. 
+</p>
+<h2> <span class="mw-headline" id="Automated_Regression"> Automated Regression </span></h2>
+<p>Mondrian also has Cruise Control setup so that any check-in is compiled and validated through 1000+ unit tests within ~20 minutes.  <a rel="nofollow" class="external text" href="http://cruisecontrol.hydromatic.net/">Mondrian CC</a>
+</p>
+<h1> <span class="mw-headline" id="Setup_Shop">Setup Shop</span></h1>
+<h2> <span class="mw-headline" id="Building_Mondrian">Building Mondrian</span></h2>
+<p>In order to build Mondrian, you first need to add the following line to your p4 client spec:
+</p>
+<pre>   //open/mondrian/... //calvin.treehouse.eigenbase/open/mondrian/...
+</pre>
+<p>replacing "calvin" with your username and "treehouse" with your machine name.  Sync your client once you've added the line to bring the source files to your machine.
+</p><p>Go to the section entitled "Building the code" on the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/developers_guide.php">Developer's Guide</a> section on the Mondrian project page.  That section lists a number of 3rd party products that Mondrian depends on.  Some of these you should already have as part of your Eigenbase build.  Follow the links to download the ones that are missing, and make sure you have set the environment variables listed.
+</p><p><a rel="nofollow" class="external text" href="http://lists.pentaho.org/pipermail/mondrian/2008-January/000997.html">Be sure to use JDK 1.6 for Mondrian development and testing.</a>
+</p>
+<dl><dd> --<a href="/wiki/index.php?title=User:Zfong&amp;action=edit&amp;redlink=1" class="new" title="User:Zfong (page does not exist)">Zfong</a> 19:49, 22 April 2008 (PDT) JDK 1.6 is required for javadoc to run without errors.  However, when JDK 1.6 is used, I get errors in several of the standard regressions tests that expect specific SQL statements to be generated as part of the test.  With JDK 1.6, the order of expressions in some of the WHERE clauses is different from what is generated using JDK 1.5.  I used build 10934, although I suspect this behavior exists in earlier builds as well.
+<dl><dd> --<a href="/wiki/index.php?title=User:Jsichi&amp;action=edit&amp;redlink=1" class="new" title="User:Jsichi (page does not exist)">Jsichi</a> 17:24, 20 September 2008 (PDT):  I disabled one of these in eigenchange 11589 (it was failing for me on JDK 1.5 also).  Any others?
+</dd></dl>
+</dd></dl>
+<p>Run "ant" in your mondrian directory.  This will build the source jar files as well as setup the Derby database that you will most likely use as the Foodmart demo database, for testing purposes.
+</p>
+<h2> <span class="mw-headline" id="Running_Mondrian">Running Mondrian</span></h2>
+<p>This section assumes you are using Derby as your backend database.  Later sections describe how to use other databases, including <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a> and MySql.
+mondrian.properties File
+In order to run Mondrian, you will first need to edit the property file.  This is the file in mondrian/mondrian.properties.  Search for "Derby" in the file and replace the commented out property values with the following values:
+</p>
+<pre>   mondrian.foodmart.jdbcURL=jdbc:derby:demo/derby/foodmart
+   mondrian.foodmart.jdbcUser=sa
+   mondrian.foodmart.jdbcPassword=sa
+   mondrian.jdbcDrivers=org.apache.derby.jdbc.EmbeddedDriver
+   driver.classpath=testlib/derby.jar
+   mondrian.test.jdbcUser=sa
+   mondrian.test.jdbcPassword=sa
+   mondrian.test.jdbcURL=jdbc:derby:demo/derby/foodmart
+   mondrian.catalogURL=file:/home/calvin/open/mondrian/demo/FoodMart.xml
+</pre>
+<p>The last four lines are needed if you want to run within Eclipse, which will be described further below.
+</p><p>The property file also has a number of other configuration parameters.  For example, if you want Mondrian to dump out the SQL statements it executes while processing an MDX statement, follow the example in <a href="#log4j_Tracing_for_Debugging">log4j tracing</a> on how to modify the property settings.
+</p><p>Other configuration values are described in the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/configuration.php">Configuration</a> section on the Mondrian project page.
+</p><p>To avoid accidentally checking in your temporary modifications to mondrian.properties, create a separate Perforce changelist for the edit using "p4 change".  Any additional temporary Mondrian edits can be added to this changelist, once you've created it, by either specifying the -c option when you "p4 edit" the file, or by moving the file into the existing changelist through the p4v GUI.
+</p><p>(JVS)If you want to avoid checking out the mondrian.properties file, you can put your local property settings in a file named local.properties and then use the command antLocal (from open/util/bin) instead of ant.  However, this approach isn't Eclipse-compatible yet.
+</p>
+<h2> <span class="mw-headline" id="Foodmart_Demo_Database">Foodmart Demo Database</span></h2>
+<p>Mondrian comes with a Foodmart demo database, which is very handy for testing.  All unit tests are written using this database.   A version of Foodmart stored in Derby is available in the mondrian/demo directory.  Also in that directory is the schema file that specifies the multi-dimensional schema for the Foodmart database.  That file is named FoodMart.xml.  This is where you specify your cube definitions (both base and virtual) and the dimensions and measures that make up those cubes.  The schema currently does contain one virtual cube -- [Warehouse and Sales].
+</p><p>For testing purposes, it generally is sufficient to use the existing schema defined in that file.  However, on occasion, you may need to extend the schema to exercise new features.  See the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/schema.php">Writing a Schema</a> section on the Mondrian project page for a description of the different constructs available.
+</p>
+<h2> <span class="mw-headline" id="CmdRunner">CmdRunner</span></h2>
+<p>Mondrian comes with a standalone utility that allows you to run ad-hoc MDX queries, similar to sqllineEngine in Farrago.
+</p><p>Copy the JDBC jar of the database you're connecting to into the testlib directory.  Build the mondrian.jar file:
+</p>
+<pre>   ant jar
+   ant cmdrunner
+</pre>
+<p>To invoke the utility, run the following command from the mondrian directory:
+</p>
+<pre>   bin/run.sh -p mondrian.properties
+</pre>
+<p>For convenience, you might want to define an alias for the above command.
+</p><p>See the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/command_runner.php">Command Runner</a> section on the Mondrian project page for a full description of all the commands available within cmdRunner.
+</p>
+<h2> <span class="mw-headline" id="Eclipse">Eclipse</span></h2>
+<p>In addition to cmdRunner, you can also execute MDX queries within a java program running inside of Eclipse.  This is useful when you need to debug Mondrian.
+</p><p>Create a new workspace in Eclipse and import your Mondrian project. Note that  the import creates a "mondrian-2.0" project. This is correct.
+</p><p>To build the project with JDK1.5, right click on the "mondrian-2.0" project. Scroll down to "Properties". From the "Java Compiler" menu, choose "Enable project specific settings" and set "JDK Compiler compliance level" to 5.0.
+</p><p>If you take a look at the mondrian/.classpath file, you'll notice that the file references the variable, ANT_HOME.  Therefore, make sure you have defined this variable in your Eclipse environment.  To define the variable, within Eclipse, select 
+</p>
+<pre>   Project-&gt;Properties-&gt;Java Build Path-&gt;Libraries-&gt;Add Variable-&gt;Configure-&gt;New
+</pre>
+<p>From here, you can then run one of the existing test programs, or modify one of them to add the MDX query that you want to debug.
+</p><p>Note that buiild.xml under the mondrian project excludes certain files depending on the JDK version. Search for the <i>exclude</i> tags in the <b>compile.java</b> target.  You will need to exclude the appropriate file(s) (depending on which JDK version you are using) manually in Eclipse by editing
+</p>
+<pre>   Project-&gt;Properties-&gt;Java Build Path-&gt;Source-&gt;Excluded
+</pre>
+<p>If you need to exclude files, make sure you "p4 edit" the .classpath file so Eclipse can write to it.
+</p>
+<h1> <span class="mw-headline" id="Testing_Mondrian">Testing Mondrian</span></h1>
+<h2> <span class="mw-headline" id="Regression_Tests">Regression Tests</span></h2>
+<p>Run "ant test" to run all Mondrian regression tests.  The "Running the test suite" section on the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/developers_guide.php">Developer's Guide page</a> shows a sample of what the output should look like.  That output is slightly old, but gives you a general idea of what it should look like.
+</p><p>A failed test will be denoted by an "F" in place of one of the dots (.) in the output.  The actual failure appears at the end of the output.  Because the output can be somewhat lengthy when you do have failures, it might be a good idea to pipe the test output into a file so you don't lose it from your screen.  To run the tests in the background, do the following:
+</p>
+<pre>   set +m
+   ant test &gt;&amp; test.out &amp;
+</pre>
+<p>Note: when running ant test with LucidDB over FoodMart schema, some tests that succeed in derby can report errors, for example, "Transactions not supported". These errors can be ignored,
+</p>
+<h2> <span class="mw-headline" id="JVM_Choice"> JVM Choice </span></h2>
+<p>All Mondrian tests run by "ant test" target pass with Sun HotSpot JVM; however, not all pass with BEA JRockit. For example, test mondrian.util.ObjectPoolTest.testString fails for both the R26.4 and R27.2 version of JRockit.
+</p>
+<h2> <span class="mw-headline" id="Running_Individual_Tests">Running Individual Tests</span></h2>
+<h3> <span class="mw-headline" id="runtest.sh">runtest.sh</span></h3>
+<p>--<a href="/wiki/index.php?title=User:Ngoodman&amp;action=edit&amp;redlink=1" class="new" title="User:Ngoodman (page does not exist)">Ngoodman</a> 21:34, 4 May 2011 (EDT) Appears to no longer working (ivy broke it?)
+Running "ant test" automatically builds the tests before running them.  If you want to explicitly build the test programs, run "ant compile.tests".
+</p><p>If you want to run a single unit test from the command line, use the bin/runtest.sh script file.  You'll need to first edit the file to uncomment out the lines corresponding to Derby.  Then, to run an individual test, do something like:
+</p>
+<pre>   bin/runtest.sh -c mondrian.test.BasicQueryTest testSample0
+</pre>
+<p>The above example runs the testSample0 test in <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/BasicQueryTest.html#testSample0%28%29">mondrian.test.BasicQueryTest</a>.
+</p>
+<h3> <span class="mw-headline" id="Eclipse_2">Eclipse</span></h3>
+<p>Alternatively, you can run the test within Eclipse, which is what you have to do anyway if you want to debug a problem.
+</p>
+<h3> <span class="mw-headline" id="ant_test">ant test</span></h3>
+<p>To run test method testSample0 in mondrian.test.BasicQueryTest, you can also use "ant test" after modifying these two mondrian properties:
+</p>
+<pre>
+mondrian.test.Class=mondrian.test.BasicQueryTest
+mondrian.test.Name=testSample0
+</pre>
+<h2> <span class="mw-headline" id="Connecting_to_Derby_Through_sqlline">Connecting to Derby Through sqlline</span></h2>
+<p>If, as part of debugging, you want to confirm the behavior of a SQL statement in Derby, you can directly connect to your Derby database using sqlline.  Put the following lines into a shell script and execute the script file:
+</p>
+<pre>   java
+       -cp /home/calvin/open/mondrian/testlib/derby.jar:/home/calvin/open/thirdparty/sqlline.jar 
+       sqlline.SqlLine -d org.apache.derby.jdbc.EmbeddedDriver
+       -u jdbc:derby:/home/calvin/open/mondrian/demo/derby/foodmart -n sa
+</pre>
+<p>Note that the above command needs to be a single line in your script file, so place escape characters at the end of each line if you decide to split it across multiple lines.
+</p>
+<h1> <span class="mw-headline" id="Development_Tricks_and_Tips">Development Tricks and Tips</span></h1>
+<p>Regression tests should be run on changes before checkins.   There are over a 1000 testcases in the suite so it does provide fairly comprehensive coverage.  The tests take about 25 minutes to run against Derby, and a mere 5-10 minutes on MySql, so you can't use lack of time as an excuse for not running the tests.  (Note that at one point, JVS was able to get all of the tests to run cleanly against <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a>.  However, they took over an hour to run, so you probably don't want to use <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a> as your backend database for regression testing purposes.)
+</p><p>Ideally, the tests should be run on multiple backend databases because of subtle syntax and semantic differences between different database vendors.  But that isn't always practical and necessary.  There is a safety net though.  There is a nightly cron job that runs through all tests on the commonly used databases (Oracle,MySql, Derby, etc.).  So, if you do happen to break a test on a database platform you didn't test against, you'll be notified&#160;:-).
+</p><p>In general, database incompatibility issues aren't very common because Mondrian provides an encapsulation layer for SQL syntax generation in <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/rolap/sql/SqlQuery.html">mondrian.rolap.sql.SqlQuery</a>.  This should shield you from these issues, provided you use that class appropriately.
+</p><p>Caching behavior can make writing a test tricky.  For example, when run by itself, a test may work fine (because the cache is cold), but when run as part of a full regression, it may fail due to pollution from a previous test.  Worse, it may only work as part of some full runs, but not others, based on timing, parallelism, memory available, and garbage collection.  There are ways to insulate tests from these issues, e.g. by forcing usage of a fresh connection.
+</p><p>Likewise, there are pitfalls due to property settings.  The nightly cron job mentioned above uses a randomized matrix of different property settings, so your test may work with the default settings, but fail with some other settings.  When this happens, the usual procedure is to add checks to the test to disable it in case the property settings are incompatible.  An alternative is to change the test to make it set its required properties explicitly.  Tests which change properties must reset them to their previous state before teardown; see BasicQueryTest.testMembersOfLargeDimensionTheHardWay for an example.
+</p><p>Also, certain properties are cached at the schema level, requiring a test to force usage of a fresh connection if it needs to change them.  Currently this is only true for the properties which control native evaluation (it's questionable whether they should even be cached at all, but for now, watch out).
+</p>
+<h2> <span class="mw-headline" id="Adding_New_Unit_Tests">Adding New Unit Tests</span></h2>
+<p>All Mondrian unit tests are located in the mondrian/testsrc/main directory.  Most unit tests operate by executing an MDX query and then comparing the actual result against an expected result that's hard-coded into the test by using the method <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/TestContext.html#assertQueryReturns%28java.lang.String,%20java.lang.String%29">mondrian.test.TestContext.assertQueryReturns()</a>.  It's also possible to just execute and verify an axis expression (<a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/TestContext.html#assertAxisReturns%28java.lang.String,%20java.lang.String%29">mondrian.test.TestContext.assertAxisReturns()</a>) as well an arbitrary expression (<a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/TestContext.html#assertExprReturns%28java.lang.String,%20java.lang.String%29">mondrian.test.TestContext.assertExprReturns()</a>).
+</p><p>Another test type that I found very useful are a set of tests that verify that elements of an MDX query are natively executed.  See <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/rolap/NonEmptyTest.html">mondrian.rolap.NonEmptyTest</a>.  For example, there are tests in there that verify that non-empty cross joins are actually being pushed down into SQL.
+</p><p><a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/rolap/TestAggregationManager.html">mondrian.rolap.TestAggregationManager</a> is another interesting test type.  Tests in here verify that the SQL query generated by an MDX statement matches an expected SQL string.
+</p><p>There are also some diff-repository type tests.  However, these are currently only being used to test XML/A functionality.  See <code>testsrc.main.mondrian.xmla.*</code>.
+</p><p>As noted above, the existing Foodmart schema should suffice for most testing.  If it's not sufficient, you have the option of extending the schema.  However, that only makes sense if the extension is of general use.  If it isn't, then you can directly add schema elements in your unit test.  For example, <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/BasicQueryTest.html#testBadMeasure1%28%29">mondrian.test.BasicQuery.testBadMeasure1()</a> creates a cube with an invalid measure, while <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/api/mondrian/test/TestCalculatedMembers.html#testCalculatedMemberInCubeViaApi%28%29">mondrian.test.TestCalculatedMembers.testCalculatedMemberInCubeViaApi()</a> add a "Profit2" measure to the Sales cube.
+</p>
+<h2> <span class="mw-headline" id="Mondrian_Tracing">Mondrian Tracing</span></h2>
+<p>There are two types of tracing in Mondrian.
+</p>
+<h3> <span class="mw-headline" id="SQL_Tracing_using_java.io.PrintWriter">SQL Tracing using java.io.PrintWriter</span></h3>
+<p>It prints out every sql statement issued by Mondrian. Turn on this tracing to observe the interaction between Mondrian and the underlying relational storage.
+</p><p>This trace is enabled by setting these mondrian properties:
+</p>
+<pre>   mondrian.trace.level=1 (or anything &gt; 0)
+   mondrian.debug.out.file=&lt;file location&gt;
+</pre>
+<h3> <span class="mw-headline" id="log4j_Tracing_for_Debugging">log4j Tracing for Debugging</span></h3>
+<p>Several Mondrian classes traced are documented <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/developer_notes.php#Log_Levels">here</a>. However, it's easy to add new trace in other classes. To enable log4j tracing for a certain class, here are the steps:
+</p>
+<ul><li> In log4j.properties file (under open/mondrian), add the class name and associated tracing level. e.g:
+</li></ul>
+<pre>log4j.category.mondrian.rolap.RolapUtil=DEBUG
+</pre>
+<ul><li> In mondrian.properties file, set log4j.configuration to the full path of log4j.properties file. e.g:
+</li></ul>
+<pre>log4j.configuration=file:///home/calvin/open/mondrian/log4j.xml
+</pre>
+<p>With the default <b>log4j.xml</b>, output will go to your console.  If you want to redirect the output to a file, e.g., <b>mondrian.log</b> in the same directory, make the following modifications to your <b>log4j.properties</b> file:
+</p><p>Change the setting of <b>log4j.appender.MONDRIAN</b> as follows:
+</p>
+<pre>
+log4j.appender.MONDRIAN=org.apache.log4j.RollingFileAppender
+</pre>
+<p>and add the following lines to your <b>log4j.properties</b> file:
+</p>
+<pre>
+log4j.appender.MONDRIAN.File=mondrian.log
+log4j.appender.MONDRIAN.Append=false
+log4j.appender.MONDRIAN.layout=org.apache.log4j.PatternLayout
+</pre>
+<p>Both <b>log4j.properties</b> and <b>log4j.xml</b> are checked-in files, so if you need to change any of the settings, the best approach is to copy it, edit the copy, and change the <b>log4j.configuration</b> parameter to point to the location of the modified copy.  That way, you don't have to worry about remembering to revert it before checkin.
+</p><p>Alternatively, you can also edit the file in a separate changelist, as described earlier when making modifications to <b>mondrian.properties</b>.
+</p><p>Note that the above settings make log4j tracing work with cmdRunner. Eclipse seems to require a bit more setup for log4j tracing to work.
+</p>
+<h2> <span class="mw-headline" id="Connecting_Mondrian_to_Other_DBs">Connecting Mondrian to Other DBs</span></h2>
+<p>Occasionally, Mondrian testing requires connecting to DBs other than the default Derby DB. Here are instructions for a few frequently used DBs.
+</p>
+<h3> <span class="mw-headline" id="Connecting_Mondrian_to_LucidDB">Connecting Mondrian to LucidDB</span></h3>
+<h4> <span class="mw-headline" id="Connecting_to_Foodmart">Connecting to Foodmart</span></h4>
+<ul><li> You'll first need to create a Foodmart schema in <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a> by running the following commands in sqllineEngine:
+</li></ul>
+<pre>   $<b>cd ~/open/luciddb/</b>
+   ~/open/luciddb$ <b>./sqllineEngine</b>
+   0: jdbc:luciddb:&gt; <b>create schema foodmart;</b>
+   0: jdbc:luciddb:&gt; <b>create user foodmart authorization 'Unused' default schema foodmart;</b>
+   0: jdbc:luciddb:&gt; <b>grant execute on specific procedure applib.compute_statistics_for_schema to foodmart;</b>
+</pre>
+<ul><li> Startup a LucidDB server instance and load the data by running the following commands or adding them into a  file, and executing it as a shell script. Remember to copy luciddb/plugin/LucidDbClient.jar into mondrian/testlib, if you haven't already done so.
+</li></ul>
+<pre>   $<b>cd ~/open/luciddb/</b>
+   ~/open/luciddb$<b>./lucidDbServer</b>
+   (in another shell)
+   $<b>cd ~/open/mondrian</b>
+   ~/open/mondrian$<b>export CP=lib/eigenbase-properties.jar:lib/eigenbase-resgen.jar:lib/eigenbase-xom.jar</b>
+   ~/open/mondrian$<b>export CP=$CP:lib/mondrian.jar:lib/log4j.jar:testlib/LucidDbClient.jar</b>
+</pre>
+<pre>   <b>(replace calvin with your home directory)</b>
+   ~/open/mondrian$<b>java -Xms500m -Xmx500m -cp $CP \</b>
+       <b>mondrian.test.loader.MondrianFoodMartLoader \</b>
+       <b>-verbose -tables -data -indexes \</b>
+       <b>-jdbcDrivers=com.lucidera.jdbc.LucidDbRmiDriver \</b>
+       <b>-inputFile=/home/calvin/open/mondrian/demo/FoodMartCreateData.sql \</b>
+       <b>-outputJdbcURL=jdbc:luciddb:rmi://localhost \</b>
+       <b>-outputJdbcUser=FOODMART</b>
+</pre>
+<p>Escape the lines above if you decide to split it across multiple lines in your shell script.
+</p><p>You might want to run analyze schema after all tables are loaded. Connect to the DB using sqllineClient and issue these two commands:
+</p>
+<pre>   CALL APPLIB.GRANT_SELECT_FOR_SCHEMA('FOODMART', 'sa');
+   CALL APPLIB.ESTIMATE_STATISTICS_FOR_SCHEMA('FOODMART');
+</pre>
+<p>Note 'sa' is the user connected via sqllineClient.
+</p>
+<ul><li> Edit your mondrian.properties file as noted in the second bullet item in the previous section, except set the following values instead:
+</li></ul>
+<pre>   mondrian.test.jdbcUser=FOODMART
+   mondrian.catalogURL=file:/home/calvin/open/mondrian/demo/FoodMart.xml
+   mondrian.test.connectString="Provider=mondrian; Jdbc=jdbc:luciddb:rmi://localhost;
+    JdbcUser=FOODMART; catalog=file:/home/calvin/open/mondrian/demo/FoodMart.xml;
+    JdbcDrivers=com.lucidera.jdbc.LucidDbRmiDriver"
+</pre>
+<p>Note that there's no need to set mondrian.test.jdbcPassword or switch mondrian.rolap.ignoreInvalidMembers to true.  Also, note that mondrian.test.connectString needs to be on a single line.
+</p><p>Corresponding instructions for using a packaged build of <a href="/wiki/LucidDB" title="LucidDB">LucidDB</a> are also published in <a rel="nofollow" class="external text" href="http://www.eigenbase.org/wiki/index.php/LucidDbOlap">Eigenpedia</a>, including how to run ANALYZE TABLE on the Foodmart schema.
+</p>
+<h3> <span class="mw-headline" id="Connecting_Mondrian_to_MySql">Connecting Mondrian to MySql</span></h3>
+<h4> <span class="mw-headline" id="Load_Foodmart_into_MySql">Load Foodmart into MySql</span></h4>
+<p>First, use the red-zone thirdparty automatic MySQL setup:
+</p>
+<pre>   $ cd /home/<b>calvin</b>/depot/platform/main/thirdparty
+   $ make mysql
+</pre>
+<p>This will install mysql into depot/platform/main/dev/mysql, and will start it running as a daemon. 
+</p><p>Next, you need to set an environment variable (do this in your .bash_profile for new shells too):
+</p>
+<pre>   $ export MYSQL_HOME=/home/<b>calvin</b>/depot/platform/main/dev/mysql
+</pre>
+<p>From depot/platform/main, you can use these commands any time to shut down MySQL or restart it:
+</p>
+<pre>   $ ant shutdown-mysql-server
+   $ ant start-mysql-server
+</pre>
+<p>Before running Mondrian, you have to create a database to hold the FOODMART sample data:
+</p>
+<pre>   $ cd /home/<b>calvin</b>/depot/platform/main/dev/mysql/bin
+   $ mysqladmin -u root create foodmart
+   $ mysql -u root
+   mysql&gt; grant all privileges on *.* to 'foodmart'@'localhost' identified by 'foodmart';
+   Query OK, 0 rows affected (0.00 sec)
+</pre>
+<pre>   mysql&gt; quit
+   Bye
+</pre>
+<p>To populate the sample data, here's a FoodMartLoader.sh script to run from modrian/ home dir(asuming all jar files are located under the respective directories lib and testlib). All in one line.
+</p>
+<pre>java 
+-cp "./lib/mondrian.jar:./lib/log4j.jar:./lib/commons-logging.jar:./lib/eigenbase-xom.jar:./lib/eigenbase-resgen.jar:
+     ./lib/eigenbase-properties.jar:./testlib/mysql-connector-java-3.1.14-bin.jar"
+mondrian.test.loader.MondrianFoodMartLoader 
+-verbose -tables -data -indexes -jdbcDrivers=com.mysql.jdbc.Driver -inputFile=./demo/FoodMartCreateData.sql 
+-outputJdbcURL="jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart"
+</pre>
+<p>--<a href="/wiki/index.php?title=User:Rchen&amp;action=edit&amp;redlink=1" class="new" title="User:Rchen (page does not exist)">Rchen</a> 15:31, 22 May 2009 (PDT)Some times you might get class loading error, even though the jar in path contains the "missing" class. Try changing the order of the .jar appearing in the -cp argument. Also, don't forget to unzip FoodMartCreateData.zip in ./demo.
+</p><p>Before running Mondrian unit tests, edit mondrian.properties accordingly:
+</p>
+<pre>   mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart
+   mondrian.jdbcDrivers=com.mysql.jdbc.Driver
+   driver.classpath=/home/<b>calvin</b>/depot/platform/main/thirdparty/mysql-connector/mysql-connector-java-3.1.14-bin.jar
+</pre>
+<h4> <span class="mw-headline" id="Connect_Mondrian_to_MySql">Connect Mondrian to MySql</span></h4>
+<p>If you want to connect Mondrian to MySql through Eclipse and cmdRunner, do the following:
+</p>
+<ul><li> Copy mysql-connector-java-3.1.14-bin.jar from your platform thirdparty directory into mondrian/testlib.
+</li></ul>
+<ul><li> Modify your mondrian.properties file to add the following definitions:
+</li></ul>
+<pre>   mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart
+   mondrian.jdbcDrivers=com.mysql.jdbc.Driver
+   driver.classpath=/home/calvin/open/mondrian/testlib/mysql-connector-java-3.1.14-bin.jar
+   mondrian.catalogURL=file:/home/rchen/open/mondrian/demo/FoodMart.xml
+   mondrian.test.jdbcURL=jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart
+</pre>
+<ul><li> Add a reference to testlib/mysql-connector-java-3.1.14-bin.jar in your .classpath file.
+</li></ul>
+<p>See the <a rel="nofollow" class="external text" href="http://mondrian.pentaho.org/documentation/installation.php#2_Set_up_test_data">Installation page</a> on the Mondrian project page for a general description of how to load Foodmart into other databases.
+</p>
+<h3> <span class="mw-headline" id="Connecting_Mondrian_to_Oracle">Connecting Mondrian to Oracle</span></h3>
+<p><a rel="nofollow" class="external text" href="http://wiki.openi.org/index.php/Mondrian_Integration#Installation">OpenI doc page</a>
+</p><p>Steps:
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="http://www.oracle.com/technology/software/products/database/xe/htdocs/102xelinsoft.html">Download</a> and <a rel="nofollow" class="external text" href="http://download.oracle.com/docs/cd/B25329_01/doc/install.102/b25144/toc.htm">install</a> Oracle 10G XE.
+</li><li> Copy ojdbc14.jar to the Mondrian testlib directory.  (You'll find it in /usr/lib/oracle/xe/app/oracle/product/10.2.0/server/jdbc/lib.)
+</li><li> <a rel="nofollow" class="external text" href="http://download.oracle.com/docs/cd/B25329_01/doc/admin.102/b25610/toc.htm">Connect to Oracle</a> using the <b>system</b> account, and create a user named <b>foodmart</b> with password <b>foodmart</b>.
+</li><li> If you've already previously downloaded and installed Oracle, to restart it, execute the following command as root:
+</li></ul>
+<pre>
+/etc/init.d/oracle-xe restart
+</pre>
+<ul><li> Run the loader script after exporting the necessary jars
+</li></ul>
+<pre>   export CP=lib/commons-dbcp.jar:lib/commons-collections.jar:lib/commons-pool.jar
+   export CP=$CP:lib/eigenbase-properties.jar:lib/eigenbase-resgen.jar:lib/eigenbase-xom.jar
+   export CP=$CP:lib/javacup.jar:lib/mondrian.jar
+   export CP=$CP:lib/log4j.jar
+   export CP=$CP:testsrc/main
+   export CP=$CP:classes
+   export CP=$CP:testclasses
+   export CP=$CP:testlib/ojdbc14.jar
+</pre>
+<pre>java \
+-cp $CP mondrian.test.loader.MondrianFoodMartLoader  -verbose  -tables -data -indexes \
+-jdbcDrivers="oracle.jdbc.driver.OracleDriver" -inputFile=../demo/FoodMartCreateData.sql \
+-outputJdbcURL="jdbc:oracle:thin:foodmart/foodmart@localhost:1521"
+</pre>
+<!-- 
+NewPP limit report
+Preprocessor node count: 153/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1995-0!*!0!!en!*!* and timestamp 20140414195151 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=MondrianDevelopment&amp;oldid=6935">http://luciddb.org/wiki/index.php?title=MondrianDevelopment&amp;oldid=6935</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/MondrianDevelopment" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:MondrianDevelopment&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=MondrianDevelopment&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=MondrianDevelopment&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=MondrianDevelopment" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/MondrianDevelopment" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/MondrianDevelopment" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=MondrianDevelopment&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=MondrianDevelopment&amp;oldid=6935" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 5 May 2011, at 01:34.</li>
+		<li id="viewcount">This page has been accessed 3,489 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.229 secs. --></body></html>

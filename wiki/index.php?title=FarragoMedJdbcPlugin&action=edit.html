@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>View source - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="next" href="http://luciddb.org/wiki/FarragoMedJdbcPlugin" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if IE 8]><link rel="stylesheet" href="/wiki/skins/common/IE80Fixes.css?303" media="screen" /><![endif]-->
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoMedJdbcPlugin", "wgTitle": "FarragoMedJdbcPlugin", "wgCurRevisionId": 7175, "wgArticleId": 1889, "wgIsArticle": false, "wgAction": "edit", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": true, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoMedJdbcPlugin action-edit skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">View source</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub">for <a href="/wiki/FarragoMedJdbcPlugin" title="FarragoMedJdbcPlugin">FarragoMedJdbcPlugin</a></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>You do not have permission to edit this page, for the following reason:
+</p>
+<div class="permissions-errors">
+<p>The action you have requested is limited to users in the group: <a href="/wiki/index.php?title=LucidDB_Wiki:Users&amp;action=edit&amp;redlink=1" class="new" title="LucidDB Wiki:Users (page does not exist)">Users</a>.
+</p>
+</div>
+<p>You can view and copy the source of this page:
+</p><textarea id="wpTextbox1" name="wpTextbox1" cols="80" rows="25" readonly="">= Farrago SQL/MED Plugin for JDBC =
+
+Farrago provides a plugin implementing [http://farrago.sourceforge.net/design/sqlmed.html SQL/MED access] to any foreign DBMS for which a JDBC driver is available.  
+
+Farrago supports the SQL standard three-level qualifier scheme for the names of tables: &lt;tt>catalog.schema.table&lt;/tt>.  When using the SQL/MED plugin for JDBC to make foreign data namespaces accessible from Farrago SQL queries, it is important to keep a number of points in mind:
+
+* Different JDBC drivers support different qualifier schemes.  Some support catalogs and schemas; others only support schemas; and still others support neither catalogs nor schemas.  Default values may or may not be in effect depending on the server connection URL.  For this reason, the user must be careful when defining the foreign server in Farrago to get the desired mapping.
+* When referencing foreign tables directly via a virtual catalog (without importing their metadata into a local schema), use the foreign schema and table name.  In this case, the catalog name will be the name given the foreign server via CREATE SERVER.
+* When referencing foreign table via locally defined or imported metadata, use the local schema and table name.  In this case, the catalog name will be LOCALDB.
+
+== JDBC Foreign Data Wrapper Definition ==
+
+Because this plugin is included as part of the standard Farrago distribution, a corresponding foreign data wrapper instance named &lt;tt>SYS_JDBC&lt;/tt> is predefined by Farrago's initialization scripts.  Normally, there is no need to define additional instances.
+
+However, it may be useful to define additional wrapper instances corresponding to specific DBMS types.  For the JDBC plugin, all SQL/MED options declared on the wrapper are propagated to the server, allowing common option settings to be factored out of individual server definitions.  (Note that this is not necessarily true for other plugins.)  Option settings on a server always take precedence over settings inherited from a wrapper.
+
+== JDBC Foreign Server Definition ==
+
+In order to access a particular JDBC data source, a corresponding foreign server must be defined.  The following server-level options can be specified:
+
+{| border="1" cellspacing="0" cellpadding="2"
+! Name
+! Description
+|- 
+| JNDI_NAME
+| Name of the JNDI resource that contains a &lt;tt>javax.sql.DataSource&lt;/tt> suitable for use with the SQL/MED JDBC foreign data wrapper.  The DataSource '''must not''' block when connections are requested.  This option is mutually exclusive with the existing &lt;tt>DRIVER_CLASS&lt;/tt>, &lt;tt>URL&lt;/tt>, &lt;tt>USER_NAME&lt;/tt>, &lt;tt>PASSWORD&lt;/tt>, and &lt;tt>EXTENDED_OPTIONS&lt;/tt> parameters.  The following parameters are ignored if &lt;tt>JNDI_NAME&lt;/tt> is specified: &lt;tt>LOGIN_TIMEOUT&lt;/tt>, &lt;tt>VALIDATION_QUERY&lt;/tt>.  No default value.
+|-
+| DRIVER_CLASS
+| Fully qualified name of the JDBC driver class to load; this must be available on the classpath.  Currently this requires either changing the classpath used to invoke Farrago, or rolling the JDBC driver classes into a new plugin jar combined with the default Farrago plugin contents. (We plan to eventually support the SQL:2003 jar dependencies feature to eliminate this repackaging burden.)
+|-
+| URL
+| JDBC URL specifying the data source to access
+|-
+| USER_NAME
+| User name for login to foreign server
+|-
+| PASSWORD
+| Password for login to foreign server
+|-
+| USE_SCHEMA_NAME_AS_FOREIGN_QUALIFIER 
+| If set to 'TRUE', then for tables without a table-level SCHEMA_NAME specified, the server-level SCHEMA_NAME is used. The default is 'FALSE'.
+|-
+| SCHEMA_NAME 
+| If USE_SCHEMA_NAME_AS_FOREIGN_QUALIFIER is set to 'FALSE': &lt;br /> Artificial foreign schema name.  This option is only required for servers which don't support schemas.  When specified, the plugin will accept this schema name as a foreign qualifier when importing foreign tables or accessing them directly, but will omit all schema references when sending SQL to the foreign server.  For servers that support schemas, this option should never be specified; reference the real foreign schema names instead. &lt;br />If USE_SCHEMA_NAME_AS_FOREIGN_QUALIFIER is set to 'TRUE': &lt;br />Server must support schemas. This SCHEMA_NAME will be used if the table-level SCHEMA_NAME is not set.
+|-
+| SCHEMA_MAPPING
+| Semicolon-separated list of schema_name:mapped_schema_name pairs.  This option is only valid for servers which support schemas.  This allows for a single schema view of tables spanning multiple schemas. If set, TABLE_MAPPING and TABLE_PREFIX_MAPPING must not be set. A schema or table name may be quoted by the double quote character.  The double quote character can be used in a name, if escaped by itself (the double quote character). A single quote character can be used, if escaped by itself (the single quote character).
+|-
+| TABLE_MAPPING
+| Semicolon-separated list of source_schema.source_table:mapped_schema.mapped_table pairs. This option is only valid for servers which support schemas.  This allows for a single schema view of the specified tables spanning multiple schemas. If set, SCHEMA_MAPPING and TABLE_PREFIX_MAPPING must not be set.  A schema or table name may be quoted by the double quote character.  The double quote character can be used in a name, if escaped by itself (the double quote character). A single quote character can be used, if escaped by itself (the single quote character). 
+|-
+| TABLE_PREFIX_MAPPING
+| Semicolon-separated list of source_schema.source_table_prefix:mapped_schema.mapped_table_prefix pairs. This allows multiple source tables, with a common prefix, to be mapped into a specific target schema with a different prefix. If set, SCHEMA_MAPPING and TABLE_MAPPING must not be set. If artificial foreign schema names are in use, the source schema name is ignored. A schema or table name may be quoted by the double quote character. The double quote character can be used in a name, if escaped by itself (the double quote character). A single quote character can be used, if escaped by itself (the single quote character). If the last character of either the source or target table prefix is a percent sign (%), it is interpreted as a wild card and stripped off. This allows a prefix to be appended to or removed from all tables (e.g., mapping definitions like 'SRC_SCHEMA.%:TGT_SCHEMA.PREFIX_%' or 'SRC_SCHEMA.PREFIX_%:TGT_SCHEMA.%'). As a consequence, if a prefix ends in % it must be doubled.
+|-
+| QUALIFYING_CATALOG_NAME 
+| Foreign catalog name to which this server should correspond.  This option should only be used for servers which support multiple catalogs.  Normally, a default catalog is always defined for a connection, so this option isn't usually required.  To access multiple catalogs from the same physical server, create multiple logical servers, each with a different value for this option.
+|-
+| TABLE_TYPES
+| Comma-separated list of table types used to restrict metadata results for operations such as IMPORT FOREIGN SCHEMA.  For example, some servers mix system tables into the same schema with user tables and views.  To hide them, specify a value like 'TABLE,VIEW' for this option.  To retrieve only tables and system tables, but no views, use 'TABLE,SYSTEM TABLE'.  In general, table type names may vary across JDBC drivers, so check your driver's documentation or call your driver's DatabaseMetaData.getTableTypes() method to list the available types.  This option is never required; if not specified, metadata for all table types is returned.  No spaces are allowed in the list unless they make up part of the type name, e.g. 'SYSTEM TABLE'.
+|-
+| EXTENDED_OPTIONS
+| If set to 'TRUE', unrecognized options are passed through to the JDBC driver as properties; otherwise, they are ignored.  The default is 'FALSE'.
+|-
+| TYPE_SUBSTITUTION
+| If set to 'TRUE' (the default), datatypes which are not supported by Farrago are replaced with the best available substitute.  If set to 'FALSE', unsupported datatypes result in errors.  Note that any TYPE_MAPPING specified is executed before TYPE_SUBSTITUTION is run.
+|-
+| TYPE_MAPPING
+| Semicolon-separated list of orig_datatype:subst_datatype pairs.  If set, Farrago will replace the type of foreign columns matching orig_datatype with the corresponding subst_datatype.  The format for both datatype strings is DATATYPE_NAME[(PRECISION[,SCALE])] with no spaces allowed.  On orig_datatype, precision and scale (if specified) are used to more precisely limit the matching datatype.  In other words, "DECIMAL" will match any decimal type, but "DECIMAL(10,2)" will only match that specific precision and scale.  If precision and scale are not specified on subst_datatype, the original precision and scale are kept.  If the 'subst_datatype' is not a supported Farrago datatype, the mapping is ignored.  Note that TYPE_MAPPING is run before TYPE_SUBSTITUTION and does not depend on TYPE_SUBSTITUTION.
+|-
+| LENIENT
+| If set to 'TRUE', match target columns specified in the foreign table definition with data source columns using case-sensitive string comparison on column name.  Specified target columns which are missing in the source are filled in with null. Likewise, specified target columns with types that are cast-incompatible from matching source columns are filled in with null.  Other matching columns are cast to the target type (either the type specified explicitly, or the type stored in the catalog when the foreign table descriptor is created with implicit column types).  The default is 'FALSE', meaning columns are mapped by position rather than name, and mismatches in the mapping may lead to runtime errors. &lt;p>Lenience makes the foreign table definition resilient to changes in the data source; strictness ensures that data is not accidentally lost or fabricated due to a mismapping.
+|-
+| SKIP_TYPE_CHECK
+| If set to 'TRUE', assume target columns specified in the foreign table definition are compatible with data source columns in name, type and number.  The default is 'FALSE'.  This setting is ignored when LENIENT is 'TRUE'.  The purpose of this setting is to make it possible to skip metadata checks (possibly expensive depending on source DBMS) when referencing the foreign table (or even when defining it if column types are explicitly specified or imported).  The downside is that if the source is actually incompatible with the local catalog definition, then errors will not be detected until query execution, and diagnostics may be poor as a result.  ''Not available in versions before v0.9.2''
+|-
+| LOGIN_TIMEOUT
+| The maximum time in seconds to wait while attempting to connect to foreign server.  Ignored if &lt;tt>JNDI_NAME&lt;/tt> is set.
+|-
+| VALIDATION_QUERY
+| The SQL query to use to validate connections in the JDBC wrapper cache. If not specified, no connection validation will be done.  If specified, must be a query (in a dialect understood by the foreign JDBC driver being used) which will return at least one row without error.  Ignored if &lt;tt>JNDI_NAME&lt;/tt> is set.
+|-
+| DISABLED_PUSHDOWN_REL_PATTERN
+| A regular expression matching the names of rules or logical relational expressions for which pushdown to data source should be disabled.  To enable all pushdown, the value can be left as empty string (the default).  To disable all pushdown, the value can be set to a match-anything regular expression ('.*').  To disable a particular expression, the value can be set to the corresponding optimizer RelNode class name, e.g. 'FilterRel', or internal rule description, e.g. '.*on proj'.
+|-
+| ASSUME_PUSHDOWN_VALID
+| A boolean (true/false) expression that controls whether the Wrapper will check the pushdown SQL prior to executing it.  Setting it to true will execute the SQL without first preparing and checking the SQL is valid (vie PreparedStatement.getMetadata()).  Setting it to false (the default) will check the SQL first, including some very unnatural Oracle hacks since their thin driver does not support ps.getMetadata().  In general, this should be set to false, but if your JDBC driver lacks ps.getMetadata() this might be necessary, e.g. Oracle.
+|-
+| FETCH_SIZE
+| An integer fetch size to set on cursors via Statement.setFetchSize.  Default is -1 (don't call setFetchSize at all).
+|-
+| AUTOCOMMIT
+| If set to 'TRUE' (the default), leave connection in autocommit mode. Otherwise, request transaction mode.  For read-only usage, this normally doesn't matter, since the wrapper closes cursors as soon as it is done with them, but some JDBC drivers are sensitive (e.g. the PostgreSQL driver, which requires an explicit FETCH_SIZE and non-autocommit to avoid exhausting memory for large result sets).
+|-
+| MAX_IDLE_CONNECTIONS
+| When creating a connection pool implicitly (e.g. JNDI_NAME is not set), this many connections are kept open.  If a connection is returned to the pool and this many idle connections are already in the pool, the newly returned connection is immediately closed.  Each &lt;tt>MedJdbcDataServer&lt;/tt> instance may hold this many connections open.  Ignored if &lt;tt>JNDI_NAME&lt;/tt> is specified.  Defaults to 1.
+|-
+| EVICTION_TIMER_PERIOD_MILLIS
+| Controls how frequently idle connections are pruned from the pool.  If set to a value N &amp;gt; 0 (zero), idle connections are removed from the pool and closed every N milliseconds. Ignored if &lt;tt>JNDI_NAME&lt;/tt> is specified.  Defaults to -1 (disabled).
+|-
+| MIN_EVICTION_IDLE_MILLIS
+| Controls how long a connection must be idle before it is evicted.  If &lt;tt>EVICTION_TIMER_PERIOD_MILLIS&lt;/tt> is disabled, this setting has no effect.  Otherwise, when the eviction timer fires, idle connections are only closed if they have been idle for at least this many milliseconds.  Ignored if &lt;tt>JNDI_NAME&lt;/tt> is specified. Defaults to -1 (disabled).
+|-
+| VALIDATION_TIMING
+| Controls when connections are validated.  Multiple values may be specified if separated by commas. The values are case insensitive. Possible values and their meanings: &lt;tt>ON_BORROW&lt;/tt> (validate when connection is borrowed from the connection pool), &lt;tt>ON_RETURN&lt;/tt> (validate when connection is returned to the connection pool), or &lt;tt>WHILE_IDLE&lt;/tt> (validate idle connections when the eviction timer fires and the connection has not been idle long enough to warrant eviction).  The WHILE_IDLE value only has effect when both &lt;tt>EVICTION_TIMER_PERIOD_MILLIS&lt;/tt> and &lt;tt>MIN_EVICTION_IDLE_MILLIS&lt;/tt> is positive.  This parameter is ignored if &lt;tt>JNDI_NAME&lt;/tt> is specified.  This parameter has no effect if &lt;tt>VALIDATION_QUERY&lt;/tt> is not specified.  Default value is &lt;tt>ON_BORROW&lt;/tt>.
+|-
+| DISABLE_CONNECTION_POOL
+| Reverts connection management behavior to pre-connection pool semantics.  A single connection is re-used for all purposes.  Default value is false.
+|}
+
+For example:
+
+&lt;blockquote>&lt;pre>
+create server ora_sales_server
+foreign data wrapper sys_jdbc
+options(
+    driver_class 'oracle.jdbc.driver.OracleDriver',
+    url 'jdbc:oracle:thin:@localhost:1521:ora1',
+    user_name 'scott',
+    password 'tiger',
+    type_mapping 'DATE:TIMESTAMP;DECIMAL(22,0):DOUBLE',
+    validation_query 'select 1 from dual');
+&lt;/pre>&lt;/blockquote>
+
+(The Oracle JDBC driver incorrectly exposes datetime types without nanoseconds as DATE, and exposes floating-point numerics as DECIMAL(22,0), so the mappings above are usually required.)
+
+The following JDBC API calls are made in order to validate a foreign server definition:
+
+* DriverManager.getConnection
+* Connection.getMetaData (if supported)
+* Connection.setAutoCommit (only if &lt;tt>AUTOCOMMIT&lt;/tt> is set to false)
+* DatabaseMetaData.XXX (various calls to test for supported features)
+
+== JDBC Foreign Table Definition ==
+
+The only option always required when defining a JDBC foreign table is &lt;tt>TABLE_NAME&lt;/tt> (or &lt;tt>OBJECT&lt;/tt>):
+
+&lt;blockquote>&lt;pre>
+create schema ora_sales;
+
+create foreign table ora_sales.dept
+server ora_sales_server
+options(table_name 'DEPT');
+&lt;/pre>&lt;/blockquote>
+
+For servers which support multiple schemas, the &lt;tt>SCHEMA_NAME&lt;/tt> option can be specified at the table level to choose a schema other than the default:
+
+&lt;blockquote>&lt;pre>
+create schema sqlsrvr_sales;
+
+create foreign table sqlsrvr_sales.dept
+server sqlsrvr_sales_server
+options(schema_name 'DBO', table_name 'DEPT');
+&lt;/pre>&lt;/blockquote>
+
+The following JDBC API calls are made in order to validate a foreign table definition:
+
+* Connection.getMetaData
+* Connection.prepareStatement (if supported)
+* PreparedStatement.getMetaData (if supported)
+* PreparedStatement.executeQuery (if supported)
+* Connection.createStatement (only if PreparedStatement not supported)
+* Statement.executeQuery (only if PreparedStatement not supported)
+* ResultSet.getMetaData (only if PreparedStatement not supported)
+* ResultSetMetaData.getColumnCount
+* ResultSetMetaData.getColumnName
+* ResultSetMetaData.getColumnType
+* ResultSetMetaData.getPrecision
+* ResultSetMetaData.getScale
+* ResultSetMetaData.isNullable
+
+== Querying JDBC Foreign Tables ==
+
+Once defined, JDBC foreign tables may be queried just like local tables.  The following two queries are equivalent (the first one references the virtual catalog, while the second one references the local metadata copy):
+
+&lt;blockquote>&lt;pre>
+select * from ora_sales_server.scott.dept;
+
+select * from ora_sales.dept;
+&lt;/pre>&lt;/blockquote>
+
+Currently, relational operators such as filters, projections, aggregations, and joins are not pushed down into the SQL query used to access the foreign server.  For example, to implement the following query, all &lt;tt>dept&lt;/tt> rows are fetched from Oracle, and then the filter is applied locally inside of Farrago:
+
+&lt;blockquote>&lt;pre>
+select * from ora_sales.dept
+where deptno=10;
+&lt;/pre>&lt;/blockquote>
+
+True distributed query optimization will be implemented in a future Farrago release.
+
+The following JDBC API calls are made in order to execute a query against
+a foreign table:
+
+* Connection.createStatement
+* Statement.executeQuery
+* Statement.setFetchSize (only if FETCH_SIZE is set)
+* ResultSet.getXXX (where XXX depends on datatype of column queried)
+
+By default, connections to JDBC data sources are in autocommit mode, meaning that each foreign query runs in its own read-only transaction which ends automatically when the top-level Farrago query is closed. (If a single Farrago query accesses multiple foreign tables, then multiple foreign queries may be issued, even if all of the foreign tables are from the same data source.)  The default isolation level is DBMS-dependent, and so the effect of SQL/MED queries on foreign concurrency control (e.g. read locks) also varies by DBMS.
+
+== JDBC Metadata Import ==
+
+Multiple foreign table definitions can be imported into Farrago automatically with the IMPORT FOREIGN SCHEMA statement:
+
+&lt;blockquote>&lt;pre>
+import foreign schema sales
+from server ora_sales_server
+into ora_sales;
+
+select * from ora_sales.emp;
+&lt;/pre>&lt;/blockquote>
+
+The following JDBC API calls are made in order to perform the import:
+
+* DatabaseMetaData.getTables
+* DatabaseMetaData.getColumns
+
+== Updating JDBC Foreign Tables ==
+
+''NOTE'': update functionality is not yet implemented; this section describes the planned support.
+
+The Farrago SQL/MED plugin for JDBC will support the standard INSERT/UPDATE/DELETE DML statements with a foreign table as the target, e.g.
+
+&lt;blockquote>&lt;pre>
+insert into ora_sales.dept 
+select * from sales.depts;
+
+delete from ora_sales.dept
+where deptno=10;
+&lt;/pre>&lt;/blockquote>
+
+Each row to be modified by the query corresponds to an individual execution of a prepared statement.  The existence of a primary key is required for DELETE or UPDATE.
+
+New SQL/MED options govern the transactional characteristics of the DML:
+
+{| border="1" cellspacing="0" cellpadding="2"
+! Name
+! Scope
+! Description
+|-
+| DISTRIBUTED_TRANSACTIONS 
+| server 
+| A setting of 0 (the default) means that when a non-autocommit Farrago transaction accessing this server spans multiple DML statements, all of those statements must target the same server.  A setting of 1 requests that non-autocommit Farrago transactions which access this  server should be implemented as distributed transactions (this requires all foreign servers involved to support the javax.sql.XAConnection interface).
+|-
+| READ_ONLY 
+| server 
+| 0 to request DML support.  1 for read-only connection (the default).
+|-
+| ISOLATION_LEVEL 
+| server 
+| Isolation level to use for all access to this server.  If unspecified, default is DBMS-dependent.  This setting is ignored for distributed transactions (for which the isolation level is based on the Farrago session).
+|-
+| TRANSACTION_ROW_LIMIT 
+| server or table (table overrides server) 
+| Number of rows to modify before committing transaction and starting a new one.  Default is 0 (only commit once all rows have been processed).  This option is ignored when autocommit is disabled in the Farrago session, because then the Farrago-level transaction governs the foreign transaction.  This option is also ignored when this wrapper's AUTOCOMMIT option is set to 'TRUE' (the default), because then every update is committed immediately.
+|-
+| BATCH_ROW_LIMIT 
+| server or table (table overrides server) 
+| Number of rows to send to foreign server per batch.  Default is 1.
+|}
+
+The following JDBC API calls are made in order to execute DML against
+a foreign table:
+
+* Connection.prepareStatement
+* PreparedStatement.setXXX (where XXX depends on datatype of column updated)
+* PreparedStatement.executeUpdate
+* PreparedStatement.addBatch (if BATCH_ROW_LIMIT specified)
+* Statement.executeBatch (if BATCH_ROW_LIMIT specified)
+* Connection.setReadOnly (if supported)
+* Connection.setTransactionIsolation  (if &lt;tt>ISOLATION_LEVEL&lt;/tt> specified)
+* Connection.commit (if &lt;tt>AUTOCOMMIT&lt;/tt> set to false)
+* Connection.rollback (if &lt;tt>AUTOCOMMIT&lt;/tt> set to false)
+* DatabaseMetaData.getPrimaryKeys (for UPDATE/DELETE)
+
+= Examples =
+== MySQL ==
+
+Create a remote server connection profile first.  This profile will later be used to show foreign tables and interact with the MySQL server.
+&lt;blockquote>&lt;pre>
+create server mysql_jbond
+foreign data wrapper sys_jdbc
+options(
+    driver_class 'com.mysql.jdbc.Driver',
+    url 'jdbc:mysql://172.27.0.204/sandbox',
+    user_name 'jbond',
+    password 'MyEyesOnly',
+    validation_query 'select 1 from dual');
+&lt;/pre>&lt;/blockquote>
+
+'''mysql_jbond''' - name given to the 'server connection' which is saved in LucidDB.&lt;br>
+'''com.mysql.jdbc.Driver''' - is a specific java class name of the MySQL JDBC driver.&lt;br>
+'''jbond''' - user that connects to the remote MySQL server.&lt;br>
+'''MyEyesOnly''' - password belonging to the user connecting to the remote MySQL server.&lt;br>
+'''select 1 from dual''' - SQL query that will succeed if a connection is established.&lt;br>
+
+&lt;br>
+&lt;blockquote>&lt;pre>
+create schema bond_schema;
+&lt;/pre>&lt;/blockquote>
+
+&lt;br>
+Next we want to have a place for the foreign tables to show up.&lt;br>
+'''bond_schema''' - is a schema where Mr. Bond wants his tables to show up from the remote server.&lt;br>
+
+Finally we tell LucidDB to create a table called '''SOURCE_BUDGET_FINANCIALS''' in the newly created '''bond_schema''' with the structure and data being provided through the connection called '''mysql_jbond''' which reaches a MySQL server, digs in a schema called '''evil_operations''' with a specific table also called '''SOURCE_BUDGET_FINANCIALS'''.
+&lt;blockquote>&lt;pre>
+create foreign table bond_schema.SOURCE_BUDGET_FINANCIALS 
+server mysql_jbond
+options(schema_name 'evil_operations', table_name 'SOURCE_BUDGET_FINANCIALS');
+&lt;/pre>&lt;/blockquote>
+&lt;br></textarea><div class='templatesUsed'>
+
+</div>
+<p id="mw-returnto">Return to <a href="/wiki/FarragoMedJdbcPlugin" title="FarragoMedJdbcPlugin">FarragoMedJdbcPlugin</a>.</p>
+<div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/FarragoMedJdbcPlugin">http://luciddb.org/wiki/FarragoMedJdbcPlugin</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoMedJdbcPlugin" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoMedJdbcPlugin&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource" class="selected"><a href="/wiki/index.php?title=FarragoMedJdbcPlugin&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoMedJdbcPlugin&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoMedJdbcPlugin&amp;returntoquery=action%3Dedit" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoMedJdbcPlugin" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoMedJdbcPlugin" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.action.edit", "mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.157 secs. --></body></html>

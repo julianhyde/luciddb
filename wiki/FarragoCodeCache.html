@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoCodeCache - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoCodeCache", "wgTitle": "FarragoCodeCache", "wgCurRevisionId": 3931, "wgArticleId": 1524, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoCodeCache action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoCodeCache</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1"><a href="#Purpose"><span class="tocnumber">2</span> <span class="toctext">Purpose</span></a></li>
+<li class="toclevel-1"><a href="#Management_Via_SQL"><span class="tocnumber">3</span> <span class="toctext">Management Via SQL</span></a></li>
+<li class="toclevel-1"><a href="#Cache_Structure"><span class="tocnumber">4</span> <span class="toctext">Cache Structure</span></a></li>
+<li class="toclevel-1"><a href="#Cache_Contents"><span class="tocnumber">5</span> <span class="toctext">Cache Contents</span></a></li>
+<li class="toclevel-1"><a href="#Cache_Victimization"><span class="tocnumber">6</span> <span class="toctext">Cache Victimization</span></a></li>
+<li class="toclevel-1"><a href="#Object_Staleness"><span class="tocnumber">7</span> <span class="toctext">Object Staleness</span></a></li>
+<li class="toclevel-1"><a href="#Object_Memory_Estimates"><span class="tocnumber">8</span> <span class="toctext">Object Memory Estimates</span></a></li>
+</ul>
+</td></tr></table>
+<h2 id="tocFarragoCodeCache0"> <span class="mw-headline" id="Overview">Overview</span></h2>
+<p>This document describes Farrago's <em>code cache</em>. This is a singleton pool associated with a DBMS instance; the pool is used to cache and share various objects generated and used in query processing. These objects are referred to as &quot;code&quot; to distinguish this from Fennel's data cache, which caches the contents of stored disk pages.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache1"> <span class="mw-headline" id="Purpose">Purpose</span></h2>
+<p>The code cache is intended to speed up the repeated execution of frequently needed SQL statements. Code caching is mainly of use in SQL environments where the same statements are repeated frequently, e.g.<br />
+</p>
+<ul>
+    <li>OLTP: many transactional applications rely on a fairly small repertoire of prepared statements (e.g. the query to populate a list box, or the INSERT to add a new record for a given table)</li>
+    <li>OLAP: engines such as <a rel="nofollow" class="external text" href="http://mondrian.sf.net">Mondrian</a> may issue the same or similar SQL queries repeatedly as subcomponents of multi-dimensional results</li>
+</ul>
+<p>Code caching may be of less use in ad-hoc query environments, but some of the caching may still be relevant (e.g. SQL/MED wrappers and servers).<br />
+<br />
+Currently, all caching is in-memory. A two-level cache (just like a web browser with a combined in-memory and on-disk cache of web pages) might be useful in some environments, and wouldn't be terribly hard to implement.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache2"> <span class="mw-headline" id="Management_Via_SQL">Management Via SQL</span></h2>
+<p>An administrator can disable the code cache like this:<br />
+</p>
+<pre class="text">alter system set &quot;codeCacheMaxBytes&quot; = min;</pre>
+<p><br />
+The code cache can be set to grow without bound (until the JVM heap is exhausted):<br />
+<br />
+</p>
+<pre class="text">alter system set &quot;codeCacheMaxBytes&quot; = max;</pre>
+<p><br />
+By default, a 2MB finite bound is set when a new Farrago database is initialized:<br />
+<br />
+</p>
+<pre class="text">alter system set &quot;codeCacheMaxBytes&quot; = 20000000;</pre>
+<p><br />
+The contents of the cache can be cleared at any time:<br />
+<br />
+</p>
+<pre class="text">call sys_boot.mgmt.flush_code_cache();</pre>
+<p><br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache3"> <span class="mw-headline" id="Cache_Structure">Cache Structure</span></h2>
+<p>The code cache is implemented as an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/util/FarragoObjectCache.html">FarragoObjectCache</a>. This class is similar to the <a rel="nofollow" class="external text" href="http://jakarta.apache.org/commons/pool/">Apache Commons Pool component</a>, but includes some additional support needed by Farrago:<br />
+</p>
+<ul>
+    <li>Support for sharing of entries by concurrent threads. Entries are <em>pinned</em> while in use (rather than <em>borrowed</em> as in Commons Pool). A pinned entry cannot be discarded from the cache; multiple threads are allowed to pin and share the same entry simultaneously if they specify <strong>false</strong> for the <strong>exclusive</strong> parameter to the pin method.</li>
+    <li>Support for resource accounting in terms of memory usage rather than number of objects. The caller is responsible for supplying estimates of reliable per-object memory usage so that the cache size can be capped at a fixed amount of memory (rather than a fixed number of objects).<br />
+</li>
+</ul>
+<p>Each entry in the cache must have a unique key associated with it.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache4"> <span class="mw-headline" id="Cache_Contents">Cache Contents</span></h2>
+<p>Here is a list of the object types currently known to be managed in the code cache:<br />
+</p>
+<ul>
+    <li><a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/session/FarragoSessionExecutableStmt.html">Executable statement</a>: This is a top-level encoding of an optimized non-DDL statement (either a query or a DML statement). If the SQL statement requires Java for execution, then the executable statement includes a package of one or more generated Java classes used in the implementation. If the SQL statement requires Fennel for execution, then the executable statement includes an XMI encoding which can be used to construct the corresponding ExecStreamGraph (however, the executable statement does not include an actual ExecStreamGraph object; that is cached separately). An executable statement also includes a small amount of other metadata about the statement such as the output row type it produces, any dynamic parameters, and the repository MOFID's of the catalog objects (e.g. tables) accessed by its execution. Like all cached objects, an executable statement is <em>reusable,</em> and it is also <em>sharable</em>; this means that multiple connections can be executing it simultaneously, all sharing the same object from the cache. The cache key for an executable statement is the canonically expanded text of the SQL statement after it has passed through SqlParser, SqlValidator, and unparse. The FarragoSessionPreparingStmt interface method <strong>mayCacheImplementation</strong> allows a session personality to selectively disable statement caching based on analysis of the statement implementation after preparation (for example, if the optimization resulted in hard-coding of information which may become out of date by the time of next execution).<br />
+
+</li>
+    <li>Fennel <a rel="nofollow" class="external text" href="http://fennel.sourceforge.net/doxygen/html/structExecStreamDesign.html">ExecStreamGraph</a>: This is a complex native-code object used by the Fennel executor to carry out dataflow execution during query processing. An ExecStreamGraph is <em>non-sharable</em>: in other words, if a single connection executes the same query over and over, it can keep reusing a single cached ExecStreamGraph; but if three connections execute the same query simultaneously, then three separate ExecStreamGraph instances have to be constructed, because each one maintains private state during execution. An ExecStreamGraph instance can be reconstructed at any time from the XMI in an executable statement; this is why these two code types can be cached independently. The cache key for an ExecStreamGraph is the XMI string used in construction.<br />
+</li>
+    <li>Default value: This is the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/rex/RexNode.html">Rex</a> representation for a column's default value. These are stored in the catalog as strings, and then parsed and cached as Rex trees. The cache key for a default value is the MOFID of the expression stored in the catalog. A default value is sharable because the kinds of Rex nodes which can appear in default value expressions are all immutable after construction.<br />
+</li>
+    <li>SQL/MED wrapper: This is an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/namespace/FarragoMedDataWrapper.html">FarragoMedDataWrapper</a>, typically just a lightweight object implicitly referencing the jar storing the wrapper implementation. A SQL/MED wrapper is reusable but not sharable (but the loaded jar itself is shared, even though the wrapper object instance is not). The cache key for a SQL/MED wrapper is the MOFID of its definition in the catalog.</li>
+    <li>SQL/MED server: This is an instance of <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/net/sf/farrago/namespace/FarragoMedDataServer.html">FarragoMedDataServer</a>, typically a connection of some kind to an external data server. A SQL/MED server may or may not be sharable; the SQL/MED SPI allows Farrago to interrogate the server to find out. For example, a connection to a file server might be sharable, whereas a connection to a database server might not be. The cache key for a SQL/MED server is the MOFID of its definition in the catalog.</li>
+</ul>
+<p><br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache5"> <span class="mw-headline" id="Cache_Victimization">Cache Victimization</span></h2>
+<p>By default, Farrago uses a basic LRU victim policy. Once the memory in use exceeds the set limit, objects are evicted in LRU order until memory usage falls below the limit. FarragoObjectCache supports pluggable policy replacement (this needs to be exposed at the FarragoSessionFactory level in order for extension projects to be able to supply their own policies.) For a smarter policy, we could also use additional information about the cost and benefit of caching each object:<br />
+</p>
+<ul>
+    <li>memory usage: all else being equal, it's better to evict a single large object rather than a number of small objects</li>
+    <li>construction time: if we kept track of information such as the time required to optimize a SQL statement, we would prefer to evict the ones that were fast to reconstruct; it should be possible for FarragoObjectCache to do this transparently, since the construction happens inside of a callback from the pin method; System.nanoTime provides access to high-resolution timers (although this could be very unreliable in a high-concurrency environment; thread CPU time would be better)</li>
+    <li>execution time: it's better to cache a statement which executes very quickly as opposed to one which runs for a long time (for the one which runs for a long time, the construction time is negligible); tracking this would require help from the caller</li>
+</ul>
+<p>It might be an interesting research project to come up with a good weighting of these factors.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache6"> <span class="mw-headline" id="Object_Staleness">Object Staleness</span></h2>
+<p>It is currently the responsibility of the caller to deal with stale objects; the cache itself has no way of testing an object. For example, FarragoDatabase.prepareStmtImpl decides whether a cached executable statement is stale by checking to make sure that all of the accessed catalog objects still exist. An example of a case where no staleness checking is being done (resulting in a bug) is <a rel="nofollow" class="external text" href="http://issues.eigenbase.org/browse/FRG-161">FRG-161</a>.<br />
+</p><p><br />
+It would be nice to follow Apache Commons Pool in making this an explicit part of the cache infrastructure.<br />
+</p>
+<hr />
+<h2 id="tocFarragoCodeCache7"> <span class="mw-headline" id="Object_Memory_Estimates">Object Memory Estimates</span></h2>
+<p>In general, it is difficult to come up with precise memory accounting for complex objects, so the best we can do is &quot;bogobytes&quot; (similar to the &quot;bogomips&quot; CPU ratings reported by the Linux kernel). In particular, the SQL/MED objects tie down other resources (such as network connections), not just memory.<br />
+<br />
+The approach we take is to estimate hard-to-measure memory usage in terms of easy-to-measure quantity. For example, a coarse estimate for an ExecStreamGraph assumes its memory usage is proportional to the length of the XMI string used to construct it. (A finer estimate would use a different factor per ExecStream class.) In order to use this approach, several things are required:<br />
+</p>
+<ol>
+    <li>A means of computing actual memory used after constructing a cached object.</li>
+    <li>A representative set of SQL statements. This is probably personality specific, meaning that eventually we may want to allow different personalities to supply different values for weighting factors.</li>
+    <li>An estimation model such as <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Linear_regression">linear regression</a>.</li>
+</ol>
+<p>The table below shows what we've come up with so far via experimentation with object types currently cached. Data used for determining weighting factors (including input SQL statements) is available in spreadsheet form (<a href="/wiki/upload/b/b5/CodeCacheMemoryEstimation.xls" class="internal" title="CodeCacheMemoryEstimation.xls">Media:CodeCacheMemoryEstimation.xls</a>). For more details, please see the relevant source code.<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td><strong>Object Type</strong></td>
+        <td><strong>Easy-to-measure Quantity</strong></td>
+        <td><strong>Hard-to-measure Quantity</strong></td>
+        <td><strong>Formula for Total Bogobytes (sums both easy and hard quantities)</strong></td>
+        <td><strong>Memory Computation Methodology</strong></td>
+    </tr>
+    <tr>
+        <td>Generated Java class</td>
+        <td>bytecode size (obtained from Janino)</td>
+        <td>JIT-compiled native code size</td>
+        <td>1.75*x, where x is bytecode size in bytes</td>
+        <td>Use JRockit tools to monitor JIT optimizer. (Could be very different from hotspot, but order of magnitude is probably similar.) For a conservative estimate, requires executing statement long enough to make sure full JIT optimization kicks in.</td>
+    </tr>
+    <tr>
+        <td>ExecStreamGraph</td>
+        <td>XMI string length</td>
+        <td>C++ heap usage</td>
+        <td>1.5*x, where x is the number of bytes (not characters) in the XMI string</td>
+        <td>Use the <strong>uordblks</strong> field returned by <a rel="nofollow" class="external text" href="http://www.gnu.org/software/libc/manual/html_node/Statistics-of-Malloc.html#Statistics-of-Malloc">mallinfo</a>; it covers both malloc and new, and includes chunk overhead (which it's better to account for anyway). Take the delta between entry to the visit for ProxyCmdCreateExecutionStreamGraph and exit from ProxyCmdPrepareExecutionStreamGraph. Note that memory acquired between ExecStreamGraph open/close does not need accounting here (since it gets released when the graph is returned to the cache).</td>
+    </tr>
+    <tr>
+        <td>Default value</td>
+        <td>SQL string length</td>
+        <td>Java heap usage for Rex tree</td>
+        <td>3*x, where sb is number of bytes in SQL string</td>
+        <td>SWAG</td>
+    </tr>
+    <tr>
+        <td>SQL/MED wrapper</td>
+        <td>none</td>
+        <td>Java heap usage, other wrapper-specific resources</td>
+        <td>1000 (hard-coded constant)</td>
+        <td>SWAG</td>
+    </tr>
+    <tr>
+        <td>SQL/MED server</td>
+        <td>none</td>
+        <td>Java heap usage, other server-specific resources</td>
+        <td>10000 (hard-coded constant)</td>
+        <td>SWAG</td>
+    </tr>
+</table>
+<p><br />
+Random jottings for ways to improve the estimates:<br />
+</p>
+<ul>
+    <li>For Java heap usage, do something similar to FarragoTestCase.tearDownImpl, but use a better JVM API such as the one exposed to memory profilers (Sun seems to introduce a new technology for this in each release; I can't remember which is the latest) or JMX. This may not be completely reliable due to the whims of the garbage collector; ideally we want to be able to find out exactly how many heap bytes are reachable only via a given root object.</li>
+    <li>One complication is that the XMI string memory reference is shared between cache entries for both executable statements and ExecStreamGraphs. Our formulas attempt to address this by assigning half of the size to each on the assumption that their cache lifetimes will typically be coupled, but this doesn't correctly account for the concurrency case where multiple copies of an ExecStreamGraph are created.<br />
+</li>
+</ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 90/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1524-0!*!*!!en!*!* and timestamp 20140414192233 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoCodeCache&amp;oldid=3931">http://luciddb.org/wiki/index.php?title=FarragoCodeCache&amp;oldid=3931</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoCodeCache" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoCodeCache&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoCodeCache&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoCodeCache&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoCodeCache" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoCodeCache" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoCodeCache" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoCodeCache&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoCodeCache&amp;oldid=3931" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 25 February 2008, at 07:43.</li>
+		<li id="viewcount">This page has been accessed 2,736 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.241 secs. --></body></html>

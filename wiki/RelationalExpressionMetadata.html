@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>RelationalExpressionMetadata - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "RelationalExpressionMetadata", "wgTitle": "RelationalExpressionMetadata", "wgCurRevisionId": 2158, "wgArticleId": 1515, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-RelationalExpressionMetadata action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">RelationalExpressionMetadata</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p><em>Update 29-Mar-2006</em>: The proposal on this page has been implemented (eigenchange 6044) as follows:<br />
+</p>
+<ul>
+    <li>new package org.eigenbase.rel.metadata containing facade, metadata provider chaining, reflective metadata infrastructure, metadata caching, and default metadata providers</li>
+    <li>unit test org.eigenbase.test.RelMetadataTest</li>
+    <li>Farrago plugin mechanisms for namespaces and session personalities so that they can supply custom metadata providers during query processing</li>
+    <li>Mock plugin net.sf.farrago.test.FarragoTestPersonalityFactory, which can be used to test the personality plugin mechanism</li>
+    <li>Changes to unitsql/ddl/explain.sql to alter session personality using FarragoTestPersonalityFactory and verify that costing results change via EXPLAIN PLAN INCLUDING ALL ATTRIBUTES</li>
+</ul>
+<p><br />
+During query processing, the following precedence (from highest to lowest) is used when searching the provider chain for metadata queries:<br />
+</p>
+<ol>
+    <li>planner</li>
+    <li>session personality plugin</li>
+    <li>SQL/MED namespace plugins (arbitrary order)</li>
+    <li>defaults</li>
+</ol>
+<p><br />
+I left out the concept of &quot;merging&quot; metadata because it wasn't obvious where to put it or how; if we need it later we can come back around on this one. Also, the actual planner interaction sequencing described at the end came out slightly differently.<br />
+</p>
+<hr />
+<p>Prior to this change, the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/api/org/eigenbase/rel/RelNode.html">RelNode</a> interface exposed only a very limited amount of metadata and cost information for use by the optimizer in making decisions about &quot;black-box&quot; expressions. The rest of this page describes the state of the system as it was before the enhancement.<br />
+</p>
+<hr />
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Existing_Metadata"><span class="tocnumber">1</span> <span class="toctext">Existing Metadata</span></a></li>
+<li class="toclevel-1"><a href="#New_Logical_Metadata"><span class="tocnumber">2</span> <span class="toctext">New Logical Metadata</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Column_Origins"><span class="tocnumber">2.1</span> <span class="toctext">Column Origins</span></a></li>
+<li class="toclevel-2"><a href="#Unique_Keys"><span class="tocnumber">2.2</span> <span class="toctext">Unique Keys</span></a></li>
+<li class="toclevel-2"><a href="#Functional_Dependencies"><span class="tocnumber">2.3</span> <span class="toctext">Functional Dependencies</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#New_Costing_Metadata"><span class="tocnumber">3</span> <span class="toctext">New Costing Metadata</span></a></li>
+<li class="toclevel-1"><a href="#Planner_Issues"><span class="tocnumber">4</span> <span class="toctext">Planner Issues</span></a></li>
+<li class="toclevel-1"><a href="#Implementation_Framework"><span class="tocnumber">5</span> <span class="toctext">Implementation Framework</span></a></li>
+</ul>
+</td></tr></table>
+<h2 id="tocRelationalExpressionMetadata0"> <span class="mw-headline" id="Existing_Metadata">Existing Metadata</span></h2>
+<p>The following methods return information which (in theory) should always be the same for a given database state regardless of the physical implementation of the relational expression. In practice, these may vary due to unknowns (e.g. no statistics available on a table).<br />
+</p>
+<ul>
+    <li>getRows: an estimate of the number of rows produced by the expression</li>
+    <li>getRowType: the type descriptor for the result (there are never any unknowns here, so the planner implementation can assert that this is preserved by all transformations)</li>
+    <li>isDistinct: whether the expression truly produces a relation instead of a multiset (there should be no unknowns here, but we don't currently assert)</li>
+</ul>
+<hr />
+<h2 id="tocRelationalExpressionMetadata1"> <span class="mw-headline" id="New_Logical_Metadata">New Logical Metadata</span></h2>
+<p>The additions in this section are logical properties, meaning (again in theory) it should be possible to infer them unambiguously from the underlying schema alone, similar to getRowType. However, in practice, information may be lost (e.g. when a materialized view is recognized, or when rel authors are lazy), so we may not want to be as strict about consistency as we are for getRowType. Methods are specified below as if they will be added to the RelNode interface, but later on in this page we consider an alternative which leaves the RelNode interface untouched.<br />
+<br />
+</p>
+<h3 id="tocRelationalExpressionMetadata2"> <span class="mw-headline" id="Column_Origins">Column Origins</span></h3>
+<p>Besides being useful to the optimizer for looking up catalog information such as index availability, column origin information is useful to consumers who need to trace column-level dataflow through a query. For example, Farrago's JDBC driver can use it to implement the ResultSetMetaData.getTableName(int column) method, which is currently unsupported. (But it might be better to let the validator derive this information.)<br />
+<br />
+</p>
+<pre class="text">/**
+ * For the given output column of this expression, determines all columns of underlying tables which contribute to
+ * result values. An ouptut column may have more than one origin due to expressions such as UnionRel and
+ * ProjectRel. The optimizer may use this information for catalog access (e.g. index availability).
+ *
+ * @param iOutputColumn 0-based ordinal for output column of interest
+ *
+ * @return set of origin columns, or null if this information cannot be determined
+ * (whereas empty set indicates definitely no origin columns at all)
+ */
+public Set&lt;RelColumnOrigin&gt; getColumnOrigins(int iOutputColumn);
+
+&#160;
+class RelColumnOrigin
+{
+    /**
+     * Underlying table.
+     */
+    RelOptTable originTable;
+&#160;
+    /**
+     * 0-based offset of origin column in originTable. Whether this ordinal is flattened or unflattened depends on whether
+     * UDT flattening has already been performed on the relational expression.
+     */
+    int iOriginColumn;
+&#160;
+    /**
+     * false if value taken directly from table; true otherwise.
+     */
+    boolean isDerived;
+}</pre>
+<p><br />
+For example, consider the following plan explanation:<br />
+<br />
+</p>
+<pre class="text">'ProjectRel(UNAME=[UPPER($1), DEPTNO=[$0]])'
+' TableAccessRel(table=[[LOCALDB, SALES, DEPTS]])'</pre>
+<p><br />
+Calling getColumnOrigins(0) on the top-level ProjectRel would return a single RelColumnOrigin with DEPTS for the originTable, iOriginColumn=1, and isDerived=true. Calling getColumnOrigins(1) would return iOriginColumn=0 and isDerived=false.<br />
+<br />
+</p>
+<h3 id="tocRelationalExpressionMetadata3"> <span class="mw-headline" id="Unique_Keys">Unique Keys</span></h3>
+<pre class="text">/**
+ * Determines the set of unique minimal keys for this expression. A key is represented as a BitSet, where
+ * each bit position represents a 0-based output column ordinal. (Note that RelNode.isDistinct should return true
+ * if and only if at least one key is known.)
+ *
+ * @return set of keys, or null if this information cannot be determined
+ * (whereas empty set indicates definitely no keys at all)
+ */
+public Set&lt;BitSet&gt; getUniqueKeys();</pre>
+<p><br />
+Example:<br />
+</p>
+<pre class="text">'ProjectRel(NAME=[$0], DEPTNO=[$1])'
+' AggregateRel(groupCount=[1], agg#0=[MAX(1)])'
+'  ProjectRel($f0=[$1], $f1=[$0])'
+'   TableAccessRel(table=[[LOCALDB, SALES, DEPTS]])'</pre>
+<p><br />
+In theory, calling getUniqueKeys on the AggregateRel would return two BitSets. One would have bit 0 set, and the other would have bit 1 set, because NAME (as a group key) is unique by itself after aggregation, and so is MAX(DEPTNO) since DEPTNO is the primary key of the DEPTS table. In practice, probably only the BitSet for NAME would be returned. (Note that SUM(DEPTNO) is not unique, even though it is syntactically similar to MAX(DEPTNO)).<br />
+<br />
+</p>
+<h3 id="tocRelationalExpressionMetadata4"> <span class="mw-headline" id="Functional_Dependencies">Functional Dependencies</span></h3>
+<p>Eventually. Make Chris Date happy, keep views updatable, and drop unnecessary joins during optimization. SQL:2003 spells out the rules for some of these in Part 2 Section 4.18, also specifying the unique keys as one aspect of the functional dependency.<br />
+</p>
+<hr />
+<h2 id="tocRelationalExpressionMetadata5"> <span class="mw-headline" id="New_Costing_Metadata">New Costing Metadata</span></h2>
+<p>Unlike logical metadata, costing information depends on all current database state, not just the schema, so it is in the same category as the existing RelNode.getRows() method. Different optimizers may have different ideas of what kinds of statistics are important and how they should be computed, so it is desirable for this part of the interface to be extensible.<br />
+</p><p><br />
+Here's a table of some of the costing queries under consideration. These are taken from the Broadbase optimizer being used as a basis for LucidDB; they are defined as generic, although not all optimizers would have a use for them.<br />
+<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td><strong>Name</strong></td>
+        <td><strong>Inputs</strong></td>
+        <td><strong>Result</strong></td>
+        <td><strong>Description</strong></td>
+    </tr>
+    <tr>
+        <td>getStatistics</td>
+        <td>none</td>
+        <td>RelStatSource</td>
+        <td>Characterizes the distribution of values produced by this relational expression; see &lt;a class="wiki_link" href="/TableStatistics"&gt;TableStatistics&lt;/a&gt; for more information.</td>
+    </tr>
+    <tr>
+        <td>getSelectivity</td>
+        <td>RexNode predicate</td>
+        <td>Double</td>
+        <td>Estimates the percentage of the output rows which satisfy the given predicate. Returns null to indicate that no reliable estimate can be produced; same is true for other Double-returning methods in this table.</td>
+    </tr>
+
+    <tr>
+        <td>getDistinctRowCount</td>
+        <td>BitSet groupKey, RexNode predicate</td>
+        <td>Double</td>
+        <td>Estimates the number of rows which would be produced by a GROUP BY on the set of columns indicated by groupKey, where the input to the GROUP BY has been pre-filtered by predicate. This quantity (leaving out predicate) is often referred to as <em>cardinality</em> (as in gender being a &quot;low-cardinality column&quot;).</td>
+    </tr>
+    <tr>
+        <td>getPopulationSize</td>
+        <td>BitSet groupKey</td>
+        <td>Double</td>
+        <td>Estimates the distinct row count in the original source for the given groupKey, ignoring any filtering being applied by the expression. Typically, &quot;original source&quot; means base table, but for derived columns, the estimate may come from a non-leaf rel such as a ProjectRel.</td>
+    </tr>
+    <tr>
+        <td>getPercentageOriginalRows</td>
+        <td>none</td>
+        <td>Double</td>
+        <td>Estimates the ratio of the number of rows this expression produces to the number of rows it would produce if all single-table filter conditions were removed. This definition needs to be tightened up; it's the most special-cased in Broadbase.</td>
+    </tr>
+
+</table>
+<p><br />
+</p>
+<h2 id="tocRelationalExpressionMetadata6"> <span class="mw-headline" id="Planner_Issues">Planner Issues</span></h2>
+<p>Adding extra metadata requires planner implementations to participate in metadata propagation:<br />
+</p>
+<ul>
+    <li>The planner must decide what to do about inconsistency. For example, after firing a rule which transforms a query expression into access to an equivalent materialized view, the new expression may return a non-null value for getStatistics whereas the old expression returned null. A planner like Volcano which maintains the old and new expressions in an equivalence class must then decide how to combine the two results so that when the metadata is requested from the RelNode representing the equivalence class, a definite answer can be given. In this example, it's easy: having statistics is always better than having no statistics. But what if the expressions disagree about rowcount estimation? Do we need to introduce a notion of &quot;confidence&quot;? That's very complicated, so by default we'll omit it, but we'll leave the door open for optimizers that want to define such notions.</li>
+    <li>Even a planner which only maintains a single choice for a particular expression (e.g. <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">FarragoHeuristicPlanner</a>) still has to deal with similar issues. For example, perhaps the original estimate was better before a transformation rule was applied, or a physical expression cannot easily implement the interface even though the original logical expression could. Should the planner attempt to combine before and after results across transformations to preserve information (and possibly make life easier for the authors of physical expressions)? If so, it should probably use the same merge rules as Volcano.</li>
+</ul>
+<h2 id="tocRelationalExpressionMetadata7"> <span class="mw-headline" id="Implementation_Framework">Implementation Framework</span></h2>
+<p>This section proposes a common framework for adding all of the metadata above (both logical and cost-related) in an extensible fashion. As a bonus, the framework makes it easy for planner implementations to cache metadata results as a means of speeding up optimization. At the framework's heart is a new very-much-weakly-typed interface:<br />
+<br />
+</p>
+<pre class="text">package org.eigenbase.rel.metadata;
+&#160;
+/**
+ * RelMetadataProvider defines an interface for obtaining and combining metadata
+ * about relational expressions.
+ */
+public interface RelMetadataProvider
+{
+    /**
+     * Retrieves metadata about a relational expression.
+     *
+     * @param rel relational expression of interest
+     *
+     * @param metadataQueryName name of metadata query to invoke
+     *
+     * @param args arguments to metadata query (expected number and type depend on query name;
+     * must have well-defined hashCode/equals for use by caching)
+     *
+     * @return metadata result (actual type depends on query name)
+     */
+    public Object getRelMetadata(RelNode rel,String metadataQueryName, Object [] args);
+&#160;
+    /**
+     * Combines two results from the same metadata query on different expressions.
+     *
+     * @param metadataQueryName name of query which produced md1 and md2
+     *
+     * @param md1 metadata result obtained via getRelMetadata
+     *
+     * @param md2 another metadata result compatible with md1
+     *
+     * @return result of combining md1 with md2
+     */
+    public Object mergeRelMetadata(String metadataQueryName, Object md1, Object md2);
+}</pre>
+<p><br />
+On top of this, we will layer strongly-typed facades for the standard metadata queries defined within Eigenbase. As an example, consider the getSelectivity method specified earlier. It takes a RexNode as input and returns a Double as output. We can add a corresponding strongly-typed method to a new utility class:<br />
+<br />
+</p>
+<pre class="text">package org.eigenbase.rel.metadata;
+&#160;
+public abstract class RelMetadataQuery
+{
+...
+    public static Double getSelectivity(RelNode rel,RexNode predicate)
+    {
+        return (Double) rel.getCluster().getMetadataProvider().getRelMetadata(rel, &quot;getSelectivity&quot;, predicate);
+    }
+}</pre>
+<p><br />
+Now, how does that getRelMetadata method get implemented? Readers familiar with Java reflection have probably already guessed from the definition of RelOptMetadataProvider's methods:<br />
+<br />
+</p>
+<pre class="text">package org.eigenbase.rel.metadata;
+public class ReflectiveRelMetadataProvider implements RelMetadataProvider
+{
+    protected Object result;
+&#160;
+    public Object getRelMetadata(RelNode rel,String metadataQueryName, Object [] args)
+    {
+        // reflection magic not shown here:  something like ReflectUtil.invokeVisitor,
+        // but need to deal with argument class mappings and return values;
+        // anyway, dispatch to a strongly typed method in subclass below
+    }
+}
+&#160;
+package my.custom.plugin;
+&#160;
+public class SomeCustomRelMetadataProvider extends ReflectiveRelMetadataProvider
+{
+    public Double getSelectivity(JoinRel rel, RexNode predicate)
+    {
+        // custom formula for join selectivity
+    }
+&#160;
+    public Double getSelectivity(AggregateRel rel, RexNode predicate)
+    {
+        // custom formula for aggregate selectivity
+    }
+&#160;
+    public Double getPopulationSize(JoinRel rel, BitSet groupKey)
+    {
+        // custom formula for join population size
+    }
+&#160;
+
+    public Double getPopulationSize(AggregateRel rel, BitSet groupKey)
+    {
+        // custom formula for aggregate population size
+    }
+&#160;
+    ... lots of other queries and rel types ...
+}</pre>
+<p><br />
+Finally, interaction with the planner implementation works as follows:<br />
+</p>
+<ul>
+    <li>RelOptPlanner will be changed to extend RelMetadataProvider.</li>
+    <li>When a reflective provider fails to find a matching method, it will call to the planner instead. This handles the case where a planner provides its own internal rel wrappers (e.g. VolcanoPlanner uses RelSubset to represent an equivalence class).</li>
+    <li>If the planner doesn't recognize the rel type as its own, it will return null.</li>
+    <li>Otherwise, the planner will forward the call on to rels underlying the wrapper rel. Before doing so, it may check its metadata cache and return immediately if it finds a match. If not, it may cache the result returned by the underlying rels (using mergeRelMetadata to handle the case of multiple underlying rels).</li>
+</ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 117/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1515-0!*!0!!en!*!* and timestamp 20140414194551 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=RelationalExpressionMetadata&amp;oldid=2158">http://luciddb.org/wiki/index.php?title=RelationalExpressionMetadata&amp;oldid=2158</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/RelationalExpressionMetadata" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:RelationalExpressionMetadata&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=RelationalExpressionMetadata&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=RelationalExpressionMetadata&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=RelationalExpressionMetadata" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/RelationalExpressionMetadata" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/RelationalExpressionMetadata" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=RelationalExpressionMetadata&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=RelationalExpressionMetadata&amp;oldid=2158" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 2 April 2007, at 08:54.</li>
+		<li id="viewcount">This page has been accessed 2,236 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.215 secs. --></body></html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoUdx - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoUdx", "wgTitle": "FarragoUdx", "wgCurRevisionId": 3298, "wgArticleId": 1517, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoUdx action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoUdx</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><p>For background on user-defined routines in general, see the <a rel="nofollow" class="external text" href="http://farrago.sourceforge.net/design/UserDefinedTypesAndRoutines.html">UDT/UDR overview</a>.
+</p>
+<hr />
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Relational_Inputs"><span class="tocnumber">2</span> <span class="toctext">Relational Inputs</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Threading_and_Cancellation"><span class="tocnumber">3</span> <span class="toctext">Threading and Cancellation</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Standards_Conformance"><span class="tocnumber">4</span> <span class="toctext">Standards Conformance</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview">Overview</span></h2>
+<p>A UDX is a user-defined transformation which takes normal UDF scalar parameters plus zero or more query expressions as cursor inputs, and produces a well-defined virtual table as output. Currently, we only support UDX's implemented as external methods written in Java. The easiest way to understand them is to see them in action. The example below illustrates a simple UDX with zero relational inputs.
+</p>
+<pre>
+create schema udx;
+set schema 'udx';
+set path 'udx';
+
+create function ramp(n int)
+returns table(i int)
+language java
+parameter style system defined java
+no sql
+external name 'class net.sf.farrago.test.FarragoTestUDR.ramp';
+
+select * from table(ramp(5));
++----+
+| I  |
++----+
+| 0  |
+| 1  |
+| 2  |
+| 3  |
+| 4  |
++----+
+</pre>
+<p>Note the usage of <b>PARAMETER STYLE SYSTEM DEFINED JAVA</b> instead of the usual <b>PARAMETER STYLE JAVA</b>. The reason for this difference is that Farrago uses a non-standard calling convention when invoking the Java UDX from SQL. The SQL:2003 standard calling convention is not supported in this area because it isvery inefficient and difficult to use.
+</p><p>The ramp behavior is implemented by an underlying Java class (normally this would be deployed and loaded as a jar instead of as a direct reference from <b>CREATE FUNCTION</b> to a method on the classpath):
+</p>
+<pre>
+package net.sf.farrago.test;
+
+import java.sql.*;
+
+public abstract class FarragoTestUDR
+{
+    public static void ramp(int n, PreparedStatement resultInserter)
+        throws SQLException
+    {
+        for (int i = 0; i &lt; n; ++i) {
+            resultInserter.setInt(1, i);
+            resultInserter.executeUpdate();
+        }
+    }
+}
+</pre>
+<p>The invoked method must take an extra parameter of type <b>java.sql.PreparedStatement</b>. This is used to write the results back to the invoking SQL query plan by setting parameter values corresponding by position to the declared output table structure, and then calling <b>executeUpdate</b> for each row to be written. It effectively implements <b>INSERT INTO RESULT(X,Y, ..., Z) VALUES(?,?, ...,&#160;?)</b> where <b>RESULT</b> represents the output set. In the <b>ramp</b> example, it would be <b>INSERT INTO RESULT(I) VALUES(?)</b>. Besides <b>executeUpdate</b>, the only methods currently supported are the <b>setXXX</b> parameter setter methods, <b>getParameterMetaData</b>, and <b>clearParameters</b> (which sets all parameters to null). Other methods will throw <b>UnsupportedOperationException</b>.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="Relational_Inputs">Relational Inputs</span></h2>
+<p>Now let's look at a UDX which takes cursor input:
+</p>
+<pre>
+create schema udx;
+set schema 'udx';
+set path 'udx';
+
+create function stringify(c cursor, delimiter varchar(128))
+returns table(v varchar(65535))
+language java
+parameter style system defined java
+no sql
+external name 'class net.sf.farrago.test.FarragoTestUDR.stringify';
+
+select upper(v)
+from table(
+    stringify(
+        cursor(select * from sales.depts),
+        ':'));
++---------------+
+| EXPR$0        |
++---------------+
+| 10:SALES      |
+| 20:MARKETING  |
+| 30:ACCOUNTS   |
++---------------+
+</pre>
+<p><b>stringify</b> takes rows with multiple columns as input and produces rows with a single column as output by concatenating the input columns, using a delimiter string specified as a normal (non-cursor) parameter. The <b>cursor</b> constructor is required to make it clear that the input should be provided to the UDX in ResultSet form.
+</p><p>Here's the code for <b>stringify</b>:
+</p>
+<pre>
+    public static void stringify(
+        ResultSet inputSet,
+        String delimiter,
+        PreparedStatement resultInserter)
+        throws SQLException
+    {
+        // Validate ParameterMetaData (require exactly one output)
+        assert(resultInserter.getParameterMetaData().getParameterCount() == 1);
+
+        // Use ResultSetMetaData to get input column count
+        int n = inputSet.getMetaData().getColumnCount();
+        StringBuilder sb = new StringBuilder();
+        while (inputSet.next()) {
+            sb.setLength(0);
+            for (int i = 1; i &lt;= n; ++i) {
+                sb.append(inputSet.getString(i));
+                if (i &lt; n) {
+                    sb.append(delimiter);
+                }
+            }
+            resultInserter.setString(1, sb.toString());
+            resultInserter.executeUpdate();
+        }
+    }
+</pre>
+<p>A UDX can take any number of relational inputs, and can process their rows in any order (fetching all of one first, and then moving on to the next, or interleaving fetches). Cursor input ResultSets are forward-only and read-only, and do not need to be closed by the UDX (that is done automatically when the top-level statement execution is closed). An ORDER BY can be used on a cursor constructor to control the order of rows returned by a ResultSet, e.g.
+</p>
+<pre>
+select upper(v)
+from table(
+    stringify(
+        cursor(select * from sales.depts order by deptno),
+        ':'));
+</pre>
+<p>UDX invocations can be nested just like any other query construct. There is a proposal for <a href="/wiki/FarragoUdxResultTypeDerivation" title="FarragoUdxResultTypeDerivation">FarragoUdxResultTypeDerivation</a>.  <a rel="nofollow" class="external text" href="http://issues.eigenbase.org/browse/FRG-289">FRG-289</a> tracks the need to allow the user to supply costing metadata to the optimizer as part of a UDX implementation.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="Threading_and_Cancellation">Threading and Cancellation</span></h2>
+<p>Each UDX method is invoked in its own thread. This is what allows it to a run to completion as a procedure rather than via repeated invocations of a state machine (the normal case for iterators in query execution). The thread communicates result rows to the invoking query via a synchronized queue.
+</p><p>In the following cases, the query may be canceled while the UDX thread is still producing rows:
+</p>
+<ul><li> asynchronous abort request from calling program
+</li><li> cursor closed explicitly by calling program
+</li><li> error encountered in some other iterator
+</li><li> higher-level iterator returns end-of-stream (e.g. a join may see end-of-stream on its left-hand-side, at which point it can return end-of-stream even if a UDX on the right-hand-side is still merrily producing rows)
+</li></ul>
+<p>In all such cases, the cursor cannot be fully closed until the UDX completes. This may take a long time if the UDX has a lot of rows to produce. Farrago uses a <i>passive abort</i> technique to terminate the UDX. Instead of attempting to kill the thread (which could have messy side-effects), Farrago throws an exception the next time the UDX calls back into <b>executeUpdate</b>. This means that it is very important for the UDX implementation to avoid suppressing exceptions from this call; instead, it must propagate them back up to its invoker, where the thread will terminate cleanly. Of course, the UDX should perform its own cleanup in a finally block.
+</p>
+<hr />
+<h2> <span class="mw-headline" id="Standards_Conformance">Standards Conformance</span></h2>
+<p>SQL:2003 refers to UDX's as <i>table functions</i> and does not support relational inputs. Table functions are treated as returning a <b>MULTISET</b> of <b>ROW</b> where the row structure corresponds to the output table. The syntax <b>TABLE(RAMP(5))</b> converts the <b>MULTISET</b> value into a relational expression usable in the <b>FROM</b> clause.
+</p><p>The standard <b>JAVA</b> calling convention for invocation of an array-returning function such as a table function is very different from Farrago's non-standard convention. In the standard, the query plan is supposed to call the external method once for each row to be produced, passing in state variables such as the row number to inform the external method of the position in the iteration. This makes writing such external methods very painful because
+</p>
+<ul><li> They must be written in state-machine style
+</li><li> No context is maintained along with each call, making it very difficult to write non-trivial functions
+</li></ul>
+<p>For these reasons, Farrago is not standards-conformant in this area.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 60/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1517-0!*!0!!en!*!* and timestamp 20140414194603 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoUdx&amp;oldid=3298">http://luciddb.org/wiki/index.php?title=FarragoUdx&amp;oldid=3298</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoUdx" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoUdx&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoUdx&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoUdx&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoUdx" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoUdx" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoUdx" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoUdx&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoUdx&amp;oldid=3298" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 22 September 2007, at 20:37.</li>
+		<li id="viewcount">This page has been accessed 4,499 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.212 secs. --></body></html>

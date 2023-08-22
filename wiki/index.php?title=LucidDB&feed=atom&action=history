@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="http://luciddb.org/wiki/skins/common/feed.css?303"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+		<id>http://luciddb.org/wiki/index.php?title=LucidDB&amp;feed=atom&amp;action=history</id>
+		<title>LucidDB - Revision history</title>
+		<link rel="self" type="application/atom+xml" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;feed=atom&amp;action=history"/>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;action=history"/>
+		<updated>2014-04-14T19:51:15Z</updated>
+		<subtitle>Revision history for this page on the wiki</subtitle>
+		<generator>MediaWiki 1.18.1</generator>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=5711&amp;oldid=prev</id>
+		<title>Jvs at 20:19, 3 February 2009</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=5711&amp;oldid=prev"/>
+				<updated>2009-02-03T20:19:37Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 20:19, 3 February 2009&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 10:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 10:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;When it appears in directories, it is all-lowercase:&amp;#160; luciddb-0.7.0/bin&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;When it appears in directories, it is all-lowercase:&amp;#160; luciddb-0.7.0/bin&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&amp;lt;sub&amp;gt;LucidDB and the LucidDB logo are trademarks of LucidEra, Inc.&amp;lt;/sub&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2661&amp;oldid=prev</id>
+		<title>Jvs at 03:24, 11 July 2007</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2661&amp;oldid=prev"/>
+				<updated>2007-07-11T03:24:50Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 03:24, 11 July 2007&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 4:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Naming convention:&amp;#160; when LucidDB is used as a standalone name, the &amp;quot;DB&amp;quot; part is all caps.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Naming convention:&amp;#160; when LucidDB is used as a standalone name, the &amp;quot;DB&amp;quot; part is all&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;-&lt;/ins&gt;caps.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;When it appears in code or as a prefix in wiki page names, it is written in CamelCase:&amp;#160; LucidDbDocs.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;When it appears in code or as a prefix in wiki page names, it is written in CamelCase:&amp;#160; LucidDbDocs.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins style=&quot;color: red; font-weight: bold; text-decoration: none;&quot;&gt;When it appears in directories, it is all-lowercase:&amp;#160; luciddb-0.7.0/bin&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;lt;/pre&amp;gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2660&amp;oldid=prev</id>
+		<title>Jvs at 03:23, 11 July 2007</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2660&amp;oldid=prev"/>
+				<updated>2007-07-11T03:23:47Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+			&lt;col class='diff-marker' /&gt;
+			&lt;col class='diff-content' /&gt;
+		&lt;tr valign='top'&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;← Older revision&lt;/td&gt;
+		&lt;td colspan='2' style=&quot;background-color: white; color:black;&quot;&gt;Revision as of 03:23, 11 July 2007&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 1:&lt;/td&gt;
+&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;Line 1:&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The home page for the LucidDB open-source project is http://www.luciddb.org.&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;The home page for the LucidDB open-source project is http://www.luciddb.org.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;&amp;#160;&lt;/td&gt;&lt;td style=&quot;background: #eee; color:black; font-size: smaller;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class='diff-marker'&gt;−&lt;/td&gt;&lt;td style=&quot;background: #ffa; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Documentation on LucidDB can be found in this wiki at [[LucidDbDocs]].&lt;/div&gt;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;Documentation on LucidDB can be found in this wiki at [[LucidDbDocs]]. &lt;ins class=&quot;diffchange diffchange-inline&quot;&gt; &lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Naming convention:&amp;#160; when LucidDB is used as a standalone name, the &amp;quot;DB&amp;quot; part is all caps.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&amp;#160;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;When it appears in code or as a prefix in wiki page names, it is written in CamelCase:&amp;#160; LucidDbDocs.&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;#160;&lt;/td&gt;&lt;td class='diff-marker'&gt;+&lt;/td&gt;&lt;td style=&quot;background: #cfc; color:black; font-size: smaller;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	<entry>
+		<id>http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2658&amp;oldid=prev</id>
+		<title>Jvs at 03:16, 11 July 2007</title>
+		<link rel="alternate" type="text/html" href="http://luciddb.org/wiki/index.php?title=LucidDB&amp;diff=2658&amp;oldid=prev"/>
+				<updated>2007-07-11T03:16:47Z</updated>
+		
+		<summary type="html">&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;New page&lt;/b&gt;&lt;/p&gt;&lt;div&gt;The home page for the LucidDB open-source project is http://www.luciddb.org.&lt;br /&gt;
+&lt;br /&gt;
+Documentation on LucidDB can be found in this wiki at [[LucidDbDocs]].&lt;/div&gt;</summary>
+		<author><name>Jvs</name></author>	</entry>
+
+	</feed>

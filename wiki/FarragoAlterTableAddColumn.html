@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>FarragoAlterTableAddColumn - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "FarragoAlterTableAddColumn", "wgTitle": "FarragoAlterTableAddColumn", "wgCurRevisionId": 5506, "wgArticleId": 1932, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-FarragoAlterTableAddColumn action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">FarragoAlterTableAddColumn</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Syntax"><span class="tocnumber">2</span> <span class="toctext">Syntax</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Semantics"><span class="tocnumber">3</span> <span class="toctext">Semantics</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Exceptions"><span class="tocnumber">4</span> <span class="toctext">Exceptions</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Concurrency"><span class="tocnumber">5</span> <span class="toctext">Concurrency</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Implementation"><span class="tocnumber">6</span> <span class="toctext">Implementation</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Parsing_and_Validation"><span class="tocnumber">6.1</span> <span class="toctext">Parsing and Validation</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Generic_Execution"><span class="tocnumber">6.2</span> <span class="toctext">Generic Execution</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#FTRS_Specifics"><span class="tocnumber">6.3</span> <span class="toctext">FTRS Specifics</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#LucidDB_Optimization"><span class="tocnumber">6.4</span> <span class="toctext">LucidDB Optimization</span></a>
+<ul>
+<li class="toclevel-3 tocsection-11"><a href="#Index_Validity"><span class="tocnumber">6.4.1</span> <span class="toctext">Index Validity</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-12"><a href="#Recovery"><span class="tocnumber">6.5</span> <span class="toctext">Recovery</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Validation_of_Concurrent_Queries"><span class="tocnumber">6.6</span> <span class="toctext">Validation of Concurrent Queries</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#JDBC"><span class="tocnumber">6.7</span> <span class="toctext">JDBC</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-15"><a href="#Tests"><span class="tocnumber">7</span> <span class="toctext">Tests</span></a>
+<ul>
+<li class="toclevel-2 tocsection-16"><a href="#Test_Instrumentation_and_Fault_Injection"><span class="tocnumber">7.1</span> <span class="toctext">Test Instrumentation and Fault Injection</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-17"><a href="#Loose_Ends"><span class="tocnumber">8</span> <span class="toctext">Loose Ends</span></a></li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview"> Overview </span></h1>
+<p>This page describes the design and implementation of Farrago support for ALTER TABLE ADD COLUMN, per SQL:2003 Part 2 Section 11.11.
+</p><p>Some other forms of ALTER TABLE (adding columns in the middle of a table, dropping columns, changing column types and default values, adding/removing constraints) remain unsupported and are not discussed here.  However, Farrago does support altering identity columns (as described in <a href="/wiki/AutoincrementColumns" title="AutoincrementColumns">AutoincrementColumns</a>) as well as the non-standard <a href="/wiki/FarragoTableRebuild" title="FarragoTableRebuild">ALTER TABLE REBUILD</a>.
+</p>
+<h1> <span class="mw-headline" id="Syntax"> Syntax </span></h1>
+<pre>
+ALTER TABLE table-name ADD [ COLUMN ] column-definition
+
+column-definition&#160;::= 
+unqualified-column-name
+data-type
+[ DEFAULT default-value-literal | identity-column-specification ]
+[ NOT NULL ]
+</pre>
+<ul><li> according to SQL:2003, it should be possible to specify an added column as UNIQUE or PRIMARY KEY; however, including such constraint definitions is not currently supported (only NOT NULL is allowed)
+</li><li> identity-column-specification is as in <a href="/wiki/AutoincrementColumns" title="AutoincrementColumns">AutoincrementColumns</a>
+</li></ul>
+<h1> <span class="mw-headline" id="Semantics"> Semantics </span></h1>
+<p>Values of the new column for existing rows are filled in with null, default value, or generated sequence value as specified.  For sequences, there is no guarantee as to which rows gets assigned which sequence value, since row order is not a logical property of a table.
+</p><p><i>(In the future, when we support columns defined as generated from expressions, the values will be filled in by computing the expression against existing rows.)</i>
+</p><p>Per SQL:2003, if table T has three columns before ALTER, an existing view which was defined as <b>select * from T</b> will still have only three columns after the ALTER, even though T now has four; the new column is not visible through V until V gets recreated.
+</p>
+<h1> <span class="mw-headline" id="Exceptions"> Exceptions </span></h1>
+<p>Any of the following problems will cause the statement to fail, in which case the table definition will be automatically restored to its pre-ALTER state.
+</p>
+<ul><li> any syntax or validation problem with the column's data type, default value, or identity column specification (same rules as for CREATE TABLE)
+</li><li> adding a column with a name already in use by an existing column in the table
+</li><li> adding an identity column to a table which already has one
+</li><li> attempting to alter something (e.g. a view or foreign table) other than a local base table
+</li><li> attempting to alter a temporary table (SQL:2003 says this should be allowed for global temporary tables, so that remains a TODO)
+</li><li> attempting to alter a table on a local data server which does not support it (e.g. the mock local data server)
+<ul><li> currently, FTRS (row-store) and LCS (column-store) are the two local data wrappers known to support ALTER TABLE ADD COLUMN
+</li></ul>
+</li><li> adding an identity column with NO CYCLE and a MINVALUE or MAXVALUE which prevents the sequence from being successfully generated for all existing rows in the table
+</li><li> adding a NOT NULL column with no default value to a non-empty table
+</li></ul>
+<h1> <span class="mw-headline" id="Concurrency"> Concurrency </span></h1>
+<p>ALTER TABLE ADD COLUMN is executed in a fashion similar to ANALYZE TABLE and ALTER TABLE REBUILD:  it starts out as a normal DDL statement, with an exclusive lock on the catalog for making modifications, but then commits the catalog transaction and drops the catalog lock, turning into a DML statement for the actual execution.  This avoids keeping the entire catalog locked for the (possibly long-running) execution, and also allows queries to proceed against the table being altered.
+</p><p><i>For FTRS, concurrent read/write execution has never been safely supported even for DML, so the effect of attempting to query or update a table being altered is currently undefined.  Most likely queries and DML statements will crash due to mismatches between the old and new table structure.</i>
+</p><p>For LucidDB, concurrent queries/DML/DDL are safely handled as follows:
+</p>
+<ul><li> queries which started before the ALTER TABLE statement will continue to run against the old snapshot of the table
+</li><li> queries which start after the ALTER TABLE statement (but before it completes) will fail if they attempt to reference the new column explicitly
+<ul><li> this also applies to CREATE VIEW statements
+</li></ul>
+</li><li> queries which start after the ALTER TABLE statement (but before it completes) will succeed if they do not attempt to reference the new column, and will see the old snapshot of the table; if they use select *, they will see only the old columns
+</li><li> queries which start after the ALTER TABLE statement completes will see the new snapshot of the table (unless they have a label set, in which case they will see the appropriate old snapshot, and will only be able to reference columns whose creation completed before the label was created)
+</li><li> DML statements which target a table being altered will fail immediately, since ALTER TABLE takes a write lock
+<ul><li> the same is true for concurrent attempts to execute TRUNCATE, ANALYZE, ALTER TABLE REBUILD, or another ALTER TABLE ADD COLUMN on the same table
+</li></ul>
+</li><li> attempts to DROP the table being altered will fail due to the "object in use" lock
+</li><li> CREATE INDEX on an existing column of the table will run concurrently with ALTER TABLE and should succeed
+</li><li> CREATE INDEX on the new column being added will fail (same as a query on the new column)
+</li><li> hot backups which started before the ALTER TABLE statement will save the pre-ALTER snapshot
+</li><li> hot backups which started after the ALTER TABLE statement but before it completes will <b>also</b> save the pre-ALTER snapshot
+<ul><li> note that this is consistent with the behavior of a hot backup which starts while a DML statement is running
+</li></ul>
+</li><li> hot backups which started after the ALTER TABLE statement completes will save the post-ALTER snapshot
+</li></ul>
+<p>See <a href="/wiki/LucidDbConcurrencyControl" title="LucidDbConcurrencyControl">LucidDbConcurrencyControl</a> for background.
+</p>
+<h1> <span class="mw-headline" id="Implementation"> Implementation </span></h1>
+<h2> <span class="mw-headline" id="Parsing_and_Validation"> Parsing and Validation </span></h2>
+<p>The parser for ALTER TABLE ADD COLUMN instantiates a new <b>DdlAlterTableStructureStmt</b>.  The constructor for this class saves a copy of the old table definition; later this allows the optimizer to access both the old and new definitions.  The old copy is not a persistent repository object; instead, it is a transient object cloned via JMI reflective calls.  (Only the essentials of the table's column definitions are cloned, omitting dangling bits such as indexes and sequences.)  
+</p><p>Once this is done, the new column definition is parsed (using the same production rule as for CREATE TABLE) and appended to the persistent definition of the table in the repository.
+</p><p>Previously, CREATE TABLE was catching the error of multiple identity columns on the same table inside of the parser itself; this validation rule has been moved to <b>DdlRelationalHandler.validateLocalTable</b> so that it can cover both CREATE and ALTER.  <b>validateLocalTable</b> also covers other generic aspects of validating the new column definition, such as making sure that the type definition is acceptable.
+</p><p>Additional statement-specific rules (e.g. can't alter foreign table) are implemented in <b>DdlAlterTableStructureStmt.preValidate</b>.
+</p><p>A new SPI method <b>supportsAlterTableAddColumn</b> on <b>FarragoMedLocalDataServer</b> allows a local data wrapper implementation to declare whether it supports ALTER TABLE ADD COLUMN.  (This is determined by the data wrapper rather than the session personality, which is why the generic <a href="/wiki/PersonalityFeatureFramework" title="PersonalityFeatureFramework">PersonalityFeatureFramework</a> isn't used in this case.)
+</p><p>Nothing special is required for guaranteeing the view semantics mentioned above, since views are already expanded to have only explicit column references at the time they are created.
+</p>
+<h2> <span class="mw-headline" id="Generic_Execution"> Generic Execution </span></h2>
+<p>The general approach taken for reshaping the stored table is to execute a reentrant DML statement as in <a href="/wiki/FarragoTableRebuild" title="FarragoTableRebuild">FarragoTableRebuild</a>.  By default, the statement to be used has the form
+</p>
+<pre>
+insert into T(oldColA, oldColB, ...) select oldColA, oldColB, ... from T
+</pre>
+<p>Notes:
+</p>
+<ul><li> As with <a href="/wiki/FarragoTableRebuild" title="FarragoTableRebuild">FarragoTableRebuild</a>, we want the reference to T in the INTO clause to reference a new empty table structure, whereas the reference to T in the FROM clause should reference the old table data
+</li><li> We do not mention the new column, so the reentrant SQL validator will fill out the insert statement with an expression to produce its default value (or sequence generator, or eventually an arbitrary expression)
+</li></ul>
+<p>Since all of this machinery was already available in <b>DdlRebuildTableStmt</b>, it has been factored out into a new abstract base <b>DdlReloadTableStmt</b> from which both <b>DdlRebuildTableStmt</b> and <b>DdlAlterTableStructureStmt</b> now derive.  The reentrant SQL to be executed is supplied by subclasses via protected abstract method <b>getReloadDml</b>.
+</p><p>Because of the way we are abusing reentrant SQL for the self-insert, it's necessary for some other parts of the system (described below) to detect the fact that the SQL is being executed on behalf of ALTER TABLE and adjust their behavior accordingly.  Since REBUILD was already injecting a custom implementation of <b>FarragoSessionIndexMap</b> into the reentrant session for root-swapping purposes, we add on a new method <b>getOldTableStructure</b> to this interface; when this returns non-null, it indicates that ALTER TABLE ADD COLUMN is executing, and provides the copy of the old table definition.
+</p><p>Note that as with ALTER TABLE REBUILD, it's necessary for ALTER TABLE ADD COLUMN to ignore the GENERATED ALWAYS clause on identity columns, since it needs to preserve the existing sequence values rather than attempting to regenerate them; this is handled by more special-casing in <b>ReposDefaultValueFactory</b>.
+</p><p>For some additional improvements in ALTER TABLE REBUILD (handling of rowcounts in the case of failure) made as part of this refactoring, see <a href="http://issues.eigenbase.org/browse/LDB-191" class="extiw" title="eigenjira:LDB-191">eigenjira:LDB-191</a>.
+</p>
+<h2> <span class="mw-headline" id="FTRS_Specifics"> FTRS Specifics </span></h2>
+<p>For row-store, the reentrant SQL above is already exactly what we need for physically reshaping stored tuples.  
+</p><p>The only data server component which needs to be tweaked is <b>FtrsIndexScanRel</b>; when it sees from the session index map that ALTER TABLE is executing, it constructs its <b>FtrsIndexGuide</b> based on the old tuple structure so that the Fennel plan will be set up to correctly read the existing table format.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Optimization"> LucidDB Optimization </span></h2>
+<p>For column store, we don't really want to reshape all of the existing rows; we just want to create a new clustered index for the new column, fill it with generated values, and we're done.
+</p><p>The easiest way to accomplish this with minimal changes is as follows:
+</p>
+<ul><li> use the same reentrant SQL statement as above, but...
+</li><li> disable the index root-swapping (since we're not going to touch the existing indexes), and...
+</li><li> add an optimizer rule which projects away the existing columns from the source of the <b>TableModificationRel</b>, and...
+</li><li> adjust the physical implementation of <b>LcsTableAppendRel</b> to pretend that there is only one clustered index (the new one) in the whole table, and no unclustered indexes
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:32, 10 December 2008 (EST):  it might be cleaner to introduce a new ALTER operation to TableModificationRel, since overloading INSERT could cause confusion
+</li></ul>
+</li></ul>
+<p>A new method <b>isAlterTableAddColumnIncremental</b> on <b>FarragoSessionPersonality</b> controls the disablement of index root-swapping.  This has to be on the personality (rather than the local data wrapper) since the relevant optimizer rules can only be supplied by the personality.  (--<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 01:32, 10 December 2008 (EST):  There is room for improvement here in the plugin interactions between personalities and local data wrappers, especially if we ever want to be able to provide for both row-store and column-store tables mixed into the same database.)
+</p><p>The new optimizer rule is <b>LcsTableAlterRule</b>.  It needs to fire early on in the planner program, but it depends on <b>CoerceInputsRule</b> firing first, which can disturb other plans, so this new pair of rules is only inserted into the program when ALTER TABLE is happening.  (We currently use a private planner per statement, so this is OK.)
+</p><p>The <b>LcsTableAppendRel</b> physical implementation adjustments are in <b>LcsAppendStreamDef</b> and <b>LcsIndexGuide</b>.
+</p><p>One complication is the presence of deleted rows.  We need to generate the data for the new column with corresponding entries matching deleted rows.  This is accomplished by adjusting the existing <b>LcsAddDeletionScanRule</b> to detect ALTER TABLE; in that case, it ignores the real deletion index and instead feeds an empty set of deleted RID's (implemented via <b>FennelValuesRel</b> with no tuples) into the row scan.  In the case where a new sequence is being added, it will have "holes" corresponding to the deleted rows; this is a slight nonconformance from SQL:2003, but is easily avoided by preceding the ALTER TABLE ADD COLUMN statement with an ALTER TABLE REBUILD (assuming no DML statements slip in between).
+</p><p>The plan comes out like this (in this example, a default value of NULL is being generated):
+</p>
+<pre>
+FennelToIteratorConverter: rowcount = 1.0, cumulative cost = 6.0
+  LcsTableAppendRel(table=[[LOCALDB, X, T]]): rowcount = 1.0, cumulative cost = 5.0
+    IteratorToFennelConverter: rowcount = 1.0, cumulative cost = 4.0
+      IterCalcRel(expr#0=[{inputs}], expr#1=[null], expr#2=[CAST($t1):INTEGER], $f0=[$t2]): rowcount = 1.0, cumulative cost = 3.0
+        FennelToIteratorConverter: rowcount = 1.0, cumulative cost = 2.0
+          LcsRowScanRel(table=[[LOCALDB, X, T]], projection=[[LCS_RID]], clustered indexes=[[SYS$CLUSTERED_INDEX$T$I]]): rowcount = 1.0, cumulative cost = 1.0
+            FennelValuesRel(tuples=[[]]): rowcount = 1.0, cumulative cost = 1.0
+</pre>
+<p>A final optimization is to elide the SplitterStreamDef in cases where only a single cluster is being appended; this is always true for ALTER TABLE ADD COLUMN, but is applicable to the column replacement optimization for MERGE, as well as INSERT into a single-column table.
+</p>
+<h3> <span class="mw-headline" id="Index_Validity"> Index Validity </span></h3>
+<p>A nuance to the implementation above is that when projecting away the existing columns, the optimizer still needs to keep one of them around as a dummy in order to loop over the existing rows.  (This shows up as the LCS_RID projection in the plan example above.)  The optimizer already had logic for this, since the same situation can occur in the case of <b>SELECT COUNT(*) FROM T</b>.  The optimizer picks the index with the smallest number of stored disk pages (according to the last ANALYZE) to minimize I/O.  Unfortunately, our new clustered index is going to show up as the best candidate since it only has one page (the root) so far!
+</p><p>To prevent the optimizer from choosing this index as the scan source, we need a way to mark it, so it's time for an addition to FEM:
+</p><p><a href="/wiki/File:FemLocalIndexValid.png" class="image"><img alt="FemLocalIndexValid.png" src="/wiki/upload/0/00/FemLocalIndexValid.png" width="192" height="121" /></a>
+</p><p>This new <b>isInvalid</b> flag is set by <b>DdlRelationalHandler</b> as part of defining the new empty index, and cleared by <b>DdlReloadTableStmt.completeAfterExecuteUnlocked</b> once the statement completes successfully.
+</p><p><b>LcsIndexOptimizer</b> checks this flag and skips invalid candidates when choosing which clustered index to read existing rows from.
+</p><p>It turns out that this flag also enables us to catch the concurrency case where a query tries to select from the new column while ALTER TABLE is still executing.  In <b>LcsIndexGuide</b>, we check for attempts to use invalid indexes for scans and cause them to fail.  However, as described later on, we also catch this earlier during query validation, so the optimizer-level detection is really just a sanity check.
+</p><p>As a slight tangent, it turns out that there was already a similar case for CREATE INDEX with unclustered indexes for both LCS and FTRS:  we do not want the optimizer to try to pick an index which is still being built.  Previously, we were using the inherited <b>CwmModelElement</b> attribute <b>visibility</b> for a similar purpose.  That was a hack (and confusing since visibility is used for other purposes by <b>DdlValidator</b>), so this has been cleaned up to use the new <b>FemLocalIndex.isInvalid</b> attribute instead.
+</p><p><i>Migration note</i>:  since the default value for this new attribute is <b>false</b>, migrated catalogs will have all indexes valid.  This is the reason for defining the sense of the attribute as <b>isInvalid</b> rather than <b>isValid</b>.
+</p>
+<h2> <span class="mw-headline" id="Recovery"> Recovery </span></h2>
+<p>What if something goes wrong during execution?  This could be an online failure (e.g. not enough cache buffer pages, or sequence MAXVALUE hit), or a system crash.
+</p><p>The new table definition has already been committed at the beginning before the catalog lock is released for long-duration execution.  So if anything goes wrong, it's necessary to undo the catalog change.
+</p><p>For online failures, this is handled by having <b>DdlMultipleTxnStmt.completeAfterExecuteUnlocked</b> get called in all cases (regardless of success or failure), and passing in the success/failure status as a new boolean parameter.  (Previously, this method was only getting called on success.)  In the failure case, method <b>DdlAlterTableStructureStmt.recover</b> takes care of undoing the catalog change.  Due to the  column visibility enforcement described in the next section, this should not cause trouble for any existing cached query plans; similarly, it is not possible that new views could have been created with references to the new column.
+</p><p>System crashes require some new infrastructure.  An addition to FEM (in the <b>MED</b> package) allows us to track in-progress recoverable actions:
+</p><p><a href="/wiki/File:FemRecovery.png" class="image"><img alt="FemRecovery.png" src="/wiki/upload/4/45/FemRecovery.png" width="604" height="232" /></a>
+</p><p>As explained by the comment box (but not shown in the diagram), an instance of new class <b>FemRecoveryReference</b> is tied to a <b>CwmModelElement</b> (such as a table being altered) via an instance of <b>CwmDependency</b> and marked with a <b>RecoveryType</b> indicating the in-progress action.  (Currently, the only <b>RecoveryType</b> is <b>ALTER_TABLE_ADD_COLUMN</b>, but new ones will be added in the future for other operations needing to use this infrastructure.)
+</p><p>The <b>FemRecoveryReference</b> instance is created during the initial catalog transaction which adds the new column definition, and serves as a form of journal entry.  If the ALTER TABLE statement completes online (whether success or failure), then this <b>FemRecoveryReference</b> instance is deleted by <b>completeAfterExecuteUnlocked</b>, since no further action is needed.
+</p><p>However, if the system crashes, then catalog recovery needs to occur the next time the database is started up.  <b>FarragoDatabase</b> already had logic in place for dealing with backup/restore crashes, so this has been extended to scan for <b>FemRecoveryReference</b> instances and take the appropriate action (then delete those instances to indicate that recovery has completed).  Recovery takes place in a single repository transaction in order to make it atomic.
+</p><p>Note that <b>FemRecoveryReference</b> instances are global (they are not part of any container); the corresponding class extent serves as the pending journal.  In theory, we could get by without them and scan the whole catalog for invalid objects, but that could be very slow for large catalogs.
+</p><p><i>Migration note:  this is a new class, so existing catalogs will have no pending recovery instances after migration.</i>
+</p>
+<h2> <span class="mw-headline" id="Validation_of_Concurrent_Queries"> Validation of Concurrent Queries </span></h2>
+<p>To implement the column visibility rules specified in the concurrency section above, <b>FarragoPreparingStmt.getTable</b> has the following logic for computing the columns of the <b>SqlValidatorTable</b> instance returned when looking up a local table:
+</p>
+<ul><li> If the table is undergoing ALTER TABLE ADD COLUMN (detected via the existence of a dependent <b>FemRecoveryReference</b>), then the last column is omitted.
+</li><li> If the session has a label set, then any columns with creation timestamps later than the label timestamp are omitted.
+</li></ul>
+<p>On the second point, there is a related subtlety in the implementation of ADD COLUMN.  Namely, the creation timestamp of the new column needs to be touched at the <i>end</i> of execution.  Otherwise, if a label is created during execution, it would look like the column was created earlier than the label, which is incorrect.
+</p>
+<h2> <span class="mw-headline" id="JDBC"> JDBC </span></h2>
+<p>JDBC metadata call <b>DatabaseMetaData.supportsAlterTableWithAddColumn</b> now returns true instead of false.
+</p>
+<h1> <span class="mw-headline" id="Tests"> Tests </span></h1>
+<ul><li> Tests for positive and negative non-concurrent scenarios for both FTRS and LCS are in <b>farrago/unitsql/ddl/alterTableStruct.sql</b>.
+</li><li> Tests for LucidDB concurrency scenarios are in <b>luciddb/test/sql/concurrency/alteradd-dml.mtsql</b>.
+<ul><li> --<a href="/wiki/index.php?title=User:Jvs&amp;action=edit&amp;redlink=1" class="new" title="User:Jvs (page does not exist)">Jvs</a> 22:41, 9 December 2008 (EST):  Many more concurrency scenarios are needed here for better coverage, e.g. BACKUP vs ALTER.
+</li></ul>
+</li><li> Tests for column visibility through labels are in <b>luciddb/test/sql/txn/labelAlterTable.sql</b>.
+</li></ul>
+<h2> <span class="mw-headline" id="Test_Instrumentation_and_Fault_Injection"> Test Instrumentation and Fault Injection </span></h2>
+<p>Some code paths are instrumented in order to enable the tests above.
+</p><p>For concurrency testing, we want to make it look like an ALTER TABLE is taking a long time, but setting up a big table is a pain.  So instead, we introduce a "trap" integer property <b>net.sf.farrago.ddl.DdlReloadTableStmt.sleep</b>.  When set, it indicates the number of milliseconds to sleep after dropping the catalog lock and before starting the reentrant execution.  As a safety measure, this property is automatically cleared after the trap is hit.
+</p><p>For recovery testing, we want to be able to inject a fault which will leave the catalog in a state equivalent to a system crash without actually killing the JVM.  So we introduce a boolean trap property <b>net.sf.farrago.ddl.DdlReloadTableStmt.crash</b> for this purpose; it triggers within <b>completeAfterExecuteUnlocked</b>, causing the <b>FemRecoveryReference</b> instance to be left present in the catalog.  Note that these properties must be set via <b>FarragoTestUDR.setFarragoProperty</b> (not <b>FarragoTestUDR.setSystemProperty</b>).
+</p><p><b>FarragoTestUDR.setFarragoProperty,simulateCatalogRecovery</b> can then be invoked from the test SQL script to call the <b>FarragoDatabase</b> catalog recovery method which would normally only be called when the system is started.
+</p>
+<h1> <span class="mw-headline" id="Loose_Ends"> Loose Ends </span></h1>
+<ul><li> According to <a href="/wiki/SampleDatasetSubstitution#Functional_specification" title="SampleDatasetSubstitution">SampleDatasetSubstitution#Functional specification</a>, the columns of a sample dataset are supposed to cover all of the columns in the base table.  Altering the table could violate this.  Since the rule hasn't been enforced yet for CREATE TABLE (<a href="http://issues.eigenbase.org/browse/FRG-152" class="extiw" title="eigenjira:FRG-152">eigenjira:FRG-152</a>), for now we can leave it unenforced for ALTER TABLE as well.
+</li><li> Garbage index roots can be left behind by failure (this was already an issue for ALTER TABLE REBUILD).  Either clean these up, or provide a segment garbage collection utility as part of a general purpose physical database dump/check/repair facility.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 93/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1932-0!*!0!!en!2!* and timestamp 20140414191839 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=FarragoAlterTableAddColumn&amp;oldid=5506">http://luciddb.org/wiki/index.php?title=FarragoAlterTableAddColumn&amp;oldid=5506</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/FarragoAlterTableAddColumn" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FarragoAlterTableAddColumn&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=FarragoAlterTableAddColumn&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=FarragoAlterTableAddColumn&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=FarragoAlterTableAddColumn" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/FarragoAlterTableAddColumn" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/FarragoAlterTableAddColumn" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=FarragoAlterTableAddColumn&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=FarragoAlterTableAddColumn&amp;oldid=5506" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 12 December 2008, at 05:41.</li>
+		<li id="viewcount">This page has been accessed 7,422 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.299 secs. --></body></html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>HowToWriteNewOptimizerRules - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "HowToWriteNewOptimizerRules", "wgTitle": "HowToWriteNewOptimizerRules", "wgCurRevisionId": 4848, "wgArticleId": 1489, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-HowToWriteNewOptimizerRules action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">HowToWriteNewOptimizerRules</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#How_To_Write_New_Optimizer_Rules"><span class="tocnumber">1</span> <span class="toctext">How To Write New Optimizer Rules</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Optimizer_Overview"><span class="tocnumber">1.1</span> <span class="toctext">Optimizer Overview</span></a></li>
+<li class="toclevel-2"><a href="#Traits"><span class="tocnumber">1.2</span> <span class="toctext">Traits</span></a></li>
+<li class="toclevel-2"><a href="#Converter_Rules"><span class="tocnumber">1.3</span> <span class="toctext">Converter Rules</span></a></li>
+<li class="toclevel-2"><a href="#Recipe_For_Creating_New_Optimizer_Rules"><span class="tocnumber">1.4</span> <span class="toctext">Recipe For Creating New Optimizer Rules</span></a>
+<ul>
+<li class="toclevel-3"><a href="#ConverterRule_Implementation"><span class="tocnumber">1.4.1</span> <span class="toctext">ConverterRule Implementation</span></a></li>
+<li class="toclevel-3"><a href="#RelOptRule_Implementation"><span class="tocnumber">1.4.2</span> <span class="toctext">RelOptRule Implementation</span></a></li>
+<li class="toclevel-3"><a href="#Sample_RelOptRuleOperands"><span class="tocnumber">1.4.3</span> <span class="toctext">Sample RelOptRuleOperands</span></a></li>
+<li class="toclevel-3"><a href="#Creating_New_Rels"><span class="tocnumber">1.4.4</span> <span class="toctext">Creating New Rels</span></a></li>
+<li class="toclevel-3"><a href="#MergeTraitsAndConvert"><span class="tocnumber">1.4.5</span> <span class="toctext">MergeTraitsAndConvert</span></a></li>
+<li class="toclevel-3"><a href="#Rule_Registration"><span class="tocnumber">1.4.6</span> <span class="toctext">Rule Registration</span></a></li>
+<li class="toclevel-3"><a href="#Package_structure"><span class="tocnumber">1.4.7</span> <span class="toctext">Package structure</span></a></li>
+<li class="toclevel-3"><a href="#Gotchas"><span class="tocnumber">1.4.8</span> <span class="toctext">Gotchas</span></a></li>
+<li class="toclevel-3"><a href="#TBD"><span class="tocnumber">1.4.9</span> <span class="toctext">TBD</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1 id="tocHowToWriteNewOptimizerRules0"> <span class="mw-headline" id="How_To_Write_New_Optimizer_Rules">How To Write New Optimizer Rules</span></h1>
+<p><br />
+</p>
+<h2 id="tocHowToWriteNewOptimizerRules1"> <span class="mw-headline" id="Optimizer_Overview">Optimizer Overview</span></h2>
+<p>For background on planners, see <a href="/wiki/HowToWriteAnOptimizer" title="HowToWriteAnOptimizer">HowToWriteAnOptimizer</a>.  In this page, we'll assume the Volcano planner, since it is generally the most challenging to write rules for; if a rule works with Volcano, it will usually work with <a href="/wiki/FarragoHeuristicPlanner" title="FarragoHeuristicPlanner">HEP</a> too.
+</p><p>The Volcano Planner is a cost-based query planner which supports an extensible ruleset. It starts with a plan, which is a tree of relational expressions (e.g. table scan -&gt; filter -&gt; project). In most instances, the plan is a logical construction without a concrete implementation. The optimizer applies transformation rules, triggered by the types of relational expressions in the plan, in an attempt to find the lowest &quot;cost,&quot; implementable plan that physically represents the input plan.<br />
+</p><p><br />
+Cost is represented as a combination of computational complexity, I/O requirements, and row count. See <tt>org.eigenbase.relopt.RelOptCost</tt>.<br />
+<br />
+Multiple rules may match the same relational expressions and provide several alternative transformations. The optimizer explores these paths in an effort to find less expensive implementations. Transformed relational expressions are maintained in parallel with the relational expressions that spawned them. The optimizer sorts the set of rules that matches the current state of planning and fires them in an order that seems likely to produce the greatest immediate benefit. For example, rules that match a non-implementable relational expression that has never been transformed will fire before rules that match a relational expression that already has a valid transformation to an implementable relational expression.<br />
+<br />
+A planner rule transforms a relational expression and (optionally) its children into another set of relational expressions. The resulting relational expression usually differs from the original in implementation or in cost. Often, logical relational expressions are simply replaced with implementable relational expressions. In some cases there are several ways to implement a logical relational expression and multiple rules will exist to perform the various transformations. For example, the logical <tt>org.eigenbase.rel.CalcRel</tt> can be implemented as a Java-based <tt>org.eigenbase.rel.oj.IterCalcRel</tt> or a <tt>com.disruptivetech.farrago.rel.FennelCalcRel</tt> (assuming the appropriate rules are enabled).<br />
+</p><p><br />
+Relational expressions are represented in the optimizer as instances of <tt>org.eigenbase.rel.RelNode</tt>.<br />
+<br />
+</p>
+<h2 id="tocHowToWriteNewOptimizerRules2"> <span class="mw-headline" id="Traits">Traits</span></h2>
+<p>Relational expressions have a set of traits (see <tt>org.eigenbase.relopt.RelTraitSet</tt>) composed of one or more traits (see <tt>org.eigenbase.relopt.RelTrait</tt>) which fall into different categories (see <tt>org.eigenbases.relopt.RelTraitDef</tt>). In Farrago, the only standard category of trait is &quot;calling convention.&quot; Calling convention specifies whether the relational expression is implemented by iterable Java XOs (iterator calling convention) or Fennel XOs (fennel ExecStream calling convention). It may also specify that a relational expression cannot be implemented at all (the &quot;none&quot; calling convention). Farrago extensions may define additional categories of traits, such as sort order or physical location. When a relational expression and one of its children have different traits, the optimizer can be instructed to insert a conversion between the two relational expressions. Typically the optimizer avoids conversions where possible, since they add cost. When relational expressions are transformed, the optimizer automatically propagates traits other than calling convention unless the rule specifically sets them. So, unless you are extending Farrago to use additional traits you need not concern yourself with anything but calling convention.<br />
+</p><p><br />
+(Note from JVS: sort order may eventually become a first-class Farrago trait.)<br />
+<br />
+</p>
+<h2 id="tocHowToWriteNewOptimizerRules3"> <span class="mw-headline" id="Converter_Rules">Converter Rules</span></h2>
+<p>Rules fall into two basic types: those that transform a RelNode into another RelNode with different traits, but identical semantics, and those that change the semantics of a RelNode.<br />
+<br />
+The former is referred to as a converter. An example of a conversion rule is <tt>org.eigenbase.oj.rel.IterCalcRule</tt>. It converts a CalcRel with the &quot;none&quot; calling convention into an IterCalcRel with the iterator calling convention.<br />
+<br />
+</p><p>An example of the other type of rule is the <tt>org.eigenbase.rel.MergeFilterOntoCalcRule</tt> which transforms an <tt>org.eigenbase.rel.FilterRel</tt> (which often represents a SQL where clause) with a CalcRel child into a single CalcRel. In this case the semantics of the RelNode are changed: the new CalcRel performs the old CalcRel's functions plus those of the FilterRel.<br />
+<br />
+</p>
+<h2 id="tocHowToWriteNewOptimizerRules4"> <span class="mw-headline" id="Recipe_For_Creating_New_Optimizer_Rules">Recipe For Creating New Optimizer Rules</span></h2>
+<p>First, determine whether your rule is a converter or not. If so, extend <tt>org.eigenbase.rel.convert.ConverterRule</tt>. Otherwise extend <tt>org.eigenbase.relopt.RelOptRule</tt>.<br />
+</p><p><br />
+In any event, your rule must not maintain state between invocations. It must also be re-entrant.<br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules5"> <span class="mw-headline" id="ConverterRule_Implementation">ConverterRule Implementation</span></h3>
+<ol>
+    <li>Create a private constructor that calls ConverterRule's constructor, passing the type of RelNode that your rule operates on (e.g., CalcRel.class) , the trait (or trait set) that your rule converts, and the trait (or trait set) or your rule's output.</li>
+    <li>Override <tt>isGuaranteed()</tt>, if appropriate.</li>
+    <li>Implement <tt>convert(RelNode)</tt> to generate a new RelNode with the appropriate trait(s).</li>
+    <li>If the RelNode you're converting has children, use <tt>RelOptRule.mergeTraitsAndConvert(RelTraitSet, RelTrait, RelNode)</tt> to convert their trait(s) to match your new RelNode. See below.</li>
+    <li>Register your rule. See below.</li>
+</ol>
+<p><br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules6"> <span class="mw-headline" id="RelOptRule_Implementation">RelOptRule Implementation</span></h3>
+<ol>
+    <li>Determine the operands to your rule. This may be as simple as any RelNode or as complicated as RelNode of type Foo with children of type Bar and Qux. The optimizer will use these operands to match your rule against subgraphs of tentative plans. This means your operand pattern should be as narrow as possible to minimize rule invocations (and the sizes of the rule queues maintained internally by the optimizer), but wide enough to match all cases you're interested in.  Note that if you do not reference a particular operand of interest here, you won't be able to access its class in your rule's code, since most planners will give you a proxy reference instead for all expressions other than operands.</li>
+    <li>Create a private constructor that creates a tree of <tt>org.eigenbase.relopt.RelOptRuleOperand</tt> objects and passes them to RelOptRule's constructor. See below.</li>
+    <li>Implement <tt>RelOptRule.onMatch(RelOptRuleCall call)</tt>.</li>
+    <li>The RelOptRuleCall will contain the RelNode(s) that matched your RelOptRuleOperand.</li>
+    <li>If your rule operates on a subset of RelNodes that match the RelOptRuleOperand (e.g., it operates only on CalcRels that contain certain expressions), examine the RelNodes in the RelOptRuleCall to determine whether they pass those criteria. If it turns out your rule is inapplicable, simply return. The optimizer uses the coarse-grained RelOptRuleOperand pattern-matching to narrow down the set of applicable rules, so where possible, it's best to provide the most specific RelOptRuleOperand possible in favor of matching all RelNodes and only aborting in onMatch.</li>
+    <li>Create new RelNode implementations that replace the top-most RelNode (e.g., call.rels[0]).</li>
+    <li>Use <tt>RelOptRule.mergeTraitsAndConvert(RelTraitSet, RelTrait, RelNode)</tt> to convert children of the RelNodes you're converting to the correct traits. See below.</li>
+    <li>Invoke call.transformTo(newRel) to register the result of the transformation.</li>
+    <li>Make sure your rule implementation is reentrant; this means it should not have any state other than immutable variables initialized in the rule's constructor.  Any other state should be local to the onMatch implementation.  If you find yourself passing around big argument lists, a good way to fix it is to make a helper class for the state and have the onMatch implementation manipulate that.
+    <li>Once your rule class is implemented, register it with the optimizer so that it will get used during query planning. See below.</li>
+</ol>
+<p><br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules7"> <span class="mw-headline" id="Sample_RelOptRuleOperands">Sample RelOptRuleOperands</span></h3>
+<p>Match a CalcRel (or any subclass) with any traits and zero or more children:<br />
+</p>
+<pre class="java">
+new RelOptRuleOperand(CalcRel.class, null)
+</pre>
+<p><br />
+</p><p>Match a CalcRel (or any subclass) with any traits and exactly one child of any kind:<br />
+<br />
+</p>
+<pre class="java">
+new RelOptRuleOperand(
+    CalcRel.class,
+    new RelOptRuleOperand[] {
+        new RelOptRuleOperand(RelNode.class, null)
+    })
+</pre>
+<p><br />
+Note that if you don't actually care about the child, then this is less efficient than the previous one, because this rule will fire once for every possible child of the CalcRel, while the previous one will only fire once for the CalcRel itself.<br />
+<br />
+Match a FilterRel (or any subclass) with any traits and a single ProjectRel child:<br />
+</p>
+<pre class="java">
+new RelOptRuleOperand(
+    FilterRel.class,
+    new RelOptRuleOperand[] {
+        new RelOptRuleOperand(ProjectRel.class, null)
+    })
+</pre>
+<p><br />
+Match a JoinRel (or any subclass) with any traits and two children; one of any type and other of type FtrsIndexScanRel:<br />
+</p>
+<pre class="java">
+new RelOptRuleOperand(
+    JoinRel.class,
+    new RelOptRuleOperand[] {
+        new RelOptRuleOperand(RelNode.class, null),
+        new RelOptRuleOperand(FtrsIndexScanRel, null),
+    })
+</pre>
+<p><br />
+RelOptRuleOperands can be nested as many levels deep as is necessary for your rule.<br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules8"> <span class="mw-headline" id="Creating_New_Rels">Creating New Rels</span></h3>
+<p>When faced with a choice between creating a logical rel or an equivalent physical rel, it is generally better to create the logical rel unless the purpose of your rule is actually to generate the physical rel. This gives the optimizer a chance to try to find the best implementation by itself. For example, suppose your rule transforms a filter on top of a table scan into an index lookup. Not all of the filter may be indexable, so you have to put the leftovers back on top of the index lookup in the result. You might think you should create a FennelCalcRel to do the filtering, but it's better to put a new FilterRel back; that way, the optimizer can decide which calculator to use to implement it, or whether it should be combined with other filters, etc.<br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules9"> <span class="mw-headline" id="MergeTraitsAndConvert">MergeTraitsAndConvert</span></h3>
+<p>The utility method <tt>RelOptUtil.mergeTraitsAndConvert(RelTraitSet, RelTrait, RelNode)</tt> merges the trait sets of an existing RelNode with the trait you wish to change and converts the given RelNode to use the merged traits.<br />
+<br />
+</p><p>For example, if you are writing a rule that takes a RelNode with &quot;none&quot; calling convention and provides an implementation with iterator calling convention, you might write:<br />
+</p>
+<pre class="java">
+RelNode originalRelNode = ...; /* passed in by planner */
+RelNode originalChildRelNode = originalRelNode.getInput(0);
+RelNode convertedChild =
+    RelOptUtil.mergeTraitsAndConvert(
+        originalRelNode.getTraits(), CallingConvention.ITERATOR, originalChildRelNode);
+RelNode newRelNode = new SomeRelNode(..., convertedChild);
+</pre>
+<p><br />
+When this method is called on a child RelNode that already has the correct trait(s), it simply returns the child RelNode. Therefore, there's no need to check the child's traits before invoking this method.<br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules10"> <span class="mw-headline" id="Rule_Registration">Rule Registration</span></h3>
+<p>Rule registration is handled differently depending on the author of the rule.<br />
+<br />
+In most cases, the rule has a private constructor. It either has a static instance field or a static register method that takes the RelOptPlanner that should be configured to use the rule.<br />
+<br />
+In the former method, the RelOptPlanner implementation is extended to configure itself with the rule. See net.sf.farrago.defimpl.FarragoDefaultPlanner.init().<br />
+<br />
+In the latter method, the RelOptPlanner implementation is extended to call the static register method.<br />
+</p><p><br />
+There are other possibilities, such as non-singleton rules whose constructors take parameters.<br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules11"> <span class="mw-headline" id="Package_structure">Package structure</span></h3>
+<p>What package should I create my rule in?<br />
+<br />
+Here are some principles:<br />
+</p>
+<ol>
+    <li>Related rels and rules should live in the same package, wherever possible.</li>
+    <li>There's a core set of rels which are the output of SqlToRelConverter. I'm thinking of CalcRel, AggregateRel, JoinRel. These currently live in the org.eigenbase.rel package; maybe these could be moved into org.eigenbase.rel.core.</li>
+    <li>If a rule exists to introduce a particular kind of new relational expression, it should live in the same package as its rel, and have a similar name. (Often it's natural to put groups of rels into the same package, e.g. net.sf.farrago.namespace.ftrs; more packages are listed below.)</li>
+    <li>The org.eigenbase.rel.rules package should be for rules such as UnionEliminatorRule which don't introduce anything new, just improve performance. They should all operate on rels of 'none' calling convention.</li>
+    <li>There may be other sets of rules -- say for common subexpression elimination, star-join optimization, join-ordering -- which do not introduce new rels, but which still justify having their own package, e.g. org.eigenbase.rel.rules.joinorder. Again, these rules should work on the 'none' calling convention.</li>
+    <li>Other calling conventions will naturally have their own packages (e.g. org.eigenbase.oj.rel contains things of 'iter' convention).</li>
+</ol>
+<p><br />
+Some packages which contain rels and rules:<br />
+</p><p><br />
+</p>
+<table border="1">
+    <tr>
+        <td>Package</td>
+        <td>Description</td>
+        <td>Notes</td>
+    </tr>
+    <tr>
+        <td>org.eigenbase.rel</td>
+        <td>Core relational expressions and rules necessary to implement any query</td>
+        <td>Should be renamed to org.eigenbase.rel.core, and rules should be moved to org.eigenbase.rel.rules</td>
+    </tr>
+    <tr>
+        <td>org.eigenbase.rel.rules</td>
+        <td>Logical expressions and rules which are non-core but generally useful (e.g. semijoins, multijoins, filter pushing)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>org.eigenbase.rel.convert</td>
+        <td>Rules for converting among calling conventions</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>org.eigenbase.oj.rel</td>
+        <td>Java iterator convention</td>
+        <td></td>
+    </tr>
+    <tr>
+
+        <td>net.sf.farrago.query</td>
+        <td>Miscellaneous physical expressions and rules.</td>
+        <td>Fennel-related portions should be moved to a new package net.sf.farrago.fennel.rel</td>
+    </tr>
+    <tr>
+        <td>net.sf.farrago.namespace.ftrs</td>
+        <td>Physical expressions and rules for implementing the FTRS row-store local data wrapper</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>net.sf.farrago.namespace.impl</td>
+        <td>todo</td>
+        <td></td>
+    </tr>
+    <tr>
+
+        <td>net.sf.farrago.namespace.mdr</td>
+        <td>Physical expressions and rules for implementing the MDR foreign data wrapper.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>net.sf.farrago.namespace.mock</td>
+        <td>Physical expressions and rules for implementing the mock data wrapper (both local and foreign).</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>com.disruptivetech.farrago.rel</td>
+        <td>todo</td>
+        <td></td>
+    </tr>
+    <tr>
+
+        <td>com.lucidera.lcs</td>
+        <td>Physical expressions and rules for implementing the LucidDB column-store local data wrapper.</td>
+        <td></td>
+    </tr>
+</table>
+<p><br />
+<br />
+</p>
+<h3 id="tocHowToWriteNewOptimizerRules12"> <span class="mw-headline" id="Gotchas">Gotchas</span></h3>
+<ul>
+    <li><a rel="nofollow" class="external text" href="http://sourceforge.net/mailarchive/message.php?msg_name=20060224052602.9253613B099%40c9mailgw23.amadis.com">Recursive rule evaluation</a></li>
+</ul>
+<h3 id="tocHowToWriteNewOptimizerRules13"> <span class="mw-headline" id="TBD">TBD</span></h3>
+<ul>
+    <li>Tracing the planner; using plannerviz. For now, see <a href="/wiki/FarragoTracing" title="FarragoTracing">FarragoTracing</a>.</li>
+    <li>Steps to take when you get the dreaded &quot;node could not be implemented&quot; assertion, which is the optimizer's way of telling you that based on the ruleset you provided, it couldn't produce any physical implementation at all, not even a bad one.</li>
+    <li>Steps to take when you think your rule should be getting fired, but isn't.</li>
+    <li>Steps to take when you get mysterious assertions about your rule not preserving RelDataType.</li>
+</ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 127/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1489-0!*!0!!en!*!* and timestamp 20140414194542 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;oldid=4848">http://luciddb.org/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;oldid=4848</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/HowToWriteNewOptimizerRules" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:HowToWriteNewOptimizerRules&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=HowToWriteNewOptimizerRules" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/HowToWriteNewOptimizerRules" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/HowToWriteNewOptimizerRules" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=HowToWriteNewOptimizerRules&amp;oldid=4848" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 25 September 2008, at 06:26.</li>
+		<li id="viewcount">This page has been accessed 3,109 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.222 secs. --></body></html>

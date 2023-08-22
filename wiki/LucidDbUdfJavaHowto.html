@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbUdfJavaHowto - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/wiki/skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/wiki/skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/wiki/skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbUdfJavaHowto", "wgTitle": "LucidDbUdfJavaHowto", "wgCurRevisionId": 6969, "wgArticleId": 1375, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbUdfJavaHowto action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbUdfJavaHowto</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#So.2C_you_want_to_write_a_UDF_in_Java.3F"><span class="tocnumber">1</span> <span class="toctext">So, you want to write a UDF in Java?</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Set_up_Java_development_environment"><span class="tocnumber">2</span> <span class="toctext">Set up Java development environment</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Create_a_.java_file_defining_your_class"><span class="tocnumber">3</span> <span class="toctext">Create a .java file defining your class</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Compile_to_a_.class_file"><span class="tocnumber">4</span> <span class="toctext">Compile to a .class file</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Package_the_class_into_a_.jar_file"><span class="tocnumber">5</span> <span class="toctext">Package the class into a .jar file</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Install_the_.jar_in_LucidDB"><span class="tocnumber">6</span> <span class="toctext">Install the .jar in LucidDB</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Create_test_data"><span class="tocnumber">7</span> <span class="toctext">Create test data</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Execute_UDF"><span class="tocnumber">8</span> <span class="toctext">Execute UDF</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Deal_with_existing_jars"><span class="tocnumber">9</span> <span class="toctext">Deal with existing jars</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Advanced_Packaging"><span class="tocnumber">10</span> <span class="toctext">Advanced Packaging</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Move_on_to_Table_Functions"><span class="tocnumber">11</span> <span class="toctext">Move on to Table Functions</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="So.2C_you_want_to_write_a_UDF_in_Java.3F"> So, you want to write a UDF in Java? </span></h2>
+<p>As explained in <a href="/wiki/LucidDbUdfHowto" title="LucidDbUdfHowto">LucidDbUdfHowto</a>, simple user-defined functions can be written directly as SQL expressions, but in general you'll need the power of a procedural programming language and third-party libraries to express custom logic.  LucidDB supports Java as its extension language for writing external routines; if you're clever, you can probably also figure out how to use other languages such as Python via extension projects such as <a rel="nofollow" class="external text" href="http://www.jython.org">Jython</a>. (<b>Update</b>: As of 0.9.4, there is a set of generic User-Defined Routines for running scripts in Jython, JavaScript, etc. in our <a href="/wiki/AppLib#Scripting_Routines" title="AppLib">AppLib#Scripting_Routines</a>. The example given on this page can also be found under <a href="/wiki/AppLib_EXECUTE_FUNCTION#Passing_Parameters_Example" title="AppLib EXECUTE FUNCTION">AppLib_EXECUTE_FUNCTION#Passing_Parameters_Example</a> implemented in JavaScript.)  We'll stick to Java here, and show how to use Java's regular expression library to enhance SQL's filtering capabilities.
+</p>
+<h2> <span class="mw-headline" id="Set_up_Java_development_environment"> Set up Java development environment </span></h2>
+<p>There's a good chance you'll want to use an IDE such as Eclipse to write your routine implementations; this will make the process much easier.  But to keep things IDE-neutral, we'll explain things in terms of command line execution of utilities from Sun's <a rel="nofollow" class="external text" href="http://java.sun.com/javase/index.jsp">JDK</a>.  You shouldn't need any other software, and you don't need any special libraries from LucidDB; this is a nice feature of the way SQL:2003 defines calls to Java methods.  Any version of the JDK should work for creating a UDF, but LucidDB itself requires a 1.5 JVM to run.
+</p><p>Your LucidDB distribution should contain a directory named examples, with a subdirectory named udf.
+</p>
+<h2> <span class="mw-headline" id="Create_a_.java_file_defining_your_class"> Create a .java file defining your class </span></h2>
+<p>The examples/udf directory already has what you need; take a look at file examples/udf/com/yoyodyne/RegexMatchUdf.java in a text editor:
+</p>
+<pre>
+package com.yoyodyne;
+
+public class RegexMatchUdf
+{
+    public static boolean execute(String input, String pattern)
+    {
+        return input.matches(pattern);
+    }
+}
+</pre>
+<p>NOTE:  For a real UDF, you'll probably want to write <a rel="nofollow" class="external text" href="http://www.junit.org">JUnit</a> testcases to help you develop and debug your UDF in a test-driven fashion, so that by the time you plug it into SQL, it will already be working smoothly.
+</p>
+<h2> <span class="mw-headline" id="Compile_to_a_.class_file"> Compile to a .class file </span></h2>
+<p>From the examples/udf directory, run the Java compiler:
+</p>
+<pre>
+cd examples/udf
+javac com/yoyodyne/RegexMatchUdf.java
+</pre>
+<p>This will produce a file RegexMatchUdf.class in the com/yoyodyne directory.
+</p>
+<h2> <span class="mw-headline" id="Package_the_class_into_a_.jar_file"> Package the class into a .jar file </span></h2>
+<p>Before it can be loaded by LucidDB, the .class file needs to be packaged into a .jar file:
+</p>
+<pre>
+jar cf ../../plugin/regex-udf.jar com/yoyodyne/RegexMatchUdf.class
+</pre>
+<p>This creates the jar in the plugin directory under LucidDB's installation root.
+</p>
+<h2> <span class="mw-headline" id="Install_the_.jar_in_LucidDB"> Install the .jar in LucidDB </span></h2>
+<p>Now, execute the following SQL commands:
+</p>
+<pre>
+create schema regex;
+set schema 'regex';
+
+call sqlj.install_jar('file:${FARRAGO_HOME}/plugin/regex-udf.jar','udf_jar',0);
+
+create function pattern_match(input varchar(1024), pattern varchar(1024))
+returns boolean
+language java
+no sql
+external name 'regex.udf_jar:com.yoyodyne.RegexMatchUdf.execute';
+</pre>
+<p>Before testing it out, there's a bit of explaining to do.  In LucidDB, an installed jar is a first-class object just like a table or view, and it lives in a schema just like those objects.  So the schema-qualified SQL name of the jar in this case is REGEX.UDF_JAR.  The installed jar also has a URL property recording where the actual jar resource should be loaded from (in the file system, in this case, although LucidDB could just as easily load it from an http URL).
+</p><p>Other first-class objects such as as user-defined functions can reference installed jars containing their implementation.  In this case, the external name property of the REGEX.PATTERN_MATCH UDF has three parts:  
+</p>
+<ol><li> the <b>regex.udf_jar</b> part before the colon tells LucidDB the SQL name of the jar (from which LucidDB can find the corresponding URL)
+</li><li> the <b>com.yoyodyne.RegexMatchUdf</b> part tells LucidDB the package-qualified name of the Java class containing the method to invoke
+</li><li> the <b>execute</b> part tells LucidDB the name of the static method in that class to invoke
+</li></ol>
+<h2> <span class="mw-headline" id="Create_test_data"> Create test data </span></h2>
+<p>OK, we're ready to try out the UDF, but first we need some test data:
+</p>
+<pre>
+create table countries(name varchar(128));
+insert into countries
+values
+    ('Uruguay'),
+    ('Paraguay'),
+    ('Chile'),
+    ('Argentina'),
+    ('Venezuela');
+</pre>
+<h2> <span class="mw-headline" id="Execute_UDF"> Execute UDF </span></h2>
+<p>Let's find countries with names starting with either 'A' or 'U':
+</p>
+<pre>
+select *
+from countries
+where regex.pattern_match(name, '(A|U).*');
+</pre>
+<p>The results should look like this:
+</p>
+<pre>
+0: jdbc:luciddb:&gt; select *
+. . . . . . . . &gt; from countries
+. . . . . . . . &gt; where regex.pattern_match(name, '(A|U).*');
++------------+
+|    NAME    |
++------------+
+| Uruguay    |
+| Argentina  |
++------------+
+</pre>
+<h2> <span class="mw-headline" id="Deal_with_existing_jars"> Deal with existing jars </span></h2>
+<p>What if you already have a jar file from someone else?  If you're lucky enough to know of a public static method in that jar which already does what you want, then you can just load it directly.
+</p><p>In most cases, however, you'll need to wrap the jar's functionality with an adapter interface suitable for invocation from SQL.  This is the current procedure:
+</p>
+<ol><li> Compile your adapter class(es), importing classes from the third-party jar.
+</li><li> Create a new jar which combines your classes with the classes from the third-party jar.
+</li><li> Load the combined jar into LucidDB
+</li></ol>
+<p>SQL:2003 actually provides a facility for declaring jar dependencies so that you would instead be able to load the thirdparty jar as-is, load a small adapter jar you have written separately, declare the dependency, and then invoke routines in your adapter jar.  LucidDB does not yet support this facility.
+</p>
+<h2> <span class="mw-headline" id="Advanced_Packaging"> Advanced Packaging </span></h2>
+<p>See <a href="/wiki/FarragoSQLJDeploymentDescriptors" title="FarragoSQLJDeploymentDescriptors">FarragoSQLJDeploymentDescriptors</a> for how to make a self-installing jar via a deployment descriptor.
+</p>
+<h2> <span class="mw-headline" id="Move_on_to_Table_Functions"> Move on to Table Functions </span></h2>
+<p>If you can't express a complex transformation you need as a UDF, you may be able to use a table function instead.  <a href="/wiki/LucidDbUdxJavaHowto" title="LucidDbUdxJavaHowto">LucidDbUdxJavaHowto</a> explains.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 105/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1375-0!*!0!!en!*!* and timestamp 20140414191026 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbUdfJavaHowto&amp;oldid=6969">http://luciddb.org/wiki/index.php?title=LucidDbUdfJavaHowto&amp;oldid=6969</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbUdfJavaHowto" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbUdfJavaHowto&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbUdfJavaHowto&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbUdfJavaHowto&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbUdfJavaHowto" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbUdfJavaHowto" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbUdfJavaHowto" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="/wiki/index.php?title=LucidDbUdfJavaHowto&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbUdfJavaHowto&amp;oldid=6969" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 18 June 2011, at 10:27.</li>
+		<li id="viewcount">This page has been accessed 9,022 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.183 secs. --></body></html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>LucidDbPerformanceTuning - LucidDB Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<meta name="robots" content="noindex,follow" />
+<link rel="shortcut icon" href="/wiki/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="LucidDB Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://luciddb.org/wiki/api.php?action=rsd" />
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html" />
+<link rel="alternate" type="application/atom+xml" title="LucidDB Wiki Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;printable=1&amp;skin=monobook&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/wiki/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;printable=1&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "LucidDbPerformanceTuning", "wgTitle": "LucidDbPerformanceTuning", "wgCurRevisionId": 5878, "wgArticleId": 1836, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-LucidDbPerformanceTuning action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">LucidDbPerformanceTuning</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From LucidDB Wiki</div>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Performance_Monitoring"><span class="tocnumber">2</span> <span class="toctext">Performance Monitoring</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Background"><span class="tocnumber">2.1</span> <span class="toctext">Background</span></a>
+<ul>
+<li class="toclevel-3 tocsection-4"><a href="#Victimization_Policy"><span class="tocnumber">2.1.1</span> <span class="toctext">Victimization Policy</span></a></li>
+<li class="toclevel-3 tocsection-5"><a href="#Page_Reads"><span class="tocnumber">2.1.2</span> <span class="toctext">Page Reads</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#Page_Writes"><span class="tocnumber">2.1.3</span> <span class="toctext">Page Writes</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#I.2FO_Scheduler"><span class="tocnumber">2.1.4</span> <span class="toctext">I/O Scheduler</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-8"><a href="#LucidDB_Performance_Counters"><span class="tocnumber">2.2</span> <span class="toctext">LucidDB Performance Counters</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-9"><a href="#Tuning_Parameters"><span class="tocnumber">3</span> <span class="toctext">Tuning Parameters</span></a>
+<ul>
+<li class="toclevel-2 tocsection-10"><a href="#Memory"><span class="tocnumber">3.1</span> <span class="toctext">Memory</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#I.2FO"><span class="tocnumber">3.2</span> <span class="toctext">I/O</span></a>
+<ul>
+<li class="toclevel-3 tocsection-12"><a href="#Pre-fetch_Parameters"><span class="tocnumber">3.2.1</span> <span class="toctext">Pre-fetch Parameters</span></a></li>
+<li class="toclevel-3 tocsection-13"><a href="#Pre-allocating_File_Space_.28Linux_Only.29"><span class="tocnumber">3.2.2</span> <span class="toctext">Pre-allocating File Space (Linux Only)</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h1> <span class="mw-headline" id="Overview">Overview</span></h1>
+<p>This page serves as a performance tuning guide for LucidDB.  Some of the detailed information is covered in other pages, which are linked from this page.  The goal is to consolidate all the information and links into this page.
+</p>
+<h1> <span class="mw-headline" id="Performance_Monitoring">Performance Monitoring</span></h1>
+<p>One of the keys to tuning performance is to monitor the current state of the system to identify potential performance bottlenecks and to assess where resources are being used.  This will likely require a combination of monitoring the OS directly as well as viewing information provided by LucidDB.
+</p><p>Monitoring on Linux-based systems can be done using the OS commands, <b>top</b> and <a rel="nofollow" class="external text" href="http://perso.wanadoo.fr/sebastien.godard/">iostat</a>.  <b>Top</b> can tell you much CPU and memory is being used by the LucidDB process, while <b>iostat</b> can tell you the rate at which disk reads and writes are taking place.  LucidDB integrates a <a href="/wiki/LucidDbMonitor" title="LucidDbMonitor">graphical performance monitor</a> as well.
+</p>
+<h2> <span class="mw-headline" id="Background">Background</span></h2>
+<p>To better understand the performance information provided by LucidDB, some background on the architecture of the buffer pool and I/O scheduler implementation in LucidDB might be helpful.
+</p>
+<h3> <span class="mw-headline" id="Victimization_Policy">Victimization Policy</span></h3>
+<p>LucidDB implements a <a rel="nofollow" class="external text" href="http://www.vldb.org/conf/1994/P439.PDF">2Q page victimization policy</a>.  Unlike an LRU page victimization policy, the 2Q policy is <i>scan resistant</i>.  The scan resistant property prevents large sequential data scans from flooding the buffer pool, which would otherwise victimize pages that are more frequently referenced, e.g., index root pages.  Ideally, you want to keep the index root pages cached and victimize the scan pages instead, even if the latter was more recently referenced.  The LucidDB implementation also has a couple of optimizations not specified in the original 2Q algorithm, but those details are beyond the scope of this writeup.
+</p>
+<h3> <span class="mw-headline" id="Page_Reads">Page Reads</span></h3>
+<p>Pages are populated in the buffer pool either when a page needs to be read, or when pages are <a href="/wiki/LucidDbDataStorageAndAccess#Intelligent_Pre-Fetch" title="LucidDbDataStorageAndAccess">pre-fetched</a>.  The best case scenario is all column store and index leaf pages that will need to be read are pre-fetched and remain in the buffer pool when the page is ready to be read.  The worst case scenario is the page is pre-fetched but then victimized before it needs to be read, resulting not only in a wasted pre-fetch I/O, but also the I/O delay incurred by having to wait for the page to be put back into the buffer pool when it needs to be read.
+</p><p>To avoid flooding the buffer pool with pre-fetched pages, pre-fetch requests are rejected if there is no room in the buffer pool.  In other words, victimization is never done to make room for a pre-fetch page, and therefore, pre-fetch requests are ignored in this case.
+</p><p>LucidDB also wants to avoid flooding the OS with pre-fetch I/O requests when it's busy with other I/O requests.  When the number of asynchronous requests that LucidDB has submitted to the OS exceeds the OS's capacity, LucidDB queues the requests and resubmits (or <i>retries</i>) them after a short wait.  Pre-fetch requests will also be put into this queue, so although they aren't completely rejected, they're not immediately processed, and therefore, are included in <i>reject counts</i>.
+</p><p>If pre-fetches are being rejected, LucidDB will automatically throttle back the pre-fetch rate by reducing the number of pages that are pre-fetched to avoid overloading the buffer pool and/or OS.  Additional rejects will cause the rate to continuously throttle downward to the point where pre-fetches are completely disabled.  When the rate has been throttled down, only after a certain number of successful pre-fetches have occurred, will the rate be throttled back up incrementally to its original value.
+</p><p>Note though that the I/O retry mechanism is only necessary when OS-level asynchronous I/O is used on Linux.  This corresponds to setting the <b>deviceSchedulerType</b> system parameter to <b>aioLinux</b>, which is the default on Linux.  See <a href="#I.2FO_Scheduler">#I/O Scheduler</a> for further details.
+</p>
+<h3> <span class="mw-headline" id="Page_Writes">Page Writes</span></h3>
+<p>Normally, dirty pages in the buffer pool are not written to disk eagerly.  The only exception is during data loads.  Because the data is <a href="/wiki/LucidDbDataStorageAndAccess#Execution_Flow" title="LucidDbDataStorageAndAccess">bulk loaded</a>, once a column store or index page is filled, the page will no longer be written to by the current statement, so LucidDB asynchronously flushes it to disk.  All other dirty pages are asynchronously written in one of three ways.
+</p>
+<ol><li> When the buffer pool is full and space is required for a new page, a non-dirty page that is not currently in-use, is victimized to make room for the new page.  To help clean up the buffer pool so more pages are available for future victimizations, while trying to locate a page for victimization, if dirty pages are encountered, a certain number of those are flushed to disk.
+</li><li> LucidDB has a thread known as the <i>lazy page writer</i> running in the background.  Every 100 ms, the thread awakens and examines the number of dirty pages in the buffer pool.  If the number of dirty pages exceeds a certain high water mark, then a certain number of dirty pages are flushed.  The next time the thread awakens, if that high water mark was previously hit, then dirty pages will continue to be flushed until the number of dirty pages reaches a low water mark.
+</li><li> At the end of every statement, LucidDB performs a database checkpoint.  Any remaining dirty pages that were modified by the statement are flushed to disk by the checkpoint.  Ideally, you want the number of these pages to be minimal because the checkpoint has to wait until all of these pages have been flushed.
+</li></ol>
+<h3> <span class="mw-headline" id="I.2FO_Scheduler">I/O Scheduler</span></h3>
+<p>I/O requests are processed by a LucidDB device scheduler.  There are different device scheduler implementations depending on the OS.
+</p><p>On Linux, there are two scheduler types -- <b>threadPool</b> and <b>aioLinux</b>. <b>threadPool</b> <i>fakes</i> asynchronous I/O by passing off the requests to a pool of threads, where each thread synchronously performs a subset of the I/O operations.  It also uses buffered file access, meaning that there will be double buffering of all pages, once in the OS buffer pool and then a second time in the LucidDB buffer pool.
+</p><p><b>aioLinux</b> uses <b>libaio</b> for asynchronous I/O, with <b>O_DIRECT</b> for unbuffered file access.  The default is to to use <b>libaio</b> always (failing on startup if the .so is not installed).
+</p><p>On Windows, only <b>ioCompletionPort</b> is available.  It uses asynchronous I/O via completion ports and unbuffered file access.
+</p><p>On Linux, because of the double buffering that occurs when using <b>threadPool</b>, there should be a performance disadvantage due to the extra memory copies.  Moreover, if your LucidDB buffer pool is large, a smaller portion of physical memory is available for the OS buffer pool cache, which would further impact performance in the <b>threadPool</b> case.  However, there are limitations with <b>O_DIRECT</b> on Linux that result in it performing poorly when writing out new pages in a file.  (Updating an existing page is not an issue.)  To avoid this, when using <b>aioLinux</b>, all data and temporary file space should be <a href="#Pre-allocating_File_Space_.28Linux_Only.29">pre-allocated</a>, rather than relying on LucidDB to automatically extend the file sizes.
+</p>
+<h2> <span class="mw-headline" id="LucidDB_Performance_Counters">LucidDB Performance Counters</span></h2>
+<p>LucidDB provides <a href="/wiki/LucidDbPerformanceCounters" title="LucidDbPerformanceCounters">performance counters</a> that allow you to monitor:
+</p>
+<ul><li> The number of database checkpoints that have occurred.
+</li><li> How much of space is actually being used in the database files.
+</li><li> How much of the buffer pool is being used and how many of those pages are dirty.
+</li><li> The number of requests made to access pages in the buffer pool and how many of those required I/O to read the page into the buffer pool.
+</li><li> The number of times pages had to be victimized from the buffer pool to make room for other pages.
+</li><li> The number of I/O requests that required retries.
+</li><li> The number of pages read from disk into the buffer pool, how many of these were a result of pre-fetch requests, and how many pre-fetch requests were rejected.
+</li><li> The number of pages written to disk and the manner in which those pages were flushed.
+</li></ul>
+<h1> <span class="mw-headline" id="Tuning_Parameters">Tuning Parameters</span></h1>
+<h2> <span class="mw-headline" id="Memory">Memory</span></h2>
+<p>See <a href="/wiki/LucidDbMemoryManagement" title="LucidDbMemoryManagement">LucidDbMemoryManagement</a> for a discussion of the parameters available to tune the LucidDB buffer pool, in relation to how memory is used across all of LucidDB.
+</p>
+<h2> <span class="mw-headline" id="I.2FO">I/O</span></h2>
+<h3> <span class="mw-headline" id="Pre-fetch_Parameters">Pre-fetch Parameters</span></h3>
+<p>Two parameters are available to tune the rate of page pre-fetches -- <b>prefetchPagesMax</b> and <b>prefetchThrottleRate</b>.  <b>prefetchPagesMax</b> controls the number of pages to pre-fetch in advance for each column store cluster and index scanned, as well as each temporary partition created when hash joins, hash aggregations, sorts, and internal buffers cannot be fully processed in memory.
+</p><p><b>prefetchThrottleRate</b> comes into the picture when LucidDB throttles back the pre-fetch rate after a pre-fetch has been rejected.  LucidDB throttles back the pre-fetch rate by temporarily reducing the number of pages to pre-fetch to how ever many pre-fetch pages are currently outstanding for the operation that resulted in the pre-fetch reject.  <b>prefetchThrottleRate</b> indicates the number of successful pre-fetches that have to occur before the number of pages to be pre-fetched can increment back up by one page.
+</p><p>For example, if <b>prefetchPagesMax</b> is set to 12, a scan of a column store cluster has successfully pre-fetched 5 pages that have not yet been read, and it incurs a reject when trying to pre-fetch a 6th page, then the pre-fetch rate is throttled down to 5 pages.  If <b>prefetchThrottleRate</b> is set to 10, after the 5 existing pre-fetched pages have been read and 10 new successful pre-fetches have occurred, then the pre-fetch rate will be throttled back up to 6 pages.  After 60 more successful pre-fetches, the rate returns back to its original value of 12.  Note that the throttling is localized to each individual operation that does pre-fetches, as opposed to across the entire system.
+</p><p>Monitoring the <b>CachePagePrefetchesRejected</b> and <b>CachePagePrefetchesRejectedSinceInit</b> performance counters will tell you if pre-fetch throttling has taken place.  Ideally, these numbers should be zero or very low.  Although LucidDB has the automatic throttling mechanism, it is generally better to set the pre-fetch rate to an optimal value to avoid the extra work incurred by the pre-fetch rejects.
+</p><p>If the pre-fetch rejects are occurring because the OS is overloaded, then <b>prefetchPagesMax</b> is set too high.  You can determine if this is the case by monitoring the <b>CachePageIoRetries</b> and <b>CachePageIoRetriesSinceInit</b> performance counters.  If these numbers are lower than the number of pre-fetch rejects, then the OS load may not be the only contributing factor.  There may also be an issue with the LucidDB buffer pool.  The buffer pool size (controlled by the <b>cachePagesInit</b> and <b>cachePagesMax</b> parameters) may be too small, or perhaps the <b>cacheReservePercentage</b> system parameter is set too low.  It is best to experiment with these different parameter settings, as modifying one vs another will likely impact other parts of the system and may not result in an overall improvement.
+</p><p>If you are incurring no pre-fetch rejects, then that may indicate that you can increase your <b>prefetchPagesMax</b> setting.  If so, you should experiment with larger settings to ensure that the larger setting doesn't result in rejects, and to see if it results in any performance gains.
+</p>
+<h3> <span class="mw-headline" id="Pre-allocating_File_Space_.28Linux_Only.29">Pre-allocating File Space (Linux Only)</span></h3>
+<p>As noted <a href="#I.2FO_Scheduler">above</a>, when using the <b>aioLinux</b> device scheduler type, you need to pre-allocate your file space for optimal performance.
+</p><p>LucidDB provides a utility for doing this, available in the <b>bin</b> directory of Linux distributions.
+</p>
+<pre>
+lucidDbAllocFile --append-pages=&lt;number of pages&gt; &lt;filename&gt;
+</pre>
+<p>The utility will append to the end of the file the number of pages specified.  Each page is 32 KB.  Note that the utility cannot be run while the LucidDB server is running.
+</p><p>You need to estimate the amount of space you expect your data to occupy and then pre-allocate your <b>db.dat</b> file accordingly.  <b>db.dat</b> is located in the <b>catalog</b> directory of your installation.  You should round up the number of pages to a multiple of the maximum of 2000 and the number specified by the <b>databaseIncrementSize</b> system parameter.
+</p><p>You should also pre-allocate space for the <b>temp.dat</b> file, specifying a number that is a multiple of the maximum of 3000 and the <b>tempIncrementSize</b> system parameter.  You'll need to do an initial start up of LucidDB to create the file.  Thereafter, the file should be in the <b>catalog</b> directory.  The size of this file is more difficult to predict and depends on a number of factors, including your data size, the size of your LucidDB buffer pool, and the type of queries you will be executing.  E.g., if you have configured a very large LucidDB buffer pool, you may not need this file to be very big, if all complex query processing can be done in memory, avoiding the need to partition any sorts or hashes to the temporary disk space in <b>temp.dat</b>.  As a point of reference, running TPC-H on a 10 GB dataset with a 6 GB LucidDB buffer pool requires about 1.5 GB of temporary space.  (This translates to 47000 additional LucidDB pages, assuming <b>tempInitSize</b> is set to 3000 pages and <b>tempIncrementSize</b> is 1000 pages.) 
+</p><p>The <a href="/wiki/LucidDbPerformanceCounters" title="LucidDbPerformanceCounters">performance counters</a> noted in the <b>Storage</b> category section can help determine how much space is currently in use and therefore, if you are running short on space and need to pre-allocate additional space.  If either <b>DatabasePagesExtendedSinceInit</b> or <b>TempPagesExtendedSinceInit</b> is non-zero, then that is an indication that you did not pre-allocate enough space in the corresponding file, and therefore LucidDB had to automatically extend the size of the file.  This is when you will incur the performance hit noted earlier; you want to avoid this.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 53/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1836-0!*!0!!en!*!* and timestamp 20140414191108 -->
+</div><div class="printfooter">
+Retrieved from "<a href="http://luciddb.org/wiki/index.php?title=LucidDbPerformanceTuning&amp;oldid=5878">http://luciddb.org/wiki/index.php?title=LucidDbPerformanceTuning&amp;oldid=5878</a>"</div>
+		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/LucidDbPerformanceTuning" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:LucidDbPerformanceTuning&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/wiki/index.php?title=LucidDbPerformanceTuning&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/wiki/index.php?title=LucidDbPerformanceTuning&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-anonuserpage"><a href="/wiki/User:98.207.60.70" class="new" title="The user page for the IP address you are editing as [.]" accesskey=".">98.207.60.70</a></li>
+				<li id="pt-anontalk"><a href="/wiki/User_talk:98.207.60.70" class="new" title="Discussion about edits from this IP address [n]" accesskey="n">Talk for this IP address</a></li>
+				<li id="pt-anonlogin"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=LucidDbPerformanceTuning&amp;returntoquery=printable%3Dyes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(http://www.luciddb.org/img/logo.gif);" href="/wiki/LucidDbDocs"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-Product_Documentation">
+		<h5>Product Documentation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Eigenbase_Projects">
+		<h5>Eigenbase Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Introduction"><a href="/wiki/Eigenbase_Introduction">Introduction</a></li>
+				<li id="n-LucidDB-Server"><a href="/wiki/LucidDbDocs">LucidDB Server</a></li>
+				<li id="n-Enki-Library"><a href="/wiki/EnkiDocs">Enki Library</a></li>
+				<li id="n-Farrago-Engine"><a href="/wiki/FarragoDocs">Farrago Engine</a></li>
+				<li id="n-Fennel-Library"><a href="/wiki/FennelDocs">Fennel Library</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-Wiki_Tools">
+		<h5>Wiki Tools</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-Page-Updates"><a href="/wiki/Special:RecentChanges">Recent Page Updates</a></li>
+				<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/Sitesupport-url">sitesupport</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search LucidDB Wiki [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/LucidDbPerformanceTuning" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/LucidDbPerformanceTuning" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-permalink"><a href="/wiki/index.php?title=LucidDbPerformanceTuning&amp;oldid=5878" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/wiki/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 19 March 2009, at 22:59.</li>
+		<li id="viewcount">This page has been accessed 9,773 times.</li>
+		<li id="copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/wiki/LucidDB_Wiki:Privacy_policy" title="LucidDB Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wiki/LucidDB_Wiki:About" title="LucidDB Wiki:About">About LucidDB Wiki</a></li>
+		<li id="disclaimer"><a href="/wiki/LucidDB_Wiki:General_disclaimer" title="LucidDB Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:99acc2c3ab516bb21085c70c2195f3df */
+}
+</script><!-- Piwik -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://http://apps.sourceforge.net/piwik/eigenbase/" : "http://http://apps.sourceforge.net/piwik/eigenbase/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.setDocumentTitle("");
+piwikTracker.setIgnoreClasses("image");
+
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+/* ]]> */
+</script><noscript><p><img src="http://http://apps.sourceforge.net/piwik/eigenbase/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- /Piwik --><!-- Served in 0.143 secs. --></body></html>
